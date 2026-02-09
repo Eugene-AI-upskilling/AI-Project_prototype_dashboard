@@ -256,7 +256,6 @@ def main():
         status_text = st.empty()
 
         results = []
-        raw_tables = []
 
         for i, disc in enumerate(disclosures):
             status_text.text(f"수집 중: {disc['corp_name']} ({i+1}/{len(disclosures)})")
@@ -275,10 +274,6 @@ def main():
                             'acptno': disc['acptno'],
                             'table': table
                         })
-                        raw_tables.append({
-                            'corp_name': disc['corp_name'],
-                            'table': table
-                        })
 
                 time.sleep(0.3)
 
@@ -288,7 +283,7 @@ def main():
         progress_bar.progress(1.0)
         status_text.text("완료!")
 
-        # 결과 저장 (세션)
+        # 결과 저장
         st.session_state['dart_results'] = results
         st.session_state['dart_date'] = date_str
 
@@ -301,11 +296,40 @@ def main():
         st.markdown("---")
         st.subheader(f"📊 수집 결과 ({len(results)}개 기업)")
 
-        # 기업 목록
-        corp_names = [r['corp_name'] for r in results]
-        selected_corp = st.selectbox("기업 선택", ["전체 보기"] + corp_names)
+        # 검색 필터
+        col1, col2 = st.columns(2)
 
-        if selected_corp == "전체 보기":
+        with col1:
+            search_text = st.text_input(
+                "🔎 종목코드 또는 기업명 검색",
+                placeholder="예: 005930 또는 삼성전자"
+            )
+
+        with col2:
+            corp_names = ["전체 보기"] + [r['corp_name'] for r in results]
+            selected_corp = st.selectbox("📋 기업 선택", corp_names)
+
+        # 필터링
+        if search_text:
+            # 검색어로 필터링
+            search_text = search_text.strip()
+            filtered_results = [
+                r for r in results
+                if search_text.lower() in r['corp_name'].lower()
+                or search_text in r['stock_code']
+            ]
+
+            if not filtered_results:
+                st.warning(f"'{search_text}'에 해당하는 기업이 없습니다.")
+            else:
+                st.info(f"🔍 검색 결과: {len(filtered_results)}개 기업")
+
+                for r in filtered_results:
+                    with st.expander(f"**{r['corp_name']}** ({r['stock_code']}) - {r['time']}"):
+                        st.caption(f"공시: {r['title']}")
+                        st.dataframe(r['table'], use_container_width=True)
+
+        elif selected_corp == "전체 보기":
             # 요약 테이블
             summary_data = []
             for r in results:
@@ -330,10 +354,8 @@ def main():
         # 엑셀 다운로드
         st.markdown("---")
 
-        # 엑셀 파일 생성
         output = BytesIO()
         with pd.ExcelWriter(output, engine='openpyxl') as writer:
-            # 요약 시트
             summary_df = pd.DataFrame([{
                 '시간': r['time'],
                 '종목코드': r['stock_code'],
@@ -342,8 +364,7 @@ def main():
             } for r in results])
             summary_df.to_excel(writer, sheet_name='요약', index=False)
 
-            # 각 기업별 시트
-            for r in results[:20]:  # 최대 20개 시트
+            for r in results[:20]:
                 sheet_name = r['corp_name'][:31].replace('/', '_')
                 r['table'].to_excel(writer, sheet_name=sheet_name, index=False)
 
@@ -358,15 +379,36 @@ def main():
 
     st.markdown("---")
 
-    # CLI 안내 (모니터링 모드)
-    st.subheader("💻 실시간 모니터링 (CLI)")
-    st.code("""
-# 실시간 모니터링 모드 (5분 간격)
-python scripts/2_DART_Prelim_Earnings.py --monitor --interval=5
+    # CLI 안내
+    with st.expander("💻 실시간 모니터링 (로컬 PC에서 실행)"):
+        st.markdown("""
+        **실시간 모니터링**은 웹 대시보드가 아닌 **로컬 PC**에서 실행해야 합니다.
 
-# 텔레그램 알림 포함
-python scripts/2_DART_Prelim_Earnings.py --monitor --telegram
-    """, language="bash")
+        ### 실행 방법
+
+        1. **명령 프롬프트(CMD) 또는 PowerShell 열기**
+           - Windows: `Win + R` → `cmd` 입력 → Enter
+
+        2. **프로젝트 폴더로 이동**
+        ```
+        cd C:\\Users\\anjs9\\OneDrive\\바탕 화면\\Eugene_AI_Project
+        ```
+
+        3. **스크립트 실행**
+        ```
+        # 특정 날짜 조회
+        python scripts/2_DART_Prelim_Earnings.py --date=20260209
+
+        # 실시간 모니터링 (5분 간격)
+        python scripts/2_DART_Prelim_Earnings.py --monitor --interval=5
+
+        # 텔레그램 알림 포함
+        python scripts/2_DART_Prelim_Earnings.py --monitor --telegram
+        ```
+
+        4. **또는 배치 파일 더블클릭**
+           - `run_prelim_monitor.bat` 파일 더블클릭
+        """)
 
 
 if __name__ == "__main__":

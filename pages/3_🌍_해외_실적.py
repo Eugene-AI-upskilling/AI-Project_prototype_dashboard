@@ -1,149 +1,274 @@
 # coding=utf-8
 """
-페이지 3: 해외 기업 실적
+페이지 3: 해외 기업 실적 - 웹에서 직접 수집
 """
 
 import streamlit as st
 import pandas as pd
 import os
 import sys
-from datetime import datetime
+import time
+from datetime import datetime, timedelta
+from typing import Dict, List, Any, Optional
+from io import BytesIO
 
-# 프로젝트 경로 추가
+# 프로젝트 경로
 PROJECT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-sys.path.insert(0, PROJECT_DIR)
 
 st.set_page_config(page_title="해외 실적", page_icon="🌍", layout="wide")
 
-# 섹터 정의
+
+# =============================================================================
+# 섹터별 티커 그룹
+# =============================================================================
+
 TICKER_GROUPS = {
     "빅테크 7": ["AAPL", "MSFT", "GOOG", "AMZN", "NVDA", "TSLA", "META"],
     "반도체 관련주": ["AVGO", "INTC", "LRCX", "QCOM", "MU", "AMD"],
-    "친환경차량관련주": ["9868.HK", "1810.HK", "LCID", "TSLA", "NIO", "LI", "1211.HK"],
-    "리튬 관련주": ["PILBF", "SQM", "ALB", "SGML"],
     "AI 관련주": ["SNPS", "CDNS", "ANET", "NOW", "ADI"],
     "소셜미디어": ["PINS", "SPOT", "SNAP", "MTCH", "NFLX"],
     "게임": ["TTWO", "U", "NTDOY", "NTES", "EA"],
     "코인": ["MSTR", "COIN", "RIOT", "MARA", "APLD"],
-    "인프라": ["ETN", "TT", "FAST", "PH", "URI"],
-    "원전": ["GEV", "SO", "DUK", "NGG"],
-    "로봇": ["ROK", "ISRG", "ZBRA", "TER", "PATH"],
     "방산": ["BA", "LMT", "NOC", "RTX"],
-    "수소": ["PLUG", "LIN", "APD"],
-    "클린에너지": ["FSLR", "ENPH", "SEDG", "ORA", "BE"],
-    "우주항공": ["AVAV", "KTOS", "TRMB", "IRDM", "LHX"],
     "비만치료제": ["NVO", "LLY", "AMGN", "PFE", "VKTX"],
-    "소비재 관련주": ["AMZN", "CPNG", "WMT", "COST", "9983.T", "NKE", "ADS.DE", "EL", "ULTA", "ELF"],
-    "자동차 관련주": ["7203.T", "7267.T", "GM", "F", "TSLA", "VOW3.DE", "BMW.DE", "MBG.DE"]
 }
 
 
+# =============================================================================
+# 실적 데이터 수집
+# =============================================================================
+
+def get_earnings_data(ticker: str) -> Dict[str, Any]:
+    """yfinance로 실적 데이터 수집"""
+    import yfinance as yf
+
+    result = {
+        'ticker': ticker,
+        'name': None,
+        'next_earnings_date': None,
+        'last_earnings_date': None,
+        'eps': None,
+        'eps_estimate': None,
+        'revenue': None,
+    }
+
+    try:
+        stock = yf.Ticker(ticker)
+
+        # 기업명
+        info = stock.info
+        result['name'] = info.get('shortName') or info.get('longName') or ticker
+
+        # 실적 발표일
+        try:
+            earnings_dates = stock.get_earnings_dates()
+            if earnings_dates is not None and not earnings_dates.empty:
+                # timezone 제거
+                earnings_dates.index = earnings_dates.index.tz_localize(None)
+                today = datetime.now()
+
+                # 다음 실적 발표일
+                future_dates = earnings_dates[earnings_dates.index > today]
+                if not future_dates.empty:
+                    next_date = future_dates.index[-1]
+                    result['next_earnings_date'] = next_date.strftime('%Y-%m-%d')
+
+                    if 'EPS Estimate' in future_dates.columns:
+                        est = future_dates['EPS Estimate'].iloc[-1]
+                        if pd.notna(est):
+                            result['eps_estimate'] = float(est)
+
+                # 최근 실적 발표일
+                past_dates = earnings_dates[earnings_dates.index <= today]
+                if not past_dates.empty:
+                    last_date = past_dates.index[0]
+                    result['last_earnings_date'] = last_date.strftime('%Y-%m-%d')
+
+                    if 'Reported EPS' in past_dates.columns:
+                        eps = past_dates['Reported EPS'].iloc[0]
+                        if pd.notna(eps):
+                            result['eps'] = float(eps)
+        except:
+            pass
+
+        # 매출액
+        try:
+            financials = stock.quarterly_financials
+            if financials is not None and not financials.empty:
+                revenue_rows = [r for r in financials.index if 'revenue' in r.lower()]
+                if revenue_rows:
+                    latest_revenue = financials.loc[revenue_rows[0]].iloc[0]
+                    if pd.notna(latest_revenue):
+                        result['revenue'] = float(latest_revenue)
+        except:
+            pass
+
+    except Exception as e:
+        pass
+
+    return result
+
+
+# =============================================================================
+# 메인 앱
+# =============================================================================
+
 def main():
     st.title("🌍 해외 기업 실적")
-    st.markdown("글로벌 98개 종목 실적 발표일 및 EPS 추적")
+    st.markdown("글로벌 종목 실적 발표일 및 EPS 추적 (yfinance)")
 
     st.markdown("---")
 
     # 탭 구성
-    tab1, tab2, tab3 = st.tabs(["📊 실적 데이터", "📅 다가오는 실적", "⚙️ 설정"])
+    tab1, tab2, tab3 = st.tabs(["📊 데이터 수집", "📅 다가오는 실적", "⚙️ 섹터 설정"])
 
     with tab1:
-        st.subheader("📊 섹터별 실적 데이터")
+        st.subheader("📊 실적 데이터 수집")
 
-        # 엑셀 파일 로드
-        output_dir = os.path.join(PROJECT_DIR, 'output')
-        excel_path = os.path.join(output_dir, 'global_earnings.xlsx')
+        # 섹터 선택
+        selected_sectors = st.multiselect(
+            "수집할 섹터 선택",
+            list(TICKER_GROUPS.keys()),
+            default=["빅테크 7", "반도체 관련주"]
+        )
 
-        if os.path.exists(excel_path):
-            try:
-                df = pd.read_excel(excel_path, sheet_name='All')
+        if not selected_sectors:
+            st.warning("섹터를 선택해주세요.")
+            return
 
-                # 섹터 필터
-                sectors = df['sector'].unique().tolist()
-                selected_sectors = st.multiselect(
-                    "섹터 선택",
-                    sectors,
-                    default=sectors[:3]
-                )
+        # 선택된 티커 수
+        total_tickers = sum(len(TICKER_GROUPS[s]) for s in selected_sectors)
+        st.info(f"선택된 섹터: {len(selected_sectors)}개, 총 {total_tickers}개 종목")
 
-                if selected_sectors:
-                    filtered_df = df[df['sector'].isin(selected_sectors)]
-                    st.dataframe(filtered_df, use_container_width=True)
+        # 수집 버튼
+        if st.button("🔍 실적 데이터 수집", type="primary", use_container_width=True):
 
-                    # 통계
-                    col1, col2, col3 = st.columns(3)
-                    with col1:
-                        st.metric("총 종목 수", len(filtered_df))
-                    with col2:
-                        with_earnings = filtered_df['next_earnings_date'].notna().sum()
-                        st.metric("실적발표일 있음", with_earnings)
-                    with col3:
-                        with_eps = filtered_df['eps'].notna().sum()
-                        st.metric("EPS 데이터 있음", with_eps)
+            all_data = []
+            progress_bar = st.progress(0)
+            status_text = st.empty()
 
-            except Exception as e:
-                st.error(f"파일 로드 실패: {e}")
-        else:
-            st.warning("데이터 파일이 없습니다. 먼저 수집을 실행해주세요.")
-            if st.button("🔄 데이터 수집 실행"):
-                st.code("python scripts/3_Global_Earnings.py", language="bash")
+            processed = 0
+
+            for sector in selected_sectors:
+                tickers = TICKER_GROUPS[sector]
+
+                for ticker in tickers:
+                    status_text.text(f"수집 중: {ticker} ({sector})")
+                    processed += 1
+                    progress_bar.progress(processed / total_tickers)
+
+                    data = get_earnings_data(ticker)
+                    data['sector'] = sector
+                    all_data.append(data)
+
+                    time.sleep(0.3)
+
+            progress_bar.progress(1.0)
+            status_text.text("완료!")
+
+            # 결과 저장
+            df = pd.DataFrame(all_data)
+            st.session_state['earnings_data'] = df
+
+            st.success(f"✅ {len(df)}개 종목 수집 완료")
+
+        # 결과 표시
+        if 'earnings_data' in st.session_state:
+            df = st.session_state['earnings_data']
+
+            st.markdown("---")
+            st.subheader("📋 수집 결과")
+
+            # 섹터 필터
+            sectors = df['sector'].unique().tolist()
+            selected_filter = st.selectbox("섹터 필터", ["전체"] + sectors)
+
+            if selected_filter == "전체":
+                filtered_df = df
+            else:
+                filtered_df = df[df['sector'] == selected_filter]
+
+            # 테이블 표시
+            display_cols = ['sector', 'ticker', 'name', 'next_earnings_date', 'eps', 'eps_estimate']
+            display_df = filtered_df[display_cols].copy()
+            display_df.columns = ['섹터', '티커', '기업명', '다음 실적발표', 'EPS', 'EPS 추정']
+
+            st.dataframe(display_df, use_container_width=True)
+
+            # 통계
+            col1, col2, col3 = st.columns(3)
+            with col1:
+                st.metric("총 종목", len(filtered_df))
+            with col2:
+                with_date = filtered_df['next_earnings_date'].notna().sum()
+                st.metric("실적발표일 있음", with_date)
+            with col3:
+                with_eps = filtered_df['eps'].notna().sum()
+                st.metric("EPS 데이터 있음", with_eps)
+
+            # 엑셀 다운로드
+            output = BytesIO()
+            with pd.ExcelWriter(output, engine='openpyxl') as writer:
+                df.to_excel(writer, sheet_name='All', index=False)
+
+                # 섹터별 시트
+                for sector in df['sector'].unique():
+                    df_sector = df[df['sector'] == sector]
+                    sheet_name = sector[:31].replace('/', '_')
+                    df_sector.to_excel(writer, sheet_name=sheet_name, index=False)
+
+            output.seek(0)
+
+            st.download_button(
+                label="📥 엑셀 다운로드",
+                data=output,
+                file_name=f"global_earnings_{datetime.now().strftime('%Y%m%d')}.xlsx",
+                mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+            )
 
     with tab2:
         st.subheader("📅 다가오는 실적 발표")
 
-        if os.path.exists(excel_path):
-            try:
-                df_upcoming = pd.read_excel(excel_path, sheet_name='Upcoming')
+        if 'earnings_data' in st.session_state:
+            df = st.session_state['earnings_data']
 
-                if not df_upcoming.empty:
-                    # 날짜 필터
-                    days_ahead = st.slider("앞으로 며칠", 7, 90, 30)
+            # 다가오는 실적
+            df_upcoming = df[df['next_earnings_date'].notna()].copy()
 
-                    df_upcoming['next_earnings_date'] = pd.to_datetime(df_upcoming['next_earnings_date'])
-                    cutoff = datetime.now() + pd.Timedelta(days=days_ahead)
-                    df_filtered = df_upcoming[df_upcoming['next_earnings_date'] <= cutoff]
+            if not df_upcoming.empty:
+                df_upcoming['next_earnings_date'] = pd.to_datetime(df_upcoming['next_earnings_date'])
+                df_upcoming = df_upcoming.sort_values('next_earnings_date')
 
-                    st.dataframe(df_filtered, use_container_width=True)
+                # 기간 필터
+                days_ahead = st.slider("앞으로 며칠", 7, 60, 30)
+                cutoff = datetime.now() + timedelta(days=days_ahead)
+                df_filtered = df_upcoming[df_upcoming['next_earnings_date'] <= cutoff]
 
-                    # 달력 뷰
+                if not df_filtered.empty:
                     st.markdown("### 📆 실적 발표 일정")
-                    for _, row in df_filtered.head(15).iterrows():
+
+                    for _, row in df_filtered.iterrows():
                         date_str = row['next_earnings_date'].strftime('%Y-%m-%d')
                         eps_est = f"(Est: {row['eps_estimate']:.2f})" if pd.notna(row.get('eps_estimate')) else ""
-                        st.markdown(f"- **{date_str}** | `{row['ticker']}` {row.get('name', '')} {eps_est}")
+                        name = row['name'][:30] if row['name'] else row['ticker']
 
+                        st.markdown(f"- **{date_str}** | `{row['ticker']}` {name} {eps_est}")
                 else:
-                    st.info("다가오는 실적 발표 데이터가 없습니다.")
-
-            except Exception as e:
-                st.error(f"파일 로드 실패: {e}")
+                    st.info("해당 기간에 실적 발표가 없습니다.")
+            else:
+                st.info("실적 발표일 데이터가 없습니다.")
         else:
-            st.warning("데이터 파일이 없습니다.")
+            st.info("먼저 '데이터 수집' 탭에서 데이터를 수집해주세요.")
 
     with tab3:
-        st.subheader("⚙️ 섹터 및 종목 설정")
-
-        st.markdown("### 현재 추적 중인 섹터")
+        st.subheader("⚙️ 섹터별 종목 목록")
 
         for sector, tickers in TICKER_GROUPS.items():
-            with st.expander(f"{sector} ({len(tickers)}종목)"):
+            with st.expander(f"**{sector}** ({len(tickers)}종목)"):
                 st.write(", ".join(tickers))
 
         st.markdown("---")
-
-        st.markdown("### 💻 CLI 명령어")
-        st.code("""
-# 전체 수집 (캐시 사용)
-python scripts/3_Global_Earnings.py
-
-# 캐시 무시하고 새로 수집
-python scripts/3_Global_Earnings.py --no-cache
-        """, language="bash")
-
-        # 수집 버튼
-        if st.button("🔄 새로 수집하기", type="primary"):
-            st.info("CLI에서 실행해주세요:")
-            st.code("python scripts/3_Global_Earnings.py --no-cache", language="bash")
+        st.info("💡 종목 추가/수정은 소스 코드에서 TICKER_GROUPS를 편집해주세요.")
 
 
 if __name__ == "__main__":

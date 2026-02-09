@@ -1,24 +1,223 @@
 # coding=utf-8
 """
-페이지 2: DART 잠정실적
+페이지 2: DART 잠정실적 - 웹에서 직접 수집
 """
 
 import streamlit as st
 import pandas as pd
 import os
 import sys
+import re
+import time
 from datetime import datetime
+from typing import Optional, List, Dict, Any
+from io import StringIO, BytesIO
 
-# 프로젝트 경로 추가
+import requests
+from bs4 import BeautifulSoup
+
+# 프로젝트 경로
 PROJECT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-sys.path.insert(0, PROJECT_DIR)
 
 st.set_page_config(page_title="DART 잠정실적", page_icon="📈", layout="wide")
 
+# =============================================================================
+# KIND 크롤링 함수들
+# =============================================================================
+
+HEADERS = {
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+    'Accept-Language': 'ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7',
+}
+
+KIND_TODAY_URL = "https://kind.krx.co.kr/disclosure/todaydisclosure.do"
+KIND_VIEWER_URL = "https://kind.krx.co.kr/common/disclsviewer.do"
+
+
+def search_prelim_earnings(search_date: str, progress_callback=None) -> List[Dict]:
+    """KIND에서 잠정실적 공시 검색"""
+    headers = HEADERS.copy()
+    headers['Content-Type'] = 'application/x-www-form-urlencoded; charset=UTF-8'
+    headers['X-Requested-With'] = 'XMLHttpRequest'
+
+    disclosures = []
+    page = 1
+
+    while page <= 5:
+        data = {
+            'method': 'searchTodayDisclosureSub',
+            'currentPageSize': '500',
+            'pageIndex': str(page),
+            'orderMode': '0',
+            'orderStat': 'D',
+            'forward': 'todaydisclosure_sub',
+            'marketType': '',
+            'disclosureType': '',
+            'fromDate': search_date,
+            'toDate': search_date
+        }
+
+        try:
+            response = requests.post(KIND_TODAY_URL, headers=headers, data=data, timeout=30)
+            soup = BeautifulSoup(response.text, 'html.parser')
+            rows = soup.select('tbody tr')
+
+            if len(rows) == 0:
+                break
+
+            for row in rows:
+                cols = row.find_all('td')
+                if len(cols) < 4:
+                    continue
+
+                title_elem = cols[2].find('a')
+                if not title_elem:
+                    continue
+
+                title = title_elem.get_text(strip=True)
+
+                if '잠정' not in title:
+                    continue
+
+                onclick = title_elem.get('onclick', '')
+                acptno_match = re.search(r"openDisclsViewer\('(\d+)'", onclick)
+                if not acptno_match:
+                    continue
+
+                acptno = acptno_match.group(1)
+
+                if any(d['acptno'] == acptno for d in disclosures):
+                    continue
+
+                company_elem = cols[1].find('a', id='companysum')
+                corp_name = company_elem.get_text(strip=True) if company_elem else ''
+
+                corp_onclick = company_elem.get('onclick', '') if company_elem else ''
+                code_match = re.search(r"companysummary_open\('(\d+)'", corp_onclick)
+                stock_code = code_match.group(1).zfill(6) if code_match else ''
+
+                time_str = cols[0].get_text(strip=True)
+
+                disclosures.append({
+                    'time': time_str,
+                    'stock_code': stock_code,
+                    'corp_name': corp_name,
+                    'title': title,
+                    'acptno': acptno,
+                    'date': search_date
+                })
+
+            if len(rows) < 500:
+                break
+
+            page += 1
+            time.sleep(0.3)
+
+        except Exception as e:
+            st.warning(f"검색 오류: {e}")
+            break
+
+    return disclosures
+
+
+def get_disclosure_document(acptno: str) -> Optional[str]:
+    """KIND 공시 본문 HTML 가져오기"""
+    try:
+        viewer_url = f"{KIND_VIEWER_URL}?method=search&acptno={acptno}"
+        response = requests.get(viewer_url, headers=HEADERS, timeout=30)
+
+        soup = BeautifulSoup(response.text, 'html.parser')
+        select = soup.find('select', id='mainDoc')
+        if not select:
+            return None
+
+        docNo = None
+        for opt in select.find_all('option'):
+            val = opt.get('value', '')
+            if '|' in val:
+                docNo = val.split('|')[0]
+                break
+
+        if not docNo:
+            return None
+
+        post_data = {'method': 'searchContents', 'docNo': docNo}
+        post_headers = HEADERS.copy()
+        post_headers['Content-Type'] = 'application/x-www-form-urlencoded'
+
+        post_response = requests.post(KIND_VIEWER_URL, data=post_data, headers=post_headers, timeout=30)
+
+        url_match = re.search(r"setPath\s*\([^,]*,\s*['\"]([^'\"]+)['\"]", post_response.text)
+        if not url_match:
+            return None
+
+        doc_url = url_match.group(1)
+        if not doc_url.startswith('http'):
+            doc_url = 'https://kind.krx.co.kr' + doc_url
+
+        doc_response = requests.get(doc_url, headers=HEADERS, timeout=30)
+
+        try:
+            return doc_response.content.decode('utf-8')
+        except:
+            try:
+                return doc_response.content.decode('euc-kr')
+            except:
+                return doc_response.content.decode('cp949', errors='ignore')
+
+    except Exception as e:
+        return None
+
+
+def extract_earnings_table(html_content: str) -> Optional[pd.DataFrame]:
+    """HTML에서 실적 테이블 추출"""
+    if not html_content:
+        return None
+
+    try:
+        tables = pd.read_html(StringIO(html_content))
+    except:
+        return None
+
+    if not tables:
+        return None
+
+    best_table = None
+    best_score = 0
+
+    for df in tables:
+        if df.empty:
+            continue
+
+        df_str = df.to_string()
+        score = 0
+
+        if '매출액' in df_str:
+            score += 10
+        if '영업이익' in df_str:
+            score += 10
+        if '당기순이익' in df_str:
+            score += 10
+        if '당기' in df_str or '당해' in df_str:
+            score += 5
+        if 3 <= len(df) <= 30 and 3 <= len(df.columns) <= 15:
+            score += 5
+
+        if score > best_score:
+            best_score = score
+            best_table = df
+
+    return best_table
+
+
+# =============================================================================
+# 메인 앱
+# =============================================================================
 
 def main():
     st.title("📈 DART 잠정실적 공시")
-    st.markdown("KIND에서 잠정실적 공시 수집 → 정규화 → 텔레그램 발송")
+    st.markdown("KIND에서 잠정실적 공시 수집 → 정규화 → 조회")
 
     st.markdown("---")
 
@@ -34,72 +233,140 @@ def main():
         date_str = target_date.strftime('%Y%m%d')
 
     with col2:
-        st.subheader("⚙️ 옵션")
-        send_telegram = st.checkbox("텔레그램 발송", value=False)
-        save_excel = st.checkbox("엑셀 저장", value=True)
+        st.subheader("📊 현황")
+        st.info(f"선택된 날짜: **{target_date.strftime('%Y년 %m월 %d일')}**")
 
     st.markdown("---")
 
-    # CLI 명령어 안내
-    st.subheader("💻 CLI 실행 방법")
-    st.code(f"""
-# 특정 날짜 조회
-python scripts/2_DART_Prelim_Earnings.py --date={date_str}
+    # 수집 버튼
+    if st.button("🔍 잠정실적 조회", type="primary", use_container_width=True):
 
-# 오늘 날짜 + 텔레그램 발송
-python scripts/2_DART_Prelim_Earnings.py --telegram
+        # 1단계: 공시 검색
+        with st.spinner("KIND에서 공시 검색 중..."):
+            disclosures = search_prelim_earnings(date_str)
 
-# 실시간 모니터링 모드
-python scripts/2_DART_Prelim_Earnings.py --monitor --interval=5
-    """, language="bash")
+        if not disclosures:
+            st.warning(f"⚠️ {target_date.strftime('%Y-%m-%d')}에 잠정실적 공시가 없습니다.")
+            return
 
-    st.info("💡 잠정실적 수집은 CLI에서 실행해주세요. 웹 대시보드에서는 결과 조회만 지원합니다.")
+        st.success(f"✅ {len(disclosures)}건의 잠정실적 공시 발견")
 
-    st.markdown("---")
+        # 2단계: 상세 데이터 수집
+        progress_bar = st.progress(0)
+        status_text = st.empty()
 
-    # 최근 결과
-    st.subheader("📁 최근 수집 결과")
+        results = []
+        raw_tables = []
 
-    output_dir = os.path.join(PROJECT_DIR, 'output')
+        for i, disc in enumerate(disclosures):
+            status_text.text(f"수집 중: {disc['corp_name']} ({i+1}/{len(disclosures)})")
+            progress_bar.progress((i + 1) / len(disclosures))
 
-    if os.path.exists(output_dir):
-        dart_files = [f for f in os.listdir(output_dir)
-                      if 'prelim' in f.lower() and f.endswith('.xlsx')]
+            try:
+                html = get_disclosure_document(disc['acptno'])
+                if html:
+                    table = extract_earnings_table(html)
+                    if table is not None and not table.empty:
+                        results.append({
+                            'corp_name': disc['corp_name'],
+                            'stock_code': disc['stock_code'],
+                            'title': disc['title'],
+                            'time': disc['time'],
+                            'acptno': disc['acptno'],
+                            'table': table
+                        })
+                        raw_tables.append({
+                            'corp_name': disc['corp_name'],
+                            'table': table
+                        })
 
-        if dart_files:
-            dart_files.sort(reverse=True)
-            selected_file = st.selectbox("파일 선택", dart_files[:10])
+                time.sleep(0.3)
 
-            if selected_file:
-                filepath = os.path.join(output_dir, selected_file)
-                try:
-                    # 시트 목록 확인
-                    xl = pd.ExcelFile(filepath)
-                    sheet_names = xl.sheet_names
+            except Exception as e:
+                pass
 
-                    if len(sheet_names) > 1:
-                        selected_sheet = st.selectbox("시트 선택", sheet_names)
-                        df = pd.read_excel(filepath, sheet_name=selected_sheet)
-                    else:
-                        df = pd.read_excel(filepath)
+        progress_bar.progress(1.0)
+        status_text.text("완료!")
 
-                    st.dataframe(df, use_container_width=True)
+        # 결과 저장 (세션)
+        st.session_state['dart_results'] = results
+        st.session_state['dart_date'] = date_str
 
-                    # 통계
-                    st.markdown("**📊 요약**")
-                    col1, col2 = st.columns(2)
-                    with col1:
-                        st.metric("총 공시 수", len(df))
-                    with col2:
-                        if 'company' in df.columns:
-                            st.metric("기업 수", df['company'].nunique())
+        st.success(f"✅ {len(results)}개 기업 데이터 수집 완료")
 
-                except Exception as e:
-                    st.error(f"파일 읽기 실패: {e}")
+    # 결과 표시
+    if 'dart_results' in st.session_state and st.session_state['dart_results']:
+        results = st.session_state['dart_results']
+
+        st.markdown("---")
+        st.subheader(f"📊 수집 결과 ({len(results)}개 기업)")
+
+        # 기업 목록
+        corp_names = [r['corp_name'] for r in results]
+        selected_corp = st.selectbox("기업 선택", ["전체 보기"] + corp_names)
+
+        if selected_corp == "전체 보기":
+            # 요약 테이블
+            summary_data = []
+            for r in results:
+                summary_data.append({
+                    '시간': r['time'],
+                    '종목코드': r['stock_code'],
+                    '기업명': r['corp_name'],
+                    '공시제목': r['title'][:40] + "..." if len(r['title']) > 40 else r['title']
+                })
+
+            st.dataframe(pd.DataFrame(summary_data), use_container_width=True)
+
         else:
-            st.info("저장된 잠정실적 파일이 없습니다.")
-    else:
-        st.info("output 폴더가 없습니다.")
+            # 개별 기업 상세
+            for r in results:
+                if r['corp_name'] == selected_corp:
+                    st.markdown(f"### {r['corp_name']} ({r['stock_code']})")
+                    st.caption(f"공시: {r['title']}")
+                    st.dataframe(r['table'], use_container_width=True)
+                    break
+
+        # 엑셀 다운로드
+        st.markdown("---")
+
+        # 엑셀 파일 생성
+        output = BytesIO()
+        with pd.ExcelWriter(output, engine='openpyxl') as writer:
+            # 요약 시트
+            summary_df = pd.DataFrame([{
+                '시간': r['time'],
+                '종목코드': r['stock_code'],
+                '기업명': r['corp_name'],
+                '공시제목': r['title']
+            } for r in results])
+            summary_df.to_excel(writer, sheet_name='요약', index=False)
+
+            # 각 기업별 시트
+            for r in results[:20]:  # 최대 20개 시트
+                sheet_name = r['corp_name'][:31].replace('/', '_')
+                r['table'].to_excel(writer, sheet_name=sheet_name, index=False)
+
+        output.seek(0)
+
+        st.download_button(
+            label="📥 엑셀 다운로드",
+            data=output,
+            file_name=f"prelim_earnings_{st.session_state.get('dart_date', date_str)}.xlsx",
+            mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        )
+
+    st.markdown("---")
+
+    # CLI 안내 (모니터링 모드)
+    st.subheader("💻 실시간 모니터링 (CLI)")
+    st.code("""
+# 실시간 모니터링 모드 (5분 간격)
+python scripts/2_DART_Prelim_Earnings.py --monitor --interval=5
+
+# 텔레그램 알림 포함
+python scripts/2_DART_Prelim_Earnings.py --monitor --telegram
+    """, language="bash")
 
 
 if __name__ == "__main__":

@@ -4,6 +4,7 @@
 """
 
 import streamlit as st
+import pandas as pd
 import os
 import sys
 from datetime import datetime
@@ -14,9 +15,77 @@ sys.path.insert(0, PROJECT_DIR)
 
 st.set_page_config(page_title="컨콜 요약", page_icon="🎙️", layout="wide")
 
-# 환경변수 로드
-from dotenv import load_dotenv
-load_dotenv(os.path.join(PROJECT_DIR, '.env'))
+
+def get_secret(key, default=None):
+    """Streamlit secrets 또는 환경변수에서 값 가져오기"""
+    try:
+        if hasattr(st, 'secrets') and key in st.secrets:
+            return st.secrets[key]
+    except:
+        pass
+    return os.getenv(key, default)
+
+
+def summarize_with_openai(transcript: str, model: str = "gpt-4o") -> str:
+    """OpenAI API로 컨콜 요약"""
+    api_key = get_secret('OPENAI_API') or get_secret('OPENAI_API_KEY')
+
+    if not api_key:
+        raise ValueError("OpenAI API 키가 설정되지 않았습니다.")
+
+    from openai import OpenAI
+    client = OpenAI(api_key=api_key)
+
+    prompt = f"""당신은 증권사 리서치 애널리스트입니다. 아래 실적발표 컨퍼런스콜 원문을 분석하여 정해진 양식에 맞게 요약해주세요.
+
+## 출력 양식
+
+# 연간 영업 실적
+[매출] 금액 (YoY 변화율)
+[EBITDA] 또는 [영업이익] 금액
+
+# 분기 영업 실적
+[매출] 금액 (QoQ, YoY)
+[영업이익] 금액
+[당기순이익] 금액
+
+# 매출 포트폴리오
+주요 제품/서비스별 매출 비중
+
+# 지역/부문별 매출 구성
+[지역별] 비중
+[부문별] 비중
+
+# 주요 비용구조
+비용 항목별 금액 및 증감
+
+# 향후 계획/파이프라인
+신제품, 전략 방향 등
+
+# 주주환원 정책
+배당, 자사주 매입 등
+
+* Comment
+핵심 시사점 2-3개
+
+Q&A
+주요 질의응답 정리
+
+## 컨퍼런스콜 원문:
+{transcript[:15000]}
+"""
+
+    response = client.chat.completions.create(
+        model=model,
+        messages=[
+            {"role": "system", "content": "당신은 증권사 리서치 애널리스트입니다."},
+            {"role": "user", "content": prompt}
+        ],
+        temperature=0.3,
+        max_tokens=4000
+    )
+
+    return response.choices[0].message.content
 
 
 def main():
@@ -57,7 +126,8 @@ def main():
                     doc = Document(io.BytesIO(uploaded_file.read()))
                     transcript = '\n'.join([p.text for p in doc.paragraphs if p.text.strip()])
                 except ImportError:
-                    st.error("python-docx 패키지가 필요합니다: pip install python-docx")
+                    st.error("python-docx 패키지가 필요합니다.")
+                    return
 
             if transcript:
                 st.success(f"✅ 파일 로드 완료: {len(transcript):,}자")
@@ -73,7 +143,7 @@ def main():
         model = st.selectbox("GPT 모델", ["gpt-4o", "gpt-4o-mini", "gpt-4-turbo"])
 
     with col2:
-        send_telegram = st.checkbox("텔레그램 발송", value=False)
+        company_name = st.text_input("회사명 (선택)", placeholder="예: 삼성전자")
 
     # 요약 실행
     if st.button("🚀 요약 생성", type="primary", use_container_width=True):
@@ -83,35 +153,23 @@ def main():
 
         with st.spinner("GPT 요약 생성 중..."):
             try:
-                scripts_dir = os.path.join(PROJECT_DIR, 'scripts')
-                sys.path.insert(0, scripts_dir)
+                summary = summarize_with_openai(transcript, model=model)
 
-                from _4_Earnings_Call_Summarizer import summarize_with_gpt, save_to_txt
-
-                summary, company, quarter = summarize_with_gpt(transcript, model=model)
-
-                st.success(f"✅ 요약 완료: {company} {quarter}")
+                st.success("✅ 요약 완료!")
 
                 # 결과 표시
                 st.markdown("### 📄 요약 결과")
                 st.markdown(summary)
 
                 # 다운로드 버튼
+                filename = f"{company_name or '컨콜'}_{datetime.now().strftime('%Y%m%d')}_요약.txt"
                 st.download_button(
                     label="📥 요약 다운로드 (.txt)",
                     data=summary,
-                    file_name=f"{company}_{quarter}_컨콜요약.txt",
+                    file_name=filename,
                     mime="text/plain"
                 )
 
-                # 저장
-                output_dir = os.path.join(PROJECT_DIR, 'output', 'earnings_call_summaries')
-                os.makedirs(output_dir, exist_ok=True)
-                filepath = save_to_txt(summary, company, quarter, output_dir)
-                st.info(f"저장됨: {filepath}")
-
-            except ImportError as e:
-                st.error(f"모듈 로드 실패: {e}")
             except Exception as e:
                 st.error(f"요약 실패: {e}")
 
@@ -151,9 +209,6 @@ python scripts/4_Earnings_Call_Summarizer.py --file="원문.docx"
 
 # 텔레그램 발송 포함
 python scripts/4_Earnings_Call_Summarizer.py --file="원문.txt" --telegram
-
-# 대화형 모드
-python scripts/4_Earnings_Call_Summarizer.py --interactive
     """, language="bash")
 
 

@@ -4,6 +4,7 @@
 """
 
 import streamlit as st
+import pandas as pd
 import os
 import sys
 from datetime import datetime
@@ -13,10 +14,6 @@ PROJECT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, PROJECT_DIR)
 
 st.set_page_config(page_title="뉴스 → 텔레그램", page_icon="📰", layout="wide")
-
-# 환경변수 로드
-from dotenv import load_dotenv
-load_dotenv(os.path.join(PROJECT_DIR, '.env'))
 
 
 def main():
@@ -45,53 +42,17 @@ def main():
 
     st.markdown("---")
 
-    # 실행 버튼
-    if st.button("🚀 뉴스 수집 시작", type="primary", use_container_width=True):
-        keyword_list = [k.strip() for k in keywords.split('\n') if k.strip()]
+    # CLI 명령어 안내
+    st.subheader("💻 CLI 실행 방법")
+    keyword_list = [k.strip() for k in keywords.split('\n') if k.strip()]
+    st.code(f"""
+# 뉴스 수집 실행
+python scripts/1_News_to_Telegram.py
 
-        if not keyword_list:
-            st.error("키워드를 입력해주세요.")
-            return
+# 키워드: {', '.join(keyword_list[:3])}...
+    """, language="bash")
 
-        st.info(f"수집 시작: {len(keyword_list)}개 키워드")
-
-        progress_bar = st.progress(0)
-        status_text = st.empty()
-
-        try:
-            # 스크립트 임포트
-            from scripts import _1_News_to_Telegram as news_module
-
-            all_news = []
-
-            for i, keyword in enumerate(keyword_list):
-                status_text.text(f"검색 중: {keyword}")
-                progress_bar.progress((i + 1) / len(keyword_list))
-
-                try:
-                    news_items = news_module.search_naver_news(keyword, max_news)
-                    all_news.extend(news_items)
-                    st.success(f"✅ '{keyword}': {len(news_items)}건")
-                except Exception as e:
-                    st.warning(f"⚠️ '{keyword}' 검색 실패: {e}")
-
-            progress_bar.progress(1.0)
-            status_text.text("완료!")
-
-            # 결과 표시
-            if all_news:
-                st.markdown("### 📋 수집 결과")
-                st.dataframe(all_news, use_container_width=True)
-
-                # 텔레그램 발송
-                if send_telegram:
-                    st.info("텔레그램 발송 중...")
-                    # news_module.send_to_telegram(...)
-                    st.success("✅ 텔레그램 발송 완료")
-
-        except ImportError as e:
-            st.error(f"모듈 로드 실패: {e}")
-            st.info("스크립트 파일을 확인해주세요.")
+    st.info("💡 뉴스 수집은 CLI에서 실행해주세요. 웹 대시보드에서는 결과 조회만 지원합니다.")
 
     st.markdown("---")
 
@@ -113,8 +74,16 @@ def main():
 
     if news_files:
         news_files.sort(key=lambda x: x['modified'], reverse=True)
-        for f in news_files[:5]:
-            st.text(f"📄 {f['name']} ({f['modified'].strftime('%Y-%m-%d %H:%M')})")
+
+        selected = st.selectbox("파일 선택", [f['name'] for f in news_files[:10]])
+
+        if selected:
+            filepath = os.path.join(output_dir, selected)
+            try:
+                df = pd.read_excel(filepath)
+                st.dataframe(df, use_container_width=True)
+            except Exception as e:
+                st.error(f"파일 읽기 실패: {e}")
     else:
         st.info("저장된 뉴스 파일이 없습니다.")
 

@@ -25,12 +25,20 @@ st.set_page_config(page_title="뉴스 → 텔레그램", page_icon="📰", layou
 
 def get_secret(key, default=None):
     """Streamlit secrets 또는 환경변수에서 값 가져오기"""
+    # 1. Streamlit secrets 확인
     try:
-        if hasattr(st, 'secrets') and key in st.secrets:
-            return st.secrets[key]
-    except:
+        value = st.secrets.get(key)
+        if value:
+            return value
+    except Exception:
         pass
-    return os.getenv(key, default)
+
+    # 2. 환경변수 확인
+    value = os.environ.get(key)
+    if value:
+        return value
+
+    return default
 
 
 # =============================================================================

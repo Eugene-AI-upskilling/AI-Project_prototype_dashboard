@@ -19,10 +19,10 @@ st.set_page_config(page_title="해외 실적", page_icon="🌍", layout="wide")
 
 
 # =============================================================================
-# 섹터별 티커 그룹
+# 섹터별 티커 그룹 (기본값)
 # =============================================================================
 
-TICKER_GROUPS = {
+DEFAULT_TICKER_GROUPS = {
     "빅테크 7": ["AAPL", "MSFT", "GOOG", "AMZN", "NVDA", "TSLA", "META"],
     "반도체 관련주": ["AVGO", "INTC", "LRCX", "QCOM", "MU", "AMD"],
     "AI 관련주": ["SNPS", "CDNS", "ANET", "NOW", "ADI"],
@@ -32,6 +32,13 @@ TICKER_GROUPS = {
     "방산": ["BA", "LMT", "NOC", "RTX"],
     "비만치료제": ["NVO", "LLY", "AMGN", "PFE", "VKTX"],
 }
+
+
+def get_ticker_groups() -> Dict[str, List[str]]:
+    """세션에서 티커 그룹 가져오기 (없으면 기본값 사용)"""
+    if 'ticker_groups' not in st.session_state:
+        st.session_state['ticker_groups'] = DEFAULT_TICKER_GROUPS.copy()
+    return st.session_state['ticker_groups']
 
 
 # =============================================================================
@@ -125,11 +132,14 @@ def main():
     with tab1:
         st.subheader("📊 실적 데이터 수집")
 
+        # 티커 그룹 가져오기
+        ticker_groups = get_ticker_groups()
+
         # 섹터 선택
         selected_sectors = st.multiselect(
             "수집할 섹터 선택",
-            list(TICKER_GROUPS.keys()),
-            default=["빅테크 7", "반도체 관련주"]
+            list(ticker_groups.keys()),
+            default=[s for s in ["빅테크 7", "반도체 관련주"] if s in ticker_groups]
         )
 
         if not selected_sectors:
@@ -137,7 +147,7 @@ def main():
             return
 
         # 선택된 티커 수
-        total_tickers = sum(len(TICKER_GROUPS[s]) for s in selected_sectors)
+        total_tickers = sum(len(ticker_groups[s]) for s in selected_sectors)
         st.info(f"선택된 섹터: {len(selected_sectors)}개, 총 {total_tickers}개 종목")
 
         # 수집 버튼
@@ -150,7 +160,7 @@ def main():
             processed = 0
 
             for sector in selected_sectors:
-                tickers = TICKER_GROUPS[sector]
+                tickers = ticker_groups[sector]
 
                 for ticker in tickers:
                     status_text.text(f"수집 중: {ticker} ({sector})")
@@ -261,14 +271,87 @@ def main():
             st.info("먼저 '데이터 수집' 탭에서 데이터를 수집해주세요.")
 
     with tab3:
-        st.subheader("⚙️ 섹터별 종목 목록")
+        st.subheader("⚙️ 섹터별 종목 설정")
+        st.caption("티커를 쉼표(,)로 구분하여 입력하세요. 변경 후 '저장' 버튼을 눌러주세요.")
 
-        for sector, tickers in TICKER_GROUPS.items():
-            with st.expander(f"**{sector}** ({len(tickers)}종목)"):
-                st.write(", ".join(tickers))
+        ticker_groups = get_ticker_groups()
+
+        # 섹터별 편집
+        updated_groups = {}
+        sectors_to_delete = []
+
+        for sector in list(ticker_groups.keys()):
+            tickers = ticker_groups[sector]
+
+            with st.expander(f"**{sector}** ({len(tickers)}종목)", expanded=False):
+                col1, col2 = st.columns([5, 1])
+
+                with col1:
+                    ticker_input = st.text_area(
+                        f"{sector} 티커 목록",
+                        value=", ".join(tickers),
+                        height=80,
+                        key=f"ticker_{sector}",
+                        label_visibility="collapsed"
+                    )
+                    # 파싱
+                    new_tickers = [t.strip().upper() for t in ticker_input.split(",") if t.strip()]
+                    updated_groups[sector] = new_tickers
+
+                with col2:
+                    if st.button("🗑️", key=f"del_{sector}", help=f"{sector} 섹터 삭제"):
+                        sectors_to_delete.append(sector)
+
+        # 삭제 처리
+        for sector in sectors_to_delete:
+            if sector in updated_groups:
+                del updated_groups[sector]
 
         st.markdown("---")
-        st.info("💡 종목 추가/수정은 소스 코드에서 TICKER_GROUPS를 편집해주세요.")
+
+        # 새 섹터 추가
+        st.markdown("### ➕ 새 섹터 추가")
+        col1, col2 = st.columns(2)
+
+        with col1:
+            new_sector_name = st.text_input("섹터명", placeholder="예: 전기차")
+
+        with col2:
+            new_sector_tickers = st.text_input("티커 (쉼표 구분)", placeholder="예: TSLA, RIVN, LCID")
+
+        if st.button("➕ 섹터 추가", use_container_width=True):
+            if new_sector_name and new_sector_tickers:
+                new_tickers = [t.strip().upper() for t in new_sector_tickers.split(",") if t.strip()]
+                if new_tickers:
+                    updated_groups[new_sector_name] = new_tickers
+                    st.session_state['ticker_groups'] = updated_groups
+                    st.success(f"✅ '{new_sector_name}' 섹터 추가됨 ({len(new_tickers)}종목)")
+                    st.rerun()
+            else:
+                st.warning("섹터명과 티커를 모두 입력해주세요.")
+
+        st.markdown("---")
+
+        # 저장/초기화 버튼
+        col1, col2 = st.columns(2)
+
+        with col1:
+            if st.button("💾 변경사항 저장", type="primary", use_container_width=True):
+                st.session_state['ticker_groups'] = updated_groups
+                total = sum(len(v) for v in updated_groups.values())
+                st.success(f"✅ 저장 완료! ({len(updated_groups)}개 섹터, {total}개 종목)")
+
+        with col2:
+            if st.button("🔄 기본값으로 초기화", use_container_width=True):
+                st.session_state['ticker_groups'] = DEFAULT_TICKER_GROUPS.copy()
+                st.success("✅ 기본값으로 초기화되었습니다.")
+                st.rerun()
+
+        # 현재 상태 요약
+        st.markdown("---")
+        total_sectors = len(updated_groups)
+        total_tickers = sum(len(v) for v in updated_groups.values())
+        st.info(f"📊 현재 설정: **{total_sectors}개 섹터**, **{total_tickers}개 종목**")
 
 
 if __name__ == "__main__":

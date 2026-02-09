@@ -1,0 +1,28 @@
+# Eugene AI Project - Requirements
+# =================================
+
+# 데이터 처리
+pandas>=2.0.0
+numpy>=1.24.0
+openpyxl>=3.1.0
+
+# 금융 데이터
+yfinance>=0.2.30
+
+# 웹 요청
+requests>=2.31.0
+urllib3>=2.0.0
+beautifulsoup4>=4.12.0
+lxml>=4.9.0
+
+# AI/LLM
+openai>=1.0.0
+
+# 문서 처리
+python-docx>=0.8.11
+
+# 대시보드
+streamlit>=1.28.0
+
+# 환경변수
+python-dotenv>=1.0.0

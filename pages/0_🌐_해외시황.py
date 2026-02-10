@@ -376,62 +376,17 @@ def main():
 
         st.markdown("---")
 
-        # 탭으로 구분
-        tab1, tab2, tab3, tab4 = st.tabs(["📊 주요 지수", "📈 섹터 성과", "💹 주요 지표", "📝 시황 요약"])
+        # 탭으로 구분 (시황 요약 먼저)
+        tab1, tab2, tab3, tab4 = st.tabs(["📝 시황 요약", "📊 주요 지수", "📈 섹터 성과", "💹 주요 지표"])
+
+        # 색상 표시를 위한 스타일링
+        def color_pct(val):
+            if pd.isna(val):
+                return ''
+            color = 'red' if val < 0 else 'green' if val > 0 else 'black'
+            return f'color: {color}'
 
         with tab1:
-            st.subheader("미국 주요 지수")
-
-            # 테이블 표시
-            df_display = df_indices[['name', 'ticker', 'last', 'pct']].copy()
-            df_display.columns = ['지수명', '티커', '종가', '등락률(%)']
-
-            # 색상 표시를 위한 스타일링
-            def color_pct(val):
-                if pd.isna(val):
-                    return ''
-                color = 'red' if val < 0 else 'green' if val > 0 else 'black'
-                return f'color: {color}'
-
-            st.dataframe(
-                df_display.style.applymap(color_pct, subset=['등락률(%)']),
-                use_container_width=True
-            )
-
-            # 차트
-            df_chart = df_indices[df_indices['pct'].notna()].copy()
-            if not df_chart.empty:
-                st.bar_chart(df_chart.set_index('name')['pct'])
-
-        with tab2:
-            st.subheader("S&P500 섹터 성과")
-
-            df_display = df_sectors[['sector', 'etf', 'pct']].copy()
-            df_display.columns = ['섹터', 'ETF', '등락률(%)']
-
-            st.dataframe(
-                df_display.style.applymap(color_pct, subset=['등락률(%)']),
-                use_container_width=True
-            )
-
-            # 차트 (정렬)
-            df_chart = df_sectors[df_sectors['pct'].notna()].copy()
-            if not df_chart.empty:
-                df_chart = df_chart.sort_values('pct', ascending=True)
-                st.bar_chart(df_chart.set_index('sector')['pct'])
-
-        with tab3:
-            st.subheader("주요 지표")
-
-            df_display = df_key[['name', 'ticker', 'last', 'pct']].copy()
-            df_display.columns = ['지표명', '티커', '현재가', '등락률(%)']
-
-            st.dataframe(
-                df_display.style.applymap(color_pct, subset=['등락률(%)']),
-                use_container_width=True
-            )
-
-        with tab4:
             st.subheader("📝 시황 요약")
 
             col1, col2 = st.columns(2)
@@ -450,6 +405,50 @@ def main():
 
                 if 'llm_summary' in st.session_state:
                     st.markdown(st.session_state['llm_summary'])
+
+        with tab2:
+            st.subheader("미국 주요 지수")
+
+            df_display = df_indices[['name', 'ticker', 'last', 'pct']].copy()
+            df_display.columns = ['지수명', '티커', '종가', '등락률(%)']
+
+            st.dataframe(
+                df_display.style.applymap(color_pct, subset=['등락률(%)']),
+                use_container_width=True
+            )
+
+            # 차트
+            df_chart = df_indices[df_indices['pct'].notna()].copy()
+            if not df_chart.empty:
+                st.bar_chart(df_chart.set_index('name')['pct'])
+
+        with tab3:
+            st.subheader("S&P500 섹터 성과")
+
+            df_display = df_sectors[['sector', 'etf', 'pct']].copy()
+            df_display.columns = ['섹터', 'ETF', '등락률(%)']
+
+            st.dataframe(
+                df_display.style.applymap(color_pct, subset=['등락률(%)']),
+                use_container_width=True
+            )
+
+            # 차트 (정렬)
+            df_chart = df_sectors[df_sectors['pct'].notna()].copy()
+            if not df_chart.empty:
+                df_chart = df_chart.sort_values('pct', ascending=True)
+                st.bar_chart(df_chart.set_index('sector')['pct'])
+
+        with tab4:
+            st.subheader("주요 지표")
+
+            df_display = df_key[['name', 'ticker', 'last', 'pct']].copy()
+            df_display.columns = ['지표명', '티커', '현재가', '등락률(%)']
+
+            st.dataframe(
+                df_display.style.applymap(color_pct, subset=['등락률(%)']),
+                use_container_width=True
+            )
 
         # 엑셀 다운로드
         st.markdown("---")

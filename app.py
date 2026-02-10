@@ -75,12 +75,14 @@ def main():
         st.markdown("### 메뉴")
         st.markdown("""
         - 🏠 **홈** (현재 페이지)
+        - 🌐 해외시황 요약
         - 📰 뉴스 → 텔레그램
         - 📈 DART 잠정실적
         - 🌍 해외 실적
         - 🎙️ 컨콜 요약
         - 📱 소셜 트래커
         - 🌐 웹 크롤링
+        - 💬 피드백
         """)
         st.markdown("---")
         st.caption(f"v1.0 | {datetime.now().strftime('%Y-%m-%d')}")
@@ -92,63 +94,81 @@ def main():
     st.markdown("---")
 
     # 기능 개요
-    col1, col2, col3 = st.columns(3)
+    col1, col2, col3, col4 = st.columns(4)
 
     with col1:
-        st.markdown("### 📰 뉴스 모니터링")
+        st.markdown("### 🌐 해외시황")
         st.markdown("""
-        - 네이버 뉴스 키워드 검색
-        - GPT 요약 생성
-        - 텔레그램 자동 발송
+        - 미국 주요 지수 수집
+        - S&P500 섹터 성과
+        - GPT 시황 요약
         """)
-        status1 = st.success("✅ 운영중")
+        st.success("✅ 운영중")
 
     with col2:
+        st.markdown("### 📰 뉴스 모니터링")
+        st.markdown("""
+        - 네이버 뉴스 검색
+        - GPT 요약 생성
+        - 텔레그램 발송
+        """)
+        st.success("✅ 운영중")
+
+    with col3:
         st.markdown("### 📈 DART 잠정실적")
         st.markdown("""
-        - KIND 잠정실적 공시 수집
+        - KIND 잠정실적 공시
         - 실적 테이블 정규화
         - 텔레그램 알림
         """)
-        status2 = st.success("✅ 운영중")
+        st.success("✅ 운영중")
 
-    with col3:
+    with col4:
         st.markdown("### 🌍 해외 기업 실적")
         st.markdown("""
-        - 98개 글로벌 종목 추적
+        - 글로벌 종목 추적
         - 실적 발표일 모니터링
         - 섹터별 분류
         """)
-        status3 = st.success("✅ 운영중")
+        st.success("✅ 운영중")
 
-    col4, col5, col6 = st.columns(3)
+    col5, col6, col7, col8 = st.columns(4)
 
-    with col4:
+    with col5:
         st.markdown("### 🎙️ 컨콜 요약")
         st.markdown("""
-        - 컨퍼런스콜 원문 입력
+        - 컨퍼런스콜 원문
         - GPT 자동 요약
         - 표준 양식 출력
         """)
-        status4 = st.success("✅ 운영중")
-
-    with col5:
-        st.markdown("### 📱 소셜 트래커")
-        st.markdown("""
-        - Instagram/TikTok 모니터링
-        - 키워드 기반 추적
-        - 트렌드 분석
-        """)
-        status5 = st.warning("🚧 준비중")
+        st.success("✅ 운영중")
 
     with col6:
-        st.markdown("### 🌐 웹 크롤링")
+        st.markdown("### 📱 소셜 트래커")
         st.markdown("""
-        - TRASS 수출입 통계
+        - SNS 모니터링
+        - 키워드 추적
+        - 트렌드 분석
+        """)
+        st.warning("🚧 준비중")
+
+    with col7:
+        st.markdown("### 🔗 웹 크롤링")
+        st.markdown("""
+        - TRASS 수출입
         - KITA 무역 뉴스
         - 데이터 시각화
         """)
-        status6 = st.warning("🚧 기획중")
+        st.warning("🚧 기획중")
+
+    with col8:
+        st.markdown("### 💬 피드백")
+        st.markdown("""
+        - 기능 요청
+        - 버그 신고
+        - 개선 제안
+        """)
+        st.success("✅ 운영중")
 
     st.markdown("---")
 
@@ -189,17 +209,21 @@ def main():
     # 빠른 실행
     st.markdown("### ⚡ 빠른 실행")
 
-    col_run1, col_run2, col_run3 = st.columns(3)
+    col_run1, col_run2, col_run3, col_run4 = st.columns(4)
 
     with col_run1:
-        if st.button("📰 뉴스 수집 실행", use_container_width=True):
-            st.info("👉 '뉴스 → 텔레그램' 페이지에서 실행하세요")
+        if st.button("🌐 해외시황 수집", use_container_width=True):
+            st.info("👉 '해외시황' 페이지에서 실행하세요")
 
     with col_run2:
+        if st.button("📰 뉴스 수집", use_container_width=True):
+            st.info("👉 '뉴스 → 텔레그램' 페이지에서 실행하세요")
+
+    with col_run3:
         if st.button("📈 잠정실적 수집", use_container_width=True):
             st.info("👉 'DART 잠정실적' 페이지에서 실행하세요")
 
-    with col_run3:
+    with col_run4:
         if st.button("🌍 해외실적 수집", use_container_width=True):
             st.info("👉 '해외 실적' 페이지에서 실행하세요")
 

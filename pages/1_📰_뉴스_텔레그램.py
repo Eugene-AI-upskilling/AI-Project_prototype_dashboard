@@ -772,10 +772,23 @@ def main():
 
                 df = pd.DataFrame(df_data)
 
-                # 화면 표시용 (간략)
-                df_display = df[['소스', '기사제목', '언어']].copy()
+                # 화면 표시용 (엑셀과 동일한 컬럼)
+                df_display = df.copy()
                 df_display['언어'] = df_display['언어'].apply(lambda x: '🇰🇷' if x == '한국어' else '🇺🇸')
-                st.dataframe(df_display, use_container_width=True)
+
+                # URL 클릭 가능하게 표시
+                st.dataframe(
+                    df_display,
+                    use_container_width=True,
+                    column_config={
+                        "소스": st.column_config.TextColumn("소스", width="small"),
+                        "기사제목": st.column_config.TextColumn("기사제목", width="large"),
+                        "언어": st.column_config.TextColumn("언어", width="small"),
+                        "기사원문URL": st.column_config.LinkColumn("기사원문URL", width="medium"),
+                        "기사요약": st.column_config.TextColumn("기사요약", width="large"),
+                    },
+                    hide_index=True
+                )
 
                 # 엑셀 다운로드 (전체 컬럼)
                 output = BytesIO()

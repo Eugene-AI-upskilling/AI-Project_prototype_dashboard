@@ -7,7 +7,8 @@ import streamlit as st
 import pandas as pd
 import os
 import time
-from datetime import datetime
+import urllib.parse
+from datetime import datetime, timedelta
 from typing import List, Dict
 from io import BytesIO
 
@@ -21,54 +22,61 @@ st.set_page_config(page_title="뉴스 → 텔레그램", page_icon="📰", layou
 
 
 # =============================================================================
-# 뉴스 소스 정의 (작동 확인된 사이트만)
+# 뉴스 소스 정의
 # =============================================================================
 
 NEWS_SOURCES = {
-    # 국내 바이오
     "더바이오": {
         "url": "https://www.thebionews.net/",
+        "search_url": "https://www.thebionews.net/news/articleList.html?sc_word={keyword}",
         "description": "국내 바이오 전문 뉴스",
         "language": "ko",
-        "category": "국내 바이오"
+        "category": "국내 바이오",
+        "search_type": "url"
     },
     "히트뉴스": {
         "url": "https://www.hitnews.co.kr/",
+        "search_url": "https://www.hitnews.co.kr/news/articleList.html?sc_area=A&view_type=sm&sc_word={keyword}",
         "description": "국내 헬스케어/제약 뉴스",
         "language": "ko",
-        "category": "국내 바이오"
+        "category": "국내 바이오",
+        "search_type": "url"
     },
     "한경바이오인사이트": {
         "url": "https://www.hankyung.com/bioinsight",
         "description": "한국경제 바이오 섹션",
         "language": "ko",
-        "category": "국내 바이오"
+        "category": "국내 바이오",
+        "search_type": "main"
     },
-    # 외신 바이오
     "FierceBiotech": {
         "url": "https://www.fiercebiotech.com/",
         "description": "바이오텍 전문 외신",
         "language": "en",
-        "category": "외신 바이오"
+        "category": "외신 바이오",
+        "search_type": "main"
     },
     "FiercePharma": {
         "url": "https://www.fiercepharma.com/",
         "description": "제약 전문 외신",
         "language": "en",
-        "category": "외신 바이오"
+        "category": "외신 바이오",
+        "search_type": "main"
     },
-    # 외신 IT
     "TrendForce": {
-        "url": "https://www.trendforce.com/",
+        "url": "https://www.trendforce.com/news/",
         "description": "반도체/디스플레이 시장 분석",
         "language": "en",
-        "category": "외신 IT"
+        "category": "외신 IT",
+        "search_type": "main"
     },
     "The Register": {
         "url": "https://www.theregister.com/",
+        "search_url": "https://search.theregister.com/?q={keyword}",
         "description": "IT/엔터프라이즈 뉴스",
         "language": "en",
-        "category": "외신 IT"
+        "category": "외신 IT",
+        "search_type": "url"
     },
 }
 
@@ -158,67 +166,101 @@ def search_naver_news(keyword: str, display: int = 10) -> List[Dict]:
 
 
 # =============================================================================
-# 웹 스크래핑
+# 웹 스크래핑 - 검색 URL 사용
 # =============================================================================
 
 def scrape_thebionews(keywords: List[str], max_items: int = 20) -> List[Dict]:
-    """더바이오 스크래핑"""
+    """더바이오 스크래핑 (검색 URL 사용)"""
     results = []
-    try:
-        r = requests.get('https://www.thebionews.net/', headers=HEADERS, timeout=10)
-        soup = BeautifulSoup(r.text, 'html.parser')
 
-        for article in soup.select('div.td-module-container, article, .entry-title')[:max_items * 2]:
-            a = article.find('a')
-            if a:
-                title = a.get_text(strip=True)
-                link = a.get('href', '')
-                if title and len(title) > 10 and keyword_match(title, keywords):
-                    if not link.startswith('http'):
-                        link = 'https://www.thebionews.net' + link
-                    results.append({
-                        'source': '더바이오',
-                        'title': title,
-                        'link': link,
-                        'language': 'ko'
-                    })
-                    if len(results) >= max_items:
-                        break
+    try:
+        for keyword in keywords if keywords else ['']:
+            if keyword:
+                # 검색 URL 사용
+                encoded_kw = urllib.parse.quote(keyword)
+                url = f"https://www.thebionews.net/news/articleList.html?sc_word={encoded_kw}"
+            else:
+                url = "https://www.thebionews.net/"
+
+            r = requests.get(url, headers=HEADERS, timeout=10)
+            soup = BeautifulSoup(r.text, 'html.parser')
+
+            # 검색 결과 페이지 파싱
+            for article in soup.select('div.list-block, ul.type01 li, article, .table-row')[:max_items]:
+                a = article.find('a')
+                if a:
+                    title = a.get_text(strip=True)
+                    link = a.get('href', '')
+                    if title and len(title) > 10:
+                        if not link.startswith('http'):
+                            link = 'https://www.thebionews.net' + link
+                        if not any(r['link'] == link for r in results):
+                            results.append({
+                                'source': '더바이오',
+                                'keyword': keyword,
+                                'title': title,
+                                'link': link,
+                                'language': 'ko'
+                            })
+                            if len(results) >= max_items:
+                                break
+
+            if len(results) >= max_items:
+                break
+            time.sleep(0.3)
+
     except Exception as e:
         st.warning(f"더바이오 스크래핑 실패: {e}")
-    return results
+
+    return results[:max_items]
 
 
 def scrape_hitnews(keywords: List[str], max_items: int = 20) -> List[Dict]:
-    """히트뉴스 스크래핑"""
+    """히트뉴스 스크래핑 (검색 URL 사용)"""
     results = []
-    try:
-        r = requests.get('https://www.hitnews.co.kr/', headers=HEADERS, timeout=10)
-        soup = BeautifulSoup(r.text, 'html.parser')
 
-        for a in soup.select('a'):
-            href = a.get('href', '')
-            if '/news/articleView' in href:
-                title = a.get_text(strip=True)
-                if title and len(title) > 15 and keyword_match(title, keywords):
-                    if not href.startswith('http'):
-                        href = 'https://www.hitnews.co.kr' + href
-                    if not any(r['link'] == href for r in results):
-                        results.append({
-                            'source': '히트뉴스',
-                            'title': title,
-                            'link': href,
-                            'language': 'ko'
-                        })
-                        if len(results) >= max_items:
-                            break
+    try:
+        for keyword in keywords if keywords else ['']:
+            if keyword:
+                # 검색 URL 사용
+                encoded_kw = urllib.parse.quote(keyword)
+                url = f"https://www.hitnews.co.kr/news/articleList.html?sc_area=A&view_type=sm&sc_word={encoded_kw}"
+            else:
+                url = "https://www.hitnews.co.kr/"
+
+            r = requests.get(url, headers=HEADERS, timeout=10)
+            soup = BeautifulSoup(r.text, 'html.parser')
+
+            for a in soup.select('a'):
+                href = a.get('href', '')
+                if '/news/articleView' in href:
+                    title = a.get_text(strip=True)
+                    if title and len(title) > 15:
+                        if not href.startswith('http'):
+                            href = 'https://www.hitnews.co.kr' + href
+                        if not any(r['link'] == href for r in results):
+                            results.append({
+                                'source': '히트뉴스',
+                                'keyword': keyword,
+                                'title': title,
+                                'link': href,
+                                'language': 'ko'
+                            })
+                            if len(results) >= max_items:
+                                break
+
+            if len(results) >= max_items:
+                break
+            time.sleep(0.3)
+
     except Exception as e:
         st.warning(f"히트뉴스 스크래핑 실패: {e}")
-    return results
+
+    return results[:max_items]
 
 
 def scrape_hankyung_bio(keywords: List[str], max_items: int = 20) -> List[Dict]:
-    """한경바이오인사이트 스크래핑"""
+    """한경바이오인사이트 스크래핑 (메인 페이지)"""
     results = []
     try:
         r = requests.get('https://www.hankyung.com/bioinsight', headers=HEADERS, timeout=10)
@@ -246,7 +288,7 @@ def scrape_hankyung_bio(keywords: List[str], max_items: int = 20) -> List[Dict]:
 
 
 def scrape_fiercebiotech(keywords: List[str], max_items: int = 20) -> List[Dict]:
-    """FierceBiotech 스크래핑"""
+    """FierceBiotech 스크래핑 (메인 페이지)"""
     results = []
     try:
         r = requests.get('https://www.fiercebiotech.com/', headers=HEADERS, timeout=10)
@@ -275,7 +317,7 @@ def scrape_fiercebiotech(keywords: List[str], max_items: int = 20) -> List[Dict]
 
 
 def scrape_fiercepharma(keywords: List[str], max_items: int = 20) -> List[Dict]:
-    """FiercePharma 스크래핑"""
+    """FiercePharma 스크래핑 (메인 페이지)"""
     results = []
     try:
         r = requests.get('https://www.fiercepharma.com/', headers=HEADERS, timeout=10)
@@ -304,15 +346,15 @@ def scrape_fiercepharma(keywords: List[str], max_items: int = 20) -> List[Dict]:
 
 
 def scrape_trendforce(keywords: List[str], max_items: int = 20) -> List[Dict]:
-    """TrendForce 스크래핑"""
+    """TrendForce 스크래핑 (뉴스 페이지)"""
     results = []
     try:
-        r = requests.get('https://www.trendforce.com/', headers=HEADERS, timeout=10)
+        r = requests.get('https://www.trendforce.com/news/', headers=HEADERS, timeout=10)
         soup = BeautifulSoup(r.text, 'html.parser')
 
-        for article in soup.select('article, div.post, .news-item'):
+        for article in soup.select('article, div.post, .news-item, div.list-item'):
             a = article.find('a')
-            title_elem = article.find(['h2', 'h3', 'h4'])
+            title_elem = article.find(['h2', 'h3', 'h4', 'a'])
             if a and title_elem:
                 title = title_elem.get_text(strip=True)
                 href = a.get('href', '')
@@ -334,33 +376,50 @@ def scrape_trendforce(keywords: List[str], max_items: int = 20) -> List[Dict]:
 
 
 def scrape_theregister(keywords: List[str], max_items: int = 20) -> List[Dict]:
-    """The Register 스크래핑"""
+    """The Register 스크래핑 (검색 URL 사용)"""
     results = []
-    try:
-        r = requests.get('https://www.theregister.com/', headers=HEADERS, timeout=10)
-        soup = BeautifulSoup(r.text, 'html.parser')
 
-        for article in soup.select('article'):
-            a = article.find('a')
-            title_elem = article.find(['h2', 'h3', 'h4'])
-            if a and title_elem:
-                title = title_elem.get_text(strip=True)
-                href = a.get('href', '')
-                if title and len(title) > 15 and keyword_match(title, keywords):
-                    if not href.startswith('http'):
-                        href = 'https://www.theregister.com' + href
-                    if not any(r['link'] == href for r in results):
-                        results.append({
-                            'source': 'The Register',
-                            'title': title,
-                            'link': href,
-                            'language': 'en'
-                        })
-                        if len(results) >= max_items:
-                            break
+    try:
+        for keyword in keywords if keywords else ['']:
+            if keyword:
+                # 검색 URL 사용
+                encoded_kw = urllib.parse.quote(keyword)
+                url = f"https://search.theregister.com/?q={encoded_kw}"
+            else:
+                url = "https://www.theregister.com/"
+
+            r = requests.get(url, headers=HEADERS, timeout=10)
+            soup = BeautifulSoup(r.text, 'html.parser')
+
+            # 검색 결과 또는 메인 페이지 파싱
+            for article in soup.select('article, div.result, .search-result'):
+                a = article.find('a')
+                title_elem = article.find(['h2', 'h3', 'h4', 'a'])
+                if a and title_elem:
+                    title = title_elem.get_text(strip=True)
+                    href = a.get('href', '')
+                    if title and len(title) > 15:
+                        if not href.startswith('http'):
+                            href = 'https://www.theregister.com' + href
+                        if not any(r['link'] == href for r in results):
+                            results.append({
+                                'source': 'The Register',
+                                'keyword': keyword,
+                                'title': title,
+                                'link': href,
+                                'language': 'en'
+                            })
+                            if len(results) >= max_items:
+                                break
+
+            if len(results) >= max_items:
+                break
+            time.sleep(0.3)
+
     except Exception as e:
         st.warning(f"The Register 스크래핑 실패: {e}")
-    return results
+
+    return results[:max_items]
 
 
 SCRAPER_MAP = {
@@ -507,14 +566,58 @@ def main():
 
         # 키워드 입력
         st.subheader("🔎 키워드 검색")
-        keywords_input = st.text_area(
-            "검색 키워드 (줄바꿈으로 구분)",
-            value="반도체\nAI\n바이오",
-            height=100,
-            help="키워드가 제목에 포함된 뉴스만 수집합니다. 비워두면 전체 수집."
-        )
 
-        keywords = [k.strip() for k in keywords_input.split('\n') if k.strip()]
+        col_kw1, col_kw2 = st.columns([3, 1])
+
+        with col_kw1:
+            keywords_input = st.text_area(
+                "검색 키워드 (줄바꿈으로 구분)",
+                value="SK바이오팜\n삼성바이오\n셀트리온",
+                height=100,
+                help="키워드로 각 사이트에서 직접 검색합니다."
+            )
+
+        with col_kw2:
+            st.markdown("<br>", unsafe_allow_html=True)
+            fetch_all = st.checkbox("전체 수집", value=False, help="키워드 없이 최신 기사 수집")
+
+        if fetch_all:
+            keywords = []
+            st.info("ℹ️ 전체 수집 모드: 각 사이트의 최신 기사를 수집합니다.")
+        else:
+            keywords = [k.strip() for k in keywords_input.split('\n') if k.strip()]
+
+        st.markdown("---")
+
+        # 검색 기간 설정
+        st.subheader("📅 검색 기간")
+        col_date1, col_date2 = st.columns(2)
+
+        with col_date1:
+            period_option = st.selectbox(
+                "기간 선택",
+                ["오늘", "최근 3일", "최근 1주일", "최근 1개월", "직접 입력"],
+                index=2
+            )
+
+        with col_date2:
+            if period_option == "직접 입력":
+                date_range = st.date_input(
+                    "날짜 범위",
+                    value=(datetime.now().date() - timedelta(days=7), datetime.now().date()),
+                    max_value=datetime.now().date()
+                )
+            else:
+                # 기간 계산 (표시용)
+                if period_option == "오늘":
+                    days = 1
+                elif period_option == "최근 3일":
+                    days = 3
+                elif period_option == "최근 1주일":
+                    days = 7
+                else:  # 최근 1개월
+                    days = 30
+                st.info(f"📆 {(datetime.now() - timedelta(days=days)).strftime('%Y-%m-%d')} ~ {datetime.now().strftime('%Y-%m-%d')}")
 
         st.markdown("---")
 
@@ -537,6 +640,10 @@ def main():
                 st.error("소스를 선택해주세요.")
                 return
 
+            if not keywords and not fetch_all:
+                st.warning("키워드를 입력하거나 '전체 수집'을 체크해주세요.")
+                return
+
             all_news = []
             summaries = {}
 
@@ -553,7 +660,7 @@ def main():
 
                 if source_name == "네이버 뉴스":
                     # 네이버는 키워드별 검색
-                    for kw in keywords:
+                    for kw in keywords if keywords else ['뉴스']:
                         news_items = search_naver_news(kw, max_news)
                         if news_items:
                             all_news.extend(news_items)
@@ -563,9 +670,11 @@ def main():
                                 summary = summarize_korean_news(news_items, f"네이버-{kw}")
                                 if summary:
                                     summaries[f"네이버-{kw}"] = summary
+                        else:
+                            st.info(f"ℹ️ 네이버 '{kw}': 검색 결과 없음")
                         time.sleep(0.3)
                 else:
-                    # 웹 스크래핑 (키워드 필터링)
+                    # 웹 스크래핑
                     scraper = SCRAPER_MAP.get(source_name)
                     if scraper:
                         news_items = scraper(keywords, max_news)
@@ -582,6 +691,9 @@ def main():
                                     summary = summarize_korean_news(news_items, source_name)
                                 if summary:
                                     summaries[source_name] = summary
+                        else:
+                            kw_text = f"'{', '.join(keywords)}'" if keywords else "전체"
+                            st.info(f"ℹ️ {source_name}: {kw_text} 검색 결과 없음")
 
                 time.sleep(0.5)
 
@@ -592,13 +704,18 @@ def main():
             st.session_state['news_results'] = all_news
             st.session_state['news_summaries'] = summaries
 
-            st.success(f"✅ 총 {len(all_news)}건 수집 완료")
+            if all_news:
+                st.success(f"✅ 총 {len(all_news)}건 수집 완료")
+            else:
+                st.error(f"❌ 검색 결과가 없습니다.")
+                st.info("💡 다른 키워드를 시도하거나, '전체 수집'으로 최신 기사를 확인해보세요.")
 
             # 텔레그램 발송
             if send_to_telegram and all_news:
                 msg = f"📰 <b>뉴스 수집 결과</b>\n"
                 msg += f"수집 시간: {datetime.now().strftime('%Y-%m-%d %H:%M')}\n"
-                msg += f"키워드: {', '.join(keywords)}\n\n"
+                if keywords:
+                    msg += f"키워드: {', '.join(keywords)}\n\n"
 
                 for source_key, summary in list(summaries.items())[:3]:
                     msg += f"<b>[{source_key}]</b>\n"
@@ -639,27 +756,40 @@ def main():
             if filtered_news:
                 df_data = []
                 for n in filtered_news:
+                    # 해당 소스의 요약 찾기
+                    source_name = n.get('source', '')
+                    keyword = n.get('keyword', '')
+                    summary_key = f"네이버-{keyword}" if source_name == '네이버 뉴스' and keyword else source_name
+                    summary_text = summaries.get(summary_key, '')
+
                     df_data.append({
-                        '소스': n.get('source', ''),
-                        '제목': n.get('title', ''),
-                        '언어': '🇰🇷' if n.get('language') == 'ko' else '🇺🇸',
-                        '링크': n.get('link', '')
+                        '소스': source_name,
+                        '기사제목': n.get('title', ''),
+                        '언어': '한국어' if n.get('language') == 'ko' else '영어',
+                        '기사원문URL': n.get('link', ''),
+                        '기사요약': summary_text[:200] if summary_text else ''
                     })
 
                 df = pd.DataFrame(df_data)
-                st.dataframe(df[['소스', '제목', '언어']], use_container_width=True)
 
-                # 엑셀 다운로드
+                # 화면 표시용 (간략)
+                df_display = df[['소스', '기사제목', '언어']].copy()
+                df_display['언어'] = df_display['언어'].apply(lambda x: '🇰🇷' if x == '한국어' else '🇺🇸')
+                st.dataframe(df_display, use_container_width=True)
+
+                # 엑셀 다운로드 (전체 컬럼)
                 output = BytesIO()
                 df.to_excel(output, index=False, engine='openpyxl')
                 output.seek(0)
 
                 st.download_button(
-                    label="📥 엑셀 다운로드",
+                    label="📥 엑셀 다운로드 (소스/제목/언어/URL/요약)",
                     data=output,
                     file_name=f"news_{datetime.now().strftime('%Y%m%d_%H%M')}.xlsx",
                     mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
                 )
+            else:
+                st.warning("필터링된 결과가 없습니다.")
 
     with tab2:
         st.subheader("⚙️ 뉴스 소스 목록")
@@ -669,13 +799,22 @@ def main():
                 if group_name == "네이버 뉴스":
                     st.markdown("**🇰🇷 네이버 뉴스**")
                     st.caption("네이버 뉴스 API (키워드 검색)")
+                    st.caption("✅ 키워드 직접 검색 지원")
                 else:
                     for source_name in sources:
                         info = NEWS_SOURCES.get(source_name, {})
                         lang = "🇰🇷" if info.get('language') == 'ko' else "🇺🇸"
+                        search_type = info.get('search_type', 'main')
+
                         st.markdown(f"**{lang} {source_name}**")
                         st.caption(f"{info.get('description', '')}")
                         st.caption(f"🔗 {info.get('url', '')}")
+
+                        if search_type == 'url':
+                            st.caption("✅ 키워드 직접 검색 지원")
+                        else:
+                            st.caption("📄 메인 페이지 수집 (키워드 필터링)")
+
                         st.markdown("---")
 
         st.info("💡 소스 추가 요청은 피드백 페이지에서 해주세요.")

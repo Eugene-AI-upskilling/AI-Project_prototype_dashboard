@@ -48,10 +48,33 @@
           <button class="btn btn--primary btn--sm vanchor__cta" type="button">브리핑 재생 ▶</button>
         </div></div>`;
     }
-    const play=()=>{ if(o.videoUrl){ const st=el.querySelector('.vanchor__stage');
+    const fmtT=s=>{s=Math.max(0,Math.floor(s||0));return Math.floor(s/60)+':'+String(s%60).padStart(2,'0');};
+    const setIcon=on=>{const p=el.querySelector('.vanchor__play svg');if(p)p.innerHTML=on?'<path d="M7 5h3v14H7zM14 5h3v14h-3z"/>':'<path d="M8 5v14l11-7z"/>';};
+    let audio=null;
+    const play=()=>{
+      // 1) 영상이 있으면 영상 재생(기존 동작)
+      if(o.videoUrl){ const st=el.querySelector('.vanchor__stage');
         // 절대 위치(inset:0)로 채워 stage(아웃라인) 크기를 그대로 유지 — 삽입 시 커지지 않게
-        if(st) st.innerHTML=`<video src="${o.videoUrl}"${o.thumbnail?` poster="${o.thumbnail}"`:''} controls autoplay playsinline style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;background:#000"></video>`; }
-      else if(window.toast) window.toast('브리핑 영상이 곧 제공됩니다. 지금은 미리보기예요.'); };
+        if(st) st.innerHTML=`<video src="${o.videoUrl}"${o.thumbnail?` poster="${o.thumbnail}"`:''} controls autoplay playsinline style="position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#000"></video>`;
+        return; }
+      // 2) 음성(mp3)만 있으면 오디오 재생 + 진행바/시간/파형 연동 (ElevenLabs 등에서 생성한 mp3)
+      if(o.audioUrl){
+        if(!audio){
+          audio=new Audio(o.audioUrl); audio.preload='metadata';
+          const bar=el.querySelector('.vanchor__bar>i');
+          const times=el.querySelectorAll('.vanchor__time');
+          const tCur=times[0], tTot=times[1];
+          audio.addEventListener('loadedmetadata',()=>{ if(tTot&&isFinite(audio.duration))tTot.textContent=fmtT(audio.duration); });
+          audio.addEventListener('timeupdate',()=>{ if(bar&&audio.duration)bar.style.width=(audio.currentTime/audio.duration*100)+'%'; if(tCur)tCur.textContent=fmtT(audio.currentTime); });
+          audio.addEventListener('ended',()=>{ el.classList.remove('is-playing'); setIcon(false); if(bar)bar.style.width='0%'; if(tCur)tCur.textContent='0:00'; });
+        }
+        if(audio.paused){ audio.play().then(()=>{el.classList.add('is-playing');setIcon(true);}).catch(()=>{ if(window.toast)window.toast('브리핑 음성을 재생할 수 없어요.'); }); }
+        else { audio.pause(); el.classList.remove('is-playing'); setIcon(false); }
+        return;
+      }
+      // 3) 아직 아무것도 없으면 안내
+      if(window.toast) window.toast('브리핑이 곧 제공됩니다. 지금은 미리보기예요.');
+    };
     el.querySelectorAll('.vanchor__play,.vanchor__cta').forEach(b=>b.addEventListener('click',play));
   };
 })();

@@ -99,11 +99,16 @@ def main():
     else:
         print("④ 썸네일 없음(HeyGen 응답에 thumbnail_url 없음)")
 
+    # CDN 캐시버스트: 같은 파일명을 덮어써도 새 영상이 바로 반영되도록 ?v=<video_id 앞 8자>
+    vtag = a.video_id.replace("iv-", "")[:8]
+    video_final = f"{public_url}?v={vtag}"
+    thumb_final = f"{thumb_public}?v={vtag}" if thumb_public else None
+
     print("⑤ ai_briefings 갱신…")
-    set_briefing(url_base, service_key, a.kind, a.date, public_url, thumb_public)
+    set_briefing(url_base, service_key, a.kind, a.date, video_final, thumb_final)
     print("   완료.")
-    print("\nvideo_url    :", public_url)
-    print("thumbnail_url:", thumb_public)
+    print("\nvideo_url    :", video_final)
+    print("thumbnail_url:", thumb_final)
 
 
 if __name__ == "__main__":

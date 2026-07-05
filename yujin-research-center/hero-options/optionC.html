@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>시안 C · 캔들 스카이라인</title>
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" />
+<style>
+@font-face{font-family:"Pretendard Variable";font-weight:45 920;font-style:normal;font-display:swap;
+  src:url("../assets/fonts/PretendardVariable.woff2") format("woff2-variations")}
+:root{
+  --blue-cta:#0b59d5;--blue-point:#0090ff;--blue-outline:#1772f8;--blue-navy:#062554;--blue-sub-1:#194386;
+  --ink-900:#040505;--ink-800:#17181b;--ink-500:#6b7684;--gray-400:#8d9299;
+  --white:#fff;--border-neutral:#dde4eb;--surface-tint:#ebf0f5;
+  --price-up:#e0344b;--price-down:#0b59d5;
+  --radius-md:8px;--radius-sm:3px;--radius-lg:10px;
+  --shadow-soft:rgba(0,0,0,.05) 0 1px 2px 0;--shadow-pop:rgba(0,0,0,.12) 0 6px 24px -4px,rgba(0,0,0,.06) 0 2px 6px 0;
+  --ease-out:cubic-bezier(.16,1,.3,1);
+  --font-sans:"Pretendard Variable","Pretendard",-apple-system,system-ui,"Apple SD Gothic Neo","Noto Sans KR",sans-serif}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;font-family:var(--font-sans);color:var(--ink-900);background:var(--white);-webkit-font-smoothing:antialiased}
+.cn-figure{font-variant-numeric:tabular-nums}
+.switch{position:fixed;top:14px;right:16px;z-index:99;display:flex;gap:6px;background:#fff;border:1px solid var(--border-neutral);border-radius:9999px;padding:5px;box-shadow:var(--shadow-pop)}
+.switch a{font-size:12px;font-weight:700;color:var(--ink-500);padding:6px 12px;border-radius:9999px;text-decoration:none}
+.switch a.on{background:var(--blue-cta);color:#fff}
+.nav{position:relative;z-index:3;display:flex;align-items:center;gap:30px;height:64px;padding:0 40px;border-bottom:1px solid var(--border-neutral)}
+.brand{display:flex;align-items:center;gap:9px;font-weight:800;font-size:17px;color:var(--blue-navy)}
+.mark{width:26px;height:26px;border-radius:7px;background:linear-gradient(135deg,var(--blue-cta),var(--blue-point));display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:14px}
+.nav nav{display:flex;gap:22px}.nav nav a{font-size:14px;font-weight:500;color:var(--ink-800);text-decoration:none}
+.spacer{flex:1}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:46px;padding:0 18px;font-size:15px;font-family:inherit;border:1px solid transparent;border-radius:var(--radius-md);cursor:pointer;white-space:nowrap;transition:background .12s,transform .12s}
+.btn:active{transform:scale(.98)}.btn--sm{height:36px;padding:0 14px;font-size:14px}.btn--lg{height:50px;padding:0 24px}
+.btn--primary{background:var(--blue-cta);color:#fff;font-weight:700}.btn--primary:hover{background:var(--blue-sub-1)}
+.btn--secondary{background:#fff;color:var(--ink-900);border-color:var(--border-neutral);font-weight:500}.btn--secondary:hover{background:var(--surface-tint)}
+.btn--text{background:none;color:var(--blue-cta);font-weight:400}
+.badge{display:inline-flex;align-items:center;gap:4px;height:22px;padding:0 8px;font-size:12px;font-weight:700;border-radius:var(--radius-sm)}
+.badge--point{background:rgba(0,144,255,.12);color:#0077d0}
+
+/* ===== HERO C : streaming candlestick skyline ===== */
+.hero{position:relative;overflow:hidden;min-height:620px;background:
+  radial-gradient(60% 50% at 50% -10%,rgba(0,144,255,.08),transparent 70%),#fff}
+.chart{position:absolute;left:0;right:0;bottom:0;height:62%;z-index:0;overflow:hidden;
+  -webkit-mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent),linear-gradient(180deg,transparent,#000 32%);
+          mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent),linear-gradient(180deg,transparent,#000 32%);
+  -webkit-mask-composite:source-in;mask-composite:intersect}
+.chart svg{display:block;width:100%;height:100%}
+#cg{--cw:0px;animation:slide 1.1s linear infinite}
+@keyframes slide{from{transform:translateX(0)}to{transform:translateX(calc(-1 * var(--cw)))}}
+.dotpulse{animation:dp 1.6s var(--ease-out) infinite}
+@keyframes dp{0%{r:4;opacity:1}70%{r:13;opacity:0}100%{opacity:0}}
+
+.hero__inner{position:relative;z-index:2;max-width:880px;margin:0 auto;padding:88px 40px 0;text-align:center}
+.hero__inner h1{font-size:52px;line-height:1.13;letter-spacing:-.03em;font-weight:700;color:var(--blue-navy);margin:20px 0 0}
+.hero__inner p{font-size:19px;color:var(--ink-500);line-height:1.65;margin:22px 0 0}
+.hero__inner .cta{display:flex;gap:12px;justify-content:center;margin-top:34px;flex-wrap:wrap}
+.ticktag{display:inline-flex;align-items:center;gap:8px;margin-top:30px;padding:8px 14px;background:rgba(255,255,255,.8);
+  border:1px solid var(--border-neutral);border-radius:9999px;box-shadow:var(--shadow-soft);font-size:13px;font-weight:600;backdrop-filter:blur(4px)}
+.ticktag b{font-variant-numeric:tabular-nums}
+.ticktag i{width:7px;height:7px;border-radius:50%;background:var(--price-up);animation:blink 1.4s ease-in-out infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.25}}
+@media(prefers-reduced-motion:reduce){.candles,.dotpulse,.ticktag i{animation:none}}
+</style>
+</head>
+<body>
+<div class="switch"><a href="optionA.html">A</a><a href="optionB.html">B</a><a class="on" href="optionC.html">C</a></div>
+
+<header class="nav">
+  <div class="brand"><span class="mark">Y</span>유진 Insight Lab</div>
+  <nav><a href="#">리서치 리포트</a><a href="#">이벤트</a><a href="#">테마 쏠림</a><a href="#">인덱싱</a><a href="#">백테스팅</a></nav>
+  <div class="spacer"></div>
+  <button class="btn btn--text" style="font-size:14px">로그인</button>
+  <button class="btn btn--primary btn--sm">회원가입</button>
+</header>
+
+<section class="hero">
+  <div class="chart"><svg id="svg" viewBox="0 0 1200 420" preserveAspectRatio="none"></svg></div>
+  <div class="hero__inner">
+    <span class="badge badge--point">유진투자증권 리서치센터</span>
+    <h1>리서치가 끝나는 곳에서<br/>당신의 투자가 시작됩니다</h1>
+    <p>실시간으로 뛰는 시장 위에서, 애널리스트의 리포트와 나만의 전략·백테스팅을<br/>한 화면에 모았습니다. 읽고, 만들고, 검증하세요.</p>
+    <div class="cta">
+      <button class="btn btn--primary btn--lg">내 전략 만들어보기</button>
+      <button class="btn btn--secondary btn--lg">오늘의 리포트 보기</button>
+    </div>
+    <div class="ticktag"><i></i>KOSPI <b id="kp">2,742.18</b> <span id="kc" style="color:var(--price-up);font-weight:700">+0.84%</span></div>
+  </div>
+</section>
+
+<script>
+const NS='http://www.w3.org/2000/svg',svg=document.getElementById('svg');
+const W=1200,H=420,N=44,CW=W/(N-3),bw=CW*0.56;   // N-3 visible, extras buffer the slide
+const mul=a=>()=>{a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296};
+const rnd=mul(20260615);
+let price=300, candles=[];
+function gen(){const open=price;const vol=18+rnd()*26;price=Math.max(70,Math.min(360,price+(rnd()-0.48)*vol));
+  const close=price;const hi=Math.max(open,close)+rnd()*10;const lo=Math.min(open,close)-rnd()*10;
+  return{open,close,hi,lo};}
+for(let i=0;i<N;i++)candles.push(gen());
+const y=v=>H-18-(v/380)*(H-56);
+// persistent group carries the CSS slide animation; we only swap its children
+const cg=document.createElementNS(NS,'g');cg.setAttribute('id','cg');cg.style.setProperty('--cw',CW+'px');svg.appendChild(cg);
+function render(){
+  while(cg.firstChild)cg.removeChild(cg.firstChild);
+  const linePts=candles.map((c,i)=>`${(i*CW).toFixed(1)},${y(c.close).toFixed(1)}`).join(' ');
+  const area=document.createElementNS(NS,'polygon');
+  area.setAttribute('points',`0,${H} ${linePts} ${(candles.length-1)*CW},${H}`);
+  area.setAttribute('fill','rgba(11,89,213,.06)');cg.appendChild(area);
+  const line=document.createElementNS(NS,'polyline');line.setAttribute('points',linePts);
+  line.setAttribute('fill','none');line.setAttribute('stroke','rgba(11,89,213,.32)');line.setAttribute('stroke-width','2');cg.appendChild(line);
+  candles.forEach((c,i)=>{
+    const up=c.close>=c.open,color=up?'#e0344b':'#0b59d5',x=i*CW;
+    const wick=document.createElementNS(NS,'line');
+    wick.setAttribute('x1',x);wick.setAttribute('x2',x);wick.setAttribute('y1',y(c.hi));wick.setAttribute('y2',y(c.lo));
+    wick.setAttribute('stroke',color);wick.setAttribute('stroke-width','1.6');wick.setAttribute('opacity','.5');cg.appendChild(wick);
+    const body=document.createElementNS(NS,'rect');
+    const top=y(Math.max(c.open,c.close)),h=Math.max(2,Math.abs(y(c.open)-y(c.close)));
+    body.setAttribute('x',x-bw/2);body.setAttribute('y',top);body.setAttribute('width',bw);body.setAttribute('height',h);
+    body.setAttribute('rx','1.5');body.setAttribute('fill',color);body.setAttribute('opacity',up?'.62':'.5');cg.appendChild(body);
+  });
+  const li=candles.length-1,lx=li*CW,ly=y(candles[li].close);
+  const pulse=document.createElementNS(NS,'circle');pulse.setAttribute('class','dotpulse');
+  pulse.setAttribute('cx',lx);pulse.setAttribute('cy',ly);pulse.setAttribute('fill','#0090ff');cg.appendChild(pulse);
+  const dot=document.createElementNS(NS,'circle');dot.setAttribute('cx',lx);dot.setAttribute('cy',ly);dot.setAttribute('r','4');dot.setAttribute('fill','#0b59d5');cg.appendChild(dot);
+}
+render();
+// each slide loop: drop oldest, append newest → seamless leftward stream
+cg.addEventListener('animationiteration',()=>{
+  candles.shift();candles.push(gen());render();
+  const base=2742.18*(0.62+price/380*0.78),chg=(price-300)/300*3,up=chg>=0;
+  document.getElementById('kp').textContent=base.toLocaleString('ko-KR',{minimumFractionDigits:2,maximumFractionDigits:2});
+  const kc=document.getElementById('kc');kc.textContent=(up?'+':'')+chg.toFixed(2)+'%';
+  kc.style.color=up?'var(--price-up)':'var(--price-down)';
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>서브페이지 헤더 시안 A/B/C · Insight Lab</title>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" />
+<link rel="stylesheet" href="assets/app.css" />
+<style>
+/* 시안 비교용 (throwaway) */
+body{background:#f2f5f9}
+.demo-head{max-width:1120px;margin:0 auto;padding:34px 40px 6px}
+.demo-head h1{font-size:26px;font-weight:800;color:var(--blue-navy)}
+.demo-head p{color:var(--color-muted);margin-top:8px;font-size:15px}
+.frame{max-width:1120px;margin:22px auto 0;background:#fff;border:1px solid var(--color-hairline);
+  border-radius:16px;box-shadow:var(--shadow-soft);overflow:hidden}
+.frame__label{display:flex;align-items:center;gap:10px;padding:14px 20px;background:var(--ink-900);color:#fff}
+.frame__label .tag{background:var(--color-primary);color:#fff;font-weight:800;font-size:12px;
+  padding:3px 10px;border-radius:999px}
+.frame__label b{font-size:15px}
+.frame__label span{color:rgba(255,255,255,.6);font-size:13px}
+/* 데모 안의 nav는 sticky 해제 */
+.frame .nav{position:static;border-radius:0}
+.frame .demo-body{padding:26px 0 30px}
+.frame .demo-strip{height:44px;margin:14px 40px 0;border-radius:12px;background:rgba(18,26,52,.94)}
+.frame .demo-cards{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:16px 40px 0}
+.frame .demo-cards .c{height:96px;border:1px solid #eef1f5;border-radius:16px;background:#fbfcfe}
+
+/* ── 공통: 브레드크럼 바 ── */
+.crumb{display:flex;align-items:center;gap:8px;padding:11px 40px;background:var(--surface-tint);
+  border-bottom:1px solid var(--color-hairline);font-size:var(--text-micro)}
+.crumb a{color:var(--color-muted);font-weight:600}
+.crumb a:hover{color:var(--color-primary)}
+.crumb .back{display:inline-flex;align-items:center;gap:4px;color:var(--color-primary);font-weight:700;margin-right:8px}
+.crumb .back svg{width:13px;height:13px;stroke:currentColor;stroke-width:2.4;fill:none}
+.crumb .sep{color:var(--gray-200)}
+.crumb .here{color:var(--ink-800);font-weight:700}
+
+/* ── 페이지 헤더 밴드 ── */
+.phead{background:var(--surface-tint);border-bottom:1px solid var(--color-hairline);padding:24px 0 28px}
+.phead .wrap{display:flex;align-items:flex-end;justify-content:space-between;gap:20px;flex-wrap:wrap}
+.phead__t{border-left:4px solid var(--color-primary);padding-left:16px}
+.phead__t .eyebrow{font-size:var(--text-micro);font-weight:700;color:var(--color-primary);letter-spacing:.02em}
+.phead__t h1{font-size:var(--text-title);font-weight:800;color:var(--blue-navy);letter-spacing:-.02em;margin-top:4px}
+.phead__t p{font-size:var(--text-body);color:var(--color-muted);margin-top:6px}
+.phead .btn--home{background:#fff;border:1px solid var(--color-hairline);color:var(--ink-800);font-weight:600;height:42px}
+.phead .btn--home:hover{background:#fff;border-color:var(--color-primary);color:var(--color-primary)}
+
+/* ── 현재 메뉴 강조 강화 ── */
+.nav--strong .nav__links a.is-current{color:var(--color-primary);font-weight:800}
+.nav--strong .nav__links a.is-current::after{transform:scaleX(1);height:3px}
+/* 현재 메뉴 pill (옵션 C) */
+.nav--pill .nav__links a.is-current{background:var(--color-primary);color:#fff;font-weight:800;
+  padding:6px 14px;border-radius:999px}
+.nav--pill .nav__links a.is-current::after{display:none}
+</style>
+</head>
+<body>
+
+<div class="demo-head">
+  <h1>서브페이지 헤더 시안 — A / B / C</h1>
+  <p>실제 <code>app.css</code> 토큰·컴포넌트로 만든 시안입니다. 셋 중 하나를 고르면 <code>partials.js</code>(6개 페이지 공통) + <code>market.html</code>에 그대로 반영합니다. 예시 페이지는 <b>시황·테마</b> 기준.</p>
+</div>
+
+<!-- ════════ 옵션 A ════════ -->
+<div class="frame">
+  <div class="frame__label"><span class="tag">A</span><b>브레드크럼 바 (가벼움)</b><span>· nav 아래 얇은 위치표시 줄 + 뒤로가기, 현재메뉴 밑줄 강조</span></div>
+  <header class="nav nav--strong">
+    <span class="nav__brand"><span class="nav__logo">EUGENE</span><span class="nav__divider"></span><span class="nav__sub">Insight Lab</span></span>
+    <nav class="nav__links">
+      <a href="#" class="is-current">시황·테마</a><a href="#">리서치 리포트</a><a href="#">종목 이벤트</a>
+      <a href="#">해외 AI 리서치</a><a href="#">퀀트 투자</a><a href="#">인사이트</a>
+    </nav>
+    <div class="nav__spacer"></div>
+    <div class="nav__auth"><button class="btn btn--text" style="font-size:15px">로그인</button><button class="btn btn--primary btn--sm">회원가입</button></div>
+  </header>
+  <div class="crumb">
+    <a href="#" class="back"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>홈</a>
+    <span class="sep">›</span><span class="here">시황·테마</span>
+  </div>
+  <div class="demo-body">
+    <div class="wrap"><div class="sec-eyebrow"><span class="dot"></span>DAILY MARKET</div>
+      <h2 class="sec-title">오늘의 시황, 5분이면 끝</h2></div>
+    <div class="demo-strip"></div>
+    <div class="demo-cards"><div class="c"></div><div class="c"></div></div>
+  </div>
+</div>
+
+<!-- ════════ 옵션 B ════════ -->
+<div class="frame">
+  <div class="frame__label"><span class="tag">B</span><b>페이지 헤더 밴드 (뚜렷)</b><span>· 틴트 배경 + 좌측 강조바 + 큰 제목 + [홈으로] 버튼</span></div>
+  <header class="nav nav--strong">
+    <span class="nav__brand"><span class="nav__logo">EUGENE</span><span class="nav__divider"></span><span class="nav__sub">Insight Lab</span></span>
+    <nav class="nav__links">
+      <a href="#" class="is-current">시황·테마</a><a href="#">리서치 리포트</a><a href="#">종목 이벤트</a>
+      <a href="#">해외 AI 리서치</a><a href="#">퀀트 투자</a><a href="#">인사이트</a>
+    </nav>
+    <div class="nav__spacer"></div>
+    <div class="nav__auth"><button class="btn btn--text" style="font-size:15px">로그인</button><button class="btn btn--primary btn--sm">회원가입</button></div>
+  </header>
+  <div class="phead">
+    <div class="wrap">
+      <div class="phead__t">
+        <div class="crumb" style="padding:0;background:none;border:none;margin-bottom:8px">
+          <a href="#" class="back"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>홈</a>
+          <span class="sep">›</span><span class="here">시황·테마</span>
+        </div>
+        <h1>시황·테마</h1>
+        <p>오늘의 시황을 지수·수급·업종·테마 로테이션까지 한눈에.</p>
+      </div>
+      <button class="btn btn--home">홈으로 ↩</button>
+    </div>
+  </div>
+  <div class="demo-body">
+    <div class="demo-strip"></div>
+    <div class="demo-cards"><div class="c"></div><div class="c"></div></div>
+  </div>
+</div>
+
+<!-- ════════ 옵션 C ════════ -->
+<div class="frame">
+  <div class="frame__label"><span class="tag">C</span><b>둘 다 최대치</b><span>· 현재메뉴 pill 배경 + 브레드크럼 + 헤더 밴드 + [홈으로]</span></div>
+  <header class="nav nav--pill">
+    <span class="nav__brand"><span class="nav__logo">EUGENE</span><span class="nav__divider"></span><span class="nav__sub">Insight Lab</span></span>
+    <nav class="nav__links">
+      <a href="#" class="is-current">시황·테마</a><a href="#">리서치 리포트</a><a href="#">종목 이벤트</a>
+      <a href="#">해외 AI 리서치</a><a href="#">퀀트 투자</a><a href="#">인사이트</a>
+    </nav>
+    <div class="nav__spacer"></div>
+    <div class="nav__auth"><button class="btn btn--text" style="font-size:15px">로그인</button><button class="btn btn--primary btn--sm">회원가입</button></div>
+  </header>
+  <div class="crumb">
+    <a href="#" class="back"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>홈</a>
+    <span class="sep">›</span><span class="here">시황·테마</span>
+  </div>
+  <div class="phead">
+    <div class="wrap">
+      <div class="phead__t">
+        <div class="eyebrow">DAILY MARKET</div>
+        <h1>시황·테마</h1>
+        <p>오늘의 시황을 지수·수급·업종·테마 로테이션까지 한눈에.</p>
+      </div>
+      <button class="btn btn--home">홈으로 ↩</button>
+    </div>
+  </div>
+  <div class="demo-body">
+    <div class="demo-strip"></div>
+    <div class="demo-cards"><div class="c"></div><div class="c"></div></div>
+  </div>
+</div>
+
+<div style="max-width:1120px;margin:24px auto 60px;padding:0 40px;color:var(--color-muted);font-size:14px">
+  마음에 드는 안(A/B/C)을 알려주세요. 세부(문구·홈으로 버튼 위치·강조 세기)도 조정 가능합니다.
+</div>
+
+</body>
+</html>

@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>AI Trading League — Research. Predict. Compete.</title>
+<meta name="description" content="AI와 함께 시장을 예측하고, 최고의 투자자를 가리세요. 리서치를 행동으로 — 예측 마켓, 퀀트 리그, AI 포트폴리오 배틀이 있는 프리미엄 투자 경쟁 아레나." />
+
+<!-- 테마 초기화 (FOUC 방지): CSS 로드 전에 저장된 테마 적용 -->
+<script>try{var t=localStorage.getItem('tl-theme');if(t==='light')document.documentElement.setAttribute('data-theme','light');}catch(e){}</script>
+
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
+<link rel="preload" href="../assets/fonts/PretendardVariable.woff2" as="font" type="font/woff2" crossorigin />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" />
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<link rel="stylesheet" href="../assets/trading.css" />
+</head>
+<body>
+<a class="skip" href="#top">본문 바로가기</a>
+
+<!-- ═══════════ NAV ═══════════ -->
+<header class="tnav" id="tnav">
+  <div class="tnav__in">
+    <a class="tnav__brand" href="#top">
+      <span class="tnav__logo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M6 4h12v5a6 6 0 0 1-12 0z"/><path d="M9 20h6M12 14v6"/></svg></span>
+      <b>AI Trading League</b>
+    </a>
+    <nav class="tnav__links">
+      <a href="#top" class="is-active">Arena</a>
+      <a href="#league">Trading League</a>
+      <a href="#prediction">Prediction Market</a>
+      <a href="#battle">Portfolio</a>
+      <a href="#leaderboard">Ranking</a>
+      <a href="#leaderboard">Leaderboard</a>
+      <a href="#profile">Profile</a>
+    </nav>
+    <div class="tnav__spacer"></div>
+    <div class="tnav__auth">
+      <button class="theme-toggle" id="themeBtn" aria-label="라이트/다크 모드 전환" title="테마 전환">
+        <svg class="ic-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+        <svg class="ic-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+      </button>
+      <span class="user-chip" id="userChip">
+        <span class="ux">U</span><span class="ue"></span>
+        <button class="btn btn--ghost btn--sm" onclick="signOut()">로그아웃</button>
+      </span>
+      <span id="guestBtns" style="display:inline-flex;gap:8px">
+        <button class="btn btn--ghost btn--sm" data-auth="login">Login</button>
+        <button class="btn btn--primary btn--sm" data-auth="signup">Sign Up</button>
+      </span>
+      <button class="tnav__burger" id="burger" aria-label="메뉴"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+    </div>
+  </div>
+</header>
+
+<!-- 모바일 드로어 -->
+<div class="drawer" id="drawer">
+  <div class="drawer__scrim" data-close></div>
+  <nav class="drawer__panel">
+    <button class="drawer__close" data-close aria-label="닫기">×</button>
+    <a href="#top">Arena</a><a href="#league">Trading League</a><a href="#prediction">Prediction Market</a>
+    <a href="#battle">Portfolio</a><a href="#leaderboard">Leaderboard</a><a href="#profile">Profile</a>
+    <div style="display:flex;gap:8px;margin-top:14px">
+      <button class="btn btn--glass btn--block" data-auth="login">Login</button>
+      <button class="btn btn--primary btn--block" data-auth="signup">Sign Up</button>
+    </div>
+  </nav>
+</div>
+
+<main id="top">
+
+  <!-- ═══════════ HERO ═══════════ -->
+  <section class="hero">
+    <div class="wrap">
+      <div class="hero__grid">
+        <div class="reveal">
+          <div class="hero__badges">
+            <span class="chip chip--live">SEASON 1 · LIVE</span>
+            <span class="chip chip--ai">AI-NATIVE</span>
+            <span class="chip">From Research to Action</span>
+          </div>
+          <h1>Research.<br/>Predict.<br/><span class="g">Compete.</span></h1>
+          <p class="hero__lead">AI와 함께 시장을 예측하고, 최고의 투자자를 가리세요. 실제 자금 없이, 순위와 실력으로 증명하는 프리미엄 투자 경쟁 아레나.</p>
+          <div class="hero__cta">
+            <button class="btn btn--primary btn--lg" onclick="document.getElementById('league').scrollIntoView({behavior:'smooth'})">Enter Trading League →</button>
+            <button class="btn btn--glass btn--lg" onclick="document.getElementById('prediction').scrollIntoView({behavior:'smooth'})">Prediction Market</button>
+          </div>
+          <div class="hero__mini">
+            <div class="m"><b class="num" data-count="2341">0</b><small>Players</small></div>
+            <div class="sep"></div>
+            <div class="m"><b class="up" data-count="3.24" data-dec="2" data-pre="+" data-suf="%">0</b><small>AI Top Portfolio</small></div>
+            <div class="sep"></div>
+            <div class="m"><b class="num" data-countdown="days">5</b><small>Days Left</small></div>
+          </div>
+        </div>
+
+        <!-- Hero 우측: 글래스 패널 + 트로피 + 차트 + 입자 -->
+        <div class="reveal">
+          <div class="arena-glass">
+            <div class="particles" id="particles"></div>
+            <div class="arena-glass__top">
+              <span class="arena-glass__ttl">Season 1 · AI Trading Arena</span>
+              <span class="chip chip--live">LIVE</span>
+            </div>
+            <div class="trophy">
+              <svg viewBox="0 0 120 120" fill="none">
+                <defs>
+                  <linearGradient id="tg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffe6a1"/><stop offset="1" stop-color="#d99a1e"/></linearGradient>
+                  <linearGradient id="tp" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#8B7BF0"/><stop offset="1" stop-color="#22D3EE"/></linearGradient>
+                </defs>
+                <ellipse cx="60" cy="108" rx="30" ry="6" fill="url(#tp)" opacity=".25"/>
+                <path d="M38 24h44v10a22 22 0 0 1-44 0z" fill="url(#tg)"/>
+                <path d="M38 24h44v6H38z" fill="#fff" opacity=".25"/>
+                <path d="M34 26H24a2 2 0 0 0-2 2v4a12 12 0 0 0 12 12" stroke="url(#tg)" stroke-width="4" stroke-linecap="round"/>
+                <path d="M86 26h10a2 2 0 0 1 2 2v4a12 12 0 0 1-12 12" stroke="url(#tg)" stroke-width="4" stroke-linecap="round"/>
+                <rect x="54" y="55" width="12" height="18" fill="url(#tg)"/>
+                <path d="M44 80h32l-4 10H48z" fill="url(#tg)"/>
+                <rect x="40" y="90" width="40" height="8" rx="2" fill="url(#tg)"/>
+                <path d="M52 30l4 8 8 1-6 6 2 8-8-4-8 4 2-8-6-6 8-1z" fill="#fff" opacity=".85" transform="translate(4 0)"/>
+              </svg>
+            </div>
+            <div class="arena-chart"><svg id="arenaChart"></svg></div>
+            <div class="arena-stats">
+              <div class="as"><div class="l">참가자</div><div class="v num" data-count="2341">0</div></div>
+              <div class="as"><div class="l">상금 XP풀</div><div class="v">1.2M</div></div>
+              <div class="as"><div class="l">시즌 종료</div><div class="v"><span data-countdown="days">5</span>D</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════ FEATURE 1 · CURRENT SEASON DASHBOARD ═══════════ -->
+  <section class="section--tight">
+    <div class="wrap">
+      <div class="stat-row">
+        <div class="stat reveal">
+          <div class="stat__l"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>시즌 종료까지</div>
+          <div class="stat__v"><span data-countdown="days">5</span><span style="font-size:16px;color:var(--muted)"> Days</span></div>
+          <div class="stat__sub">Season 1 · 플레이오프 D-12</div>
+        </div>
+        <div class="stat stat--info reveal">
+          <div class="stat__l"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2"/><circle cx="10" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/></svg>참가자</div>
+          <div class="stat__v num" data-count="2341">0</div>
+          <div class="stat__sub">이번 주 신규 <b class="up">+186</b></div>
+        </div>
+        <div class="stat stat--success reveal">
+          <div class="stat__l"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M7 14l4-4 3 3 5-6"/></svg>AI Top Portfolio</div>
+          <div class="stat__v up" data-count="3.24" data-dec="2" data-pre="+" data-suf="%">0</div>
+          <div class="stat__sub">AI Analyst 운용 · 주간 수익률</div>
+        </div>
+        <div class="stat stat--gold reveal">
+          <div class="stat__l"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3 7h7l-5.5 4.5L18 21l-6-4-6 4 1.5-7.5L2 9h7z"/></svg>내 순위</div>
+          <div class="stat__v">#<span class="num" data-count="27">0</span></div>
+          <div class="stat__sub"><span class="tier tier--gold">Gold</span> · 상위 1.2%</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════ FEATURE 2 · QUANT TRADING LEAGUE ═══════════ -->
+  <section class="section" id="league">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <div class="eyebrow">Quant Trading League</div>
+        <h2 class="sec-title">가상 포트폴리오 매니저가 되어<br/>실력으로 겨루는 8주 시즌</h2>
+        <p class="sec-sub">판타지 스포츠처럼, 당신의 투자 판단으로 포트폴리오를 운용하세요. 단순 수익률이 아니라 리스크 관리까지 측정하는 스코어링으로 진짜 실력을 가립니다.</p>
+      </div>
+
+      <div class="league-grid">
+        <!-- 규칙 -->
+        <div class="card card--pad reveal">
+          <h3 style="font-size:16px;font-weight:800;margin-bottom:14px">리그 규칙</h3>
+          <div class="rules-list">
+            <div class="rule"><span class="rule__ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="7" width="18" height="12" rx="2"/><path d="M7 7V5a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v2"/></svg></span><div><div class="k">초기 자본</div><div class="v">1억원</div></div></div>
+            <div class="rule"><span class="rule__ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></span><div><div class="k">최대 보유</div><div class="v">5 종목</div></div></div>
+            <div class="rule"><span class="rule__ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5A2.5 2.5 0 0 1 14 11c0 2-3 2-3 4"/><path d="M12 17.5v.01"/></svg></span><div><div class="k">최소 현금</div><div class="v">10%</div></div></div>
+            <div class="rule"><span class="rule__ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/><path d="M3 21v-5h5"/></svg></span><div><div class="k">리밸런싱</div><div class="v">주간</div></div></div>
+            <div class="rule"><span class="rule__ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></span><div><div class="k">정규 시즌</div><div class="v">8주</div></div></div>
+            <div class="rule"><span class="rule__ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3 7h7l-5.5 4.5L18 21l-6-4-6 4 1.5-7.5L2 9h7z"/></svg></span><div><div class="k">플레이오프</div><div class="v">2주</div></div></div>
+          </div>
+          <button class="btn btn--primary btn--block" style="margin-top:16px" data-auth="signup">포트폴리오 만들기 →</button>
+        </div>
+
+        <!-- 스코어링 -->
+        <div class="card card--pad reveal">
+          <h3 style="font-size:16px;font-weight:800">스코어링 시스템</h3>
+          <p style="font-size:13px;color:var(--muted);margin:6px 0 16px">수익률만으로 줄 세우지 않습니다. 리스크 조정 성과와 꾸준함까지 반영해 진짜 운용 실력을 측정해요.</p>
+          <div class="score-legend" id="scoreLegend">
+            <div class="score-row">
+              <div class="top"><b>수익률 <span style="color:var(--muted);font-weight:600">Return</span></b><span class="w">50%</span></div>
+              <div class="score-track"><span class="score-fill" data-w="50" style="background:linear-gradient(90deg,#6C5CE7,#8B7BF0)"></span></div>
+            </div>
+            <div class="score-row">
+              <div class="top"><b>샤프 지수 <span style="color:var(--muted);font-weight:600">Sharpe</span></b><span class="w">20%</span></div>
+              <div class="score-track"><span class="score-fill" data-w="20" style="background:linear-gradient(90deg,#38BDF8,#22D3EE)"></span></div>
+            </div>
+            <div class="score-row">
+              <div class="top"><b>최대낙폭 <span style="color:var(--muted);font-weight:600">MDD</span></b><span class="w">20%</span></div>
+              <div class="score-track"><span class="score-fill" data-w="20" style="background:linear-gradient(90deg,#F59E0B,#f7b955)"></span></div>
+            </div>
+            <div class="score-row">
+              <div class="top"><b>꾸준함 <span style="color:var(--muted);font-weight:600">Consistency</span></b><span class="w">10%</span></div>
+              <div class="score-track"><span class="score-fill" data-w="10" style="background:linear-gradient(90deg,#22C55E,#4ade80)"></span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 티어 -->
+      <div class="reveal" style="margin-top:24px">
+        <div class="sec-head--row" style="margin-bottom:14px">
+          <h3 style="font-size:18px;font-weight:800">티어 시스템</h3>
+          <span class="chip chip--primary">현재: Gold · 상위 1.2%</span>
+        </div>
+        <div class="tier-track">
+          <div class="tier-card"><div class="tier-medal bronze">🥉</div><div class="tn">Bronze</div><div class="tr">입문</div></div>
+          <div class="tier-card"><div class="tier-medal silver">🥈</div><div class="tn">Silver</div><div class="tr">상위 40%</div></div>
+          <div class="tier-card is-me"><div class="tier-medal gold">🥇</div><div class="tn">Gold</div><div class="tr">상위 15% · 나</div></div>
+          <div class="tier-card"><div class="tier-medal master">👑</div><div class="tn">Master</div><div class="tr">상위 3%</div></div>
+          <div class="tier-card"><div class="tier-medal legend">⚡</div><div class="tn">Legend</div><div class="tr">Top 10</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════ FEATURE 3 · PREDICTION MARKET ═══════════ -->
+  <section class="section section--band" id="prediction">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <div class="eyebrow">Prediction Market</div>
+        <h2 class="sec-title">시장을 읽고, 예측하고, XP를 얻으세요</h2>
+        <p class="sec-sub">실적 서프라이즈와 지수 방향을 예측하는 두 개의 게임. 리서치 근거를 바탕으로 판단하고, 적중하면 XP와 뱃지로 보상받습니다. 실제 베팅이 아닌 시뮬레이션이에요.</p>
+      </div>
+
+      <div class="pred-grid">
+        <!-- 3-1 Earnings Arena -->
+        <div class="card glow-card pred reveal" data-xp="100">
+          <div class="pred__head">
+            <span class="pred__kind"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M18 9l-5 5-3-3-4 4"/></svg>Earnings Arena</span>
+            <span class="chip">Q2 실적</span>
+          </div>
+          <div class="pred__sym">
+            <span class="pred__logo" style="background:linear-gradient(135deg,#1428A0,#4c6ef5)">삼성</span>
+            <div><div class="pred__name">삼성전자</div><div style="font-size:12px;color:var(--muted)">005930 · KOSPI</div></div>
+          </div>
+          <p class="pred__q">삼성전자 2분기 EPS가 컨센서스를 <b style="color:var(--text)">상회</b>할까요?</p>
+          <div class="pred__facts">
+            <div class="pfact"><div class="l">컨센서스 EPS</div><div class="v num">1,420원</div></div>
+            <div class="pfact"><div class="l">직전 EPS</div><div class="v num">1,210원</div></div>
+            <div class="pfact"><div class="l">참여</div><div class="v num">1,238명</div></div>
+            <div class="pfact"><div class="l">마감</div><div class="v">07.08 08:00</div></div>
+          </div>
+          <div class="pred__opts three">
+            <button class="opt opt--up" data-pct="54"><span class="opt__bar"></span><span class="opt__lb">Beat</span><span class="opt__pct">54%</span></button>
+            <button class="opt opt--mid" data-pct="28"><span class="opt__bar"></span><span class="opt__lb">Inline</span><span class="opt__pct">28%</span></button>
+            <button class="opt opt--down" data-pct="18"><span class="opt__bar"></span><span class="opt__lb">Miss</span><span class="opt__pct">18%</span></button>
+          </div>
+          <div class="pred__foot">
+            <span class="chip chip--primary">+100 XP</span>
+            <a href="../reports.html">관련 리포트 보기 ↗</a>
+          </div>
+        </div>
+
+        <!-- 3-2 Index Prediction -->
+        <div class="card glow-card pred reveal" data-xp="50">
+          <div class="pred__head">
+            <span class="pred__kind"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 17l6-6 4 4 8-8"/><path d="M21 7v5h-5"/></svg>Index Prediction</span>
+            <span class="chip">내일 지수</span>
+          </div>
+          <div class="pred__sym">
+            <span class="pred__logo" style="background:linear-gradient(135deg,#6C5CE7,#4F46E5)">KS</span>
+            <div><div class="pred__name">KOSPI</div><div style="font-size:12px;color:var(--muted)">코스피 종합지수</div></div>
+          </div>
+          <p class="pred__q">내일 KOSPI가 오늘보다 <b style="color:var(--text)">상승</b> 마감할까요?</p>
+          <div class="pred__facts">
+            <div class="pfact"><div class="l">현재 지수</div><div class="v num">2,689.70</div></div>
+            <div class="pfact"><div class="l">1D 변동</div><div class="v down num">-0.67%</div></div>
+            <div class="pfact"><div class="l">참여</div><div class="v num">1,103명</div></div>
+            <div class="pfact"><div class="l">마감</div><div class="v">07.08 15:30</div></div>
+          </div>
+          <div class="pred__opts two">
+            <button class="opt opt--up" data-pct="61"><span class="opt__bar"></span><span class="opt__lb">▲ Up</span><span class="opt__pct">61%</span></button>
+            <button class="opt opt--down" data-pct="39"><span class="opt__bar"></span><span class="opt__lb">▼ Down</span><span class="opt__pct">39%</span></button>
+          </div>
+          <div class="pred__foot">
+            <span class="chip chip--primary">+50 XP</span>
+            <a href="../market.html">시황·테마 보기 ↗</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- 보상 시스템 요약 -->
+      <div class="reveal" style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:18px">
+        <div class="card card--pad" style="text-align:center"><div style="font-size:22px">🎯</div><div style="font-weight:800;margin-top:6px">적중 시</div><div style="font-size:13px;color:var(--muted);margin-top:2px">+100 XP</div></div>
+        <div class="card card--pad" style="text-align:center"><div style="font-size:22px">🔥</div><div style="font-weight:800;margin-top:6px">5연속 적중</div><div style="font-size:13px;color:var(--muted);margin-top:2px">+1,000 Coins</div></div>
+        <div class="card card--pad" style="text-align:center"><div style="font-size:22px">⚡</div><div style="font-weight:800;margin-top:6px">10연속 적중</div><div style="font-size:13px;color:var(--muted);margin-top:2px">Legend Badge</div></div>
+        <div class="card card--pad" style="text-align:center"><div style="font-size:22px">🤖</div><div style="font-weight:800;margin-top:6px">AI 격파</div><div style="font-size:13px;color:var(--muted);margin-top:2px">Beat the AI Badge</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════ FEATURE 4 · AI PORTFOLIO BATTLE ═══════════ -->
+  <section class="section" id="battle">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <div class="eyebrow">AI Portfolio Battle</div>
+        <h2 class="sec-title">AI Analyst vs. 나 — 이번 주의 승자는?</h2>
+        <p class="sec-sub">AI Research가 운용하는 포트폴리오와 내 포트폴리오를 실시간으로 맞대결. 수익률·리스크·샤프까지 정면 비교하고, AI를 이기면 'Beat the AI' 뱃지를 얻습니다.</p>
+      </div>
+
+      <div class="card battle reveal">
+        <div class="battle__grid">
+          <div class="fighter fighter--ai">
+            <div class="fighter__who"><span class="fighter__av" style="background:linear-gradient(135deg,#6C5CE7,#38BDF8)">AI</span>AI Portfolio</div>
+            <div class="fighter__ret up">+3.24%</div>
+            <div style="font-size:12px;color:var(--muted)">AI Analyst 자동 운용</div>
+            <div class="fighter__meta">
+              <div class="mm"><div class="l">Risk</div><div class="v">Mid</div></div>
+              <div class="mm"><div class="l">MDD</div><div class="v down">-4.1%</div></div>
+              <div class="mm"><div class="l">Sharpe</div><div class="v mono">2.44</div></div>
+            </div>
+          </div>
+          <div class="battle__vs">VS</div>
+          <div class="fighter fighter--me">
+            <div class="fighter__who"><span class="fighter__av" style="background:linear-gradient(135deg,#22C55E,#16a34a)">나</span>My Portfolio</div>
+            <div class="fighter__ret up">+4.18%</div>
+            <div style="font-size:12px;color:var(--muted)">내가 직접 운용</div>
+            <div class="fighter__meta">
+              <div class="mm"><div class="l">Risk</div><div class="v">Mid-Low</div></div>
+              <div class="mm"><div class="l">MDD</div><div class="v down">-3.2%</div></div>
+              <div class="mm"><div class="l">Sharpe</div><div class="v mono">2.61</div></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="arena-chart" style="height:150px;margin-top:20px;background:none;border:none">
+          <svg id="battleChart"></svg>
+        </div>
+        <div style="display:flex;gap:16px;margin-top:8px;font-size:12px;color:var(--muted)">
+          <span style="display:inline-flex;align-items:center;gap:6px"><i style="width:16px;height:3px;background:#6C5CE7;border-radius:2px"></i>AI Portfolio</span>
+          <span style="display:inline-flex;align-items:center;gap:6px"><i style="width:16px;height:3px;background:#22C55E;border-radius:2px"></i>My Portfolio</span>
+        </div>
+
+        <div class="battle__delta">
+          <span class="l">현재 <b style="color:var(--text)">내가 AI를 앞서고 있어요</b> · 상대 성과</span>
+          <span class="v up">+0.94%p</span>
+          <button class="btn btn--primary" data-auth="signup">Beat the AI →</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════ FEATURE 5 · LEADERBOARD ═══════════ -->
+  <section class="section" id="leaderboard">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <div class="eyebrow">Leaderboard</div>
+        <h2 class="sec-title">시즌 랭킹</h2>
+        <p class="sec-sub">지금 시장을 가장 잘 읽고 있는 투자자들. AI Portfolio도 같은 규칙으로 경쟁에 참여합니다.</p>
+      </div>
+
+      <div class="reveal">
+        <div class="lb-tabs" id="lbTabs">
+          <button data-k="overall" class="is-active">Overall</button>
+          <button data-k="return">Return</button>
+          <button data-k="accuracy">Prediction Accuracy</button>
+          <button data-k="sharpe">Sharpe</button>
+          <button data-k="beatai">Beat the AI</button>
+        </div>
+        <div class="lb-card">
+          <div class="lb-scroll">
+            <table class="lb-table">
+              <thead><tr>
+                <th style="width:52px">#</th><th>User</th><th>Tier</th>
+                <th class="r">Season Return</th><th class="r">Accuracy</th><th class="r">Sharpe</th><th class="r">Badge</th>
+              </tr></thead>
+              <tbody id="lbBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════ FEATURE 6 · MY PROFILE ═══════════ -->
+  <section class="section" id="profile">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <div class="eyebrow">My Profile</div>
+        <h2 class="sec-title">나의 시즌</h2>
+      </div>
+
+      <div class="profile-grid">
+        <!-- 좌: 요약 + 스탯 + 뱃지 -->
+        <div class="reveal">
+          <div class="card card--pad">
+            <div class="prof-head">
+              <div class="prof-av">나</div>
+              <div>
+                <div class="nm">My Portfolio</div>
+                <div class="mt"><span class="tier tier--gold">Gold</span><span class="chip">Rank #27</span><span class="chip chip--up">+4.18%</span></div>
+              </div>
+            </div>
+            <div class="prof-stats">
+              <div class="pstat"><div class="l">시즌 수익률</div><div class="v up" data-count="4.18" data-dec="2" data-pre="+" data-suf="%">0</div></div>
+              <div class="pstat"><div class="l">예측 적중률</div><div class="v"><span class="num" data-count="68">0</span>%</div></div>
+              <div class="pstat"><div class="l">XP</div><div class="v num" data-count="12340">0</div></div>
+              <div class="pstat"><div class="l">뱃지</div><div class="v num" data-count="18">0</div></div>
+              <div class="pstat"><div class="l">코인</div><div class="v num" data-count="1200">0</div></div>
+              <div class="pstat"><div class="l">연속 적중</div><div class="v"><span class="num" data-count="6">0</span> 🔥</div></div>
+            </div>
+            <div style="margin-top:18px">
+              <div style="font-size:13px;font-weight:700;color:var(--text-2);margin-bottom:10px">획득 뱃지</div>
+              <div class="badge-wall">
+                <div class="bwl" title="Beat the AI">🤖</div>
+                <div class="bwl" title="5-Streak">🔥</div>
+                <div class="bwl" title="Quant Master">👑</div>
+                <div class="bwl" title="Consistency">🎯</div>
+                <div class="bwl" title="Gold Tier">🥇</div>
+                <div class="bwl" title="Rookie of the Week">⭐</div>
+                <div class="bwl locked" title="Legend (잠금)">⚡</div>
+                <div class="bwl locked" title="Top 10 (잠금)">🏆</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 우: 현재 포트폴리오 + 최근 예측 + 시즌 히스토리 -->
+        <div class="reveal prof-right" style="display:flex;flex-direction:column;gap:16px">
+          <div class="card card--pad">
+            <div class="sec-head--row" style="margin-bottom:12px"><h3 style="font-size:15px;font-weight:800">현재 포트폴리오</h3><span class="chip">5 종목 · 현금 12%</span></div>
+            <div class="hist-row"><span>SK하이닉스 <span style="color:var(--muted)">· AI Semiconductor</span></span><span><b class="up">+8.2%</b> <span style="color:var(--muted)">24%</span></span></div>
+            <div class="hist-row"><span>HD현대일렉트릭 <span style="color:var(--muted)">· Power Equipment</span></span><span><b class="up">+6.1%</b> <span style="color:var(--muted)">22%</span></span></div>
+            <div class="hist-row"><span>한화에어로스페이스 <span style="color:var(--muted)">· Defense</span></span><span><b class="up">+4.7%</b> <span style="color:var(--muted)">20%</span></span></div>
+            <div class="hist-row"><span>삼성바이오로직스 <span style="color:var(--muted)">· Bio</span></span><span><b class="down">-1.3%</b> <span style="color:var(--muted)">12%</span></span></div>
+            <div class="hist-row"><span>NAVER <span style="color:var(--muted)">· Platform</span></span><span><b class="up">+2.0%</b> <span style="color:var(--muted)">10%</span></span></div>
+          </div>
+          <div class="card card--pad">
+            <h3 style="font-size:15px;font-weight:800;margin-bottom:10px">최근 예측</h3>
+            <div class="hist-row"><span>KOSPI 내일 상승</span><span class="chip chip--up">적중 +50 XP</span></div>
+            <div class="hist-row"><span>삼성전자 실적 Beat</span><span class="chip">진행중</span></div>
+            <div class="hist-row"><span>SK하이닉스 실적 Beat</span><span class="chip chip--up">적중 +100 XP</span></div>
+            <div class="hist-row"><span>NASDAQ 내일 하락</span><span class="chip chip--down">미적중</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════ FEATURE 7 · RECENT ACTIVITY FEED ═══════════ -->
+  <section class="section--tight">
+    <div class="wrap">
+      <div class="sec-head--row reveal" style="margin-bottom:16px">
+        <div><div class="eyebrow">Live Feed</div><h3 style="font-size:20px;font-weight:800;margin-top:8px">최근 활동</h3></div>
+        <span class="chip chip--live">실시간</span>
+      </div>
+      <div class="card reveal" style="padding:8px">
+        <div class="feed">
+          <div class="feed-item"><span class="feed-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 17l6-6 4 4 8-8"/></svg></span><span class="feed-tx"><b>MarketWizard</b>님이 KOSPI <b class="up">상승</b>을 예측했어요.</span><span class="feed-time">방금</span></div>
+          <div class="feed-item"><span class="feed-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M21 3v5h-5"/></svg></span><span class="feed-tx"><b>QuantMaster</b>님이 포트폴리오를 리밸런싱했어요.</span><span class="feed-time">2분 전</span></div>
+          <div class="feed-item"><span class="feed-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="7" width="16" height="13" rx="3"/><path d="M12 3v4"/></svg></span><span class="feed-tx"><b>AI Portfolio</b>가 이번 주 시장을 <b class="up">아웃퍼폼</b>했어요.</span><span class="feed-time">8분 전</span></div>
+          <div class="feed-item"><span class="feed-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3 7h7l-5.5 4.5L18 21l-6-4-6 4 1.5-7.5L2 9h7z"/></svg></span><span class="feed-tx"><b>AlphaHunter</b>님이 <b>5연속 적중</b>을 달성했어요.</span><span class="feed-time">15분 전</span></div>
+          <div class="feed-item"><span class="feed-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M18 9l-5 5-3-3-4 4"/></svg></span><span class="feed-tx"><b>ValueInvestor</b>님이 Earnings Arena에 참여했어요.</span><span class="feed-time">22분 전</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════ FEATURE 8 · MARKET INSIGHTS (Insight Lab 브리지) ═══════════ -->
+  <section class="section" id="insights">
+    <div class="wrap">
+      <div class="bridge reveal">
+        <div class="brief-vid">
+          <span class="tag chip chip--ai">AI Brief</span>
+          <span class="dur">1:00</span>
+          <button class="play" onclick="toast('AI Brief는 Insight Lab에서 제공돼요.')" aria-label="재생"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></button>
+        </div>
+        <div class="brief">
+          <div class="eyebrow">Market Insights · Powered by Eugene Insight Lab</div>
+          <h3 style="margin-top:10px">오늘의 AI Brief</h3>
+          <p>1분 AI 영상 브리프로 오늘의 시장을 요약합니다. 반도체 실적 시즌 진입과 전력기기·방산 테마의 수급 변화가 핵심. 예측에 나서기 전, 리서치로 근거를 확인하세요.</p>
+          <div class="brief__theme">
+            <span class="chip">AI Semiconductor</span><span class="chip">Power Equipment</span><span class="chip">Defense</span><span class="chip">Robotics</span>
+          </div>
+          <div style="display:flex;gap:10px;margin-top:18px;flex-wrap:wrap">
+            <a class="btn btn--glass" href="../reports.html">관련 리포트</a>
+            <a class="btn btn--primary" href="../index.html">Go to Insight Lab ↗</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ═══════════ FOOTER ═══════════ -->
+<footer class="tfoot">
+  <div class="wrap">
+    <div class="tfoot__in">
+      <a class="tnav__brand" href="#top">
+        <span class="tnav__logo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M6 4h12v5a6 6 0 0 1-12 0z"/><path d="M9 20h6M12 14v6"/></svg></span>
+        <b>AI Trading League</b>
+      </a>
+      <div style="display:flex;gap:8px">
+        <a class="btn btn--glass btn--sm" href="../index.html">Eugene Insight Lab</a>
+        <button class="btn btn--primary btn--sm" data-auth="signup">Sign Up</button>
+      </div>
+    </div>
+    <p class="tfoot__disc">
+      본 화면은 시연용 프로토타입입니다. AI Trading League는 <b style="color:var(--text-2)">교육·시뮬레이션 목적의 투자 경쟁 플랫폼</b>으로, 실제 매매 체결이나 현금 베팅·상금 지급이 없습니다. 표시되는 순위·수익률·XP·코인·뱃지는 예시이며 실제 투자 성과나 미래 수익을 보장하지 않습니다. 투자의 최종 판단과 책임은 투자자 본인에게 있습니다.<br/>
+      © 2026 Eugene Investment &amp; Securities · AI Trading League
+    </p>
+  </div>
+</footer>
+
+<!-- ═══════════ AUTH MODAL ═══════════ -->
+<div class="modal" id="authModal">
+  <div class="modal__box">
+    <div class="modal__head">
+      <span class="modal__title" id="authTitle">로그인</span>
+      <button class="modal__x" onclick="closeAuth()" aria-label="닫기">×</button>
+    </div>
+    <div class="mtabs" id="mtabs">
+      <button data-a="login" class="is-active">Login</button>
+      <button data-a="signup">Sign Up</button>
+    </div>
+    <form id="authForm">
+      <div class="field"><label>이메일</label><input class="input" id="authEmail" type="email" placeholder="you@example.com" autocomplete="email" /></div>
+      <div class="field"><label>비밀번호</label><input class="input" id="authPw" type="password" placeholder="6자 이상" autocomplete="current-password" /></div>
+      <div class="modal__msg" id="authMsg"></div>
+      <button class="btn btn--primary btn--block btn--lg" id="authSubmit" type="submit">로그인</button>
+    </form>
+    <p class="modal__foot">가입 시 정보 제공·투자 위험 고지에 동의하게 됩니다.<br/>본 화면은 시연용 프로토타입이며 실제 자금이 오가지 않습니다.</p>
+  </div>
+</div>
+
+<!-- Toast · FAB -->
+<div class="toast" id="toast"></div>
+<button class="fab" id="fab" aria-label="맨 위로"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg></button>
+
+<script src="../assets/trading.js"></script>
+</body>
+</html>

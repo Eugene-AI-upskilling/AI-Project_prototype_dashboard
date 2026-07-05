@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>시안 A · 스플릿 라이브 보드</title>
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" />
+<style>
+@font-face{font-family:"Pretendard Variable";font-weight:45 920;font-style:normal;font-display:swap;
+  src:url("../assets/fonts/PretendardVariable.woff2") format("woff2-variations")}
+:root{
+  --blue-cta:#0b59d5;--blue-point:#0090ff;--blue-outline:#1772f8;--blue-navy:#062554;--blue-sub-1:#194386;
+  --ink-900:#040505;--ink-800:#17181b;--ink-500:#6b7684;--gray-400:#8d9299;
+  --white:#fff;--border-neutral:#dde4eb;--surface-tint:#ebf0f5;
+  --price-up:#e0344b;--price-down:#0b59d5;
+  --radius-md:8px;--radius-sm:3px;--radius-chip:6px;--radius-lg:10px;
+  --shadow-soft:rgba(0,0,0,.05) 0 1px 2px 0;--shadow-pop:rgba(0,0,0,.12) 0 6px 24px -4px,rgba(0,0,0,.06) 0 2px 6px 0;
+  --ease-out:cubic-bezier(.16,1,.3,1);
+  --font-sans:"Pretendard Variable","Pretendard",-apple-system,system-ui,"Apple SD Gothic Neo","Noto Sans KR",sans-serif}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;font-family:var(--font-sans);color:var(--ink-900);background:var(--white);-webkit-font-smoothing:antialiased}
+.cn-figure{font-variant-numeric:tabular-nums}
+/* switcher */
+.switch{position:fixed;top:14px;right:16px;z-index:99;display:flex;gap:6px;background:#fff;border:1px solid var(--border-neutral);border-radius:9999px;padding:5px;box-shadow:var(--shadow-pop)}
+.switch a{font-size:12px;font-weight:700;color:var(--ink-500);padding:6px 12px;border-radius:9999px;text-decoration:none}
+.switch a.on{background:var(--blue-cta);color:#fff}
+/* nav */
+.nav{display:flex;align-items:center;gap:30px;height:64px;padding:0 40px;border-bottom:1px solid var(--border-neutral)}
+.brand{display:flex;align-items:center;gap:9px;font-weight:800;font-size:17px;color:var(--blue-navy)}
+.mark{width:26px;height:26px;border-radius:7px;background:linear-gradient(135deg,var(--blue-cta),var(--blue-point));display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:14px}
+.nav nav{display:flex;gap:22px}.nav nav a{font-size:14px;font-weight:500;color:var(--ink-800);text-decoration:none}
+.spacer{flex:1}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:46px;padding:0 18px;font-size:15px;font-family:inherit;border:1px solid transparent;border-radius:var(--radius-md);cursor:pointer;white-space:nowrap;transition:background .12s,transform .12s}
+.btn:active{transform:scale(.98)}.btn--sm{height:36px;padding:0 14px;font-size:14px}.btn--lg{height:50px;padding:0 24px}
+.btn--primary{background:var(--blue-cta);color:#fff;font-weight:700}.btn--primary:hover{background:var(--blue-sub-1)}
+.btn--secondary{background:#fff;color:var(--ink-900);border-color:var(--border-neutral);font-weight:500}.btn--secondary:hover{background:var(--surface-tint)}
+.btn--text{background:none;color:var(--blue-cta);font-weight:400}
+.badge{display:inline-flex;align-items:center;gap:4px;height:22px;padding:0 8px;font-size:12px;font-weight:700;border-radius:var(--radius-sm);font-variant-numeric:tabular-nums}
+.badge--point{background:rgba(0,144,255,.12);color:#0077d0}
+.badge--up{background:rgba(224,52,75,.1);color:var(--price-up)}.badge--down{background:rgba(11,89,213,.1);color:var(--price-down)}
+
+/* ===== HERO A : split live board ===== */
+.hero{position:relative;overflow:hidden;background:
+  radial-gradient(48% 60% at 92% 0%,rgba(0,144,255,.08),transparent 70%),
+  radial-gradient(40% 50% at 0% 100%,rgba(11,89,213,.05),transparent 72%),#fff}
+.hero__grid{max-width:1180px;margin:0 auto;padding:72px 40px 80px;display:grid;grid-template-columns:1.02fr .98fr;gap:48px;align-items:center}
+@media(max-width:920px){.hero__grid{grid-template-columns:1fr;gap:36px}}
+.lead h1{font-size:48px;line-height:1.14;letter-spacing:-.03em;font-weight:700;color:var(--blue-navy);margin:18px 0 0}
+.lead p{font-size:18px;color:var(--ink-500);line-height:1.65;margin:20px 0 0}
+.lead .cta{display:flex;gap:12px;margin-top:32px;flex-wrap:wrap}
+.lead .trust{display:flex;gap:22px;margin-top:30px;flex-wrap:wrap}
+.lead .trust div{font-size:12px;color:var(--ink-500)}.lead .trust b{display:block;font-size:22px;color:var(--blue-navy);font-weight:700}
+
+.board{background:#fff;border:1px solid var(--border-neutral);border-radius:14px;box-shadow:var(--shadow-pop);overflow:hidden}
+.board__h{display:flex;align-items:center;gap:8px;padding:16px 20px;border-bottom:1px solid var(--border-neutral)}
+.board__h .ttl{font-weight:700;font-size:15px}
+.live{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:700;color:var(--price-up);margin-left:auto}
+.live i{width:7px;height:7px;border-radius:50%;background:var(--price-up);animation:blink 1.4s ease-in-out infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.25}}
+.rows{position:relative;padding:8px 0}
+.row{position:absolute;left:0;right:0;height:56px;display:flex;align-items:center;gap:12px;padding:0 20px;transition:top .55s var(--ease-out)}
+.row .rk{width:18px;font-size:13px;font-weight:700;color:var(--gray-400);text-align:center}
+.row .nm b{font-size:14px;font-weight:700}.row .nm span{display:block;font-size:11px;color:var(--ink-500)}
+.row .nm{flex:1;min-width:0}
+.row .spark{width:72px;height:30px;overflow:hidden}
+.row .spark svg{width:200%;height:100%;display:block}
+.row .spark .stream{animation:streamX 7s linear infinite}
+@keyframes streamX{to{transform:translateX(-50%)}}
+.row .px{width:92px;text-align:right;font-size:14px;font-weight:700;font-variant-numeric:tabular-nums;border-radius:6px;padding:3px 5px}
+.row .chg{width:64px;text-align:right}
+.flash-up{animation:fu .9s var(--ease-out)}.flash-down{animation:fd .9s var(--ease-out)}
+@keyframes fu{0%{background:rgba(224,52,75,.2)}100%{background:transparent}}
+@keyframes fd{0%{background:rgba(11,89,213,.2)}100%{background:transparent}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="switch"><a class="on" href="optionA.html">A</a><a href="optionB.html">B</a><a href="optionC.html">C</a></div>
+
+<header class="nav">
+  <div class="brand"><span class="mark">Y</span>유진 Insight Lab</div>
+  <nav><a href="#">리서치 리포트</a><a href="#">이벤트</a><a href="#">테마 쏠림</a><a href="#">인덱싱</a><a href="#">백테스팅</a></nav>
+  <div class="spacer"></div>
+  <button class="btn btn--text" style="font-size:14px">로그인</button>
+  <button class="btn btn--primary btn--sm">회원가입</button>
+</header>
+
+<section class="hero">
+  <div class="hero__grid">
+    <div class="lead">
+      <span class="badge badge--point">유진투자증권 리서치센터</span>
+      <h1>리서치가 끝나는 곳에서<br/>당신의 투자가 시작됩니다</h1>
+      <p>애널리스트 리포트부터 나만의 전략 설계와 10년 백테스팅까지.<br/>실시간으로 움직이는 시장을 한 화면에서 읽고 행동하세요.</p>
+      <div class="cta">
+        <button class="btn btn--primary btn--lg">내 전략 만들어보기</button>
+        <button class="btn btn--secondary btn--lg">오늘의 리포트 보기</button>
+      </div>
+      <div class="trust">
+        <div><b class="cn-figure" data-c="1240" data-s="+">0</b>연간 발행 리포트</div>
+        <div><b class="cn-figure" data-c="27">0</b>담당 애널리스트</div>
+        <div><b>매일 08:00</b>모닝 브리프</div>
+      </div>
+    </div>
+
+    <div class="board">
+      <div class="board__h"><span class="ttl">실시간 시세</span><span class="live"><i></i>LIVE</span></div>
+      <div class="rows" id="rows"></div>
+    </div>
+  </div>
+</section>
+
+<script>
+const $=(s,e=document)=>e.querySelector(s),$$=(s,e=document)=>[...e.querySelectorAll(s)];
+const fmt=(n,d=0)=>n.toLocaleString('ko-KR',{minimumFractionDigits:d,maximumFractionDigits:d});
+const sign=n=>(n>=0?'+':'')+n.toFixed(2);
+const mul=a=>()=>{a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296};
+function spark(seed,color){const r=mul(seed),W=72,H=30,n=12,p=[];let y=15+r()*3;
+  for(let i=0;i<=n;i++){y+=(r()-.45)*6;y=Math.max(5,Math.min(25,y));p.push(y)}p[n]=p[0];
+  const seg=o=>p.map((v,i)=>`${(o+i/n*W).toFixed(1)},${v.toFixed(1)}`).join(' ');
+  return `<svg viewBox="0 0 ${2*W} ${H}" preserveAspectRatio="none"><polyline class="stream" points="${seg(0)} ${seg(W)}" fill="none" stroke="${color}" stroke-width="2" vector-effect="non-scaling-stroke"/></svg>`}
+let items=[
+  {sym:'SK하이닉스',nm:'반도체',px:214500,d:0,chg:3.12},
+  {sym:'삼성전자',nm:'반도체',px:78900,d:0,chg:-0.63},
+  {sym:'HD현대일렉트릭',nm:'전력기기',px:312500,d:0,chg:4.20},
+  {sym:'에코프로비엠',nm:'2차전지',px:168300,d:0,chg:-1.12},
+  {sym:'삼성바이오로직스',nm:'바이오',px:812000,d:0,chg:0.91},
+  {sym:'현대차',nm:'자동차',px:248500,d:0,chg:2.05},
+];
+const ROWH=56;
+$('#rows').style.height=items.length*ROWH+8+'px';
+items.forEach((it,i)=>{it.id='r'+i;it.spark=spark(9+i*53, it.chg>=0?'#e0344b':'#0b59d5')});
+function build(){
+  $('#rows').innerHTML=items.map(it=>`<div class="row" id="${it.id}">
+    <span class="rk"></span>
+    <div class="nm"><b>${it.sym}</b><span>${it.nm}</span></div>
+    <div class="spark">${it.spark}</div>
+    <div class="px" id="${it.id}px">${fmt(it.px,it.d)}</div>
+    <div class="chg"><span class="badge ${it.chg>=0?'badge--up':'badge--down'} cn-figure" id="${it.id}c">${sign(it.chg)}%</span></div>
+  </div>`).join('');
+  place();
+}
+function place(){
+  const order=[...items].sort((a,b)=>b.chg-a.chg);
+  order.forEach((it,rank)=>{const el=$('#'+it.id);el.style.top=(rank*ROWH+8)+'px';
+    $('.rk',el).textContent=rank+1;});
+}
+function tick(){
+  items.forEach(it=>{const up=Math.random()>0.45;const step=it.px*(0.0004+Math.random()*0.0018)*(up?1:-1);
+    it.px=Math.max(1,it.px+step);it.chg+=step/it.px*100*0.5;
+    const col=up?'var(--price-up)':'var(--price-down)';
+    const px=$('#'+it.id+'px'),c=$('#'+it.id+'c');
+    px.textContent=fmt(it.px,it.d);px.style.color=col;
+    c.textContent=sign(it.chg)+'%';c.className='badge '+(it.chg>=0?'badge--up':'badge--down')+' cn-figure';
+    px.classList.remove('flash-up','flash-down');void px.offsetWidth;px.classList.add(up?'flash-up':'flash-down');
+  });
+  place();
+}
+build();setInterval(tick,1800);
+$$('.trust b[data-c]').forEach(el=>{const t=+el.dataset.c,s=el.dataset.s||'',t0=performance.now();
+  (function st(n){const p=Math.min(1,(n-t0)/1100),e=1-Math.pow(1-p,3);el.textContent=Math.round(t*e).toLocaleString('ko-KR')+(p===1?s:'');if(p<1)requestAnimationFrame(st)})(t0)});
+</script>
+</body>
+</html>

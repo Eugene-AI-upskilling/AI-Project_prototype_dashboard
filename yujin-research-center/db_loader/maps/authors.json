@@ -1,0 +1,10 @@
+{
+  "_comment": "작성자 영문ID → 한글명/담당. 비어있으면 PDF에서 추출한 이름 사용. 빈 항목 채워주세요.",
+  "jaehwan.huh": {"name": "허재환", "desk": "투자전략"},
+  "taehwan.ryu": {"name": "", "desk": ""},
+  "syyang0901":  {"name": "", "desk": ""},
+  "jongsun.park":{"name": "", "desk": ""},
+  "bhh1026":     {"name": "", "desk": ""},
+  "jnkim0526":   {"name": "", "desk": ""},
+  "leejaeil":    {"name": "", "desk": ""}
+}

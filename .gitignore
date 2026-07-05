@@ -50,3 +50,14 @@ output/cache/
 # 임시 파일
 temp_*
 *.tmp
+
+# ── secrets / local (추가) ──
+.env.py
+*/db_loader/.env
+**/gmail_token.json
+**/gmail_credentials.json
+.netlify/
+**/_cache/
+**/_tmp.pdf
+netlify_site.zip
+**/netlify_dist/

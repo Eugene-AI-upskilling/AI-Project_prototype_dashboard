@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>시안 B · 앰비언트 오로라</title>
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" />
+<style>
+@font-face{font-family:"Pretendard Variable";font-weight:45 920;font-style:normal;font-display:swap;
+  src:url("../assets/fonts/PretendardVariable.woff2") format("woff2-variations")}
+:root{
+  --blue-cta:#0b59d5;--blue-point:#0090ff;--blue-outline:#1772f8;--blue-navy:#062554;--blue-sub-1:#194386;--blue-main:#006bd6;
+  --ink-900:#040505;--ink-800:#17181b;--ink-500:#6b7684;--gray-400:#8d9299;
+  --white:#fff;--border-neutral:#dde4eb;--surface-tint:#ebf0f5;
+  --price-up:#e0344b;--price-down:#0b59d5;
+  --radius-md:8px;--radius-sm:3px;--radius-lg:10px;
+  --shadow-soft:rgba(0,0,0,.05) 0 1px 2px 0;--shadow-pop:rgba(0,0,0,.12) 0 6px 24px -4px,rgba(0,0,0,.06) 0 2px 6px 0;
+  --ease-out:cubic-bezier(.16,1,.3,1);
+  --font-sans:"Pretendard Variable","Pretendard",-apple-system,system-ui,"Apple SD Gothic Neo","Noto Sans KR",sans-serif}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;font-family:var(--font-sans);color:var(--ink-900);background:var(--white);-webkit-font-smoothing:antialiased}
+.cn-figure{font-variant-numeric:tabular-nums}
+.switch{position:fixed;top:14px;right:16px;z-index:99;display:flex;gap:6px;background:#fff;border:1px solid var(--border-neutral);border-radius:9999px;padding:5px;box-shadow:var(--shadow-pop)}
+.switch a{font-size:12px;font-weight:700;color:var(--ink-500);padding:6px 12px;border-radius:9999px;text-decoration:none}
+.switch a.on{background:var(--blue-cta);color:#fff}
+.nav{position:relative;z-index:3;display:flex;align-items:center;gap:30px;height:64px;padding:0 40px;border-bottom:1px solid var(--border-neutral)}
+.brand{display:flex;align-items:center;gap:9px;font-weight:800;font-size:17px;color:var(--blue-navy)}
+.mark{width:26px;height:26px;border-radius:7px;background:linear-gradient(135deg,var(--blue-cta),var(--blue-point));display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:14px}
+.nav nav{display:flex;gap:22px}.nav nav a{font-size:14px;font-weight:500;color:var(--ink-800);text-decoration:none}
+.spacer{flex:1}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:46px;padding:0 18px;font-size:15px;font-family:inherit;border:1px solid transparent;border-radius:var(--radius-md);cursor:pointer;white-space:nowrap;transition:background .12s,transform .12s}
+.btn:active{transform:scale(.98)}.btn--sm{height:36px;padding:0 14px;font-size:14px}.btn--lg{height:50px;padding:0 24px}
+.btn--primary{background:var(--blue-cta);color:#fff;font-weight:700}.btn--primary:hover{background:var(--blue-sub-1)}
+.btn--secondary{background:#fff;color:var(--ink-900);border-color:var(--border-neutral);font-weight:500}.btn--secondary:hover{background:var(--surface-tint)}
+.btn--text{background:none;color:var(--blue-cta);font-weight:400}
+.badge{display:inline-flex;align-items:center;gap:4px;height:22px;padding:0 8px;font-size:12px;font-weight:700;border-radius:var(--radius-sm)}
+.badge--point{background:rgba(0,144,255,.12);color:#0077d0}
+
+/* ===== HERO B : ambient aurora + floating theme bubbles ===== */
+.hero{position:relative;overflow:hidden;min-height:600px;background:#fff;isolation:isolate}
+.aurora{position:absolute;inset:-10% -5%;z-index:0;filter:blur(60px);pointer-events:none}
+.blob{position:absolute;border-radius:50%;opacity:.5;mix-blend-mode:multiply}
+.b1{width:520px;height:520px;left:-60px;top:-120px;background:radial-gradient(circle,rgba(0,144,255,.42),transparent 65%);animation:drift1 16s var(--ease-out) infinite alternate}
+.b2{width:560px;height:560px;right:-80px;top:-80px;background:radial-gradient(circle,rgba(11,89,213,.34),transparent 65%);animation:drift2 19s var(--ease-out) infinite alternate}
+.b3{width:480px;height:480px;left:38%;bottom:-220px;background:radial-gradient(circle,rgba(23,114,248,.3),transparent 65%);animation:drift3 22s var(--ease-out) infinite alternate}
+@keyframes drift1{to{transform:translate(120px,80px) scale(1.15)}}
+@keyframes drift2{to{transform:translate(-100px,90px) scale(1.1)}}
+@keyframes drift3{to{transform:translate(-80px,-70px) scale(1.2)}}
+.grid{position:absolute;inset:0;z-index:0;background-image:linear-gradient(var(--border-neutral) 1px,transparent 1px),linear-gradient(90deg,var(--border-neutral) 1px,transparent 1px);background-size:48px 48px;opacity:.4;
+  -webkit-mask-image:radial-gradient(75% 70% at 50% 40%,#000,transparent 80%);mask-image:radial-gradient(75% 70% at 50% 40%,#000,transparent 80%)}
+.bubbles{position:absolute;inset:0;z-index:1;overflow:hidden;pointer-events:none}
+.tb{position:absolute;bottom:-60px;display:inline-flex;align-items:center;gap:7px;padding:8px 13px;border-radius:9999px;
+  background:rgba(255,255,255,.78);border:1px solid var(--border-neutral);box-shadow:var(--shadow-soft);
+  font-size:13px;font-weight:600;white-space:nowrap;backdrop-filter:blur(4px);animation:rise linear infinite}
+.tb .dot{width:8px;height:8px;border-radius:50%}
+.tb .pct{font-variant-numeric:tabular-nums;font-weight:700}
+@keyframes rise{0%{transform:translateY(0);opacity:0}10%{opacity:1}85%{opacity:1}100%{transform:translateY(-118vh);opacity:0}}
+
+.hero__inner{position:relative;z-index:2;max-width:860px;margin:0 auto;padding:96px 40px 110px;text-align:center}
+.hero__inner h1{font-size:52px;line-height:1.13;letter-spacing:-.03em;font-weight:700;color:var(--blue-navy);margin:20px 0 0}
+.hero__inner p{font-size:19px;color:var(--ink-800);opacity:.82;line-height:1.65;margin:22px 0 0}
+.hero__inner .cta{display:flex;gap:12px;justify-content:center;margin-top:34px;flex-wrap:wrap}
+.stats{display:flex;justify-content:center;margin-top:48px}
+.stats div{padding:0 26px;border-right:1px solid var(--border-neutral)}.stats div:last-child{border:none}
+.stats b{display:block;font-size:24px;font-weight:700;color:var(--blue-navy)}.stats span{font-size:12px;color:var(--ink-500)}
+@media(prefers-reduced-motion:reduce){*{animation:none!important}}
+</style>
+</head>
+<body>
+<div class="switch"><a href="optionA.html">A</a><a class="on" href="optionB.html">B</a><a href="optionC.html">C</a></div>
+
+<header class="nav">
+  <div class="brand"><span class="mark">Y</span>유진 Insight Lab</div>
+  <nav><a href="#">리서치 리포트</a><a href="#">이벤트</a><a href="#">테마 쏠림</a><a href="#">인덱싱</a><a href="#">백테스팅</a></nav>
+  <div class="spacer"></div>
+  <button class="btn btn--text" style="font-size:14px">로그인</button>
+  <button class="btn btn--primary btn--sm">회원가입</button>
+</header>
+
+<section class="hero">
+  <div class="aurora"><span class="blob b1"></span><span class="blob b2"></span><span class="blob b3"></span></div>
+  <div class="grid"></div>
+  <div class="bubbles" id="bubbles"></div>
+
+  <div class="hero__inner">
+    <span class="badge badge--point">유진투자증권 리서치센터</span>
+    <h1>리서치가 끝나는 곳에서<br/>당신의 투자가 시작됩니다</h1>
+    <p>지금 시장에서 돈이 몰리는 테마가 떠오릅니다. 리포트로 읽고, 직접 전략을 만들고,<br/>10년 데이터로 검증까지 — 유진 Insight Lab 한 곳에서.</p>
+    <div class="cta">
+      <button class="btn btn--primary btn--lg">내 전략 만들어보기</button>
+      <button class="btn btn--secondary btn--lg">오늘의 리포트 보기</button>
+    </div>
+    <div class="stats">
+      <div><b class="cn-figure" data-c="1240" data-s="+">0</b><span>연간 발행 리포트</span></div>
+      <div><b class="cn-figure" data-c="27">0</b><span>담당 애널리스트</span></div>
+      <div><b>매일 08:00</b><span>모닝 브리프</span></div>
+    </div>
+  </div>
+</section>
+
+<script>
+const $$=(s,e=document)=>[...e.querySelectorAll(s)];
+const themes=[
+  ['AI 반도체',14.2],['전력기기',11.0],['조선',9.5],['방산',8.1],['바이오',6.8],
+  ['엔터',4.0],['금융/배당',2.1],['2차전지',-3.2],['로봇',-1.5],['반도체 소부장',7.4],['우주항공',5.6],['원전',6.2]
+];
+const col=r=>{const t=Math.max(0,Math.min(1,(r+6)/21));const a=[11,89,213],b=[224,52,75];return `rgb(${a.map((v,i)=>Math.round(v+(b[i]-v)*t)).join(',')})`};
+const wrap=document.getElementById('bubbles');
+themes.forEach((t,i)=>{
+  const el=document.createElement('span');el.className='tb';
+  const c=col(t[1]);
+  el.innerHTML=`<i class="dot" style="background:${c}"></i>${t[0]} <span class="pct" style="color:${c}">${t[1]>=0?'+':''}${t[1].toFixed(1)}%</span>`;
+  el.style.left=(4+ (i*8.3)%92)+'%';
+  const dur=16+ (i%5)*4;          // 16~32s
+  el.style.animationDuration=dur+'s';
+  el.style.animationDelay=(-i*2.4)+'s';
+  wrap.appendChild(el);
+});
+$$('.stats b[data-c]').forEach(el=>{const t=+el.dataset.c,s=el.dataset.s||'',t0=performance.now();
+  (function st(n){const p=Math.min(1,(n-t0)/1100),e=1-Math.pow(1-p,3);el.textContent=Math.round(t*e).toLocaleString('ko-KR')+(p===1?s:'');if(p<1)requestAnimationFrame(st)})(t0)});
+</script>
+</body>
+</html>

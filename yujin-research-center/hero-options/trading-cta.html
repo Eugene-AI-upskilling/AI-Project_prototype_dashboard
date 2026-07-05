@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Hero · Trading CTA 시안 4종 비교</title>
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" />
+<style>
+/* ─────────────────────────────────────────────────────────────
+   기존 index.html 디자인 토큰 그대로 복사 (색/타입/여백/라디우스/모션)
+   ───────────────────────────────────────────────────────────── */
+@font-face{font-family:"Pretendard Variable";font-weight:45 920;font-style:normal;font-display:swap;
+  src:url("../assets/fonts/PretendardVariable.woff2") format("woff2-variations")}
+:root{
+  --blue-main:#1b74e4; --blue-point:#4dabf7; --blue-sub-1:#1c6fe6; --blue-navy:#0b2e6b;
+  --blue-cta:#3182f6; --blue-outline:#3182f6;
+  --ink-900:#040505; --ink-800:#17181b; --ink-500:#6b7684;
+  --gray-100:#eeeff0; --gray-200:#cfd0d3; --gray-400:#8d9299; --gray-500:#616670;
+  --white:#fff; --border-neutral:#dde4eb; --surface-tint:#ebf0f5;
+  --price-up:#e0344b; --price-down:#143f96;
+  --color-surface:var(--white); --color-surface-tint:var(--surface-tint);
+  --color-foreground:var(--ink-900); --color-muted:var(--ink-500); --color-hairline:var(--border-neutral);
+  --color-primary:var(--blue-cta); --color-primary-hover:var(--blue-sub-1); --color-on-primary:var(--white);
+  --text-display:48px; --text-hero:34px; --text-link:16px; --text-control:15px; --text-body:15px; --text-micro:12px;
+  --space-sm:8px; --space-md:12px; --space-lg:18px; --space-xl:32px;
+  --radius-sm:6px; --radius-chip:10px; --radius-md:14px; --radius-lg:20px; --radius-full:9999px;
+  --shadow-soft:rgba(17,24,39,.04) 0 2px 8px 0,rgba(17,24,39,.04) 0 1px 2px 0;
+  --shadow-pop:rgba(17,24,39,.10) 0 16px 40px -12px,rgba(17,24,39,.05) 0 4px 12px 0;
+  --ease-out:cubic-bezier(.16,1,.3,1); --dur-micro:120ms; --dur-toggle:200ms;
+  --font-sans:"Pretendard Variable","Pretendard",-apple-system,BlinkMacSystemFont,system-ui,"Apple SD Gothic Neo","Noto Sans KR",sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;font-family:var(--font-sans);font-size:var(--text-body);line-height:1.6;letter-spacing:-.01em;
+  color:var(--color-foreground);background:#f4f6fa;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+h1{margin:0}
+
+/* ── 기존 버튼 시스템 그대로 ── */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:var(--space-sm);
+  height:50px;padding:0 22px;font-size:var(--text-control);font-weight:600;font-family:var(--font-sans);line-height:1;
+  border:1px solid transparent;border-radius:var(--radius-md);cursor:pointer;white-space:nowrap;
+  transition:background var(--dur-micro) var(--ease-out),border-color var(--dur-micro) var(--ease-out),
+  color var(--dur-micro) var(--ease-out),transform var(--dur-toggle) var(--ease-out),box-shadow var(--dur-toggle) var(--ease-out)}
+.btn:active{transform:scale(.97)}
+.btn--navy{background:var(--blue-navy);color:#fff;font-weight:700;height:52px;padding:0 26px}
+.btn--navy:hover{background:#0a317a}
+.btn--bluebig{background:var(--blue-cta);color:#fff;font-weight:700;height:52px;padding:0 30px}
+.btn--bluebig:hover{background:#1772f8}
+
+/* ── 기존 hero 스타일 (비교용으로 slide 애니메이션만 정적 처리) ── */
+.hero{position:relative;overflow:hidden;isolation:isolate}
+.hero__bg{position:absolute;inset:0;z-index:0;background:#eef3fb url("../assets/hero-skyline.jpg") center right/cover no-repeat}
+.hero__bg::after{content:"";position:absolute;inset:0;
+  background:linear-gradient(90deg,rgba(255,255,255,.96) 0%,rgba(255,255,255,.82) 42%,rgba(255,255,255,.28) 72%,rgba(232,240,252,.12) 100%)}
+.hero__inner{position:relative;z-index:2;max-width:1480px;margin:0 auto;padding:0 40px;
+  display:grid;grid-template-columns:.9fr 1.1fr;gap:30px;align-items:center;min-height:520px}
+.hero .left{position:relative;padding:48px 0}
+.hero-eyebrow{font-size:13px;font-weight:700;letter-spacing:.16em;color:var(--ink-500);margin-bottom:16px}
+.left h1{font-size:var(--text-display);line-height:1.24;letter-spacing:-.01em;font-weight:700;color:var(--ink-900)}
+.left h1 .b{color:var(--blue-cta)}
+.left .sub{margin-top:18px;font-size:var(--text-link);color:var(--ink-500);line-height:1.6;max-width:440px;font-weight:500}
+.left .sub-en{margin-top:8px;font-size:14px;color:var(--gray-400);font-weight:500;letter-spacing:.01em}
+.cta{display:flex;gap:12px;margin-top:34px;flex-wrap:wrap}
+
+/* floating glass cards (우측) */
+.hero__cards{position:relative;min-height:400px}
+.gcard{position:absolute;display:flex;align-items:center;gap:10px;width:198px;
+  background:rgba(255,255,255,.46);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  border:1px solid rgba(255,255,255,.6);border-radius:14px;box-shadow:0 14px 34px -14px rgba(20,44,98,.26);padding:10px 12px}
+.gcard__ic{width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex:0 0 auto;background:#e9f0fb;color:#5374bf}
+.gcard__ic svg{width:18px;height:18px}
+.gcard__tx{display:flex;flex-direction:column;min-width:0}
+.gcard__tt{font-weight:700;font-size:12px;color:var(--ink-900);line-height:1.2}
+.gcard__sub{font-size:9.5px;color:var(--color-muted);margin-top:2px;line-height:1.35}
+
+/* ═══════════════════════════════════════════════════════════════
+   NEW · Trading CTA 컴포넌트 (기존 톤 위에 얹는 최소 추가분)
+   ═══════════════════════════════════════════════════════════════ */
+
+/* live 표시 도트 (공통) */
+.tl-live{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:700;letter-spacing:.02em;color:var(--blue-navy)}
+.tl-live::before{content:"";width:7px;height:7px;border-radius:50%;background:#e0344b;box-shadow:0 0 0 0 rgba(224,52,75,.5);animation:tlPulse 1.8s var(--ease-out) infinite}
+@keyframes tlPulse{0%{box-shadow:0 0 0 0 rgba(224,52,75,.45)}70%{box-shadow:0 0 0 7px rgba(224,52,75,0)}100%{box-shadow:0 0 0 0 rgba(224,52,75,0)}}
+
+/* Option 1 · ghost "Trading League ↗" — 튀지 않게 border+icon만 */
+.btn--league{background:transparent;color:var(--blue-navy);border:1px solid rgba(11,46,107,.26);font-weight:700;height:52px;padding:0 22px}
+.btn--league:hover{border-color:var(--blue-navy);background:rgba(11,46,107,.045)}
+.btn--league .arw{transition:transform var(--dur-toggle) var(--ease-out)}
+.btn--league:hover .arw{transform:translate(2px,-2px)}
+
+/* Option 2 · Hero 하단 프로모션 카드 */
+.tl-promo{margin-top:26px;max-width:540px;display:flex;align-items:center;gap:16px;padding:14px 16px;
+  border:1px solid var(--color-hairline);border-radius:var(--radius-md);
+  background:linear-gradient(100deg,rgba(11,46,107,.05),rgba(49,130,246,.06));box-shadow:var(--shadow-soft)}
+.tl-promo__ic{width:44px;height:44px;flex:0 0 auto;border-radius:12px;display:flex;align-items:center;justify-content:center;
+  background:var(--blue-navy);color:#fff}
+.tl-promo__ic svg{width:22px;height:22px}
+.tl-promo__tx{flex:1;min-width:0}
+.tl-promo__row{display:flex;align-items:center;gap:10px}
+.tl-promo__tt{font-size:15px;font-weight:800;color:var(--ink-900);letter-spacing:-.01em}
+.tl-promo__sub{margin-top:3px;font-size:13px;color:var(--ink-500);line-height:1.4}
+.tl-promo__go{flex:0 0 auto;display:inline-flex;align-items:center;gap:6px;height:40px;padding:0 16px;border-radius:var(--radius-sm);
+  background:var(--blue-cta);color:#fff;font-size:14px;font-weight:700;border:none;cursor:pointer;white-space:nowrap;
+  transition:background var(--dur-micro) var(--ease-out)}
+.tl-promo__go:hover{background:#1772f8}
+
+/* Option 3 · 우측 Floating Arena Card (glassmorphism, 과하지 않게) */
+.tl-arena{position:absolute;right:8px;bottom:12px;width:236px;z-index:4;
+  background:rgba(15,24,48,.62);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+  border:1px solid rgba(255,255,255,.14);border-radius:18px;box-shadow:0 22px 50px -16px rgba(6,18,52,.5);
+  padding:18px;color:#fff}
+.tl-arena__top{display:flex;align-items:center;justify-content:space-between}
+.tl-arena__ic{width:36px;height:36px;border-radius:11px;display:flex;align-items:center;justify-content:center;
+  background:rgba(255,255,255,.12);color:#8fb6ff}
+.tl-arena__ic svg{width:19px;height:19px}
+.tl-arena__live{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:700;color:#dfe8fb}
+.tl-arena__live::before{content:"";width:6px;height:6px;border-radius:50%;background:#e0344b;animation:tlPulse 1.8s var(--ease-out) infinite}
+.tl-arena__tt{margin-top:14px;font-size:18px;font-weight:800;letter-spacing:-.01em}
+.tl-arena__players{margin-top:4px;font-size:13px;color:#aebfdd;font-variant-numeric:tabular-nums}
+.tl-arena__players b{color:#fff;font-weight:700}
+.tl-arena__go{margin-top:14px;width:100%;height:42px;display:inline-flex;align-items:center;justify-content:center;gap:7px;
+  border:none;border-radius:12px;background:var(--blue-cta);color:#fff;font-size:14px;font-weight:700;cursor:pointer;
+  transition:background var(--dur-micro) var(--ease-out)}
+.tl-arena__go:hover{background:#1772f8}
+
+/* Option 4 · 감성 카피 + 2 CTA */
+.tl-caption{margin-top:22px;font-size:15px;font-weight:700;letter-spacing:.06em;color:var(--blue-navy);text-transform:uppercase}
+.tl-caption .dot{color:var(--gray-200);margin:0 8px;font-weight:400}
+.btn--beat{background:linear-gradient(120deg,var(--blue-navy),var(--blue-cta));color:#fff;font-weight:700;height:52px;padding:0 26px;
+  box-shadow:0 10px 26px -10px rgba(11,46,107,.55)}
+.btn--beat:hover{filter:brightness(1.06)}
+
+/* ── 비교 레이아웃 (시안별 라벨/구분) ── */
+.wrap{max-width:1480px;margin:0 auto;padding:28px 20px 80px}
+.page-head{padding:8px 4px 20px}
+.page-head h2{margin:0;font-size:22px;font-weight:800;color:var(--blue-navy)}
+.page-head p{margin:6px 0 0;font-size:14px;color:var(--ink-500)}
+.opt{background:#fff;border:1px solid var(--border-neutral);border-radius:var(--radius-lg);overflow:hidden;
+  box-shadow:var(--shadow-soft);margin-bottom:28px}
+.opt__label{display:flex;align-items:center;gap:12px;padding:14px 18px;border-bottom:1px solid var(--border-neutral);background:#fff}
+.opt__num{display:inline-flex;align-items:center;height:26px;padding:0 12px;border-radius:var(--radius-full);
+  background:var(--blue-navy);color:#fff;font-size:12px;font-weight:800;letter-spacing:.02em}
+.opt__desc{font-size:13.5px;font-weight:600;color:var(--ink-800)}
+.opt__desc span{color:var(--ink-500);font-weight:500}
+
+/* ── 반응형: CTA 세로 스택 ── */
+@media(max-width:980px){
+  .hero__inner{grid-template-columns:1fr;min-height:auto;padding:24px}
+  .hero__cards{display:none}
+  .left{padding:8px 0}
+  .left h1{font-size:34px}
+  .cta{flex-direction:column;align-items:stretch}
+  .cta .btn{width:100%}
+  .tl-promo{flex-direction:column;align-items:flex-start;gap:12px}
+  .tl-promo__go{width:100%;justify-content:center;height:44px}
+  .tl-arena{position:static;width:100%;margin-top:20px}
+  .tl-caption{font-size:14px}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="page-head">
+    <h2>Hero · Trading 플랫폼 CTA — 디자인 시안 4종</h2>
+    <p>기존 유진 Insight Lab Hero의 다크톤 · 스카이라인 배경 · 폰트/여백/네비 구조를 유지한 채, Trading CTA만 자연스럽게 추가했습니다. 데스크톱 기준 (모바일에서는 CTA 세로 스택).</p>
+  </div>
+
+  <!-- ══════════════════ OPTION 1 ══════════════════ -->
+  <div class="opt">
+    <div class="opt__label"><span class="opt__num">Option 1</span>
+      <span class="opt__desc">Hero 버튼 2개형 <span>· 기존 CTA 유지 + ghost "Trading League ↗" 추가</span></span></div>
+    <section class="hero">
+      <div class="hero__bg"></div>
+      <div class="hero__inner">
+        <div class="left">
+          <div class="hero-eyebrow">EUGENE INVESTMENT &amp; SECURITIES</div>
+          <h1>유진투자증권<br/>리서치 플랫폼<br/><span class="b">유진 Insight Lab</span></h1>
+          <p class="sub">깊이 있는 인사이트와 데이터 기반 분석으로<br/>더 나은 투자와 미래를 설계합니다.</p>
+          <p class="sub-en">Insightful Analysis, Smarter Investment</p>
+          <div class="cta">
+            <button class="btn btn--navy"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M8 13h8M8 17h6"/></svg>리포트 둘러보기</button>
+            <!-- NEW: ghost secondary -->
+            <button class="btn btn--league"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M6 4h12v5a6 6 0 0 1-12 0z"/><path d="M9 20h6M12 14v6"/></svg>Trading League <span class="arw" aria-hidden="true">↗</span></button>
+          </div>
+        </div>
+        <div class="hero__cards" aria-hidden="true">
+          <div class="gcard" style="top:14%;left:42%"><span class="gcard__ic"><svg viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="12" width="4" height="8" rx="1"/><rect x="10" y="7" width="4" height="13" rx="1"/><rect x="17" y="3" width="4" height="17" rx="1"/></svg></span><span class="gcard__tx"><span class="gcard__tt">Global Macro Insight</span><span class="gcard__sub">주요 국가 경기, 정책, 물가 동향</span></span></div>
+          <div class="gcard" style="top:44%;left:0"><span class="gcard__ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h4l2-6 4 12 2-6h6"/></svg></span><span class="gcard__tx"><span class="gcard__tt">Market Now</span><span class="gcard__sub">실시간 시장 지표 및 이벤트</span></span></div>
+          <div class="gcard" style="top:66%;left:30%"><span class="gcard__ic"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M11 3.05A9 9 0 1 0 20.95 13H11z" opacity=".5"/><path d="M13 3.05V11h7.95A9 9 0 0 0 13 3.05z"/></svg></span><span class="gcard__tx"><span class="gcard__tt">Sector Outlook</span><span class="gcard__sub">업종별 전망 및 투자 전략</span></span></div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- ══════════════════ OPTION 2 ══════════════════ -->
+  <div class="opt">
+    <div class="opt__label"><span class="opt__num">Option 2</span>
+      <span class="opt__desc">Hero 하단 프로모션 카드형 <span>· 기존 CTA와 분리된 얇은 프로모 카드</span></span></div>
+    <section class="hero">
+      <div class="hero__bg"></div>
+      <div class="hero__inner">
+        <div class="left">
+          <div class="hero-eyebrow">EUGENE INVESTMENT &amp; SECURITIES</div>
+          <h1>유진투자증권<br/>리서치 플랫폼<br/><span class="b">유진 Insight Lab</span></h1>
+          <p class="sub">깊이 있는 인사이트와 데이터 기반 분석으로<br/>더 나은 투자와 미래를 설계합니다.</p>
+          <p class="sub-en">Insightful Analysis, Smarter Investment</p>
+          <div class="cta">
+            <button class="btn btn--navy"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M8 13h8M8 17h6"/></svg>리포트 둘러보기</button>
+            <button class="btn btn--bluebig"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>로그인</button>
+          </div>
+          <!-- NEW: 하단 프로모션 카드 -->
+          <div class="tl-promo">
+            <span class="tl-promo__ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M6 4h12v5a6 6 0 0 1-12 0z"/><path d="M9 20h6M12 14v6"/></svg></span>
+            <div class="tl-promo__tx">
+              <div class="tl-promo__row"><span class="tl-promo__tt">AI Sapiens Trading League</span><span class="tl-live">Season 1 Live</span></div>
+              <div class="tl-promo__sub">리포트를 읽는 것에서, 직접 예측하고 경쟁하는 것으로.</div>
+            </div>
+            <button class="tl-promo__go">참여하기 <span aria-hidden="true">→</span></button>
+          </div>
+        </div>
+        <div class="hero__cards" aria-hidden="true">
+          <div class="gcard" style="top:12%;left:42%"><span class="gcard__ic"><svg viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="12" width="4" height="8" rx="1"/><rect x="10" y="7" width="4" height="13" rx="1"/><rect x="17" y="3" width="4" height="17" rx="1"/></svg></span><span class="gcard__tx"><span class="gcard__tt">Global Macro Insight</span><span class="gcard__sub">주요 국가 경기, 정책, 물가 동향</span></span></div>
+          <div class="gcard" style="top:42%;left:2%"><span class="gcard__ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h4l2-6 4 12 2-6h6"/></svg></span><span class="gcard__tx"><span class="gcard__tt">Market Now</span><span class="gcard__sub">실시간 시장 지표 및 이벤트</span></span></div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- ══════════════════ OPTION 3 ══════════════════ -->
+  <div class="opt">
+    <div class="opt__label"><span class="opt__num">Option 3</span>
+      <span class="opt__desc">우측 Floating Card형 <span>· glassmorphism Trading Arena 카드</span></span></div>
+    <section class="hero">
+      <div class="hero__bg"></div>
+      <div class="hero__inner">
+        <div class="left">
+          <div class="hero-eyebrow">EUGENE INVESTMENT &amp; SECURITIES</div>
+          <h1>유진투자증권<br/>리서치 플랫폼<br/><span class="b">유진 Insight Lab</span></h1>
+          <p class="sub">깊이 있는 인사이트와 데이터 기반 분석으로<br/>더 나은 투자와 미래를 설계합니다.</p>
+          <p class="sub-en">Insightful Analysis, Smarter Investment</p>
+          <div class="cta">
+            <button class="btn btn--navy"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M8 13h8M8 17h6"/></svg>리포트 둘러보기</button>
+            <button class="btn btn--bluebig"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>로그인</button>
+          </div>
+        </div>
+        <div class="hero__cards">
+          <div class="gcard" aria-hidden="true" style="top:8%;left:38%"><span class="gcard__ic"><svg viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="12" width="4" height="8" rx="1"/><rect x="10" y="7" width="4" height="13" rx="1"/><rect x="17" y="3" width="4" height="17" rx="1"/></svg></span><span class="gcard__tx"><span class="gcard__tt">Global Macro Insight</span><span class="gcard__sub">주요 국가 경기, 정책, 물가 동향</span></span></div>
+          <div class="gcard" aria-hidden="true" style="top:34%;left:0"><span class="gcard__ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h4l2-6 4 12 2-6h6"/></svg></span><span class="gcard__tx"><span class="gcard__tt">Market Now</span><span class="gcard__sub">실시간 시장 지표 및 이벤트</span></span></div>
+          <!-- NEW: Floating Arena card -->
+          <div class="tl-arena">
+            <div class="tl-arena__top">
+              <span class="tl-arena__ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M6 4h12v5a6 6 0 0 1-12 0z"/><path d="M9 20h6M12 14v6"/></svg></span>
+              <span class="tl-arena__live">Season 1 Live</span>
+            </div>
+            <div class="tl-arena__tt">Trading Arena</div>
+            <div class="tl-arena__players"><b>2,341</b> Players</div>
+            <button class="tl-arena__go">Enter Arena <span aria-hidden="true">→</span></button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- ══════════════════ OPTION 4 ══════════════════ -->
+  <div class="opt">
+    <div class="opt__label"><span class="opt__num">Option 4</span>
+      <span class="opt__desc">감성 카피 + CTA형 <span>· "Research. Predict. Compete." + 2 버튼</span></span></div>
+    <section class="hero">
+      <div class="hero__bg"></div>
+      <div class="hero__inner">
+        <div class="left">
+          <div class="hero-eyebrow">EUGENE INVESTMENT &amp; SECURITIES</div>
+          <h1>유진투자증권<br/>리서치 플랫폼<br/><span class="b">유진 Insight Lab</span></h1>
+          <p class="sub">깊이 있는 인사이트와 데이터 기반 분석으로<br/>더 나은 투자와 미래를 설계합니다.</p>
+          <!-- NEW: 감성 카피 -->
+          <div class="tl-caption">Research<span class="dot">·</span>Predict<span class="dot">·</span>Compete</div>
+          <div class="cta">
+            <button class="btn btn--navy"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M8 13h8M8 17h6"/></svg>Explore Research</button>
+            <!-- NEW: Beat the AI (gradient) -->
+            <button class="btn btn--beat"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg>Beat the AI</button>
+          </div>
+        </div>
+        <div class="hero__cards" aria-hidden="true">
+          <div class="gcard" style="top:14%;left:42%"><span class="gcard__ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 6a3 3 0 0 0-5.8-1A2.6 2.6 0 0 0 4.5 10 2.6 2.6 0 0 0 6 14.5 2.6 2.6 0 0 0 10 17a2.5 2.5 0 0 0 2-1"/><path d="M12 6a3 3 0 0 1 5.8-1A2.6 2.6 0 0 1 19.5 10 2.6 2.6 0 0 1 18 14.5 2.6 2.6 0 0 1 14 17a2.5 2.5 0 0 1-2-1"/><path d="M12 6v11"/></svg></span><span class="gcard__tx"><span class="gcard__tt">AI Powered Analysis</span><span class="gcard__sub">AI 기반 데이터 분석 인사이트</span></span></div>
+          <div class="gcard" style="top:44%;left:2%"><span class="gcard__ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h4l2-6 4 12 2-6h6"/></svg></span><span class="gcard__tx"><span class="gcard__tt">Market Now</span><span class="gcard__sub">실시간 시장 지표 및 이벤트</span></span></div>
+          <div class="gcard" style="top:66%;left:30%"><span class="gcard__ic"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M11 3.05A9 9 0 1 0 20.95 13H11z" opacity=".5"/><path d="M13 3.05V11h7.95A9 9 0 0 0 13 3.05z"/></svg></span><span class="gcard__tx"><span class="gcard__tt">Sector Outlook</span><span class="gcard__sub">업종별 전망 및 투자 전략</span></span></div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+</div>
+</body>
+</html>

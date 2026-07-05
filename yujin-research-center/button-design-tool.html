@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>유진 Insight Lab · 히어로 버튼 위치 미세조정 툴</title>
+<style>
+/* ───── 실제 index.html에서 가져온 폰트/토큰/스타일 (버튼 위치를 정확히 재현) ───── */
+@font-face{
+  font-family:"Pretendard Variable";
+  font-weight:45 920;font-style:normal;font-display:swap;
+  src:url("assets/fonts/PretendardVariable.woff2") format("woff2-variations");
+}
+:root{
+  --blue-navy:#0b2e6b; --blue-cta:#3182f6;
+  --ink-900:#040505; --ink-500:#6b7684; --gray-400:#8d9299;
+  --text-display:48px; --text-link:16px; --text-control:15px;
+  --space-sm:8px; --radius-md:14px;
+  --ease-out:cubic-bezier(.16,1,.3,1); --dur-micro:120ms; --dur-toggle:200ms;
+  --font-sans:"Pretendard Variable","Pretendard",-apple-system,BlinkMacSystemFont,system-ui,"Apple SD Gothic Neo","Noto Sans KR",sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;font-family:var(--font-sans);color:var(--ink-900);background:#0f1420;
+  -webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;letter-spacing:-.01em}
+
+/* ───── 툴 상단 안내바 ───── */
+.toolbar{position:sticky;top:0;z-index:50;display:flex;align-items:center;gap:14px;flex-wrap:wrap;
+  padding:12px 18px;background:#161c2b;color:#e6ecf6;border-bottom:1px solid #232c40;font-size:13px}
+.toolbar b{color:#fff}
+.toolbar .pill{display:inline-flex;align-items:center;gap:6px;background:#212a3e;border:1px solid #2e3950;
+  padding:5px 10px;border-radius:999px;color:#b9c6df}
+.toolbar kbd{background:#0d121d;border:1px solid #344;border-bottom-width:2px;border-radius:5px;
+  padding:1px 6px;font-family:ui-monospace,monospace;font-size:11px;color:#cfe0ff}
+.toolbar button{font:inherit;cursor:pointer;background:#243049;color:#dce6f7;
+  border:1px solid #34415c;border-radius:8px;padding:6px 12px;font-size:12px;font-weight:600}
+.toolbar button:hover{background:#2c3a57}
+.toolbar label{display:inline-flex;align-items:center;gap:6px;color:#b9c6df;cursor:pointer}
+
+/* ───── 실제 히어로 재현 ───── */
+.stage{position:relative;overflow:hidden;min-height:640px;isolation:isolate;background:#0f1420}
+.hero{position:relative;overflow:hidden;min-height:640px;isolation:isolate}
+.hero__bg{position:absolute;inset:0;z-index:0;
+  background:#eef3fb url("assets/hero-skyline.jpg") center right/cover no-repeat}
+.hero__bg::after{content:"";position:absolute;inset:0;
+  background:linear-gradient(90deg,#fff 0%,rgba(255,255,255,.9) 22%,rgba(255,255,255,.5) 44%,rgba(255,255,255,.12) 64%,rgba(255,255,255,0) 100%)}
+.hero__inner{position:relative;z-index:2;max-width:1480px;margin:0 auto;padding:0 40px;
+  display:grid;grid-template-columns:.9fr 1.1fr;gap:30px;align-items:center;min-height:560px}
+.left{position:relative;min-height:520px;padding:48px 0}
+.slide{position:relative}
+.hero-eyebrow{font-size:13px;font-weight:700;letter-spacing:.16em;color:var(--ink-500);margin-bottom:16px}
+h1{font-size:var(--text-display);line-height:1.24;letter-spacing:-.01em;font-weight:700;color:var(--ink-900);margin:0}
+h1 .b{color:var(--blue-cta)}
+.sub{margin-top:18px;font-size:var(--text-link);color:var(--ink-500);line-height:1.6;max-width:440px;font-weight:500}
+.sub-en{margin-top:8px;font-size:14px;color:var(--gray-400);font-weight:500;letter-spacing:.01em}
+.cta{display:flex;gap:12px;margin-top:34px;flex-wrap:wrap}
+
+.btn{position:relative;display:inline-flex;align-items:center;justify-content:center;gap:var(--space-sm);
+  height:50px;padding:0 22px;font-size:var(--text-control);font-weight:600;font-family:var(--font-sans);line-height:1;
+  border:1px solid transparent;border-radius:var(--radius-md);cursor:grab;white-space:nowrap;user-select:none;
+  transition:box-shadow var(--dur-toggle) var(--ease-out)}
+.btn svg{pointer-events:none}
+.btn--navy{background:var(--blue-navy);color:#fff;font-weight:700;height:52px;padding:0 26px}
+.btn--bluebig{background:var(--blue-cta);color:#fff;font-weight:700;height:52px;padding:0 30px}
+
+/* 드래그 중/선택 표시 */
+.btn.dragging{cursor:grabbing}
+.btn.selected{box-shadow:0 0 0 2px #fff,0 0 0 5px var(--blue-cta)}
+
+/* 원래(미세조정 0) 위치를 보여주는 고스트 */
+.ghost{position:absolute;border:1.5px dashed rgba(49,130,246,.85);border-radius:var(--radius-md);
+  pointer-events:none;z-index:3;display:none}
+.show-ghost .ghost{display:block}
+
+/* ───── 좌표 패널 ───── */
+.panel{position:fixed;right:16px;bottom:16px;z-index:60;width:340px;max-width:calc(100vw - 32px);
+  background:#0e1422;border:1px solid #283248;border-radius:14px;color:#dce6f7;
+  box-shadow:0 18px 50px -12px rgba(0,0,0,.6);font-size:13px;overflow:hidden}
+.panel__hd{display:flex;align-items:center;justify-content:space-between;
+  padding:11px 14px;background:#141c2c;border-bottom:1px solid #232c40;font-weight:700;color:#fff}
+.panel__bd{padding:12px 14px}
+.coord{display:grid;grid-template-columns:1fr auto;gap:6px 10px;align-items:center;margin-bottom:10px}
+.coord .nm{font-weight:600}
+.coord .nm.navy::before,.coord .nm.cta::before{content:"";display:inline-block;width:9px;height:9px;
+  border-radius:3px;margin-right:7px;vertical-align:middle}
+.coord .nm.navy::before{background:var(--blue-navy);outline:1px solid #2f4f8a}
+.coord .nm.cta::before{background:var(--blue-cta)}
+.coord .val{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;color:#a9ffd0;text-align:right}
+.out{width:100%;height:96px;resize:vertical;background:#0a0f1a;color:#bfe3ff;border:1px solid #243049;
+  border-radius:9px;padding:9px 10px;font-family:ui-monospace,monospace;font-size:12px;line-height:1.5}
+.panel__bt{display:flex;gap:8px;margin-top:9px}
+.panel__bt button{flex:1;font:inherit;font-size:12px;font-weight:700;cursor:pointer;
+  border:1px solid #34415c;border-radius:8px;padding:8px;background:#243049;color:#dce6f7}
+.panel__bt button.primary{background:var(--blue-cta);border-color:var(--blue-cta);color:#fff}
+.panel__bt button:hover{filter:brightness(1.1)}
+.hint{margin-top:9px;color:#7e8ba6;font-size:11px;line-height:1.5}
+.copied{color:#7dffb0!important}
+</style>
+</head>
+<body>
+
+<div class="toolbar">
+  <b>🎯 히어로 버튼 위치 미세조정</b>
+  <span class="pill">버튼을 <b>드래그</b>해서 이동</span>
+  <span class="pill">선택 후 <kbd>←↑↓→</kbd> 1px · <kbd>Shift</kbd>+방향키 10px</span>
+  <button id="resetBtn">↺ 원위치</button>
+  <label><input type="checkbox" id="ghostChk" checked /> 원래 위치(점선) 표시</label>
+</div>
+
+<div class="stage show-ghost" id="stage">
+  <section class="hero">
+    <div class="hero__bg"></div>
+    <div class="hero__inner">
+      <div class="left">
+        <div class="slide">
+          <div class="hero-eyebrow">EUGENE INVESTMENT &amp; SECURITIES</div>
+          <h1>유진투자증권<br/>리서치 플랫폼<br/><span class="b">유진 Insight Lab</span></h1>
+          <p class="sub">깊이 있는 인사이트와 데이터 기반 분석으로<br/>더 나은 투자와 미래를 설계합니다.</p>
+          <p class="sub-en">Insightful Analysis, Smarter Investment</p>
+          <div class="cta">
+            <button class="btn btn--navy" id="btnNavy" data-name="리포트 둘러보기"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M8 13h8M8 17h6"/></svg>리포트 둘러보기</button>
+            <button class="btn btn--bluebig" id="btnCta" data-name="로그인"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>로그인</button>
+          </div>
+        </div>
+      </div>
+      <div></div>
+    </div>
+  </section>
+  <!-- 원래 위치 고스트 (JS가 위치 계산) -->
+  <div class="ghost" id="ghostNavy"></div>
+  <div class="ghost" id="ghostCta"></div>
+</div>
+
+<div class="panel">
+  <div class="panel__hd"><span>📐 미세조정 좌표</span><span id="selName" style="font-size:11px;color:#8aa">—</span></div>
+  <div class="panel__bd">
+    <div class="coord">
+      <span class="nm navy">리포트 둘러보기</span><span class="val" id="valNavy">translate(0px, 0px)</span>
+      <span class="nm cta">로그인</span><span class="val" id="valCta">translate(0px, 0px)</span>
+    </div>
+    <textarea class="out" id="out" readonly></textarea>
+    <div class="panel__bt">
+      <button class="primary" id="copyBtn">📋 복사</button>
+      <button id="resetBtn2">↺ 초기화</button>
+    </div>
+    <div class="hint">이 박스 내용을 복사해서 클로드에게 붙여넣으면 index.html에 그대로 적용해줘요.<br>각 값은 “원래 위치 기준” 이동량(px)입니다.</div>
+  </div>
+</div>
+
+<script>
+(function(){
+  const btns = {
+    navy: {el: document.getElementById('btnNavy'), ghost: document.getElementById('ghostNavy'),
+           val: document.getElementById('valNavy'), name:'리포트 둘러보기', dx:0, dy:0},
+    cta:  {el: document.getElementById('btnCta'),  ghost: document.getElementById('ghostCta'),
+           val: document.getElementById('valCta'),  name:'로그인', dx:0, dy:0},
+  };
+  const stage = document.getElementById('stage');
+  const out = document.getElementById('out');
+  const selName = document.getElementById('selName');
+  let selected = null;
+
+  function apply(b){
+    b.el.style.transform = `translate(${b.dx}px, ${b.dy}px)`;
+    b.val.textContent = `translate(${b.dx}px, ${b.dy}px)`;
+  }
+  function placeGhost(b){
+    // 버튼의 "원래(이동 0)" 위치를 stage 좌표계로 환산해 점선 표시
+    const prevT = b.el.style.transform;
+    b.el.style.transform = 'translate(0px,0px)';
+    const r = b.el.getBoundingClientRect();
+    const s = stage.getBoundingClientRect();
+    b.ghost.style.left   = (r.left - s.left) + 'px';
+    b.ghost.style.top    = (r.top  - s.top ) + 'px';
+    b.ghost.style.width  = r.width  + 'px';
+    b.ghost.style.height = r.height + 'px';
+    b.el.style.transform = prevT;
+  }
+  function refreshOut(){
+    out.value =
+`[유진 Insight Lab · 히어로 버튼 미세조정]
+리포트 둘러보기: translate(${btns.navy.dx}px, ${btns.navy.dy}px)
+로그인: translate(${btns.cta.dx}px, ${btns.cta.dy}px)`;
+  }
+  function select(key){
+    selected = key;
+    Object.values(btns).forEach(b=>b.el.classList.remove('selected'));
+    if(key){ btns[key].el.classList.add('selected'); selName.textContent = btns[key].name + ' 선택됨'; }
+    else selName.textContent = '—';
+  }
+  function update(){ Object.values(btns).forEach(apply); refreshOut(); }
+
+  // ── 드래그 ──
+  Object.entries(btns).forEach(([key,b])=>{
+    let startX, startY, baseDx, baseDy, moved=false;
+    b.el.addEventListener('pointerdown', e=>{
+      e.preventDefault();
+      select(key);
+      startX=e.clientX; startY=e.clientY; baseDx=b.dx; baseDy=b.dy; moved=false;
+      b.el.setPointerCapture(e.pointerId);
+      b.el.classList.add('dragging');
+    });
+    b.el.addEventListener('pointermove', e=>{
+      if(!b.el.classList.contains('dragging')) return;
+      b.dx = Math.round(baseDx + (e.clientX-startX));
+      b.dy = Math.round(baseDy + (e.clientY-startY));
+      moved=true; apply(b); refreshOut();
+    });
+    const end = e=>{ b.el.classList.remove('dragging'); };
+    b.el.addEventListener('pointerup', end);
+    b.el.addEventListener('pointercancel', end);
+    // 클릭(이동 안 함)도 선택 처리
+    b.el.addEventListener('click', e=>{ e.preventDefault(); });
+  });
+
+  // ── 방향키 미세이동 ──
+  window.addEventListener('keydown', e=>{
+    if(!selected) return;
+    const map={ArrowLeft:[-1,0],ArrowRight:[1,0],ArrowUp:[0,-1],ArrowDown:[0,1]};
+    if(!map[e.key]) return;
+    e.preventDefault();
+    const step = e.shiftKey?10:1;
+    const b = btns[selected];
+    b.dx += map[e.key][0]*step;
+    b.dy += map[e.key][1]*step;
+    apply(b); refreshOut();
+  });
+
+  // ── 초기화 / 고스트 토글 / 복사 ──
+  function reset(){ Object.values(btns).forEach(b=>{b.dx=0;b.dy=0;}); update(); select(null); }
+  document.getElementById('resetBtn').addEventListener('click', reset);
+  document.getElementById('resetBtn2').addEventListener('click', reset);
+  document.getElementById('ghostChk').addEventListener('change', e=>{
+    stage.classList.toggle('show-ghost', e.target.checked);
+  });
+  const copyBtn = document.getElementById('copyBtn');
+  copyBtn.addEventListener('click', ()=>{
+    out.select();
+    navigator.clipboard.writeText(out.value).then(()=>{
+      copyBtn.textContent='✓ 복사됨'; copyBtn.classList.add('copied');
+      setTimeout(()=>{copyBtn.textContent='📋 복사'; copyBtn.classList.remove('copied');},1400);
+    }).catch(()=>{ document.execCommand('copy'); });
+  });
+
+  // 폰트 로드 후 고스트 위치 재계산 (레이아웃 안정화)
+  function placeAll(){ Object.values(btns).forEach(placeGhost); }
+  window.addEventListener('resize', placeAll);
+  if(document.fonts && document.fonts.ready) document.fonts.ready.then(placeAll);
+  setTimeout(placeAll, 50); setTimeout(placeAll, 400);
+  update();
+})();
+</script>
+</body>
+</html>

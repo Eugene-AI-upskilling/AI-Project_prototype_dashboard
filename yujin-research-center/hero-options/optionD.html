@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>시안 D · 네이비 스카이라인</title>
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" />
+<style>
+@font-face{font-family:"Pretendard Variable";font-weight:45 920;font-style:normal;font-display:swap;
+  src:url("../assets/fonts/PretendardVariable.woff2") format("woff2-variations")}
+:root{
+  --blue-cta:#0b59d5;--blue-point:#0090ff;--blue-outline:#1772f8;--blue-navy:#062554;--blue-sub-1:#194386;
+  --ink-900:#040505;--ink-800:#17181b;--ink-500:#6b7684;--gray-400:#8d9299;
+  --white:#fff;--border-neutral:#dde4eb;--surface-tint:#ebf0f5;
+  --price-up:#e0344b;--price-down:#0b59d5;
+  --up-bright:#ff5b6e;--down-bright:#5b95ff;        /* brightened for legibility on navy */
+  --radius-md:8px;--radius-sm:3px;--radius-lg:10px;
+  --shadow-soft:rgba(0,0,0,.05) 0 1px 2px 0;--shadow-pop:rgba(0,0,0,.12) 0 6px 24px -4px,rgba(0,0,0,.06) 0 2px 6px 0;
+  --ease-out:cubic-bezier(.16,1,.3,1);
+  --font-sans:"Pretendard Variable","Pretendard",-apple-system,system-ui,"Apple SD Gothic Neo","Noto Sans KR",sans-serif}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;font-family:var(--font-sans);color:var(--ink-900);background:#06122e;-webkit-font-smoothing:antialiased}
+.cn-figure{font-variant-numeric:tabular-nums}
+.switch{position:fixed;top:14px;right:16px;z-index:99;display:flex;gap:6px;background:#fff;border:1px solid var(--border-neutral);border-radius:9999px;padding:5px;box-shadow:var(--shadow-pop)}
+.switch a{font-size:12px;font-weight:700;color:var(--ink-500);padding:6px 12px;border-radius:9999px;text-decoration:none}
+.switch a.on{background:var(--blue-cta);color:#fff}
+
+/* nav over navy */
+.nav{position:relative;z-index:5;display:flex;align-items:center;gap:30px;height:64px;padding:0 48px;
+  background:rgba(6,18,46,.6);border-bottom:1px solid rgba(255,255,255,.1)}
+.brand{display:flex;align-items:center;gap:9px;font-weight:800;font-size:17px;color:#fff}
+.mark{width:26px;height:26px;border-radius:7px;background:linear-gradient(135deg,var(--blue-cta),var(--blue-point));display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:14px}
+.nav nav{display:flex;gap:24px}.nav nav a{font-size:14px;font-weight:500;color:rgba(255,255,255,.78);text-decoration:none}
+.nav nav a:hover{color:#fff}
+.spacer{flex:1}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:46px;padding:0 18px;font-size:15px;font-family:inherit;border:1px solid transparent;border-radius:var(--radius-md);cursor:pointer;white-space:nowrap;transition:background .15s,transform .12s,border-color .15s}
+.btn:active{transform:scale(.98)}.btn--sm{height:36px;padding:0 14px;font-size:14px}
+.btn--primary{background:var(--blue-cta);color:#fff;font-weight:700}.btn--primary:hover{background:#1772f8}
+.btn--ghost{background:transparent;color:#fff;font-weight:600}.btn--ghost:hover{color:#fff;opacity:.85}
+
+/* ===== HERO D : navy skyline + candlesticks ===== */
+.hero{position:relative;overflow:hidden;background:
+  radial-gradient(70% 90% at 88% 0%,rgba(0,120,255,.30),transparent 60%),
+  radial-gradient(60% 80% at 10% 20%,rgba(11,89,213,.18),transparent 65%),
+  linear-gradient(160deg,#0c2a63 0%,#0a1f4d 45%,#06173a 100%)}
+.bg{position:absolute;inset:0;z-index:0;overflow:hidden}
+/* dot "data map" on the right */
+.map{position:absolute;inset:0;
+  background-image:radial-gradient(rgba(140,185,255,.5) 1px,transparent 1.4px);background-size:22px 22px;
+  -webkit-mask-image:radial-gradient(60% 80% at 92% 18%,#000,transparent 72%);mask-image:radial-gradient(60% 80% at 92% 18%,#000,transparent 72%);opacity:.5}
+.bg svg{position:absolute;left:0;right:0;display:block;width:100%}
+.candles{top:6%;height:74%}
+.skyline{bottom:0;height:62%}
+#cg{--cw:0px;animation:slideD 1.2s linear infinite}
+@keyframes slideD{from{transform:translateX(0)}to{transform:translateX(calc(-1 * var(--cw)))}}
+.dotpulse{animation:dp 1.7s var(--ease-out) infinite}
+@keyframes dp{0%{r:4;opacity:.9}70%{r:15;opacity:0}100%{opacity:0}}
+.tw{animation:tw 3s ease-in-out infinite}
+@keyframes tw{0%,100%{opacity:.25}50%{opacity:.9}}
+.vig{position:absolute;inset:0;background:linear-gradient(90deg,rgba(6,18,46,.75) 0%,rgba(6,18,46,.25) 42%,transparent 70%)}
+
+.stage{position:relative;z-index:2;max-width:1280px;margin:0 auto;padding:78px 48px 40px}
+.eyebrow{display:inline-flex;align-items:center;gap:7px;font-size:13px;font-weight:700;letter-spacing:.04em;color:#7fb0ff;text-transform:uppercase}
+.eyebrow .d{width:6px;height:6px;border-radius:50%;background:var(--blue-point);box-shadow:0 0 10px #0090ff}
+.hero h1{font-size:60px;line-height:1.08;letter-spacing:-.02em;font-weight:700;color:#fff;margin:18px 0 0}
+.hero h1 .l2{display:block;color:#6ea8ff}
+.divline{width:64px;height:2px;background:rgba(255,255,255,.45);margin:28px 0 24px}
+.hero .sub{font-size:18px;line-height:1.7;color:rgba(255,255,255,.78);max-width:520px}
+.hero .cta{margin-top:34px;display:flex;gap:12px;flex-wrap:wrap}
+.btn--outline{background:transparent;color:#fff;border-color:rgba(255,255,255,.55);font-weight:600;height:50px;padding:0 24px}
+.btn--outline:hover{background:rgba(255,255,255,.1);border-color:#fff}
+
+/* index bar */
+.indexbar{position:relative;z-index:2;background:rgba(8,24,58,.55);border-top:1px solid rgba(255,255,255,.12);backdrop-filter:blur(6px)}
+.indexbar .row{max-width:1280px;margin:0 auto;display:flex;align-items:center;gap:0;padding:18px 48px;flex-wrap:wrap}
+.idx{display:flex;align-items:center;gap:12px;padding:0 28px;border-right:1px solid rgba(255,255,255,.12)}
+.idx:first-child{padding-left:0}.idx:last-child{border-right:none}
+.idx .nm{font-size:14px;font-weight:600;color:rgba(255,255,255,.62)}
+.idx .v{font-size:16px;font-weight:700;color:#fff;font-variant-numeric:tabular-nums;border-radius:5px;padding:2px 5px}
+.idx .c{font-size:13px;font-weight:700;font-variant-numeric:tabular-nums}
+.idx .asof{font-size:12px;color:rgba(255,255,255,.45);margin-left:8px}
+.up{color:var(--up-bright)}.down{color:var(--down-bright)}
+.flash-up{animation:fu .9s var(--ease-out)}.flash-down{animation:fd .9s var(--ease-out)}
+@keyframes fu{0%{background:rgba(255,91,110,.28)}100%{background:transparent}}
+@keyframes fd{0%{background:rgba(91,149,255,.28)}100%{background:transparent}}
+
+/* quick menu (white) */
+.quick{position:relative;z-index:2;background:#fff;border-top:1px solid var(--border-neutral)}
+.quick .row{max-width:1280px;margin:0 auto;display:grid;grid-template-columns:repeat(5,1fr)}
+.qi{display:flex;align-items:center;justify-content:center;gap:12px;height:84px;cursor:pointer;
+  border-right:1px solid var(--border-neutral);color:var(--ink-800);font-weight:700;font-size:17px;
+  transition:background .15s,color .15s;position:relative}
+.qi:last-child{border-right:none}
+.qi:hover{background:var(--surface-tint)}
+.qi svg{width:26px;height:26px;stroke:currentColor;stroke-width:1.7;fill:none;color:var(--ink-500)}
+.qi.on{color:#fff;background:linear-gradient(160deg,#0c2a63,#0a1f4d)}
+.qi.on svg{color:#7fb0ff}
+.qi.on::after{content:"";position:absolute;left:0;right:0;top:0;height:3px;background:var(--blue-point)}
+@media(max-width:980px){.hero h1{font-size:44px}.quick .row{grid-template-columns:repeat(3,1fr)}.qi{font-size:15px}}
+@media(prefers-reduced-motion:reduce){#cg,.dotpulse,.tw{animation:none}}
+</style>
+</head>
+<body>
+<div class="switch"><a href="optionA.html">A</a><a href="optionB.html">B</a><a href="optionC.html">C</a><a class="on" href="optionD.html">D</a></div>
+
+<header class="nav">
+  <div class="brand"><span class="mark">Y</span>유진 Insight Lab</div>
+  <nav><a href="#">리서치 리포트</a><a href="#">이벤트</a><a href="#">테마 쏠림</a><a href="#">인덱싱</a><a href="#">백테스팅</a></nav>
+  <div class="spacer"></div>
+  <button class="btn btn--ghost" style="font-size:14px">로그인</button>
+  <button class="btn btn--primary btn--sm">회원가입</button>
+</header>
+
+<section class="hero">
+  <div class="bg">
+    <div class="map"></div>
+    <svg class="candles" id="cdl" viewBox="0 0 1440 360" preserveAspectRatio="none"></svg>
+    <svg class="skyline" id="sky" viewBox="0 0 1440 320" preserveAspectRatio="xMidYMax meet"></svg>
+    <div class="vig"></div>
+  </div>
+
+  <div class="stage">
+    <div class="eyebrow"><span class="d"></span>YUJIN RESEARCH CENTER</div>
+    <h1>Insightful Research,<span class="l2">Better Investment</span></h1>
+    <div class="divline"></div>
+    <p class="sub">정확한 분석과 심도있는 인사이트로<br/>고객의 현명한 투자 결정을 돕겠습니다.</p>
+    <div class="cta">
+      <button class="btn btn--outline">리서치센터 소개 →</button>
+      <button class="btn btn--primary" style="height:50px;padding:0 22px">오늘의 리포트 보기</button>
+    </div>
+  </div>
+
+  <div class="indexbar"><div class="row" id="idx"></div></div>
+
+  <div class="quick"><div class="row">
+    <div class="qi on"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 17 9 11 13 15 21 7"/><polyline points="15 7 21 7 21 13"/></svg>투자전략</div>
+    <div class="qi"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><line x1="6" y1="20" x2="6" y2="13"/><line x1="12" y1="20" x2="12" y2="8"/><line x1="18" y1="20" x2="18" y2="4"/></svg>시황분석</div>
+    <div class="qi"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15.5A9 9 0 1 1 8.5 3"/><path d="M21.2 8A9 9 0 0 0 16 2.8V8z"/></svg>산업분석</div>
+    <div class="qi"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="11" height="18" rx="1"/><path d="M15 8h5v13H4"/><line x1="7.5" y1="7" x2="11" y2="7"/><line x1="7.5" y1="11" x2="11" y2="11"/></svg>기업분석</div>
+    <div class="qi"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><polyline points="14 3 14 8 19 8"/><line x1="8.5" y1="13" x2="15" y2="13"/><line x1="8.5" y1="16.5" x2="15" y2="16.5"/></svg>위클리 리포트</div>
+  </div></div>
+</section>
+
+<script>
+const NS='http://www.w3.org/2000/svg';
+const mul=a=>()=>{a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296};
+
+/* ---- candlestick chart (streaming, cool-tone, decorative) ---- */
+(function(){
+  const svg=document.getElementById('cdl'),W=1440,H=360,N=52,CW=W/(N-4),bw=CW*0.5;
+  const rnd=mul(20260615);let price=210;const cd=[];
+  const gen=()=>{const o=price,vol=16+rnd()*24;price=Math.max(50,Math.min(320,price+(rnd()-.48)*vol));
+    return{o,c:price,hi:Math.max(o,price)+rnd()*9,lo:Math.min(o,price)-rnd()*9}};
+  for(let i=0;i<N;i++)cd.push(gen());
+  const y=v=>H-10-(v/340)*(H-30);
+  const cg=document.createElementNS(NS,'g');cg.setAttribute('id','cg');cg.style.setProperty('--cw',CW+'px');svg.appendChild(cg);
+  function render(){
+    while(cg.firstChild)cg.removeChild(cg.firstChild);
+    const pts=cd.map((c,i)=>`${(i*CW).toFixed(1)},${y(c.c).toFixed(1)}`).join(' ');
+    const ln=document.createElementNS(NS,'polyline');ln.setAttribute('points',pts);
+    ln.setAttribute('fill','none');ln.setAttribute('stroke','rgba(160,205,255,.55)');ln.setAttribute('stroke-width','1.6');cg.appendChild(ln);
+    cd.forEach((c,i)=>{const up=c.c>=c.o,col=up?'rgba(175,212,255,.55)':'rgba(96,150,235,.42)',x=i*CW;
+      const w=document.createElementNS(NS,'line');w.setAttribute('x1',x);w.setAttribute('x2',x);
+      w.setAttribute('y1',y(c.hi));w.setAttribute('y2',y(c.lo));w.setAttribute('stroke',col);w.setAttribute('stroke-width','1.2');cg.appendChild(w);
+      const b=document.createElementNS(NS,'rect');const top=y(Math.max(c.o,c.c)),h=Math.max(2,Math.abs(y(c.o)-y(c.c)));
+      b.setAttribute('x',x-bw/2);b.setAttribute('y',top);b.setAttribute('width',bw);b.setAttribute('height',h);
+      b.setAttribute('rx','1');b.setAttribute('fill',col);cg.appendChild(b)});
+    const li=cd.length-1,lx=li*CW,ly=y(cd[li].c);
+    const p=document.createElementNS(NS,'circle');p.setAttribute('class','dotpulse');p.setAttribute('cx',lx);p.setAttribute('cy',ly);p.setAttribute('fill','#7fb0ff');cg.appendChild(p);
+    const d=document.createElementNS(NS,'circle');d.setAttribute('cx',lx);d.setAttribute('cy',ly);d.setAttribute('r','3.5');d.setAttribute('fill','#bcd8ff');cg.appendChild(d);
+  }
+  render();
+  cg.addEventListener('animationiteration',()=>{cd.shift();cd.push(gen());render()});
+})();
+
+/* ---- city skyline silhouette + Lotte-tower + window lights ---- */
+(function(){
+  const svg=document.getElementById('sky'),W=1440,H=320;const rnd=mul(77);
+  const defs=document.createElementNS(NS,'defs');
+  defs.innerHTML='<linearGradient id="bld" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#16356f"/><stop offset="100%" stop-color="#0a1f4a"/></linearGradient>';
+  svg.appendChild(defs);
+  function windows(x,top,w,h){const g=document.createElementNS(NS,'g');
+    for(let wy=top+8;wy<H-6;wy+=12)for(let wx=x+5;wx<x+w-5;wx+=10){
+      if(rnd()<.5)continue;const r=document.createElementNS(NS,'rect');
+      r.setAttribute('x',wx);r.setAttribute('y',wy);r.setAttribute('width',4);r.setAttribute('height',5);
+      const lit=rnd()<.5;r.setAttribute('fill',lit?'#bcd8ff':'#2e5599');r.setAttribute('opacity',lit?(.3+rnd()*.5):.25);
+      if(lit&&rnd()<.3)r.setAttribute('class','tw');g.appendChild(r)}
+    return g}
+  function bldg(x,w,h){const top=H-h;const g=document.createElementNS(NS,'g');
+    const r=document.createElementNS(NS,'rect');r.setAttribute('x',x);r.setAttribute('y',top);
+    r.setAttribute('width',w);r.setAttribute('height',h);r.setAttribute('fill','url(#bld)');g.appendChild(r);
+    g.appendChild(windows(x,top,w,h));svg.appendChild(g)}
+  let x=20;while(x<W){const isTowerZone=x>980&&x<1120;if(isTowerZone){x=1120;continue;}
+    const w=26+rnd()*52,h=70+rnd()*150;bldg(x,w,h);x+=w+4+rnd()*8;}
+  // Lotte-style tapering tower around x≈1050
+  const tx=1050,base=66,th=300,topw=16;
+  const tg=document.createElementNS(NS,'g');
+  const poly=document.createElementNS(NS,'polygon');
+  poly.setAttribute('points',`${tx-base/2},${H} ${tx-topw/2},${H-th} ${tx+topw/2},${H-th} ${tx+base/2},${H}`);
+  poly.setAttribute('fill','url(#bld)');tg.appendChild(poly);
+  const spire=document.createElementNS(NS,'line');spire.setAttribute('x1',tx);spire.setAttribute('x2',tx);
+  spire.setAttribute('y1',H-th);spire.setAttribute('y2',H-th-26);spire.setAttribute('stroke','#7fb0ff');spire.setAttribute('stroke-width','2');tg.appendChild(spire);
+  const tip=document.createElementNS(NS,'circle');tip.setAttribute('class','tw');tip.setAttribute('cx',tx);tip.setAttribute('cy',H-th-26);tip.setAttribute('r','3');tip.setAttribute('fill','#bcd8ff');tg.appendChild(tip);
+  // tower windows
+  for(let wy=H-th+24;wy<H-10;wy+=13){const halfw=topw/2+(base-topw)/2*((wy-(H-th))/th);
+    for(let wx=tx-halfw+4;wx<tx+halfw-4;wx+=9){if(rnd()<.45)continue;
+      const r=document.createElementNS(NS,'rect');r.setAttribute('x',wx);r.setAttribute('y',wy);r.setAttribute('width',3.5);r.setAttribute('height',5);
+      const lit=rnd()<.55;r.setAttribute('fill',lit?'#cfe4ff':'#2e5599');r.setAttribute('opacity',lit?.6:.25);
+      if(lit&&rnd()<.35)r.setAttribute('class','tw');tg.appendChild(r)}}
+  svg.appendChild(tg);
+})();
+
+/* ---- live index bar ---- */
+const idx=[
+  {nm:'KOSPI',v:2734.36,d:2,c:1.02},
+  {nm:'KOSDAQ',v:855.15,d:2,c:0.85},
+  {nm:'NASDAQ',v:17198.94,d:2,c:1.18},
+  {nm:'S&P 500',v:5321.41,d:2,c:0.72},
+];
+const fmt=(n,d)=>n.toLocaleString('ko-KR',{minimumFractionDigits:d,maximumFractionDigits:d});
+const arrow=c=>c>=0?'▲':'▼';
+function paintIdx(){
+  document.getElementById('idx').innerHTML=idx.map((it,i)=>`<div class="idx">
+    <span class="nm">${it.nm}</span>
+    <span class="v" id="iv${i}">${fmt(it.v,it.d)}</span>
+    <span class="c ${it.c>=0?'up':'down'}" id="ic${i}">${arrow(it.c)} ${Math.abs(it.c).toFixed(2)}%</span>
+    ${i===idx.length-1?'<span class="asof">(기준: 2026.06.15 15:30)</span>':''}
+  </div>`).join('');
+}
+paintIdx();
+setInterval(()=>{
+  idx.forEach((it,i)=>{const up=Math.random()>0.4;const step=it.v*(0.0002+Math.random()*0.0009)*(up?1:-1);
+    it.v=Math.max(1,it.v+step);it.c+=step/it.v*100*0.5;
+    const v=document.getElementById('iv'+i),c=document.getElementById('ic'+i);
+    v.textContent=fmt(it.v,it.d);
+    c.textContent=arrow(it.c)+' '+Math.abs(it.c).toFixed(2)+'%';c.className='c '+(it.c>=0?'up':'down');
+    v.classList.remove('flash-up','flash-down');void v.offsetWidth;v.classList.add(up?'flash-up':'flash-down');
+  });
+},2000);
+document.querySelectorAll('.qi').forEach(q=>q.addEventListener('click',()=>{
+  document.querySelectorAll('.qi').forEach(x=>x.classList.remove('on'));q.classList.add('on');}));
+</script>
+</body>
+</html>

@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>시안 E · 업비트형 (점지도)</title>
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" />
+<style>
+@font-face{font-family:"Pretendard Variable";font-weight:45 920;font-style:normal;font-display:swap;
+  src:url("../assets/fonts/PretendardVariable.woff2") format("woff2-variations")}
+:root{
+  --blue-cta:#0b59d5;--blue-point:#0090ff;--blue-outline:#1772f8;--blue-navy:#062554;--blue-sub-1:#194386;
+  --ink-900:#040505;--ink-800:#17181b;--ink-500:#6b7684;--gray-400:#8d9299;
+  --white:#fff;--border-neutral:#dde4eb;--surface-tint:#ebf0f5;
+  --price-up:#e0344b;--price-down:#0b59d5;
+  --radius-md:8px;--radius-sm:3px;--radius-lg:10px;
+  --shadow-soft:rgba(0,0,0,.05) 0 1px 2px 0;--shadow-pop:rgba(0,0,0,.12) 0 6px 24px -4px,rgba(0,0,0,.06) 0 2px 6px 0;
+  --ease-out:cubic-bezier(.16,1,.3,1);
+  --font-sans:"Pretendard Variable","Pretendard",-apple-system,system-ui,"Apple SD Gothic Neo","Noto Sans KR",sans-serif}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;font-family:var(--font-sans);color:var(--ink-900);background:#fff;-webkit-font-smoothing:antialiased}
+.switch{position:fixed;top:14px;right:16px;z-index:99;display:flex;gap:6px;background:#fff;border:1px solid var(--border-neutral);border-radius:9999px;padding:5px;box-shadow:var(--shadow-pop)}
+.switch a{font-size:12px;font-weight:700;color:var(--ink-500);padding:6px 12px;border-radius:9999px;text-decoration:none}
+.switch a.on{background:var(--blue-cta);color:#fff}
+
+.nav{display:flex;align-items:center;gap:30px;height:66px;padding:0 40px;border-bottom:1px solid var(--border-neutral)}
+.brand{display:flex;align-items:center;gap:9px;font-weight:800;font-size:18px;color:var(--blue-navy);font-style:italic}
+.mark{width:27px;height:27px;border-radius:7px;background:linear-gradient(135deg,var(--blue-cta),var(--blue-point));display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:15px;font-style:normal}
+.nav nav{display:flex;gap:26px}.nav nav a{font-size:15px;font-weight:600;color:var(--ink-800);text-decoration:none}
+.nav nav a:hover{color:var(--blue-cta)}
+.spacer{flex:1}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:46px;padding:0 18px;font-size:15px;font-family:inherit;border:1px solid transparent;border-radius:var(--radius-md);cursor:pointer;white-space:nowrap;transition:background .15s,transform .12s}
+.btn:active{transform:scale(.98)}.btn--sm{height:38px;padding:0 16px;font-size:14px}
+.btn--primary{background:var(--blue-cta);color:#fff;font-weight:700}.btn--primary:hover{background:#1772f8}
+.btn--ghost{background:var(--surface-tint);color:var(--ink-800);font-weight:600}
+.nav .login{font-size:14px;font-weight:600;color:var(--ink-800);background:none;border:none;cursor:pointer}
+
+/* ===== HERO E : Upbit-identical white + dotted world map ===== */
+.hero{position:relative;max-width:1480px;margin:0 auto;padding:0 40px;
+  display:grid;grid-template-columns:.82fr 1.18fr;gap:30px;align-items:center;min-height:560px}
+@media(max-width:980px){.hero{grid-template-columns:1fr}.map{display:none}}
+.left{position:relative;min-height:430px;padding:40px 0}
+.slide{position:absolute;inset:40px 0 auto 0;opacity:0;transform:translateY(8px);pointer-events:none;
+  transition:opacity .5s var(--ease-out),transform .5s var(--ease-out)}
+.slide.on{opacity:1;transform:none;pointer-events:auto}
+.slide h1{font-size:46px;line-height:1.22;letter-spacing:-.02em;font-weight:700;color:var(--ink-900);margin:0}
+.slide h1 .b{color:var(--blue-cta)}
+.slide .cta{display:flex;gap:12px;margin-top:40px}
+.btn--navy{background:var(--blue-navy);color:#fff;font-weight:700;height:52px;padding:0 26px}
+.btn--navy:hover{background:#0a317a}
+.btn--bluebig{background:var(--blue-cta);color:#fff;font-weight:700;height:52px;padding:0 30px}
+.btn--bluebig:hover{background:#1772f8}
+/* slide indicator 01 / 02 */
+.slides-nav{position:absolute;left:0;bottom:34px;display:flex;align-items:center;gap:14px}
+.sn{font-size:15px;font-weight:700;color:var(--gray-400);cursor:pointer;font-variant-numeric:tabular-nums;letter-spacing:.05em}
+.sn.on{color:var(--ink-900)}
+.sn-track{position:relative;width:120px;height:2px;background:var(--border-neutral)}
+.sn-track::after{content:"";position:absolute;left:0;top:0;height:2px;width:50%;background:var(--ink-900);
+  transition:left .5s var(--ease-out)}
+.sn-track.s2::after{left:50%}
+
+/* dotted world map */
+.map{position:relative}
+.map svg{display:block;width:100%;height:auto}
+.lbl{position:absolute;transform:translate(-50%,-50%);font-size:12px;font-weight:600;letter-spacing:.08em;
+  color:#aeb6cf;white-space:nowrap;pointer-events:none}
+.pin{position:absolute;transform:translate(-50%,-100%);display:flex;flex-direction:column;align-items:center;gap:0}
+.pin .tag{display:flex;align-items:center;gap:6px;background:#fff;border:1px solid var(--border-neutral);
+  box-shadow:var(--shadow-pop);border-radius:7px;padding:6px 10px;font-weight:800;font-size:13px;color:var(--blue-navy);font-style:italic}
+.pin .tag .m{width:18px;height:18px;border-radius:5px;background:linear-gradient(135deg,var(--blue-cta),var(--blue-point));
+  display:flex;align-items:center;justify-content:center;color:#fff;font-size:11px;font-style:normal}
+.pin .stem{width:2px;height:14px;background:var(--blue-cta)}
+.pin .dot{width:11px;height:11px;border-radius:50%;background:var(--blue-cta);position:relative;margin-top:-1px}
+.pin .dot::after{content:"";position:absolute;inset:-5px;border-radius:50%;border:2px solid var(--blue-cta);
+  opacity:.5;animation:ping 1.8s var(--ease-out) infinite}
+@keyframes ping{0%{transform:scale(.6);opacity:.6}100%{transform:scale(2.1);opacity:0}}
+.tw{animation:twk 3s ease-in-out infinite}
+@keyframes twk{0%,100%{opacity:.2}50%{opacity:.85}}
+
+.fab{position:fixed;right:22px;bottom:22px;width:46px;height:46px;border-radius:50%;background:var(--ink-800);
+  color:#fff;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow-pop);z-index:40}
+.fab svg{width:20px;height:20px;stroke:#fff;stroke-width:2;fill:none}
+@media(prefers-reduced-motion:reduce){.pin .dot::after,.tw{animation:none}}
+</style>
+</head>
+<body>
+<div class="switch"><a href="optionA.html">A</a><a href="optionB.html">B</a><a href="optionC.html">C</a><a href="optionD.html">D</a><a class="on" href="optionE.html">E</a></div>
+
+<header class="nav">
+  <div class="brand"><span class="mark">Y</span>유진 Insight Lab</div>
+  <nav><a href="#">리서치 리포트</a><a href="#">이벤트</a><a href="#">테마 쏠림</a><a href="#">다이렉트 인덱싱</a><a href="#">백테스팅</a><a href="#">애널리스트</a></nav>
+  <div class="spacer"></div>
+  <button class="login">로그인</button>
+  <button class="btn btn--ghost btn--sm">회원가입</button>
+  <button class="btn btn--ghost btn--sm">고객센터</button>
+</header>
+
+<section class="hero">
+  <div class="left">
+    <div class="slide on" data-s="0">
+      <h1>대한민국<br/>투자 리서치 플랫폼<br/><span class="b">유진 Insight Lab</span></h1>
+      <div class="cta">
+        <button class="btn btn--navy">리포트 둘러보기</button>
+        <button class="btn btn--bluebig">로그인</button>
+      </div>
+    </div>
+    <div class="slide" data-s="1">
+      <h1>매일 아침 8시<br/>애널리스트 리포트를<br/><span class="b">가장 먼저 받아보세요</span></h1>
+      <div class="cta">
+        <button class="btn btn--navy">리포트 구독하기</button>
+        <button class="btn btn--bluebig">텔레그램 연결</button>
+      </div>
+    </div>
+    <div class="slides-nav">
+      <span class="sn on" data-i="0">01</span>
+      <span class="sn-track" id="track"></span>
+      <span class="sn" data-i="1">02</span>
+    </div>
+  </div>
+
+  <div class="map" id="map">
+    <svg id="dots" viewBox="0 0 660 330" preserveAspectRatio="xMidYMid meet"></svg>
+    <div class="lbl" style="left:19.5%;top:26%">NORTH AMERICA</div>
+    <div class="lbl" style="left:50%;top:16%">EUROPE</div>
+    <div class="lbl" style="left:53%;top:52%">AFRICA</div>
+    <div class="lbl" style="left:31%;top:78%">SOUTH AMERICA</div>
+    <div class="lbl" style="left:87%;top:69%">OCEANIA</div>
+    <div class="pin" style="left:87.5%;top:33%">
+      <div class="tag"><span class="m">Y</span>유진 Insight Lab</div>
+      <div class="stem"></div>
+      <div class="dot"></div>
+    </div>
+  </div>
+</section>
+
+<button class="fab" title="맨 위로"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg></button>
+
+<script>
+const NS='http://www.w3.org/2000/svg';
+const mul=a=>()=>{a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296};
+
+/* ---- dotted world map (continents as soft blobs on a grid) ---- */
+(function(){
+  const svg=document.getElementById('dots'),COLS=66,ROWS=33,DS=10,rnd=mul(424242);
+  // landmasses in grid units: {x,y,rx,ry}
+  const land=[
+    {x:13,y:9,rx:8,ry:5.4},{x:10,y:14,rx:4,ry:2.6},     // N.America + Mexico
+    {x:22,y:3.5,rx:2.6,ry:2},                             // Greenland
+    {x:22,y:24,rx:3.6,ry:6},{x:19,y:18.5,rx:3,ry:2.6},   // S.America
+    {x:33,y:7,rx:3.2,ry:2.8},{x:30,y:4.5,rx:2,ry:1.8},   // Europe + Scandinavia
+    {x:35,y:17,rx:5,ry:6.4},                             // Africa
+    {x:49,y:8.5,rx:11,ry:5.8},                           // Asia
+    {x:46,y:15,rx:2.6,ry:3},                             // India
+    {x:55,y:18,rx:4,ry:2},                               // SE Asia
+    {x:58,y:24,rx:4,ry:3},                               // Australia
+    {x:58,y:11,rx:1.6,ry:2}                              // Japan/Korea
+  ];
+  let i=0;
+  for(let r=0;r<ROWS;r++)for(let c=0;c<COLS;c++){
+    let m=9;land.forEach(l=>{const v=((c-l.x)/l.rx)**2+((r-l.y)/l.ry)**2;if(v<m)m=v});
+    if(m>1)continue;
+    const rr=mul(i*131+7)();i++;
+    if(m>0.78 && rr<0.45)continue;            // ragged coastline
+    const dot=document.createElementNS(NS,'circle');
+    dot.setAttribute('cx',c*DS+5);dot.setAttribute('cy',r*DS+5);dot.setAttribute('r','2.2');
+    const deep=m<0.45;
+    dot.setAttribute('fill',deep?'rgba(11,89,213,.26)':'rgba(11,89,213,.16)');
+    if(rr<0.05)dot.setAttribute('class','tw');  // a few twinkle
+    svg.appendChild(dot);
+  }
+})();
+
+/* ---- 2-slide rotation (01 / 02) ---- */
+let cur=0,timer;
+const slides=[...document.querySelectorAll('.slide')],nums=[...document.querySelectorAll('.sn')],track=document.getElementById('track');
+function go(n){cur=(n+slides.length)%slides.length;
+  slides.forEach((s,i)=>s.classList.toggle('on',i===cur));
+  nums.forEach((s,i)=>s.classList.toggle('on',i===cur));
+  track.classList.toggle('s2',cur===1);
+  clearInterval(timer);timer=setInterval(()=>go(cur+1),6000);
+}
+nums.forEach(n=>n.addEventListener('click',()=>go(+n.dataset.i)));
+go(0);
+document.querySelector('.fab').addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));
+</script>
+</body>
+</html>

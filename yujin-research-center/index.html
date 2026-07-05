@@ -1082,7 +1082,7 @@ function animateIndices(root){
 // 자동화: home_brief 테이블에 audio_url 컬럼을 채우면 그 값이 우선 사용됨.
 const HOME_ANCHOR_AUDIO='assets/briefing.mp3';
 // HeyGen 아바타 영상(하준 목소리 입힘). 영상이 있으면 음성보다 우선 재생.
-const HOME_ANCHOR_VIDEO='assets/anchor-briefing.mp4';
+const HOME_ANCHOR_VIDEO='assets/anchor-briefing.mp4?v=22';
 let homeBrief=null;
 function homeFirstSentence(t){ if(!t)return ''; const s=String(t).trim(); const m=s.match(/^[\s\S]*?[.。다](?=\s|$)/); return (m?m[0]:s).trim().slice(0,96); }
 function renderHomeAnchor(){

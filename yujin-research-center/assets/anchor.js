@@ -13,7 +13,7 @@
   function stage(o){
     const wave=[8,16,11,20,7,14,18,9,15,12,19,8,13,17].map(h=>`<i style="height:${h}px"></i>`).join('');
     return `<div class="vanchor__stage">
-      ${o.thumbnail?`<img class="vanchor__poster" src="${o.thumbnail}" alt="" loading="lazy">`:''}
+      ${o.thumbnail?`<img class="vanchor__poster" src="${o.thumbnail}" alt="" loading="lazy"${o.objectPosition?` style="object-position:${o.objectPosition}"`:``}>`:''}
       <span class="vanchor__live"><i></i>${o.liveLabel||'AI'}</span>
       ${o.tag?`<span class="vanchor__tag">${o.tag}</span>`:''}
       ${o.thumbnail?'':`<span class="vanchor__avatar">${BUST}</span>`}
@@ -55,7 +55,7 @@
       // 1) 영상이 있으면 영상 재생(기존 동작)
       if(o.videoUrl){ const st=el.querySelector('.vanchor__stage');
         // 절대 위치(inset:0)로 채워 stage(아웃라인) 크기를 그대로 유지 — 삽입 시 커지지 않게
-        if(st) st.innerHTML=`<video src="${o.videoUrl}"${o.thumbnail?` poster="${o.thumbnail}"`:''} controls autoplay playsinline style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 30%;background:#000"></video>`;
+        if(st) st.innerHTML=`<video src="${o.videoUrl}"${o.thumbnail?` poster="${o.thumbnail}"`:''} controls autoplay playsinline style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:${o.objectPosition||'center 40%'};background:#000"></video>`;
         return; }
       // 2) 음성(mp3)만 있으면 오디오 재생 + 진행바/시간/파형 연동 (ElevenLabs 등에서 생성한 mp3)
       if(o.audioUrl){

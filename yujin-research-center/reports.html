@@ -468,7 +468,7 @@ function renderReportAnchor(){
   const chapters=top.map((r,i)=>({n:i+1,title:r.title,sub:`${r.company||r.category||''}${r.rating?' · '+r.rating:''}`,
     time:`${Math.floor(i*40/60)}:${String((i*40)%60).padStart(2,'0')}`}));
   renderAnchor($('#reportAnchor'),{
-    layout:'card', tag:'유진 AI 앵커',
+    layout:'card', tag:'유진 AI 앵커', objectPosition:'center 60%',
     liveLabel:(top[0]?fmtMD(top[0].published_at):'')+' 브리핑',
     eyebrow:'AI ANCHOR · 리포트 브리핑', title:(reportBrief&&reportBrief.title)||'오늘의 리포트, AI 앵커가 3분 요약',
     caption:(reportBrief&&reportBrief.caption)||`오늘 발간된 ${REPORTS.length}개 리포트의 핵심만 모았어요.`,

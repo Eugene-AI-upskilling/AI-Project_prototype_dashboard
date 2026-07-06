@@ -19,6 +19,11 @@ import sys
 import time
 import argparse
 import requests
+from requests.adapters import HTTPAdapter
+try:
+    from urllib3.util.retry import Retry
+except Exception:
+    Retry = None
 
 try:
     from dotenv import load_dotenv
@@ -28,6 +33,13 @@ except Exception:
 
 from . import supabase_upsert as su
 from .push_briefing_video import upload_to_storage
+
+# 연결 리셋(WinError 10054)·일시 장애에 견고한 세션 (HeyGen 상태 폴링·CDN 다운로드 포함)
+_S = requests.Session()
+if Retry is not None:
+    _S.mount("https://", HTTPAdapter(max_retries=Retry(
+        total=6, connect=6, read=6, backoff_factor=2,
+        status_forcelist=[429, 500, 502, 503, 504])))
 
 GEN_URL = "https://api.heygen.com/v2/video/generate"
 STATUS_URL = "https://api.heygen.com/v1/video_status.get"
@@ -130,7 +142,7 @@ def heygen_generate(key, look_id, voice_id, text):
         }],
         "dimension": {"width": 720, "height": 1280},
     }
-    r = requests.post(GEN_URL, headers={"X-Api-Key": key, "Content-Type": "application/json"},
+    r = _S.post(GEN_URL, headers={"X-Api-Key": key, "Content-Type": "application/json"},
                       json=body, timeout=60)
     j = r.json()
     vid = (j.get("data") or {}).get("video_id")
@@ -142,7 +154,7 @@ def heygen_generate(key, look_id, voice_id, text):
 def heygen_wait(key, video_id, timeout_s=900, interval=15):
     t0 = time.time()
     while time.time() - t0 < timeout_s:
-        j = requests.get(STATUS_URL, params={"video_id": video_id},
+        j = _S.get(STATUS_URL, params={"video_id": video_id},
                          headers={"X-Api-Key": key}, timeout=30).json()
         d = j.get("data") or {}
         st = d.get("status")
@@ -194,11 +206,11 @@ def run_kind(kind, dry=False):
     print(f"[{kind}] video_id={vid} — 완료 대기(폴링)…")
     info = heygen_wait(key, vid)
 
-    content = requests.get(info["video_url"], timeout=180).content
+    content = _S.get(info["video_url"], timeout=180).content
     public_url = upload_to_storage(su.URL, su.KEY, f"{kind}-{d}.mp4", content)
     thumb_public = None
     if info.get("thumbnail_url"):
-        tb = requests.get(info["thumbnail_url"], timeout=60).content
+        tb = _S.get(info["thumbnail_url"], timeout=60).content
         mime, ext = _thumb_type(tb)
         thumb_public = upload_to_storage(su.URL, su.KEY, f"{kind}-{d}.{ext}", tb, mime=mime)
     vtag = vid.replace("iv-", "")[:8]

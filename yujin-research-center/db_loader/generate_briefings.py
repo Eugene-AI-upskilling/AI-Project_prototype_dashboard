@@ -55,7 +55,7 @@ ANCHORS = {
     },
     "reports": {  # 금일 발간 리포트 — 남자 앵커 (look "AI앵커(남)")
         "look_id":  os.getenv("HEYGEN_REPORTS_LOOK_ID",  "5ea6519493334f92ac92cb2f4fca3edc"),
-        "voice_id": os.getenv("HEYGEN_REPORTS_VOICE_ID", "513b14b431b64a578c467c480dd0a9c3"),
+        "voice_id": os.getenv("HEYGEN_REPORTS_VOICE_ID", "ab089e498fde4c0188acca4be0dbfe66"),
         "title": "오늘의 리포트, AI 앵커 브리핑",
     },
 }
@@ -138,7 +138,7 @@ def heygen_generate(key, look_id, voice_id, text):
     body = {
         "video_inputs": [{
             "character": {"type": "talking_photo", "talking_photo_id": look_id},
-            "voice": {"type": "text", "input_text": text, "voice_id": voice_id, "speed": 1.0},
+            "voice": {"type": "text", "input_text": text, "voice_id": voice_id, "speed": 1.5},
         }],
         "dimension": {"width": 720, "height": 1280},
     }

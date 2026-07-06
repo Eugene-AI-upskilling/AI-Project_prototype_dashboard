@@ -272,7 +272,7 @@ button{font-family:inherit}
 .market-anchor,.market-anchor .vanchor-wrap.solo{height:100%}
 .market-anchor .vanchor-wrap.solo,.market-anchor .vanchor--card{max-width:none}
 .market-anchor .vanchor--card{height:100%;display:flex;flex-direction:column}
-.market-anchor .vanchor--card .vanchor__stage{aspect-ratio:16/10;flex:0 0 auto}
+.market-anchor .vanchor--card .vanchor__stage{aspect-ratio:3/4;flex:0 0 auto}
 .market-anchor .vanchor--card .vanchor__cbody{flex:1;display:flex;flex-direction:column}
 .market-anchor .vanchor--card .vanchor__cbody .vanchor__cta{margin-top:auto}
 /* 우측 시황 카드 3개가 앵커 카드와 같은 높이가 되도록 */
@@ -680,11 +680,11 @@ button{font-family:inherit}
 .vanchor__stage{position:relative;overflow:hidden;isolation:isolate;
   background:radial-gradient(120% 120% at 20% 0%,#123b86 0%,#0b2e6b 45%,#081b45 100%)}
 .vanchor--bar .vanchor__stage{min-height:196px}
-.vanchor--card .vanchor__stage{aspect-ratio:4/5}
+.vanchor--card .vanchor__stage{aspect-ratio:3/4}
 .vanchor__stage::after{content:"";position:absolute;inset:0;
   background:radial-gradient(60% 80% at 78% 60%,rgba(77,171,247,.28),transparent 70%);pointer-events:none}
 /* 실제 썸네일(포스터) — 아바타 대신 표시 */
-.vanchor__poster{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center top;z-index:0}
+.vanchor__poster{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 30%;z-index:0}
 /* 포스터 있을 때 재생버튼 대비용 스크림(라디얼 글로우 대체) */
 .vanchor__stage:has(.vanchor__poster)::after{
   background:linear-gradient(180deg,rgba(6,10,26,.14) 0%,rgba(6,10,26,.30) 55%,rgba(6,10,26,.48) 100%)}

@@ -61,6 +61,28 @@ def upsert(table, rows, on_conflict):
     return len(rows)
 
 
+def replace_by_key(table, rows, key):
+    """rows 로 upsert 한 뒤, 이번 목록에 없는 key 행만 삭제 (빈 화면 구간 없는 스냅샷 교체).
+    id 컬럼이 없는 테이블(global_highs 등)용."""
+    _check()
+    if not rows:
+        return 0
+    n = upsert(table, rows, key)
+    keep = ",".join('"%s"' % str(r[key]).replace('"', '') for r in rows)
+    res = requests.delete(f"{URL}/rest/v1/{table}?{key}=not.in.({keep})",
+                          headers=_headers({"Prefer": "return=minimal"}), timeout=30)
+    res.raise_for_status()
+    return n
+
+
+def delete_older(table, column, cutoff):
+    """column < cutoff 인 행 삭제 (예: 오래된 딥리서치 정리)."""
+    _check()
+    res = requests.delete(f"{URL}/rest/v1/{table}?{column}=lt.{cutoff}",
+                          headers=_headers({"Prefer": "return=minimal"}), timeout=30)
+    res.raise_for_status()
+
+
 def fetch_column(table, column):
     """테이블의 특정 컬럼 값 목록(증분 처리 시 중복 스킵용)."""
     _check()

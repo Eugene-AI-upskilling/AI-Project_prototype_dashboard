@@ -23,7 +23,7 @@
     ['market.html','시황·테마'],
     ['reports.html','리서치 리포트'],
     ['events.html','종목 이벤트'],
-    ['global.html','해외 AI 리서치'],
+    ['global.html','해외 증시'],
     ['quant.html','퀀트 투자'],
     ['insights.html','인사이트'],
   ];

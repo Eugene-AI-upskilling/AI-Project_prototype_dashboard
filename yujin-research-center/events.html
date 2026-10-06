@@ -63,6 +63,30 @@
 .ev-tl__t{font-weight:700;color:var(--ink-900);font-size:var(--text-body);margin-top:1px}
 .ev-tl__s{font-size:var(--text-micro);color:var(--color-body);margin-top:3px;line-height:1.5;word-break:keep-all}
 .mk-lbl{font-size:var(--text-micro);font-weight:700;color:var(--color-muted);margin:16px 0 6px}
+/* 지역 스위치 (국내/해외) */
+.region{display:flex;gap:28px;border-bottom:1px solid var(--color-hairline)}
+.region button{border:none;background:none;cursor:pointer;padding:10px 2px 14px;font-size:var(--text-lg);font-weight:700;
+  color:var(--color-muted);position:relative;display:flex;align-items:baseline;gap:8px;font-family:inherit}
+.region button .sub{font-size:var(--text-micro);font-weight:500;color:var(--color-muted)}
+.region button.is-active{color:var(--ink-900)}
+.region button.is-active::after{content:'';position:absolute;left:0;right:0;bottom:-1px;height:3px;border-radius:3px;background:var(--ink-900)}
+body.is-global .kr-only{display:none}
+.gl-desc{font-size:var(--text-body);color:var(--color-body);margin:0 0 14px;line-height:1.6}
+/* 해외 실적 캘린더 */
+.cal{display:flex;flex-direction:column;gap:2px}
+.cal__day{display:flex;align-items:flex-start;gap:16px;padding:14px 6px;border-bottom:1px solid var(--color-hairline)}
+.cal__day:last-child{border-bottom:none}
+.cal__date{flex:0 0 96px;display:flex;flex-direction:column;gap:3px}
+.cal__date .d{font-size:var(--text-body);font-weight:800;font-variant-numeric:tabular-nums;color:var(--blue-navy)}
+.cal__list{flex:1;display:flex;flex-wrap:wrap;gap:8px}
+.cal__pill{display:inline-flex;align-items:center;gap:8px;padding:6px 12px;border-radius:999px;font-family:inherit;
+  border:1px solid var(--color-hairline);background:#fff;cursor:pointer;font-size:var(--text-micro);
+  transition:background var(--dur-micro) var(--ease-out),border-color var(--dur-micro) var(--ease-out)}
+.cal__pill:hover{background:var(--surface-tint);border-color:transparent}
+.cal__pill .tk{font-weight:800;color:var(--blue-navy)}
+.cal__pill .nm{color:var(--color-muted)}
+.gq-points{margin:0;padding-left:18px;font-size:var(--text-body);color:var(--color-body);line-height:1.7}
+@media(max-width:520px){.cal__date{flex:0 0 74px}.region{gap:20px}}
 @media(prefers-reduced-motion:reduce){.ev-modal{animation:none}}
 @media(max-width:480px){.ev-modal{padding:20px 18px}.ev-cal__d{flex-basis:64px}}
 </style>
@@ -70,12 +94,44 @@
 <body
   data-page-eyebrow="EVENT-DRIVEN"
   data-page-title="종목 이벤트"
-  data-page-desc="실적 서프라이즈와 기업 액션(배당·자사주·분할)을 DART 공시로 실시간 추적합니다.">
+  data-page-desc="국내는 DART 공시(배당·자사주·분할·실적)로, 해외는 주요기업 실적 일정과 서프라이즈로 이벤트를 추적합니다.">
 
 <main id="main">
 
-  <!-- 탭 + 필터 + 이벤트 테이블 -->
-  <section class="section" style="padding:28px 0 0">
+  <!-- 지역 스위치 (국내 / 해외) -->
+  <section class="section" style="padding:24px 0 0">
+    <div class="wrap">
+      <div class="region" id="regionSw" role="tablist">
+        <button data-r="kr" class="is-active" role="tab">국내 <span class="sub">DART 공시</span></button>
+        <button data-r="global" role="tab">해외 <span class="sub">주요기업 실적</span></button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ 해외: 실적 결과 / 발표 일정 ═══ -->
+  <section class="section" id="glPane" style="padding:22px 0 0;display:none">
+    <div class="wrap">
+      <div class="tabs" id="glTabs">
+        <button data-g="result" class="is-active">실적 결과</button>
+        <button data-g="schedule">발표 일정</button>
+      </div>
+      <p class="gl-desc" id="glDesc"></p>
+      <div class="chip-row" id="glFilters" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px"></div>
+      <div class="ev-stat" id="glStat"></div>
+      <div class="card" style="margin-top:14px" id="glResultCard"><div class="card__body" style="padding:8px 8px 4px">
+        <div class="tbl-scroll"><table class="tbl ev-tbl"><thead>
+          <tr><th>종목</th><th>섹터</th><th class="num">발표일</th><th class="num">EPS (실제 / 컨센)</th><th class="num">서프라이즈</th><th></th></tr>
+        </thead><tbody id="glBody"></tbody></table></div>
+      </div></div>
+      <div class="card" style="margin-top:14px;display:none" id="glSchedCard"><div class="card__body">
+        <div class="cal" id="glCal"></div>
+      </div></div>
+      <p class="sub" style="color:var(--color-muted);margin-top:10px;font-size:var(--text-micro)">해외 커버리지 종목 기준 · 신고가·섹터 흐름은 <a href="global.html" style="color:var(--blue-cta)">해외 증시</a>에서 확인하세요.</p>
+    </div>
+  </section>
+
+  <!-- ═══ 국내: 탭 + 필터 + 이벤트 테이블 ═══ -->
+  <section class="section kr-only" style="padding:22px 0 0">
     <div class="wrap">
       <div class="tabs" id="evTabs">
         <button data-ev="action" class="is-active">코퍼레이트 액션</button>
@@ -97,7 +153,7 @@
   </section>
 
   <!-- 다가오는 이벤트 캘린더 -->
-  <section class="section section--tint">
+  <section class="section section--tint kr-only">
     <div class="wrap">
       <div class="sec-head">
         <div class="sec-eyebrow"><span class="dot"></span>UPCOMING</div>
@@ -406,8 +462,144 @@ $$('#evTabs button').forEach(b=>b.onclick=()=>{
   renderFilters(); renderTable();
 });
 
+/* ═════════ 해외: 실적 결과 / 발표 일정 (global_quotes) ═════════ */
+let gQuotes=[
+  {ticker:'ORCL',name:'Oracle',sector:'AI 관련주',last_earnings_date:'2026-09-09',next_earnings_date:'2026-12-09',eps:1.47,eps_estimate:1.48,eps_surprise:-0.68},
+  {ticker:'FDX', name:'FedEx',sector:'운송',last_earnings_date:'2026-09-17',next_earnings_date:'2026-12-16',eps:3.83,eps_estimate:3.59,eps_surprise:6.69},
+  {ticker:'MU',  name:'Micron Technology',sector:'반도체',last_earnings_date:'2026-09-23',next_earnings_date:'2026-12-17',eps:3.03,eps_estimate:2.86,eps_surprise:5.94},
+  {ticker:'NKE', name:'Nike',sector:'소비재',last_earnings_date:'2026-09-30',next_earnings_date:'2026-12-18',eps:0.49,eps_estimate:0.27,eps_surprise:81.48},
+  {ticker:'JPM', name:'JPMorgan Chase',sector:'금융',last_earnings_date:'2026-07-14',next_earnings_date:'2026-10-14',eps:5.24,eps_estimate:4.48,eps_surprise:16.96},
+  {ticker:'GE',  name:'GE Aerospace',sector:'산업재',last_earnings_date:'2026-07-17',next_earnings_date:'2026-10-21',eps:1.66,eps_estimate:1.43,eps_surprise:16.08},
+  {ticker:'TSLA',name:'Tesla',sector:'자동차 관련주',last_earnings_date:'2026-07-22',next_earnings_date:'2026-10-21',eps:0.40,eps_estimate:0.43,eps_surprise:-6.98},
+  {ticker:'INTC',name:'Intel',sector:'반도체',last_earnings_date:'2026-07-23',next_earnings_date:'2026-10-23',eps:-0.10,eps_estimate:0.01,eps_surprise:null},
+  {ticker:'GOOGL',name:'Alphabet',sector:'빅테크 7',last_earnings_date:'2026-07-23',next_earnings_date:'2026-10-27',eps:2.31,eps_estimate:2.18,eps_surprise:5.96},
+  {ticker:'MSFT',name:'Microsoft',sector:'빅테크 7',last_earnings_date:'2026-07-29',next_earnings_date:'2026-10-28',eps:3.65,eps_estimate:3.37,eps_surprise:8.31},
+  {ticker:'META',name:'Meta Platforms',sector:'빅테크 7',last_earnings_date:'2026-07-29',next_earnings_date:'2026-10-28',eps:7.14,eps_estimate:5.92,eps_surprise:20.61},
+  {ticker:'AAPL',name:'Apple',sector:'빅테크 7',last_earnings_date:'2026-07-30',next_earnings_date:'2026-10-29',eps:1.57,eps_estimate:1.43,eps_surprise:9.79},
+  {ticker:'AMZN',name:'Amazon',sector:'빅테크 7',last_earnings_date:'2026-07-30',next_earnings_date:'2026-10-29',eps:1.68,eps_estimate:1.33,eps_surprise:26.32},
+  {ticker:'NVDA',name:'NVIDIA',sector:'빅테크 7',last_earnings_date:'2026-08-27',next_earnings_date:'2026-11-19',eps:1.05,eps_estimate:1.01,eps_surprise:3.96},
+];
+/* 컨콜 요약 (global_research kind='callsummary') — ticker가 정확히 일치할 때만 노출 */
+let CALLSUMMARIES=[];
+const gl={ view:'result', sector:'전체' };
+const dday=s=>s?ddayOf(s):null;
+const fmtSp=v=>v==null?'—':(v>=0?'+':'')+Number(v).toFixed(1)+'%';
+
+function glRenderFilters(){
+  const secs=[...new Set(gQuotes.map(q=>q.sector).filter(Boolean))];
+  $('#glFilters').innerHTML=['전체',...secs].map(s=>chip(s,gl.sector===s)).join('');
+  $$('#glFilters .chip').forEach(b=>b.onclick=()=>{ gl.sector=b.dataset.v; glRenderFilters(); glRender(); });
+}
+function glRender(){
+  const base=gQuotes.filter(q=>gl.sector==='전체'||q.sector===gl.sector);
+  const isRes=gl.view==='result';
+  $('#glResultCard').style.display=isRes?'':'none';
+  $('#glSchedCard').style.display=isRes?'none':'';
+  $('#glDesc').textContent=isRes
+    ? '최근 발표된 실적을 컨센서스와 비교합니다. 종목을 누르면 AI 실적 요약과 컨퍼런스콜 요약이 열립니다.'
+    : '발표일이 가까운 순서로 정리했습니다. 실적 발표 전후 변동성에 대비하세요.';
+  if(isRes){
+    const list=base.filter(q=>q.last_earnings_date).sort((a,b)=>b.last_earnings_date.localeCompare(a.last_earnings_date));
+    const beat=list.filter(q=>q.eps_surprise!=null&&q.eps_surprise>=0).length, miss=list.filter(q=>q.eps_surprise!=null&&q.eps_surprise<0).length;
+    $('#glStat').innerHTML=list.length?`<span>총 <b>${list.length}</b>종목</span><span>컨센서스 상회 <b class="up">${beat}</b></span><span>하회 <b class="down">${miss}</b></span>`:'';
+    $('#glBody').innerHTML=list.length?list.map(q=>{
+      const sp=q.eps_surprise;
+      return `<tr onclick="openGlDetail('${q.ticker}')">
+        <td><div class="co">${q.ticker}</div><div class="sub">${(q.name||'').slice(0,22)}</div></td>
+        <td><span class="badge badge--brand">${q.sector||'—'}</span></td>
+        <td class="num sub cn-figure">${q.last_earnings_date.slice(5).replace('-','.')}</td>
+        <td class="num sub cn-figure">${q.eps??'—'} / ${q.eps_estimate??'—'}</td>
+        <td class="num cn-figure ${sp==null?'':(sp>=0?'up':'down')}" style="font-weight:700">${fmtSp(sp)}</td>
+        <td class="num chev">›</td></tr>`;
+    }).join(''):`<tr><td colspan="6"><div class="ev-empty">발표된 실적이 없습니다.</div></td></tr>`;
+  }else{
+    const fut=base.filter(q=>q.next_earnings_date&&dday(q.next_earnings_date)>=0)
+      .sort((a,b)=>a.next_earnings_date.localeCompare(b.next_earnings_date));
+    $('#glStat').innerHTML=fut.length?`<span>예정 <b>${fut.length}</b>종목</span><span>7일 이내 <b class="up">${fut.filter(q=>dday(q.next_earnings_date)<=7).length}</b></span>`:'';
+    const byDate={}; fut.forEach(q=>(byDate[q.next_earnings_date]||(byDate[q.next_earnings_date]=[])).push(q));
+    const dates=Object.keys(byDate).sort().slice(0,10), wd=['일','월','화','수','목','금','토'];
+    $('#glCal').innerHTML=dates.length?dates.map(dt=>{
+      const d=new Date(dt+'T00:00:00'), n=dday(dt);
+      return `<div class="cal__day">
+        <div class="cal__date"><span class="d">${dt.slice(5).replace('-','.')} (${wd[d.getDay()]})</span>
+          <span class="badge ${n<=3?'badge--point':'badge--muted'}" style="align-self:flex-start">${n===0?'D-DAY':'D-'+n}</span></div>
+        <div class="cal__list">${byDate[dt].map(q=>`<button class="cal__pill" onclick="openGlDetail('${q.ticker}')">
+          <span class="tk">${q.ticker}</span><span class="nm">${(q.name||'').slice(0,14)}</span></button>`).join('')}</div></div>`;
+    }).join(''):'<div class="ev-empty">예정된 실적 일정이 없습니다.</div>';
+  }
+}
+function openGlDetail(tk){
+  const q=gQuotes.find(x=>x.ticker===tk); if(!q)return;
+  const sp=q.eps_surprise, n=dday(q.next_earnings_date);
+  const call=CALLSUMMARIES.find(c=>c.ticker===q.ticker);
+  const ai = sp==null
+    ? `${q.ticker}의 직전 실적은 컨센서스와 비교 가능한 수치가 없습니다. 다음 발표 직후 AI 요약이 업데이트됩니다.`
+    : `직전 분기 EPS ${q.eps}(컨센서스 ${q.eps_estimate})로 컨센서스를 ${Math.abs(sp).toFixed(1)}% ${sp>=0?'상회':'하회'}했습니다. ${sp>=0?'실적 모멘텀이 유효한 구간입니다.':'눈높이 하향 여부와 가이던스를 함께 점검할 필요가 있습니다.'}`;
+  const row=(l,v,cls)=>`<tr><td class="sub">${l}</td><td class="num co cn-figure ${cls||''}">${v}</td></tr>`;
+  $('#evModal').innerHTML=`
+    <div class="ev-modal__head">
+      <div><div class="ev-modal__ttl" id="evmTtl">${q.ticker}</div><div class="ev-modal__tk">${q.name||''} · ${q.sector||''}</div></div>
+      <div style="display:flex;align-items:center;gap:10px">
+        ${sp!=null?`<span class="badge ${sp>=0?'badge--up':'badge--down'}">${sp>=0?'컨센서스 상회':'컨센서스 하회'}</span>`:''}
+        <button class="auth-x" aria-label="닫기" onclick="closeDetail()">×</button>
+      </div>
+    </div>
+    <div class="mk-lbl">AI 실적 요약</div>
+    <p style="font-size:var(--text-body);color:var(--color-body);line-height:1.65;margin:0">${ai}</p>
+    <table class="tbl" style="margin-top:14px"><tbody>
+      ${row('직전 실적 발표',q.last_earnings_date||'—')}
+      ${row('EPS (실제 / 컨센서스)',`${q.eps??'—'} / ${q.eps_estimate??'—'}`)}
+      ${row('EPS 서프라이즈',fmtSp(sp),sp==null?'':(sp>=0?'up':'down'))}
+      ${row('다음 실적 발표',(q.next_earnings_date||'—')+(n!=null&&n>=0?` <span class="badge badge--point">D-${n}</span>`:''))}
+    </tbody></table>
+    ${call&&call.points.length?`<div class="mk-lbl">컨퍼런스콜 요약 <span class="badge badge--point">AI</span></div>
+      <ul class="gq-points">${call.points.map(p=>`<li>${p}</li>`).join('')}</ul>`:''}
+    <div style="display:flex;gap:10px;margin-top:20px">
+      <button class="btn btn--secondary" style="flex:1" onclick="registerAlert('earnings:${q.ticker}','${q.ticker} 실적')">실적 발표 알림</button>
+      <a class="btn btn--primary" style="flex:1" href="global.html">해외 증시 →</a>
+    </div>`;
+  const ov=$('#evOverlay'); lastFocus=document.activeElement;
+  ov.classList.add('show'); ov.setAttribute('aria-hidden','false'); document.body.style.overflow='hidden';
+  document.addEventListener('keydown',modalKey);
+  setTimeout(()=>{ const x=$('#evModal .auth-x'); if(x)x.focus(); },40);
+}
+window.openGlDetail=openGlDetail;
+$$('#glTabs button').forEach(b=>b.onclick=()=>setGlView(b.dataset.g));
+function setGlView(v){
+  gl.view=v==='schedule'?'schedule':'result';
+  $$('#glTabs button').forEach(x=>x.classList.toggle('is-active',x.dataset.g===gl.view));
+  glRender();
+}
+
+/* ── 지역 스위치 (URL ?region=global&view=schedule 지원) ── */
+function setRegion(r){
+  const g=r==='global';
+  document.body.classList.toggle('is-global',g);
+  $('#glPane').style.display=g?'':'none';
+  $$('#regionSw button').forEach(x=>{ const on=x.dataset.r===(g?'global':'kr'); x.classList.toggle('is-active',on); x.setAttribute('aria-selected',on); });
+  const u=new URL(location.href); if(g) u.searchParams.set('region','global'); else { u.searchParams.delete('region'); u.searchParams.delete('view'); }
+  history.replaceState(null,'',u);
+}
+$$('#regionSw button').forEach(b=>b.onclick=()=>setRegion(b.dataset.r));
+
 /* ── 초기 렌더 ── */
 renderFilters(); renderTable(); renderCalendar();
+glRenderFilters(); glRender();
+{ const p=new URLSearchParams(location.search);
+  if(p.get('region')==='global'){ setRegion('global'); if(p.get('view')) setGlView(p.get('view')); } }
+
+/* ── 해외 실적 Supabase 로드 ── */
+(async function loadGlobal(){
+  if(!window.sb) return;
+  try{
+    const [gq,gr]=await Promise.all([
+      sb.from('global_quotes').select('*'),
+      sb.from('global_research').select('*').eq('kind','callsummary'),
+    ]);
+    if(gr.data&&gr.data.length) CALLSUMMARIES=gr.data.filter(r=>r.ticker).map(r=>({ticker:r.ticker,points:(r.body&&r.body.points)||[]}));
+    if(gq.data&&gq.data.length){ gQuotes=gq.data.map(r=>({...r,eps_surprise:r.eps_surprise==null?null:+r.eps_surprise})); glRenderFilters(); glRender(); }
+  }catch(e){ console.warn('global earnings load failed (keeping defaults)', e); }
+})();
 
 /* ── Supabase 로드 (있으면 덮어씀) ── */
 (async function loadEvents(){

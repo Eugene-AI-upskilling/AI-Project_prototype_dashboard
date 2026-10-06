@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""해외 주요 지수(NASDAQ·S&P500)를 yfinance로 가져와 Supabase global_indices에 적재.
+"""해외 주요 지수(미국·아시아·매크로)를 yfinance로 가져와 Supabase global_indices에 적재.
 
 시황 페이지(market.html) 상단 지수 스트립의 NASDAQ / S&P 500 값을 실데이터로 채운다.
 KOSPI·KOSDAQ·USD/KRW는 market_snapshot(국내 파이프라인)에서, 해외 지수는 이 스크립트에서 담당.
@@ -19,7 +19,16 @@ import json
 INDICES = [
     ("IXIC", "NASDAQ", "^IXIC"),
     ("GSPC", "S&P 500", "^GSPC"),
+    ("DJI",  "다우", "^DJI"),
+    ("RUT",  "러셀 2000", "^RUT"),
+    ("N225", "닛케이 225", "^N225"),
+    ("HSI",  "항셍", "^HSI"),
+    ("SSEC", "상해종합", "000001.SS"),
+    ("VIX",  "VIX", "^VIX"),
+    ("TNX",  "미 10년물", "^TNX"),        # 금리(%) — change_pct 는 %p 차이로 저장
+    ("DXY",  "달러 인덱스", "DX-Y.NYB"),
 ]
+BP_SYMBOLS = {"TNX"}   # 등락을 비율(%)이 아닌 포인트 차이로 저장
 
 
 def _last_two_closes(ticker, date):
@@ -32,6 +41,12 @@ def _last_two_closes(ticker, date):
     if hist is None or hist.empty:
         return None, None, None
     closes = hist["Close"].dropna()
+    # 장중 실행 시 오늘 미완성 봉 제외 (미국·매크로 지수만 — 아시아는 이미 마감)
+    if ticker.startswith("^") and ticker not in ("^N225", "^HSI"):
+        from zoneinfo import ZoneInfo
+        ny = _dt.datetime.now(ZoneInfo("America/New_York"))
+        if ny.time() < _dt.time(16, 20):
+            closes = closes[[i.date() < ny.date() for i in closes.index]]
     if closes.empty:
         return None, None, None
     cur = float(closes.iloc[-1])
@@ -55,7 +70,12 @@ def fetch(date=None):
             cur, prev, as_of = None, None, None
         if cur is None:
             continue
-        chg = round((cur - prev) / prev * 100, 2) if prev else None
+        if not prev:
+            chg = None
+        elif sym in BP_SYMBOLS:
+            chg = round(cur - prev, 3)
+        else:
+            chg = round((cur - prev) / prev * 100, 2)
         rows.append({
             "symbol": sym, "name": name,
             "price": round(cur, 2), "change_pct": chg, "as_of": as_of,

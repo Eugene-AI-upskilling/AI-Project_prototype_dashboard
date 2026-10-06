@@ -8,7 +8,7 @@
 사용법 (yujin-research-center 폴더에서):
   python -m db_loader.global_markets            # 계산 + 검수 출력 (적재 안 함)
   python -m db_loader.global_markets --push     # Supabase 적재 (+ global_indices · global_quotes 함께 갱신)
-  python -m db_loader.global_markets --push --no-ai   # 딥리서치 생략
+  python -m db_loader.global_markets --push --no-ai   # LLM 없이 데이터 요약만
 
 기준: 종가(분할 반영, 배당 미반영 Close). ATH = 상장 이후 전체 종가 최고치 돌파.
 """
@@ -17,6 +17,7 @@ import io
 import json
 import math
 import os
+import re
 import sys
 import urllib.error
 import urllib.request
@@ -178,6 +179,7 @@ def highs(univ):
             "ma20_gap": _r((last / ma20 - 1) * 100, 1),
             "spark": [_r(x) for x in c.iloc[-60:].tolist()],
             "asof": asof.date().isoformat(), "next_earnings": None,
+            "_hi52": _r(hi52), "_ma20": _r(ma20),          # '_' 키는 리서치용 — DB 적재 시 제외
         })
     return rows
 
@@ -218,24 +220,43 @@ def pick_targets(rows, n=DR_MAX):
     return out
 
 
+_NAME_TAIL = re.compile(r"[,.]?\s+(Inc|Incorporated|Corp|Corporation|Co|Company|Ltd|Limited|plc|PLC|Holdings|Group|"
+                        r"Class [A-C]|N\.V|S\.A|AG|SE|L\.P|Technologies|Technology)\b\.?", re.I)
+
+
+def _short_name(name):
+    """'ON Semiconductor Corp.' → 'ON Semiconductor' (검색·헤드라인 매칭용)."""
+    out = name
+    for _ in range(3):
+        out = _NAME_TAIL.sub("", out).strip(" ,.")
+    return out or name
+
+
 def _news(ticker, name, n=8):
-    """최근 7일 뉴스 헤드라인 — Google News RSS (yfinance .news 는 현재 빈 값을 반환)."""
+    """최근 7일 뉴스 헤드라인 — Google News RSS (yfinance .news 는 현재 빈 값을 반환).
+    짧은 티커(ON, Q, P …)는 엉뚱한 기사가 섞이므로 회사명으로 검색하고, 헤드라인에
+    회사명이나 티커가 들어간 기사만 남긴다."""
     import urllib.parse
     import xml.etree.ElementTree as ET
     from email.utils import parsedate_to_datetime
-    q = urllib.parse.quote(f'"{ticker}" stock when:7d')
+    short = _short_name(name)
+    q = urllib.parse.quote(f'"{short}" stock when:7d')
     try:
         res = requests.get(f"https://news.google.com/rss/search?q={q}&hl=en-US&gl=US&ceid=US:en",
                            headers=UA, timeout=20)
-        items = ET.fromstring(res.content).iter("item")
+        items = list(ET.fromstring(res.content).iter("item"))
     except Exception:
         return []
+    key = short.split()[0].lower() if len(short.split()[0]) >= 4 else short.lower()
+    tk_re = re.compile(rf"\b{re.escape(ticker)}\b") if len(ticker) >= 3 else None
     out = []
     for it in items:
         title = (it.findtext("title") or "").strip()
         src = it.findtext("source") or ""
         if src and title.endswith(" - " + src):
             title = title[: -len(src) - 3]
+        if key not in title.lower() and not (tk_re and tk_re.search(title)):
+            continue
         try:
             date = parsedate_to_datetime(it.findtext("pubDate")).date().isoformat()
         except Exception:
@@ -268,7 +289,7 @@ def _facts(r):
     metrics = {
         "fpe": f"{info['forwardPE']:.1f}x" if _r(info.get("forwardPE")) else None,
         "rev_g": f"{info['revenueGrowth'] * 100:+.1f}%" if _r(info.get("revenueGrowth")) is not None else None,
-        "eps_rev": (f"{eps_rev:+.1f}% (30일)" if eps_rev is not None else None),
+        "eps_rev": (None if eps_rev is None else "변동 없음" if abs(eps_rev) < 0.05 else f"{eps_rev:+.1f}%"),
         "short": f"{info['shortPercentOfFloat'] * 100:.1f}%" if _r(info.get("shortPercentOfFloat")) is not None else None,
     }
     facts = {
@@ -315,8 +336,89 @@ def _llm(facts):
     return json.loads(out["choices"][0]["message"]["content"])
 
 
-def deep_research(targets):
-    """[{ticker, asof, thesis, drivers, risks, checkpoints, metrics, sources, model}] — 같은 날 재실행 시 캐시 재사용."""
+SECTOR_ETF_BY_KO = {n: s for s, n in SECTOR_ETFS}
+
+
+def _dday(d):
+    try:
+        return (_dt.date.fromisoformat(d) - _dt.date.today()).days
+    except Exception:
+        return None
+
+
+def rule_brief(r, facts, sec_map):
+    """LLM 없이 사실 데이터만으로 만드는 리서치 요약 (model='rule').
+    해석·전망은 넣지 않고, 수치가 말해주는 것만 문장으로 정리한다."""
+    tk, vol, gap, f52 = r["ticker"], r["vol_ratio"], r["ma20_gap"], r["from_52w_high"]
+    etf = sec_map.get(SECTOR_ETF_BY_KO.get(r["sector"]))
+    sec_chg = etf.get("chg_1d") if etf else None
+    news = facts.get("recent_news") or []
+    tgt, price = facts.get("analyst_target_mean"), r["close"]
+    dd = _dday(r["next_earnings"]) if r["next_earnings"] else None
+
+    if r["is_ath"]:
+        s1 = (f"{tk}는 {r['chg_pct']:+.2f}% 오르며 사상 최고가를 경신했고, 최근 20거래일 중 "
+              f"{r['ath_streak']}일 신고가를 기록했습니다.")
+        s2 = (f"20일선 대비 {gap:+.1f}% 위에 있어 " +
+              ("단기 과열 구간입니다." if gap >= 10 else "추세는 과열 없이 유지되는 모습입니다."))
+    else:
+        s1 = f"{tk}는 {r['chg_pct']:+.2f}% 오르며 최근 20거래일 최고가를 돌파했습니다."
+        s2 = (f"아직 52주 고가 대비 {f52:.1f}% 아래로, 하락 추세에서 벗어나는 초기 신호인지 확인이 필요한 구간입니다."
+              if (f52 or 0) <= TURN_THRESHOLD else
+              f"52주 고가까지 {abs(f52 or 0):.1f}% 남아 고점 돌파를 시도하는 위치입니다.")
+    s3 = ((f"거래량은 20일 평균의 {vol:.1f}배로 " + ("돌파에 힘이 실렸습니다." if vol >= 1.5 else
+           "평소 수준이라 돌파의 신뢰도는 추가 확인이 필요합니다.")) if vol else "")
+
+    drivers = []
+    if vol and vol >= 1.5:
+        drivers.append(f"<b>거래량 {vol:.1f}배</b> 동반 — 평소보다 강한 매수 유입")
+    if sec_chg is not None:
+        drivers.append(f"<b>{r['sector']} 섹터</b>({etf['symbol']}) {sec_chg:+.2f}% — " +
+                       ("섹터 흐름과 함께 상승" if sec_chg > 0 else "섹터 약세 속 종목 고유 재료 가능성"))
+    e = facts.get("eps_estimate_change_30d_pct")
+    if e is not None and abs(e) >= 0.5:
+        drivers.append(f"<b>올해 EPS 추정치 30일간 {e:+.1f}%</b> " + ("상향" if e > 0 else "하향"))
+    if facts.get("revenue_growth_yoy") is not None:
+        drivers.append(f"최근 분기 <b>매출 성장률 {facts['revenue_growth_yoy'] * 100:+.1f}%</b> (전년 대비)")
+    if news:
+        drivers.append(f"최근 7일 관련 뉴스 <b>{len(news)}건</b> — 아래 헤드라인에서 상승 재료를 확인하세요")
+    else:
+        drivers.append("최근 7일 눈에 띄는 개별 뉴스는 없음 — 수급·섹터 요인 중심의 상승")
+
+    risks = []
+    if gap is not None and gap >= 10:
+        risks.append(f"20일선 대비 <b>{gap:+.1f}%</b> 이격 — 단기 차익 매물 출회 가능성")
+    if dd is not None and 0 <= dd <= 21:
+        risks.append(f"<b>D-{dd} 실적 발표</b>({r['next_earnings']}) — 발표 전후 변동성 확대")
+    if vol is not None and vol < 1:
+        risks.append(f"거래량 {vol:.1f}배로 평균 이하 — 돌파 후 되밀림 위험")
+    if not r["is_ath"] and r.get("_hi52"):
+        risks.append(f"52주 고가 <b>${r['_hi52']:,}</b> 부근 매물대 부담")
+    fpe = facts.get("forward_pe")
+    if fpe and fpe >= 40:
+        risks.append(f"선행 PER <b>{fpe:.1f}배</b>로 밸류에이션 부담")
+    if not risks:
+        risks.append("특이 리스크 신호는 없으나 시장 전반 조정 시 동반 하락 가능")
+
+    checks = []
+    if r.get("_ma20"):
+        checks.append(f"20일선 <b>${r['_ma20']:,}</b> 지지 여부")
+    if not r["is_ath"] and r.get("_hi52"):
+        checks.append(f"52주 고가 <b>${r['_hi52']:,}</b> 돌파 시 추세 전환 확인" if (f52 or 0) <= TURN_THRESHOLD
+                      else f"52주 고가 <b>${r['_hi52']:,}</b> 돌파 여부")
+    if r["next_earnings"]:
+        checks.append(f"<b>{r['next_earnings']}</b> 실적 발표에서 가이던스 방향")
+    if tgt and price:
+        checks.append(f"애널리스트 평균 목표가 <b>${tgt:,}</b> (현재가 대비 {(tgt / price - 1) * 100:+.1f}%)")
+
+    return {"thesis": " ".join(x for x in (s1, s2, s3) if x),
+            "drivers": drivers[:4], "risks": risks[:3], "checkpoints": checks[:3]}
+
+
+def deep_research(rows, sec, use_llm=True):
+    """신고가 전 종목에 리서치 요약 생성.
+    - 기본: 사실 데이터 기반 요약(model='rule', 비용 없음)
+    - LLM 사용 가능 시: pick_targets 상위 DR_MAX 종목은 AI 분석으로 대체(같은 날 재실행 시 캐시)."""
     os.makedirs(CACHE_DIR, exist_ok=True)
     cache_p = os.path.join(CACHE_DIR, "global_deep_research.json")
     try:
@@ -324,35 +426,53 @@ def deep_research(targets):
             cache = json.load(f)
     except Exception:
         cache = {}
-    out = []
-    for r in targets:
-        ck = f"{r['ticker']}|{r['asof']}"
-        if ck in cache:
-            out.append(cache[ck]); continue
+    sec_map = {x["symbol"]: x for x in sec}
+    llm_set = {t["ticker"] for t in pick_targets(list(rows))} if use_llm else set()
+    llm_ok = use_llm and bool(os.environ.get("OPENAI_API") or os.environ.get("OPENAI_API_KEY"))
+
+    def facts_of(r):
         try:
-            facts, metrics, news = _facts(r)
-            ai = _llm(facts)
-        except urllib.error.HTTPError as e:
-            detail = e.read().decode("utf-8", "ignore")[:200]
-            print(f"  ⚠ 딥리서치 LLM 오류 {e.code}: {detail}")
-            if e.code in (401, 429):      # 키 오류·크레딧 소진 → 나머지도 실패하므로 중단
-                break
-            continue
+            return _facts(r)
         except Exception as e:
-            print(f"  ⚠ 딥리서치 실패 {r['ticker']}: {e}")
+            print(f"  ⚠ 데이터 수집 실패 {r['ticker']}: {e}")
+            return None
+    with ThreadPoolExecutor(4) as ex:
+        gathered = list(ex.map(facts_of, rows))
+
+    out, n_ai = [], 0
+    for r, g in zip(rows, gathered):
+        if not g:
             continue
-        if not ai or not ai.get("thesis"):
-            continue
-        row = {"ticker": r["ticker"], "asof": r["asof"], "thesis": ai.get("thesis"),
-               "drivers": ai.get("drivers") or [], "risks": ai.get("risks") or [],
-               "checkpoints": ai.get("checkpoints") or [], "metrics": metrics,
+        facts, metrics, news = g
+        ck = f"{r['ticker']}|{r['asof']}"
+        body, model = None, "rule"
+        if r["ticker"] in llm_set and ck in cache:
+            body, model = cache[ck], cache[ck].get("model", DR_MODEL)
+        elif r["ticker"] in llm_set and llm_ok:
+            try:
+                ai = _llm(facts)
+                if ai and ai.get("thesis"):
+                    body, model = ai, DR_MODEL
+            except urllib.error.HTTPError as e:
+                detail = e.read().decode("utf-8", "ignore")[:160]
+                print(f"  ⚠ LLM 오류 {e.code}: {detail} → 이후 종목은 데이터 요약으로 대체")
+                if e.code in (401, 402, 429):     # 키 오류·크레딧 소진 → 더 시도하지 않음
+                    llm_ok = False
+            except Exception as e:
+                print(f"  ⚠ LLM 실패 {r['ticker']}: {e}")
+        if body is None:
+            body = rule_brief(r, facts, sec_map)
+        row = {"ticker": r["ticker"], "asof": r["asof"], "thesis": body.get("thesis"),
+               "drivers": body.get("drivers") or [], "risks": body.get("risks") or [],
+               "checkpoints": body.get("checkpoints") or [], "metrics": metrics,
                "sources": [{"title": n["title"], "publisher": n["publisher"], "url": n["url"], "date": n["date"]}
                            for n in news[:5]],
-               "model": DR_MODEL}
-        cache[ck] = row
+               "model": model}
+        if model != "rule":
+            cache[ck] = row          # AI 결과만 캐시 (데이터 요약은 매번 새로 계산)
+            n_ai += 1
         out.append(row)
-        print(f"  딥리서치 {r['ticker']} ✓")
-    # 30일 지난 캐시 정리
+    print(f"  리서치 요약 {len(out)}건 (AI {n_ai} · 데이터 요약 {len(out) - n_ai})")
     cut = (_dt.date.today() - _dt.timedelta(days=30)).isoformat()
     cache = {k: v for k, v in cache.items() if (v.get("asof") or "") >= cut}
     with open(cache_p, "w", encoding="utf-8") as f:
@@ -360,17 +480,56 @@ def deep_research(targets):
     return out
 
 
+# ───────────────────────── 모닝 브리핑 ─────────────────────────
+def overnight_brief(gi, sec, hi):
+    """global_research(kind='overnight') 갱신용 — 지수·섹터·신고가 데이터로 만드는 밤사이 요약."""
+    from collections import Counter
+    ix = {x["symbol"]: x for x in gi or []}
+    spx, ndx = ix.get("GSPC"), ix.get("IXIC")
+    if not spx or not ndx or spx.get("change_pct") is None or ndx.get("change_pct") is None:
+        return None
+    sectors = sorted([x for x in sec if x["kind"] == "sector" and x.get("chg_1d") is not None],
+                     key=lambda x: -x["chg_1d"])
+    themes = sorted([x for x in sec if x["kind"] == "theme" and x.get("chg_1d") is not None],
+                    key=lambda x: -x["chg_1d"])
+    up = [x for x in sectors if x["chg_1d"] > 0]
+    a, b = spx["change_pct"], ndx["change_pct"]
+    mood = "동반 상승" if a > 0 and b > 0 else "동반 하락" if a < 0 and b < 0 else "혼조"
+    lead = "·".join(x["name"] for x in sectors[:2]) if sectors else ""
+    title = f"미 증시 {mood}, {lead} {'강세' if sectors and sectors[0]['chg_1d'] > 0 else '상대 우위'}"
+    parts = [f"S&P 500 {a:+.2f}%, 나스닥 {b:+.2f}%."]
+    if sectors:
+        weak = [x for x in sectors if x["chg_1d"] < 0]
+        parts.append(f"11개 섹터 중 {len(up)}개 상승" +
+                     (f", {weak[-1]['name']}({weak[-1]['chg_1d']:+.2f}%)가 가장 약했습니다." if weak else "."))
+    if hi:
+        top = Counter(r["sector"] for r in hi).most_common(2)
+        n_ath = sum(1 for r in hi if r["is_ath"])
+        parts.append(f"20일 신고가 {len(hi)}종목(ATH {n_ath}) 중 " +
+                     " · ".join(f"{s} {n}" for s, n in top) + "종목이 가장 많았습니다.")
+    vix = ix.get("VIX")
+    if vix and vix.get("price"):
+        parts.append(f"VIX {vix['price']}.")
+    rows = [{"name": "S&P 500", "chg": f"{a:+.2f}%"}, {"name": "나스닥", "chg": f"{b:+.2f}%"}]
+    if themes:
+        rows.append({"name": themes[0]["name"], "chg": f"{themes[0]['chg_1d']:+.2f}%"})
+    return {"title": title, "badge": "데이터 요약",
+            "body": {"note": " ".join(parts), "rows": rows, "asof": spx.get("as_of")}}
+
+
 # ───────────────────────── 적재 ─────────────────────────
 def push(sec, hi, dr):
     """테이블별로 독립 적재 — 하나가 실패(예: 테이블 미생성)해도 나머지는 진행."""
     from . import supabase_upsert as su, push_global_indices, extract_global
+    gi = push_global_indices.fetch()
+    hi_rows = [{k: v for k, v in r.items() if not k.startswith("_")} for r in hi]
     jobs = [
-        ("global_indices", lambda: su.upsert("global_indices", push_global_indices.fetch(), "symbol")),
+        ("global_indices", lambda: su.upsert("global_indices", gi, "symbol")),
         # output/global_earnings.xlsx (scripts/3_Global_Earnings.py 가 먼저 갱신)
         ("global_quotes", lambda: su.upsert("global_quotes", extract_global.extract()["global_quotes"], "ticker")),
         ("global_sectors", lambda: su.upsert("global_sectors", sec, "symbol")),
         # 오늘 신고가 목록으로 교체 (어제 종목이 남지 않도록). 0건이면 건드리지 않음
-        ("global_highs", lambda: su.replace_by_key("global_highs", hi, "ticker")),
+        ("global_highs", lambda: su.replace_by_key("global_highs", hi_rows, "ticker")),
     ]
     if dr:
         def _dr():
@@ -379,6 +538,10 @@ def push(sec, hi, dr):
                             (_dt.date.today() - _dt.timedelta(days=14)).isoformat())
             return n
         jobs.append(("global_deep_research", _dr))
+    brief = overnight_brief(gi, sec, hi)
+    if brief:   # 홈(index.html)은 첫 overnight 행을 읽으므로 새 행 추가 대신 같은 행을 갱신
+        jobs.append(("global_research", lambda: su.set_by_filter(
+            "global_research", "kind", "overnight", {"kind": "overnight", **brief})))
     res, failed = {}, False
     for name, fn in jobs:
         try:
@@ -409,11 +572,8 @@ def main():
     for r in sorted(hi, key=lambda r: -(r["vol_ratio"] or 0))[:8]:
         print(f"  {r['ticker']:6} {r['sector']:6} {r['close']:>9} {r['chg_pct']:+.2f}% vol×{r['vol_ratio']} "
               f"52w {r['from_52w_high']} ATH={r['is_ath']} streak={r['ath_streak']}")
-    dr = []
-    if "--no-ai" not in args and hi:
-        targets = pick_targets(list(hi))
-        print(f"AI 딥리서치 대상 {len(targets)}: {', '.join(t['ticker'] for t in targets)}")
-        dr = deep_research(targets)
+    print("리서치 요약 생성 (뉴스·펀더멘털 수집)...")
+    dr = deep_research(hi, sec, use_llm="--no-ai" not in args) if hi else []
     if "--push" in args:
         res, failed = push(sec, hi, dr)
         for k, v in res.items():

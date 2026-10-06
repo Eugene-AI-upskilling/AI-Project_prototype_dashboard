@@ -75,6 +75,22 @@ def replace_by_key(table, rows, key):
     return n
 
 
+def set_by_filter(table, column, value, row):
+    """column=value 행이 있으면 PATCH(같은 id 유지), 없으면 INSERT.
+    global_research 처럼 id 가 identity 이고 프론트가 첫 행을 읽는 테이블용."""
+    _check()
+    res = requests.patch(f"{URL}/rest/v1/{table}?{column}=eq.{value}",
+                         headers=_headers({"Prefer": "return=representation"}),
+                         data=json.dumps(row, default=str), timeout=30)
+    res.raise_for_status()
+    if res.json():
+        return len(res.json())
+    res = requests.post(f"{URL}/rest/v1/{table}", headers=_headers({"Prefer": "return=minimal"}),
+                        data=json.dumps(row, default=str), timeout=30)
+    res.raise_for_status()
+    return 1
+
+
 def delete_older(table, column, cutoff):
     """column < cutoff 인 행 삭제 (예: 오래된 딥리서치 정리)."""
     _check()

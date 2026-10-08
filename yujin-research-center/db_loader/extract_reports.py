@@ -54,38 +54,38 @@ def pdf_text(fp, max_pages=4):
     return "".join(doc[i].get_text() for i in range(min(max_pages, doc.page_count)))
 
 
-def _openai_key():
-    return os.environ.get("OPENAI_API") or os.environ.get("OPENAI_API_KEY")
+REPORT_SCHEMA = {
+    "type": "object",
+    "properties": {
+        "title": {"type": "string"},
+        "summary": {"type": "string"},
+        "category": {"type": "string"},
+        "analyst": {"type": "string"},
+        "company": {"type": ["string", "null"]},
+        "rating": {"type": ["string", "null"]},
+        "target_price": {"type": ["string", "null"]},
+    },
+    "required": ["title", "summary", "category", "analyst", "company", "rating", "target_price"],
+    "additionalProperties": False,
+}
 
 
-SCHEMA_HINT = (
-    '{"title":"리포트 제목(한글)","summary":"일반 투자자용 2문장 요약(과장/투자권유/이모지 금지)",'
-    '"category":"짧은 분류(예: 반도체/2차전지/투자전략/2차전지 등)","analyst":"작성 애널리스트 한글명",'
-    '"company":"종목명 또는 null","rating":"투자의견(매수/중립/매도) 또는 null",'
-    '"target_price":"목표주가(예: 95,000원) 또는 상승여력 또는 null"}'
-)
-
-
-def summarize(text, kind, key):
-    sys_msg = ("너는 증권사 리서치 에디터다. 아래 리포트 본문을 읽고 카드뉴스용 메타데이터를 JSON으로만 출력하라. "
-               "추정/창작 금지, 본문 근거만. 형식: " + SCHEMA_HINT)
-    body = {"model": "gpt-4o-mini",
-            "messages": [{"role": "system", "content": sys_msg},
-                         {"role": "user", "content": f"[유형:{kind}]\n{text[:6500]}"}],
-            "temperature": 0.2, "max_tokens": 400,
-            "response_format": {"type": "json_object"}}
-    req = urllib.request.Request("https://api.openai.com/v1/chat/completions",
-                                 data=json.dumps(body).encode("utf-8"),
-                                 headers={"Authorization": f"Bearer {key}", "Content-Type": "application/json"})
-    with urllib.request.urlopen(req, timeout=60) as r:
-        out = json.loads(r.read().decode("utf-8"))
-    return json.loads(out["choices"][0]["message"]["content"])
+def summarize(text, kind):
+    """리포트 본문 → 카드뉴스용 메타데이터 (Claude API, JSON Schema 로 형식 보장)."""
+    from . import llm
+    sys_msg = ("너는 증권사 리서치 에디터다. 아래 리포트 본문을 읽고 카드뉴스용 메타데이터를 작성하라. "
+               "추정/창작 금지, 본문 근거만. title=리포트 제목(한글), summary=일반 투자자용 2문장 요약"
+               "(과장/투자권유/이모지 금지), category=짧은 분류(예: 반도체/2차전지/투자전략), "
+               "analyst=작성 애널리스트 한글명, company=종목명(없으면 null), rating=투자의견(매수/중립/매도, 없으면 null), "
+               "target_price=목표주가(예: 95,000원) 또는 상승여력(없으면 null).")
+    return llm.json_out(sys_msg, f"[유형:{kind}]\n{text[:6500]}", REPORT_SCHEMA, effort="low") or {}
 
 
 def to_record(url):
     """단일 URL → reports 레코드(dict). 실패 시 None."""
     info = parse_url(url)
-    key = _openai_key()
+    from . import llm
+    key = llm.available()
     try:
         text = pdf_text(download_pdf(url))
     except Exception as e:
@@ -94,7 +94,7 @@ def to_record(url):
     meta = {}
     if key:
         try:
-            meta = summarize(text, info["kind"], key)
+            meta = summarize(text, info["kind"])
         except Exception as e:
             print("  [warn]", url.rsplit('/', 1)[-1], "요약 실패:", e)
 

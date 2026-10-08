@@ -3,7 +3,7 @@
 
   global_sectors        S&P 500 11개 섹터 ETF + 테마 지수 1일/1주/1개월 등락
   global_highs          S&P 500 ∪ 나스닥 100 중 오늘 20일 신고가(종가 기준) 종목, ATH 여부 포함
-  global_deep_research  신고가 상위 종목 AI 분석 (yfinance 펀더멘털·뉴스 → OpenAI 요약)
+  global_deep_research  신고가 종목 리서치 (데이터 요약 + 상위 종목 Claude 분석)
 
 사용법 (yujin-research-center 폴더에서):
   python -m db_loader.global_markets            # 계산 + 검수 출력 (적재 안 함)
@@ -19,8 +19,6 @@ import math
 import os
 import re
 import sys
-import urllib.error
-import urllib.request
 from concurrent.futures import ThreadPoolExecutor
 
 import pandas as pd
@@ -53,7 +51,6 @@ ICB_KO = {
 }
 TURN_THRESHOLD = -15.0      # 프론트(global.html)와 동일: 52주 고가 대비 -15% 이하에서 20일 신고가 → 전환 후보
 DR_MAX = int(os.environ.get("GLOBAL_DR_MAX", "12"))
-DR_MODEL = os.environ.get("GLOBAL_DR_MODEL", "gpt-4o-mini")
 
 
 def _r(v, n=2):
@@ -302,6 +299,7 @@ def _facts(r):
         "price": r["close"], "change_today_pct": r["chg_pct"], "volume_vs_20d_avg": r["vol_ratio"],
         "is_all_time_high": r["is_ath"], "ath_days_in_last_20": r["ath_streak"],
         "pct_from_52w_high_before_today": r["from_52w_high"], "pct_above_20d_ma": r["ma20_gap"],
+        "high_52w_price_before_today": r.get("_hi52"), "ma20_price": r.get("_ma20"),
         "next_earnings": r["next_earnings"],
         "industry": info.get("industry"), "forward_pe": _r(info.get("forwardPE")),
         "trailing_pe": _r(info.get("trailingPE")), "revenue_growth_yoy": _r(info.get("revenueGrowth")),
@@ -316,29 +314,32 @@ def _facts(r):
 
 SYS_PROMPT = (
     "너는 증권사 해외주식 리서치 애널리스트다. 입력 JSON은 오늘 신고가를 기록한 미국 종목의 사실 데이터다. "
-    "반드시 입력에 있는 사실과 숫자만 근거로 한국어로 분석하라. 입력에 없는 수치·사건·제품명을 지어내지 마라. "
+    "반드시 입력에 있는 사실과 숫자만 근거로 한국어 '~습니다'체로 분석하라. 입력에 없는 수치·사건·제품명을 지어내지 말고, "
+    "입력에 있는 가격 레벨(52주 고가·20일선)은 추정하지 말고 그대로 써라. "
     "뉴스가 없거나 상승 이유가 불분명하면 그렇다고 솔직히 쓰고 가격·수급 지표로 설명하라. 투자권유·과장·이모지 금지. "
     "ATH 종목은 '추세가 유지되는지'(연속 갱신, 20일선 이격 과열 여부)에, 52주 고가에서 멀리 떨어진 20일 신고가 종목은 "
     "'추세 전환의 근거'에 초점을 맞춰라. "
-    "출력은 JSON 객체 하나: {\"thesis\": 2~3문장 요약, \"drivers\": 상승 배경 3개 문자열 배열(핵심 키워드는 <b></b>로 감싸기), "
-    "\"risks\": 리스크 2개 배열, \"checkpoints\": 다음에 확인할 것 2개 배열(날짜·가격 레벨이 입력에 있으면 활용)}"
+    "thesis 는 2~3문장 요약, drivers 는 상승 배경 3개(핵심 키워드는 <b></b>로 감싸기), "
+    "risks 는 리스크 2개, checkpoints 는 다음에 확인할 것 2개(날짜·가격 레벨이 입력에 있으면 활용)."
 )
 
 
+DR_SCHEMA = {
+    "type": "object",
+    "properties": {
+        "thesis": {"type": "string"},
+        "drivers": {"type": "array", "items": {"type": "string"}},
+        "risks": {"type": "array", "items": {"type": "string"}},
+        "checkpoints": {"type": "array", "items": {"type": "string"}},
+    },
+    "required": ["thesis", "drivers", "risks", "checkpoints"],
+    "additionalProperties": False,
+}
+
+
 def _llm(facts):
-    key = os.environ.get("OPENAI_API") or os.environ.get("OPENAI_API_KEY")
-    if not key:
-        return None
-    body = {"model": DR_MODEL, "temperature": 0.3, "max_tokens": 900,
-            "response_format": {"type": "json_object"},
-            "messages": [{"role": "system", "content": SYS_PROMPT},
-                         {"role": "user", "content": json.dumps(facts, ensure_ascii=False, default=str)}]}
-    req = urllib.request.Request("https://api.openai.com/v1/chat/completions",
-                                 data=json.dumps(body).encode("utf-8"),
-                                 headers={"Authorization": f"Bearer {key}", "Content-Type": "application/json"})
-    with urllib.request.urlopen(req, timeout=90) as res:
-        out = json.loads(res.read().decode("utf-8"))
-    return json.loads(out["choices"][0]["message"]["content"])
+    from . import llm
+    return llm.json_out(SYS_PROMPT, json.dumps(facts, ensure_ascii=False, default=str), DR_SCHEMA)
 
 
 SECTOR_ETF_BY_KO = {n: s for s, n in SECTOR_ETFS}
@@ -433,7 +434,8 @@ def deep_research(rows, sec, use_llm=True):
         cache = {}
     sec_map = {x["symbol"]: x for x in sec}
     llm_set = {t["ticker"] for t in pick_targets(list(rows))} if use_llm else set()
-    llm_ok = use_llm and bool(os.environ.get("OPENAI_API") or os.environ.get("OPENAI_API_KEY"))
+    from . import llm
+    llm_ok, llm_fail = use_llm and llm.available(), 0
 
     def facts_of(r):
         try:
@@ -452,19 +454,18 @@ def deep_research(rows, sec, use_llm=True):
         ck = f"{r['ticker']}|{r['asof']}"
         body, model = None, "rule"
         if r["ticker"] in llm_set and ck in cache:
-            body, model = cache[ck], cache[ck].get("model", DR_MODEL)
+            body, model = cache[ck], cache[ck].get("model", llm.MODEL)
         elif r["ticker"] in llm_set and llm_ok:
             try:
                 ai = _llm(facts)
                 if ai and ai.get("thesis"):
-                    body, model = ai, DR_MODEL
-            except urllib.error.HTTPError as e:
-                detail = e.read().decode("utf-8", "ignore")[:160]
-                print(f"  ⚠ LLM 오류 {e.code}: {detail} → 이후 종목은 데이터 요약으로 대체")
-                if e.code in (401, 402, 429):     # 키 오류·크레딧 소진 → 더 시도하지 않음
+                    body, model, llm_fail = ai, llm.MODEL, 0
+            except Exception as e:      # SDK가 429·5xx 는 이미 재시도함 → 여기 오면 실제 실패
+                llm_fail += 1
+                print(f"  ⚠ Claude 실패 {r['ticker']}: {str(e)[:160]}")
+                if llm_fail >= 2:       # 연속 실패(키·잔액 문제 등) → 나머지는 데이터 요약
+                    print("  → 연속 실패로 이후 종목은 데이터 요약으로 대체")
                     llm_ok = False
-            except Exception as e:
-                print(f"  ⚠ LLM 실패 {r['ticker']}: {e}")
         if body is None:
             body = rule_brief(r, facts, sec_map)
         row = {"ticker": r["ticker"], "asof": r["asof"], "thesis": body.get("thesis"),

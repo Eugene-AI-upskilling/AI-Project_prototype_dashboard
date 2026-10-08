@@ -2,7 +2,7 @@
 """시황 AI 요약 — 텔레그램 채널(허재환 유진증권 전략) 최근 글 → 1~2문장 요약.
 
 소스: https://t.me/s/huhjae  (공개 웹 프리뷰, 인증 불필요)
-요약: OPENAI_API(또는 OPENAI_API_KEY) 있으면 LLM, 없으면 추출식 폴백.
+요약: Claude API 키(CLAUDE_API_KEY) 있으면 LLM, 없으면 추출식 폴백.
 """
 import os, re, html, datetime as _dt, json, urllib.request
 
@@ -37,29 +37,12 @@ def fetch_posts(n=6):
     return posts[-n:]
 
 
-def _openai_key():
-    return os.environ.get("OPENAI_API") or os.environ.get("OPENAI_API_KEY")
-
-
-def _summarize_llm(text, key):
-    body = {
-        "model": "gpt-4o-mini",
-        "messages": [
-            {"role": "system", "content":
-                "너는 증권사 리서치 에디터다. 입력은 전략가의 텔레그램 코멘트다. "
-                "오늘의 국내 증시 시황을 일반 투자자가 이해하기 쉽게 한국어 1~2문장으로 요약하라. "
-                "과장·투자권유·이모지 금지. 핵심 동인(수급/업종/이벤트)만 담아라."},
-            {"role": "user", "content": text[:6000]},
-        ],
-        "temperature": 0.3, "max_tokens": 220,
-    }
-    req = urllib.request.Request(
-        "https://api.openai.com/v1/chat/completions",
-        data=json.dumps(body).encode("utf-8"),
-        headers={"Authorization": f"Bearer {key}", "Content-Type": "application/json"})
-    with urllib.request.urlopen(req, timeout=40) as r:
-        out = json.loads(r.read().decode("utf-8"))
-    return out["choices"][0]["message"]["content"].strip()
+def _summarize_llm(text):
+    from . import llm
+    return llm.text("너는 증권사 리서치 에디터다. 입력은 전략가의 텔레그램 코멘트다. "
+                    "오늘의 국내 증시 시황을 일반 투자자가 이해하기 쉽게 한국어 1~2문장으로 요약하라. "
+                    "과장·투자권유·이모지 금지. 핵심 동인(수급/업종/이벤트)만 담아라.",
+                    text[:6000])
 
 
 def _summarize_fallback(posts):
@@ -82,11 +65,11 @@ def build_ai_summary(max_posts=6):
         return None
     if not posts:
         return None
-    key = _openai_key()
-    if key:
+    from . import llm
+    if llm.available():
         try:
             joined = "\n\n".join(p["text"] for p in posts)
-            return _summarize_llm(joined, key)
+            return _summarize_llm(joined) or _summarize_fallback(posts)
         except Exception as e:
             print("  [warn] LLM 요약 실패, 추출식 폴백:", e)
     return _summarize_fallback(posts)
@@ -97,5 +80,6 @@ if __name__ == "__main__":
     sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8")
     ps = fetch_posts(6)
     print(f"수집 글: {len(ps)}개, 최신 날짜: {ps[-1]['date'] if ps else None}")
-    print("LLM 키:", "있음" if _openai_key() else "없음(추출식 폴백)")
+    from db_loader import llm
+    print("LLM 키:", "있음(Claude)" if llm.available() else "없음(추출식 폴백)")
     print("요약 결과:", build_ai_summary())

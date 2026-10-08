@@ -16,29 +16,13 @@ def _client():
     return cnn
 
 
-def _openai_key():
-    return os.environ.get("OPENAI_API") or os.environ.get("OPENAI_API_KEY")
-
-
-def _summarize(theme, items, key):
-    """헤드라인 모음 → 1~2문장 한국어 요약(투자권유/이모지 금지)."""
+def _summarize(theme, items):
+    """헤드라인 모음 → 1~2문장 한국어 요약(투자권유/이모지 금지). Claude API."""
+    from . import llm
     heads = "\n".join(f"- {it.title} ({it.description[:60]})" for it in items[:6])
-    body = {
-        "model": "gpt-4o-mini",
-        "messages": [
-            {"role": "system", "content":
-                f"다음은 '{theme}' 테마 관련 최신 뉴스 헤드라인이다. 이 테마에 무슨 일이 있는지 "
-                "일반 투자자가 이해하기 쉽게 한국어 1~2문장으로 요약하라. 과장·투자권유·이모지 금지."},
-            {"role": "user", "content": heads[:3000]},
-        ],
-        "temperature": 0.3, "max_tokens": 180,
-    }
-    req = urllib.request.Request(
-        "https://api.openai.com/v1/chat/completions",
-        data=json.dumps(body).encode("utf-8"),
-        headers={"Authorization": f"Bearer {key}", "Content-Type": "application/json"})
-    with urllib.request.urlopen(req, timeout=40) as r:
-        return json.loads(r.read().decode("utf-8"))["choices"][0]["message"]["content"].strip()
+    return llm.text(f"다음은 '{theme}' 테마 관련 최신 뉴스 헤드라인이다. 이 테마에 무슨 일이 있는지 "
+                    "일반 투자자가 이해하기 쉽게 한국어 1~2문장으로 요약하라. 과장·투자권유·이모지 금지.",
+                    heads[:3000])
 
 
 def extract(theme_names, per_theme=6):
@@ -50,7 +34,8 @@ def extract(theme_names, per_theme=6):
     except Exception as e:
         print("  [warn] 뉴스 크롤러 초기화 실패:", e)
         return {"theme_news": []}
-    key = _openai_key()
+    from . import llm
+    key = llm.available()
 
     rows = []
     for name in theme_names:
@@ -64,7 +49,7 @@ def extract(theme_names, per_theme=6):
         summary = None
         if key:
             try:
-                summary = _summarize(name, items, key)
+                summary = _summarize(name, items)
             except Exception as e:
                 print(f"  [warn] '{name}' 뉴스 요약 실패:", e)
         for rank, it in enumerate(items, 1):

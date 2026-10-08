@@ -117,6 +117,8 @@ def sectors():
     data = yf.download([y for *_, y in spec], period="3mo", auto_adjust=True, progress=False, threads=True)
     close = _drop_open_session(data["Close"])
     rows = []
+    if close.dropna(how="all").empty:
+        raise RuntimeError("섹터 ETF 가격 수집 실패")
     for sym, name, kind, y in spec:
         c = close[y].dropna() if y in close else pd.Series(dtype=float)
         if len(c) < 23:
@@ -152,6 +154,9 @@ def highs(univ):
     close, vol = _download_max(list(meta))
     close, vol = _drop_open_session(close), _drop_open_session(vol)
     asof = close.dropna(how="all").index[-1]
+    covered = int(close.loc[asof].notna().sum())
+    if covered < len(meta) * 0.9:   # Yahoo 일부 장애 → 일부 종목만으로 계산하면 신고가 목록이 틀려짐
+        raise RuntimeError(f"가격 수집 부족 {covered}/{len(meta)} — 적재 중단")
     rows = []
     for tk in close.columns:
         c = close[tk].dropna()

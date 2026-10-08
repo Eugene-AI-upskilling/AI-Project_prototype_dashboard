@@ -36,14 +36,28 @@ if (-not $py) {
 "  python = $py" | Out-File -Append -Encoding utf8 -LiteralPath $log
 
 $proj = Split-Path -Parent $root                # Eugene_AI_Project (실적 수집 스크립트 위치)
-"  [1/2] 해외 실적 수집" | Out-File -Append -Encoding utf8 -LiteralPath $log
-& $py (Join-Path $proj 'scripts_Global_Earnings.py') --no-cache *>> $log
-"  [1/2] exit $LASTEXITCODE" | Out-File -Append -Encoding utf8 -LiteralPath $log
-
-"  [2/2] 지수·섹터·신고가·딥리서치 적재" | Out-File -Append -Encoding utf8 -LiteralPath $log
 $env:PYTHONIOENCODING = 'utf-8'
-& $py -m db_loader.global_markets --push *>> $log
-$code = $LASTEXITCODE
+[Console]::OutputEncoding = [System.Text.Encoding]::UTF8   # python UTF-8 출력을 그대로 받기
+# 네이티브 출력은 파이프로 받아 UTF-8 로 기록 (*>> 는 UTF-16 으로 써서 로그가 깨짐)
+function Log-Run([string]$label, [scriptblock]$cmd) {
+  "  [$label] 시작" | Out-File -Append -Encoding utf8 -LiteralPath $log
+  & $cmd 2>&1 | ForEach-Object { "$_" } | Where-Object { $_ -notmatch 'Invalid Crumb' } |
+    Out-File -Append -Encoding utf8 -LiteralPath $log
+  $c = $LASTEXITCODE
+  "  [$label] exit $c" | Out-File -Append -Encoding utf8 -LiteralPath $log
+  return $c
+}
+
+$earn = Join-Path (Join-Path $proj 'scripts') '3_Global_Earnings.py'
+$c1 = Log-Run '1/2 해외 실적 수집' { & $py $earn --no-cache }
+
+# Yahoo 일시 장애 대비: 실패하면 10분 뒤 한 번 더
+$code = Log-Run '2/2 지수·섹터·신고가·리서치 적재' { & $py -m db_loader.global_markets --push }
+if ($code -ne 0) {
+  Start-Sleep -Seconds 600
+  $code = Log-Run '2/2 재시도' { & $py -m db_loader.global_markets --push }
+}
+if ($c1 -ne 0 -and $code -eq 0) { $code = 2 }   # 실적 수집만 실패해도 스케줄러에 실패로 남김
 $te = Get-Date -Format 'yyyy-MM-dd HH:mm:ss'
 "==== [$te] global markets 종료 (exit $code) ====" | Out-File -Append -Encoding utf8 -LiteralPath $log
 exit $code

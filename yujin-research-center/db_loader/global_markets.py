@@ -98,13 +98,11 @@ def universe():
 
 
 def _drop_open_session(df):
-    """미국 장중(뉴욕 16:20 이전)에 돌리면 오늘 미완성 봉이 '종가'처럼 섞인다 → 제거."""
-    from zoneinfo import ZoneInfo
-    ny = _dt.datetime.now(ZoneInfo("America/New_York"))
-    if df is None or df.empty or ny.time() >= _dt.time(16, 20):
+    """미국 장중에 돌리면 마지막 일봉이 미완성(장중) 봉 → 제거. 장 상태는 Yahoo 기준이라 PC 시계와 무관."""
+    from .push_global_indices import us_market_open
+    if df is None or df.empty or not us_market_open():
         return df
-    idx = pd.to_datetime(df.index)
-    return df[[d.date() < ny.date() for d in idx]]
+    return df.iloc[:-1]
 
 
 # ───────────────────────── 섹터·테마 ─────────────────────────

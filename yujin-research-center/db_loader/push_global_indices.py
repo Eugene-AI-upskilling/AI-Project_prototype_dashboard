@@ -31,22 +31,40 @@ INDICES = [
 BP_SYMBOLS = {"TNX"}   # 등락을 비율(%)이 아닌 포인트 차이로 저장
 
 
+_MARKET_OPEN = None
+
+
+def us_market_open():
+    """미국 정규장이 지금 열려 있는지 — Yahoo marketState 기준 (PC 시계가 틀려도 안전).
+    REGULAR 이면 마지막 일봉은 미완성 봉. 조회 실패 시 뉴욕 시각으로 판단."""
+    global _MARKET_OPEN
+    if _MARKET_OPEN is None:
+        try:
+            import yfinance as yf
+            _MARKET_OPEN = (yf.Ticker("SPY").info or {}).get("marketState") == "REGULAR"
+        except Exception:
+            from zoneinfo import ZoneInfo
+            ny = _dt.datetime.now(ZoneInfo("America/New_York"))
+            _MARKET_OPEN = ny.weekday() < 5 and _dt.time(9, 30) <= ny.time() < _dt.time(16, 0)
+    return _MARKET_OPEN
+
+
 def _last_two_closes(ticker, date):
     """date(YYYY-MM-DD) 이하의 마지막 종가·직전 거래일 종가·기준일 반환."""
     import yfinance as yf
-    d = _dt.date.fromisoformat(date)
-    start = (d - _dt.timedelta(days=14)).isoformat()
-    end = (d + _dt.timedelta(days=1)).isoformat()   # end exclusive → date 포함
-    hist = yf.Ticker(ticker).history(start=start, end=end, auto_adjust=False)
+    if date is None:      # 최신: PC 시계에 의존하지 않도록 최근 구간을 그대로 받음
+        hist = yf.Ticker(ticker).history(period="1mo", auto_adjust=False)
+    else:
+        d = _dt.date.fromisoformat(date)
+        start = (d - _dt.timedelta(days=14)).isoformat()
+        end = (d + _dt.timedelta(days=1)).isoformat()   # end exclusive → date 포함
+        hist = yf.Ticker(ticker).history(start=start, end=end, auto_adjust=False)
     if hist is None or hist.empty:
         return None, None, None
     closes = hist["Close"].dropna()
     # 장중 실행 시 오늘 미완성 봉 제외 (미국·매크로 지수만 — 아시아는 이미 마감)
-    if ticker.startswith("^") and ticker not in ("^N225", "^HSI"):
-        from zoneinfo import ZoneInfo
-        ny = _dt.datetime.now(ZoneInfo("America/New_York"))
-        if ny.time() < _dt.time(16, 20):
-            closes = closes[[i.date() < ny.date() for i in closes.index]]
+    if ticker.startswith("^") and ticker not in ("^N225", "^HSI") and us_market_open() and len(closes) > 1:
+        closes = closes.iloc[:-1]
     if closes.empty:
         return None, None, None
     cur = float(closes.iloc[-1])
@@ -57,7 +75,6 @@ def _last_two_closes(ticker, date):
 
 def fetch(date=None):
     """[{symbol,name,price,change_pct,as_of}, ...] (가능한 것만)."""
-    date = date or _dt.date.today().isoformat()
     rows = []
     try:
         import yfinance  # noqa: F401

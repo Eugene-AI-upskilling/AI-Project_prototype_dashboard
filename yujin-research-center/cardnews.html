@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<script>
+/* 카드뉴스 화면은 리서치 리포트(reports.html)로 합쳐짐. 내보내기 모드(?file=, ?export=1)만 이 페이지에서 처리. */
+(function(){ var P=new URLSearchParams(location.search);
+  if(P.get('file')||P.get('export')) return;
+  var q=P.get('id')?('?cn='+P.get('id')):P.get('r')?('?r='+P.get('r')):'';
+  location.replace('reports.html'+q+'#cardnews'); })();
+</script>
+
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>카드뉴스 · 유진 Insight Lab</title>
+<meta name="description" content="유진투자증권 리서치 리포트를 한 장씩 넘겨보는 카드뉴스." />
+
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
+<link rel="preload" href="assets/fonts/PretendardVariable.woff2" as="font" type="font/woff2" crossorigin />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" />
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<link rel="stylesheet" href="assets/app.css" />
+<link rel="stylesheet" href="assets/cardnews/cardnews.css" />
+
+<style>
+/* ── 카드뉴스 뷰어 ── */
+.cnv{display:grid;grid-template-columns:minmax(0,560px) minmax(0,1fr);gap:56px;align-items:start;padding:40px 0 96px}
+.cnv-stage{position:relative}
+.cnv-frame{position:relative;width:100%;aspect-ratio:1080/1350;border-radius:22px;overflow:hidden;background:#0e1a2b;
+  box-shadow:0 30px 60px -30px rgba(14,26,43,.45),0 0 0 1px rgba(14,26,43,.06);touch-action:pan-y;user-select:none}
+.cnv-track{display:flex;height:100%;transition:transform .42s cubic-bezier(.2,.8,.2,1);will-change:transform}
+.cnv-track.drag{transition:none}
+.cnv-cell{flex:0 0 100%;height:100%;position:relative;overflow:hidden}
+.cnv-cell .cx{position:absolute;left:0;top:0;transform-origin:0 0}
+.cnv-nav{position:absolute;top:50%;transform:translateY(-50%);width:48px;height:48px;border-radius:50%;border:0;cursor:pointer;
+  background:rgba(255,255,255,.92);color:#0e1a2b;font-size:22px;font-weight:700;display:flex;align-items:center;justify-content:center;
+  box-shadow:0 6px 18px rgba(14,26,43,.18);transition:opacity .2s,transform .2s}
+.cnv-nav:hover{transform:translateY(-50%) scale(1.06)}
+.cnv-nav:disabled{opacity:0;pointer-events:none}
+.cnv-nav.prev{left:-24px} .cnv-nav.next{right:-24px}
+.cnv-bar{display:flex;align-items:center;justify-content:space-between;margin-top:18px;gap:16px}
+.cnv-dots{display:flex;gap:6px;flex-wrap:wrap}
+.cnv-dots button{width:8px;height:8px;border-radius:4px;border:0;padding:0;background:var(--color-hairline,#d8dde6);cursor:pointer;transition:width .3s,background .3s}
+.cnv-dots button.on{width:26px;background:var(--color-primary,#245ce7)}
+.cnv-count{font-size:var(--text-micro);font-weight:700;color:var(--color-muted);font-variant-numeric:tabular-nums}
+
+.cnv-info{position:sticky;top:96px}
+.cnv-pill{display:inline-flex;align-items:center;height:26px;padding:0 12px;font-size:var(--text-micro);font-weight:700;border-radius:999px;
+  background:rgba(49,130,246,.1);color:var(--color-primary)}
+.cnv-title{margin-top:14px;font-size:clamp(26px,3vw,36px);line-height:1.25;font-weight:800;letter-spacing:-.03em;color:var(--ink-900);word-break:keep-all}
+.cnv-meta{margin-top:12px;color:var(--color-muted);font-size:var(--text-body);font-weight:600}
+.cnv-toc{margin-top:28px;border-top:1px solid var(--color-hairline);list-style:none;padding:0}
+.cnv-toc li button{width:100%;display:flex;gap:14px;align-items:baseline;text-align:left;padding:12px 4px;border:0;border-bottom:1px solid var(--color-hairline);
+  background:none;cursor:pointer;font:inherit;color:var(--ink-800);font-size:var(--text-body)}
+.cnv-toc li button b{flex:0 0 26px;font-size:var(--text-micro);color:var(--color-muted);font-variant-numeric:tabular-nums}
+.cnv-toc li button.on{color:var(--color-primary);font-weight:700}
+.cnv-toc li button.on b{color:var(--color-primary)}
+.cnv-actions{margin-top:26px;display:flex;flex-direction:column;gap:10px}
+.cnv-note{margin-top:18px;font-size:var(--text-micro);color:var(--color-muted);line-height:1.6}
+.cnv-more{margin-top:8px}
+.cnv-more h2{font-size:var(--text-lg,22px);font-weight:800;letter-spacing:-.02em;margin-bottom:18px}
+.cnv-more-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px}
+.cnv-mini{display:block;border-radius:16px;overflow:hidden;text-decoration:none;color:inherit;background:#fff;
+  box-shadow:0 0 0 1px var(--color-hairline);transition:transform .2s,box-shadow .2s}
+.cnv-mini:hover{transform:translateY(-3px);box-shadow:0 14px 30px -18px rgba(14,26,43,.4),0 0 0 1px var(--color-hairline)}
+.cnv-mini .th{position:relative;aspect-ratio:1080/1350;overflow:hidden;background:#0e1a2b}
+.cnv-mini .th .cx{position:absolute;left:0;top:0;transform-origin:0 0;pointer-events:none}
+.cnv-mini .tx{padding:12px 14px 14px;font-size:var(--text-micro);color:var(--color-muted);font-weight:600}
+.cnv-mini .tx b{display:block;margin-top:4px;color:var(--ink-900);font-size:var(--text-body);line-height:1.35}
+.cnv-empty{padding:120px 0;text-align:center;color:var(--color-muted)}
+@media(max-width:900px){
+  .cnv{grid-template-columns:1fr;gap:28px;padding-top:20px}
+  .cnv-info{position:static}
+  .cnv-nav{display:none}
+}
+/* PNG 내보내기 모드: 슬라이드만 세로로 */
+body.cx-export{background:#d9d6cf;margin:0}
+body.cx-export > *:not(#cxExport){display:none!important}
+#cxExport{display:flex;flex-direction:column;align-items:center;gap:40px;padding:40px 0}
+</style>
+</head>
+<body>
+
+<main id="main">
+  <section class="section" style="padding-top:12px">
+    <div class="wrap">
+      <div id="cnvRoot"><div class="cnv-empty">카드뉴스를 불러오는 중…</div></div>
+    </div>
+  </section>
+  <section class="section section--tint" id="cnvMoreSec" hidden>
+    <div class="wrap cnv-more">
+      <h2>다른 카드뉴스</h2>
+      <div class="cnv-more-grid" id="cnvMore"></div>
+    </div>
+  </section>
+</main>
+
+<script src="assets/partials.js"></script>
+<script src="assets/cardnews/cardnews.js"></script>
+<script>
+(function(){
+  var P=new URLSearchParams(location.search);
+  var esc=function(x){return String(x==null?'':x).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});};
+  var fmtD=function(d){return d?String(d).replace(/-/g,'.'):'';};
+  var root=document.getElementById('cnvRoot');
+
+  // 1080 기준 슬라이드를 박스 폭에 맞춰 축소
+  function scaleIn(box){ var s=box.clientWidth/1080; box.querySelectorAll(':scope > .cx').forEach(function(el){el.style.transform='scale('+s+')';}); }
+
+  function deckOf(row){ var d=row.deck||{}; d.title=d.title||row.title; d.category=d.category||row.category;
+    d.analyst=d.analyst||row.analyst; d.team=d.team||row.team; d.published_at=d.published_at||row.published_at; return d; }
+
+  /* ── 내보내기 모드 (?file=...&export=1) ── */
+  function renderExport(deck){
+    document.body.classList.add('cx-export');
+    var host=document.createElement('div'); host.id='cxExport'; document.body.appendChild(host);
+    CardNews.render(deck,host).forEach(function(el,i){ el.id='c'+(i+1); });
+    document.body.dataset.ready='1';
+  }
+
+  /* ── 뷰어 ── */
+  function renderViewer(row){
+    var deck=deckOf(row), slides=deck.slides||[], n=slides.length, cur=0;
+    document.title=(deck.title||'카드뉴스')+' · 유진 Insight Lab';
+    var srcLink=row.report_id?('reports.html?id='+row.report_id):'reports.html';
+    root.innerHTML='<div class="cnv">'
+      +'<div class="cnv-stage"><div class="cnv-frame" id="cnvFrame" tabindex="0" aria-roledescription="carousel" aria-label="'+esc(deck.title)+'"><div class="cnv-track" id="cnvTrack"></div></div>'
+      +'<button class="cnv-nav prev" id="cnvPrev" aria-label="이전 카드">←</button><button class="cnv-nav next" id="cnvNext" aria-label="다음 카드">→</button>'
+      +'<div class="cnv-bar"><div class="cnv-dots" id="cnvDots"></div><span class="cnv-count" id="cnvCount"></span></div></div>'
+      +'<aside class="cnv-info"><span class="cnv-pill">'+esc(deck.category||'리포트')+'</span>'
+      +'<h1 class="cnv-title">'+esc(deck.title)+'</h1>'
+      +'<div class="cnv-meta">'+esc([deck.team,deck.analyst].filter(Boolean).join(' '))+(deck.published_at?' · '+fmtD(deck.published_at)+' 발간':'')+'</div>'
+      +'<ol class="cnv-toc" id="cnvToc">'+slides.map(function(s,i){return '<li><button data-i="'+i+'"><b>'+String(i+1).padStart(2,'0')+'</b><span>'+esc((s.kicker?s.kicker+' · ':'')+String(s.title||'').replace(/\n/g,' '))+'</span></button></li>';}).join('')+'</ol>'
+      +'<div class="cnv-actions"><a class="btn btn--primary btn--block" href="'+srcLink+'">원문 리포트 보기 →</a>'
+      +'<a class="btn btn--ghost btn--block" href="index.html#reports">카드뉴스 홈으로</a></div>'
+      +'<p class="cnv-note">카드뉴스는 리포트 본문을 요약한 참고 자료예요. 정확한 수치와 전체 논리는 원문 리포트에서 확인해 주세요.</p>'
+      +'</aside></div>';
+
+    var track=document.getElementById('cnvTrack'), frame=document.getElementById('cnvFrame');
+    var cells=slides.map(function(){var c=document.createElement('div');c.className='cnv-cell';track.appendChild(c);return c;});
+    // 한 덱을 통째로 렌더(페이지 번호·자동 축소 일관성) 후 셀로 옮김
+    var tmp=document.createElement('div'); tmp.style.cssText='position:absolute;left:-99999px;top:0'; document.body.appendChild(tmp);
+    CardNews.render(deck,tmp).forEach(function(el,i){ cells[i].appendChild(el); });
+    tmp.remove();
+    var fitAll=function(){ cells.forEach(scaleIn); };
+    fitAll(); window.addEventListener('resize',fitAll);
+    if(document.fonts&&document.fonts.ready) document.fonts.ready.then(function(){ cells.forEach(function(c){var el=c.querySelector('.cx'); if(el){el.style.transform='';CardNews.fit(el);} }); fitAll(); });
+
+    var dots=document.getElementById('cnvDots');
+    dots.innerHTML=slides.map(function(_,i){return '<button aria-label="'+(i+1)+'번 카드"></button>';}).join('');
+    function go(i){
+      cur=Math.max(0,Math.min(n-1,i));
+      track.style.transform='translateX('+(-cur*100)+'%)';
+      dots.querySelectorAll('button').forEach(function(b,k){b.classList.toggle('on',k===cur);});
+      document.querySelectorAll('#cnvToc button').forEach(function(b,k){b.classList.toggle('on',k===cur);});
+      document.getElementById('cnvCount').textContent=(cur+1)+' / '+n;
+      document.getElementById('cnvPrev').disabled=cur===0;
+      document.getElementById('cnvNext').disabled=cur===n-1;
+      cells.forEach(function(c,k){c.setAttribute('aria-hidden',k===cur?'false':'true');});
+    }
+    document.getElementById('cnvPrev').onclick=function(){go(cur-1);};
+    document.getElementById('cnvNext').onclick=function(){go(cur+1);};
+    dots.querySelectorAll('button').forEach(function(b,k){b.onclick=function(){go(k);};});
+    document.querySelectorAll('#cnvToc button').forEach(function(b){b.onclick=function(){go(+b.dataset.i);};});
+    frame.addEventListener('keydown',function(e){ if(e.key==='ArrowRight'){go(cur+1);e.preventDefault();} if(e.key==='ArrowLeft'){go(cur-1);e.preventDefault();} });
+    document.addEventListener('keydown',function(e){ if(e.target.closest&&e.target.closest('input,textarea,select'))return; if(e.key==='ArrowRight')go(cur+1); if(e.key==='ArrowLeft')go(cur-1); });
+    // 스와이프 / 드래그
+    var x0=null,dx=0,w=1;
+    frame.addEventListener('pointerdown',function(e){ if(e.button!==0)return; x0=e.clientX; dx=0; w=frame.clientWidth; track.classList.add('drag'); frame.setPointerCapture(e.pointerId); });
+    frame.addEventListener('pointermove',function(e){ if(x0==null)return; dx=e.clientX-x0; track.style.transform='translateX(calc('+(-cur*100)+'% + '+dx+'px))'; });
+    var end=function(){ if(x0==null)return; track.classList.remove('drag'); var t=w*.18; x0=null; if(dx<-t)go(cur+1); else if(dx>t)go(cur-1); else go(cur); };
+    frame.addEventListener('pointerup',end); frame.addEventListener('pointercancel',end);
+    go(Math.max(0,(+P.get('p')||1)-1));
+  }
+
+  function renderMore(rows,curId){
+    var list=rows.filter(function(r){return r.id!==curId;}).slice(0,8);
+    if(!list.length) return;
+    document.getElementById('cnvMoreSec').hidden=false;
+    var grid=document.getElementById('cnvMore');
+    grid.innerHTML=list.map(function(r){return '<a class="cnv-mini" href="cardnews.html?id='+r.id+'"><div class="th"></div><div class="tx">'+esc(r.category||'리포트')+' · '+fmtD(r.published_at)+'<b>'+esc(r.title)+'</b></div></a>';}).join('');
+    grid.querySelectorAll('.cnv-mini').forEach(function(a,i){
+      var d=deckOf(list[i]), th=a.querySelector('.th');
+      CardNews.render({brand:d.brand,source:d.source,team:d.team,analyst:d.analyst,slides:[(d.slides||[])[0]||{type:'cover',title:d.title}]},th);
+      scaleIn(th);
+    });
+    window.addEventListener('resize',function(){ grid.querySelectorAll('.th').forEach(scaleIn); });
+  }
+
+  function fail(msg){ root.innerHTML='<div class="cnv-empty">'+esc(msg)+'<br><br><a class="btn btn--primary" href="reports.html">리서치 리포트로 가기</a></div>'; }
+
+  async function load(){
+    var file=P.get('file');
+    if(file){
+      try{ var deck=await (await fetch(file,{cache:'no-store'})).json();
+        if(P.get('export')) renderExport(deck); else renderViewer({deck:deck,report_id:P.get('r')});
+      }catch(e){ fail('카드뉴스 파일을 읽지 못했어요.'); console.warn(e); }
+      return;
+    }
+    if(!window.sb){ fail('카드뉴스를 불러오지 못했어요.'); return; }
+    try{
+      var all=await sb.from('card_news').select('id,report_id,title,category,analyst,team,published_at,deck').order('published_at',{ascending:false}).order('id',{ascending:false}).limit(40);
+      if(all.error) throw all.error;
+      var rows=all.data||[], id=+P.get('id'), rid=+P.get('r');
+      var row=id?rows.find(function(r){return r.id===id;}):rid?rows.find(function(r){return r.report_id===rid;}):rows[0];
+      if(!row && id){ var one=await sb.from('card_news').select('*').eq('id',id).maybeSingle(); row=one.data; }
+      if(!row){ fail('해당 카드뉴스를 찾을 수 없어요.'); return; }
+      if(P.get('export')){ renderExport(deckOf(row)); return; }
+      renderViewer(row); renderMore(rows,row.id);
+    }catch(e){ console.warn('card_news load failed',e); fail('카드뉴스를 불러오지 못했어요.'); }
+  }
+  load();
+})();
+</script>
+</body>
+</html>

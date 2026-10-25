@@ -20,12 +20,12 @@
 
   /* ───────── 네비게이션 정의 (앵커 → 서브페이지 URL) ───────── */
   const NAV = [
+    ['ask.html','AI 리서치 라운지'],
     ['market.html','시황·테마'],
     ['reports.html','리서치 리포트'],
     ['events.html','종목 이벤트'],
     ['global.html','해외 증시'],
     ['quant.html','퀀트 투자'],
-    ['insights.html','인사이트'],
   ];
   const HERE = (location.pathname.split('/').pop()||'index.html').toLowerCase();
   const cur = href => href.toLowerCase()===HERE ? ' is-current' : '';
@@ -49,6 +49,7 @@
       <div class="nav__spacer"></div>
       <div class="nav__auth">
         <span id="navUser" style="display:none;align-items:center;gap:12px">
+          <a class="btn btn--secondary btn--sm" href="lounge.html" style="height:36px">마이 라운지</a>
           <span id="navEmail" style="font-size:var(--text-body);font-weight:600;color:var(--ink-800)"></span>
           <button class="btn btn--text" style="font-size:var(--text-body)" onclick="signOut()">로그아웃</button>
         </span>
@@ -180,6 +181,7 @@
     window.syncMnavCta=function(user){ const cta=$('#mnavCta'); if(!cta)return;
       cta.innerHTML = user
         ? `<div style="font-size:var(--text-body);color:var(--color-muted);padding:0 2px 6px">${user.email}</div>
+           <a class="btn btn--primary btn--block" href="lounge.html" style="color:#fff">마이 라운지</a>
            <button class="btn btn--secondary btn--block" data-close onclick="signOut()">로그아웃</button>`
         : `<button class="btn btn--secondary btn--block" data-close onclick="openAuth('login')">로그인</button>
            <button class="btn btn--primary btn--block" data-close onclick="openAuth('signup')">회원가입</button>`;
@@ -219,7 +221,9 @@
   window.onAuth = cb=>{ authCbs.push(cb); if(currentUser!==undefined) cb(currentUser); };
 
   let authMode='login';
-  function openAuth(mode='login', email=''){ authMode=mode;
+  /* 라운지 프로토타입: 로그인 · 회원가입은 고객 유형을 고르는 login.html로 보낸다 (기존 모달은 openAuthModal로 남김) */
+  function openAuth(mode='login'){ location.href='login.html'+(mode==='signup'?'?mode=signup':''); }
+  function openAuthModal(mode='login', email=''){ authMode=mode;
     $$('#authTabs button').forEach(b=>b.classList.toggle('is-active',b.dataset.a===mode));
     $('#authSubmit').textContent = mode==='signup' ? '회원가입' : '로그인';
     $('#authEmail').value=email||''; $('#authPw').value=''; setAuthMsg('');
@@ -250,18 +254,26 @@
       else setAuthMsg(msg||'오류가 발생했습니다.','err');
     }finally{ $('#authSubmit').disabled=false; }
   }
-  window.signOut = async function(){ if(sb){ await sb.auth.signOut(); } toast('로그아웃되었습니다.'); };
+  /* 라운지 프로토타입 세션 (login.html이 저장) */
+  const NAMES={am:'김민준',ia:'이서연',dma:'박지훈',hnw:'최은정'};
+  function loungeUser(){ try{ const s=JSON.parse(localStorage.getItem('il.session')||'null');
+    return s&&s.persona ? {email:`${NAMES[s.persona]||'고객'}님`, lounge:true} : null; }catch(e){ return null; } }
+  window.signOut = async function(){ if(sb){ await sb.auth.signOut(); }
+    try{ localStorage.removeItem('il.session'); }catch(e){}
+    toast('로그아웃되었습니다.'); updateAuthUI(null);
+    if(HERE==='lounge.html') setTimeout(()=>location.href='index.html',600); };
 
-  function updateAuthUI(user){ currentUser=user||null;
+  function updateAuthUI(user){ currentUser=user||null;           // getUser()는 실제 Supabase 사용자만 반환
+    const shown=currentUser||loungeUser();                        // 헤더 표시는 라운지 시연 세션도 포함
     const guest=$('#navGuest'), u=$('#navUser');
-    if(currentUser){ guest.style.display='none'; u.style.display='inline-flex'; $('#navEmail').textContent=currentUser.email; }
+    if(shown){ guest.style.display='none'; u.style.display='inline-flex'; $('#navEmail').textContent=shown.email; }
     else { u.style.display='none'; guest.style.display='inline-flex'; }
-    if(window.syncMnavCta)window.syncMnavCta(currentUser);
+    if(window.syncMnavCta)window.syncMnavCta(shown);
     authCbs.forEach(cb=>{ try{cb(currentUser);}catch(e){console.warn(e);} });
   }
 
   function wireAuthUI(){
-    $$('#authTabs button').forEach(b=>b.onclick=()=>openAuth(b.dataset.a,$('#authEmail').value));
+    $$('#authTabs button').forEach(b=>b.onclick=()=>openAuthModal(b.dataset.a,$('#authEmail').value));
     $('#authForm').addEventListener('submit',doAuth);
     // 모달 ESC + 포커스 트랩
     const ov=$('#authOverlay'), modal=$('.auth-modal',ov);

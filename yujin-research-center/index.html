@@ -15,8 +15,11 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <link rel="stylesheet" href="assets/app.css" />
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}</script>
+<link rel="stylesheet" href="assets/v2/hero-blue.css?v=1791604140" />
+<link rel="stylesheet" href="assets/v2/v2.css?v=1791604140" />
 </head>
-<body>
+<body class="experience-static" data-bg="#070e24" data-colors="#2563eb,#5aa6ff,#badcff">
 <a class="skip" href="#market">본문 바로가기</a>
 
 <!-- ════════ NAV ════════ -->
@@ -27,16 +30,17 @@
     <span class="nav__sub">Insight Lab</span>
   </div>
   <nav class="nav__links">
-    <a href="#market">시황·테마</a>
-    <a href="#reports">리서치 리포트</a>
-    <a href="#events">종목 이벤트</a>
-    <a href="#global">해외 AI 리서치</a>
-    <a href="#quant">퀀트 투자</a>
-    <a href="#insights">인사이트</a>
+    <a href="ask.html">AI 리서치 라운지</a>
+    <a href="market.html">시황·테마</a>
+    <a href="reports.html">리서치 리포트</a>
+    <a href="events.html">종목 이벤트</a>
+    <a href="global.html">해외 AI 리서치</a>
+    <a href="quant.html">퀀트 투자</a>
   </nav>
   <div class="nav__spacer"></div>
   <div class="nav__auth">
     <span id="navUser" style="display:none;align-items:center;gap:12px">
+      <a class="btn btn--secondary btn--sm" href="lounge.html" style="height:36px">마이 라운지</a>
       <span id="navEmail" style="font-size:var(--text-body);font-weight:600;color:var(--ink-800)"></span>
       <button class="btn btn--text" style="font-size:var(--text-body)" onclick="signOut()">로그아웃</button>
     </span>
@@ -62,12 +66,12 @@
       </span>
       <button class="auth-x" data-close aria-label="메뉴 닫기">×</button>
     </div>
-    <a href="#market" data-close>시황·테마</a>
-    <a href="#reports" data-close>리서치 리포트</a>
-    <a href="#events" data-close>종목 이벤트</a>
-    <a href="#global" data-close>해외 AI 리서치</a>
-    <a href="#quant" data-close>퀀트 투자</a>
-    <a href="#insights" data-close>인사이트</a>
+    <a href="ask.html" data-close>AI 리서치 라운지</a>
+    <a href="market.html" data-close>시황·테마</a>
+    <a href="reports.html" data-close>리서치 리포트</a>
+    <a href="events.html" data-close>종목 이벤트</a>
+    <a href="global.html" data-close>해외 AI 리서치</a>
+    <a href="quant.html" data-close>퀀트 투자</a>
     <div class="mnav__cta" id="mnavCta">
       <button class="btn btn--secondary btn--block" data-close onclick="openAuth('login')">로그인</button>
       <button class="btn btn--primary btn--block" data-close onclick="openAuth('signup')">회원가입</button>
@@ -75,120 +79,256 @@
   </nav>
 </div>
 
-<!-- ════════ HERO (Upbit-style · white + dotted world map) ════════ -->
-<section class="hero">
-  <div class="hero__bg"></div>
-  <svg class="hero__net" viewBox="0 0 800 450" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
-    <g class="net-flow">
-      <path d="M430 110L560 80"/><path d="M560 80L660 150"/><path d="M430 110L520 185"/><path d="M520 185L620 250"/>
-      <path d="M660 150L725 205"/><path d="M620 250L725 205"/><path d="M520 185L470 250"/><path d="M620 250L585 320"/>
-      <path d="M725 205L705 300"/><path d="M585 320L705 300"/><path d="M560 80L520 185"/>
-      <path d="M430 110L440 180"/><path d="M440 180L470 250"/><path d="M470 250L390 300"/><path d="M520 185L560 230"/>
-      <path d="M560 230L620 250"/><path d="M560 230L585 320"/><path d="M620 250L640 360"/><path d="M680 260L620 250"/>
-      <path d="M680 260L705 300"/><path d="M660 150L760 140"/><path d="M610 140L660 150"/>
-    </g>
-  </svg>
-  <div class="hero__inner">
-    <div class="left">
-      <div class="slide on" data-s="0">
-        <div class="hero-eyebrow">EUGENE INVESTMENT &amp; SECURITIES</div>
-        <h1>유진투자증권<br/>리서치 플랫폼<br/><span class="b">유진 Insight Lab</span></h1>
-        <p class="sub">깊이 있는 인사이트와 데이터 기반 분석으로<br/>더 나은 투자와 미래를 설계합니다.</p>
-        <p class="sub-en">Insightful Analysis, Smarter Investment</p>
-        <div class="cta">
-          <button class="btn btn--navy" onclick="document.getElementById('reports').scrollIntoView()"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M8 13h8M8 17h6"/></svg>리포트 둘러보기</button>
-          <!-- Trading League CTA — Insight Lab → AI Trading League 아레나(/trading)로 진입 -->
-          <button class="btn btn--league" onclick="location.href='trading/index.html'"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M6 4h12v5a6 6 0 0 1-12 0z"/><path d="M9 20h6M12 14v6"/></svg>Trading League <span class="arw" aria-hidden="true">↗</span></button>
-        </div>
+<!-- ════════ HERO · INSIGHT IN MOTION ════════ -->
+<div class="blue-signal">
+<section class="experience" aria-labelledby="hero-title">
+  <div class="experience-stage">
+    <div class="experience-target" aria-hidden="true"></div>
+    <div class="experience-world">
+      <div class="wave-host" aria-hidden="true"></div>
+      <div class="blue-shade" aria-hidden="true"></div>
+      <div class="hero-intro">
+        <p class="hero-overline">EUGENE INVESTMENT &amp; SECURITIES</p>
+        <h1 id="hero-title">시장의 내일을 먼저 읽는 곳,<br><em>유진 Insight Lab</em></h1>
+      </div>
+      <div class="hero-bottom"><a href="#showreel" data-jump-reel>우리의 관점 만나보기 <span aria-hidden="true">↓</span></a><button type="button" data-motion-toggle aria-pressed="false">모션 일시정지</button></div>
+      <div class="reel-card" id="showreel">
+        <video controls muted playsinline loop preload="none" poster="assets/v2/reel-poster-long.jpg" aria-label="유진 Insight Lab 쇼릴 미리보기"><source src="assets/v2/reel-hero-long.mp4" type="video/mp4"></video>
+        <button type="button" class="reel-open" data-open-reel aria-label="쇼릴 전체 보기"><span aria-hidden="true">↗</span><span>쇼릴 전체 보기</span></button>
+        <button type="button" class="reel-toggle" aria-label="쇼릴 미리보기 재생">재생</button>
       </div>
     </div>
-
-    <div class="hero__cards" aria-hidden="true">
-      <!-- Global Macro Insight (상단 중앙) -->
-      <div class="gcard" style="top:14%;left:42%">
-        <span class="gcard__ic"><svg viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="12" width="4" height="8" rx="1"/><rect x="10" y="7" width="4" height="13" rx="1"/><rect x="17" y="3" width="4" height="17" rx="1"/></svg></span>
-        <span class="gcard__tx"><span class="gcard__tt">Global Macro Insight</span><span class="gcard__sub">주요 국가 경기, 정책, 물가 동향</span></span>
-      </div>
-      <!-- AI Powered Analysis (좌측 중앙) -->
-      <div class="gcard" style="top:40%;left:0;animation-delay:-2.5s">
-        <span class="gcard__ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 6a3 3 0 0 0-5.8-1A2.6 2.6 0 0 0 4.5 10 2.6 2.6 0 0 0 6 14.5 2.6 2.6 0 0 0 10 17a2.5 2.5 0 0 0 2-1"/><path d="M12 6a3 3 0 0 1 5.8-1A2.6 2.6 0 0 1 19.5 10 2.6 2.6 0 0 1 18 14.5 2.6 2.6 0 0 1 14 17a2.5 2.5 0 0 1-2-1"/><path d="M12 6v11"/></svg></span>
-        <span class="gcard__tx"><span class="gcard__tt">AI Powered Analysis</span><span class="gcard__sub">AI 기반 데이터 분석 인사이트</span></span>
-      </div>
-      <!-- Market Now (우측 중앙) -->
-      <div class="gcard" style="top:42%;right:0;animation-delay:-1.2s">
-        <span class="gcard__ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h4l2-6 4 12 2-6h6"/></svg></span>
-        <span class="gcard__tx"><span class="gcard__tt">Market Now</span><span class="gcard__sub">실시간 시장 지표 및 이벤트</span></span>
-      </div>
-      <!-- Sector Outlook (중앙 하단) -->
-      <div class="gcard" style="top:62%;left:24%;animation-delay:-3.6s">
-        <span class="gcard__ic"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M11 3.05A9 9 0 1 0 20.95 13H11z" opacity=".5"/><path d="M13 3.05V11h7.95A9 9 0 0 0 13 3.05z"/></svg></span>
-        <span class="gcard__tx"><span class="gcard__tt">Sector Outlook</span><span class="gcard__sub">업종별 전망 및 투자 전략</span></span>
-      </div>
+    <div class="experience-panel">
+      <p class="section-kicker">INSIGHT IN MOTION</p><h2>흐름을 읽고,<br>다음을 그립니다.</h2>
+      <p>데이터가 관점으로 이어지는 순간.<br>유진의 리서치가 바라보는 세상을 만나보세요.</p>
+      <button class="blue-button" type="button" data-open-reel>쇼릴 보기 <span aria-hidden="true">↗</span></button>
+      <a class="panel-link" href="#market">시황·테마 보기 <span aria-hidden="true">→</span></a>
     </div>
   </div>
-
-  <div class="hero__indices" id="heroIndices"></div>
 </section>
+</div>
 <button class="fab" title="맨 위로" onclick="window.scrollTo({top:0,behavior:'smooth'})"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg></button>
 
-<!-- ════════ 1. 오늘의 시황 + AI 앵커 (좌: AI 앵커 / 우: 시황) ════════ -->
-<section class="section" id="market">
-  <div class="wrap">
-    <div class="row-between sec-head">
-      <div>
-        <div class="sec-eyebrow"><span class="dot"></span>DAILY MARKET <span id="marketAsof" class="badge badge--point" style="margin-left:6px"></span></div>
-        <h2 class="sec-title">오늘의 시황, 5분이면 끝</h2>
-        <p class="sec-sub">지수·수급·업종 흐름을 매일 아침 정리해 드려요. 장 시작 전, 시장의 톤부터 읽고 하루를 시작하세요.</p>
+<!-- ════════ 1. 시황 · 테마 — 세로 스크롤이 카드를 가로로 넘김 (Qclay About 방식) ════════ -->
+<section class="v2 pulse" id="market" aria-labelledby="pulse-title">
+  <div id="marketBox" hidden></div>
+  <div class="pulse-sticky">
+    <div class="pulse-track">
+      <div class="pulse-intro">
+        <p class="section-kicker">DAILY MARKET &amp; THEME</p>
+        <h2 id="pulse-title">오늘의 시장,<br>한 장씩<br>넘겨보세요.</h2>
+        <p>국내 증시부터 해외, 금리·환율까지.<br>리서치센터가 매일 정리한 흐름을 카드로 만납니다.</p>
+        <p class="pulse-hint"><span class="hint-mouse" aria-hidden="true"></span>스크롤하면 카드가 옆으로 넘어갑니다</p>
       </div>
-      <button class="btn btn--text" onclick="location.href='market.html'">시황·테마 전체보기 →</button>
+
+      <article class="pulse-card" style="--card:#edf2ff;--pill:#dfe8ff">
+        <div class="pulse-visual"><canvas data-scene="candles" aria-hidden="true"></canvas></div>
+        <svg class="pulse-orbit" viewBox="0 0 600 600" aria-hidden="true"><circle cx="300" cy="300" r="290"/><circle cx="430" cy="210" r="210"/></svg>
+        <div class="pulse-body">
+          <p class="pulse-tag"><span>시황</span>국내 증시</p>
+          <h3>오늘 장, 한 장으로</h3>
+          <p>코스피·코스닥 마감 흐름과 외국인·기관 수급,<br>업종별 강약을 한 장에 정리합니다.</p>
+          <dl class="pulse-data">
+            <div><dt>KOSPI</dt><dd data-live="kospi">— <em></em></dd></div>
+            <div><dt>KOSDAQ</dt><dd data-live="kosdaq">— <em></em></dd></div>
+            <div><dt>외국인 순매수</dt><dd data-live="foreign">— <em></em></dd></div>
+          </dl>
+        </div>
+        <span class="pulse-num" aria-hidden="true">01</span>
+        <a class="pulse-link" href="market.html">시황 자세히 보기 <span aria-hidden="true">→</span></a>
+      </article>
+
+      <article class="pulse-card" style="--card:#f1effb;--pill:#e4def8">
+        <div class="pulse-visual"><canvas data-scene="globe" aria-hidden="true"></canvas></div>
+        <svg class="pulse-orbit" viewBox="0 0 600 600" aria-hidden="true"><circle cx="300" cy="300" r="290"/><circle cx="430" cy="210" r="210"/></svg>
+        <div class="pulse-body">
+          <p class="pulse-tag"><span>시황</span>해외 증시</p>
+          <h3>Global Morning Brief</h3>
+          <p>뉴욕 마감과 주요 이벤트가<br>오늘 국내 시장에 남긴 신호를 AI가 정리합니다.</p>
+          <dl class="pulse-data">
+            <div><dt>NASDAQ</dt><dd data-live="nasdaq">— <em></em></dd></div>
+            <div><dt>S&amp;P 500</dt><dd data-live="sp500">— <em></em></dd></div>
+            <div><dt>오버나이트</dt><dd class="pulse-headline" data-live="overnight">—</dd></div>
+          </dl>
+        </div>
+        <span class="pulse-num" aria-hidden="true">02</span>
+        <a class="pulse-link" href="global.html">해외 증시 자세히 보기 <span aria-hidden="true">→</span></a>
+      </article>
+
+      <article class="pulse-card" style="--card:#ebf7f4;--pill:#d6efe8">
+        <div class="pulse-visual"><canvas data-scene="coins" aria-hidden="true"></canvas></div>
+        <svg class="pulse-orbit" viewBox="0 0 600 600" aria-hidden="true"><circle cx="300" cy="300" r="290"/><circle cx="430" cy="210" r="210"/></svg>
+        <div class="pulse-body">
+          <p class="pulse-tag"><span>시황</span>매크로 전략</p>
+          <h3>매크로 한눈에</h3>
+          <p>환율, 유가, 금리 증시 뒤에서 움직이는<br>자금 흐름의 방향을 함께 읽습니다.</p>
+          <dl class="pulse-data">
+            <div><dt>USD/KRW</dt><dd data-live="usdkrw">— <em></em></dd></div>
+            <div><dt>국고채 3년<small>예시</small></dt><dd>2.61% <em class="down">▼ 3bp</em></dd></div>
+            <div><dt>미 국채 10년<small>예시</small></dt><dd>4.08% <em class="up">▲ 2bp</em></dd></div>
+          </dl>
+        </div>
+        <span class="pulse-num" aria-hidden="true">03</span>
+        <a class="pulse-link" href="reports.html?kind=macro#repList">매크로 전략 리포트 보기 <span aria-hidden="true">→</span></a>
+      </article>
+
+
     </div>
-    <div class="market-split">
-      <div id="homeAnchor" class="market-anchor"></div>
-      <div id="marketBox"></div>
+    <div class="pulse-progress" aria-hidden="true">
+      <span class="pulse-count"><b>01</b> / <span>03</span></span>
+      <i><b></b></i>
+      <span class="pulse-asof"></span>
     </div>
   </div>
 </section>
 
-<!-- ════════ 2. 리서치 리포트 (카드) ════════ -->
-<section class="section" id="reports">
-  <div class="wrap">
-    <div class="row-between sec-head">
+<!-- ════════ 테마 로테이션 — 원래 버블 차트 + 우측 패널 (독립 섹션) ════════ -->
+<section class="v2 themes2" id="themes" aria-labelledby="themes-title">
+  <div class="themes2-inner">
+    <div class="themes2-head">
       <div>
-        <div class="sec-eyebrow"><span class="dot"></span>RESEARCH REPORTS</div>
-        <h2 class="sec-title">숫자 뒤의 맥락까지, 유진 리서치</h2>
-        <p class="sec-sub">현장을 읽고 끝까지 파고든 애널리스트의 시각. 발간 즉시 알림으로 받아보고, 관심 섹터만 골라보세요.</p>
+        <p class="section-kicker">THEME ROTATION MONITOR</p>
+        <h2 id="themes-title">지금 돈이 몰리는<br>테마는?</h2>
       </div>
-      <button class="btn btn--text" onclick="location.href='reports.html'">전체 리포트 보기 →</button>
-    </div>
-    <div class="rep-chips" id="repNav"></div>
-    <div class="rep-cards" id="repBody"></div>
-  </div>
-</section>
-
-<!-- ════════ 3. 테마 로테이션 & 쏠림 ════════ -->
-<section class="section section--tint" id="themes">
-  <div class="wrap">
-    <div class="row-between sec-head">
-      <div>
-        <div class="sec-eyebrow"><span class="dot"></span>THEME ROTATION MONITOR</div>
-        <h2 class="sec-title">지금 돈이 몰리는 테마는?</h2>
-        <p class="sec-sub">주간 테마 로테이션 분석. 버블이 클수록 자금이 집중된 테마, 붉을수록 1개월 수익률이 높습니다. 주도·과열·반전 국면을 미리 읽으세요.</p>
+      <div class="themes2-side">
+        <p>주간 테마 로테이션 분석. 버블이 클수록 1개월 수익률이 높은 테마입니다. 주도·과열·반전 국면을 미리 읽으세요.</p>
+        <div class="themes2-links"><button class="btn btn--text" onclick="soon('주간 테마 리포트')">주간 테마 리포트 →</button><a class="btn btn--text" href="market.html">시황·테마 전체 보기 →</a></div>
       </div>
-      <button class="btn btn--text" onclick="soon('주간 테마 리포트')">주간 테마 리포트 →</button>
     </div>
     <div class="theme-split">
       <div class="bubble-box"><div class="bubble-wrap" id="bubbleWrap"></div></div>
       <div class="card theme-panel"><div class="card__body" id="themePanel"></div></div>
     </div>
-    <div class="bubble-legend" style="margin-top:14px">
-      <span>버블 크기 = 자금 집중도 · 색 = 테마 구분 · 숫자 = 1개월 수익률</span>
+    <div class="bubble-legend">
+      <span>버블 크기 = 1개월 수익률 · 색 = 테마 구분 · 숫자 = 1개월 수익률</span>
       <span class="sw" style="color:var(--color-primary)"><i style="background:var(--color-primary)"></i>버블 클릭 → 우측에 종목·전일수익률 / 리포트 / 뉴스</span>
     </div>
   </div>
 </section>
 
+<!-- ════════ AI 앵커 소개 ════════ -->
+<section class="v2 anc" id="anchor" aria-labelledby="anc-title">
+  <div class="anc-inner">
+    <div class="anc-copy">
+      <p class="section-kicker">EUGENE AI ANCHOR</p>
+      <h2 id="anc-title">매일 아침,<br>AI 앵커가<br><em>먼저 읽어드립니다.</em></h2>
+      <p class="anc-lead">장 시작 전 시황부터 오늘 발간된 리포트, 밤사이 해외 시장까지. 유진 리서치센터의 분석을 AI 앵커가 짧은 영상 브리핑으로 전합니다.</p>
+      <ol class="anc-points">
+        <li><b>01</b><div><h3>오늘의 시황 브리핑</h3><p>지수·수급·업종 흐름을 장 시작 전에 정리합니다.</p></div><small>매일 아침</small></li>
+        <li><b>02</b><div><h3>발간 리포트 브리핑</h3><p>오늘 나온 리포트의 핵심 논리를 먼저 짚어드립니다.</p></div><small>발간 당일</small></li>
+        <li><b>03</b><div><h3>해외 오버나이트</h3><p>밤사이 미국·글로벌 시장의 움직임을 요약합니다.</p></div><small>장 시작 전</small></li>
+      </ol>
+    </div>
+    <div class="anc-stage">
+      <div class="anc-badge"><i aria-hidden="true"></i>ON AIR · AI 브리핑</div>
+      <div id="homeAnchor" class="market-anchor"></div>
+      <div class="anc-lineup"><span>시황 앵커</span><span>리포트 앵커</span><span>해외 앵커</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════ 카드뉴스 — 스크롤 타임라인 (Qclay What we create 방식) ════════ -->
+<section class="v2 cn" id="reports" aria-labelledby="cn-title">
+      <div id="repNav" hidden></div><div id="repBody" hidden></div>
+      <div class="cn-sticky">
+        <div class="cn-grid" aria-hidden="true"></div>
+        <div class="cn-ruler" aria-hidden="true"></div>
+        <h2 class="cn-title" id="cn-title"><span>수많은 리포트,</span><span>한 장의 카드로.</span></h2>
+
+        <div class="cn-side">
+          <p class="section-kicker">RESEARCH CARD NEWS</p>
+          <div class="cn-side-stack">
+            <div class="cn-side-item"><b>01</b><h3>매일 아침,<br>시황 세 줄.</h3><p>전일 시장의 핵심만 세 줄로.<br>출근길 1분이면 충분합니다.</p></div>
+            <div class="cn-side-item"><b>02</b><h3>테마는<br>한 장으로.</h3><p>복잡한 밸류체인을 키워드와<br>차트 한 장으로 정리합니다.</p></div>
+            <div class="cn-side-item"><b>03</b><h3>리포트는<br>3분 요약.</h3><p>원문의 논리를 지키면서<br>체크포인트만 먼저 보여줍니다.</p></div>
+          </div>
+        </div>
+
+        <div class="cn-device">
+          <div class="cn-phone">
+            <div class="cn-status"><span>8:00</span><span class="cn-notch"></span><span>●●● ▮</span></div>
+            <div class="cn-app"><span class="cn-logo" aria-hidden="true">e</span><b>유진 카드뉴스</b><span class="cn-follow">팔로우</span></div>
+            <div class="cn-viewport">
+              <div class="cn-slides">
+                <article class="cnc cnc--navy"><div class="cnc-in">
+                  <p class="cnc-meta">EUGENE DAILY · 10.02 FRI</p>
+                  <h4>오늘 시장,<br>세 줄 요약</h4>
+                  <ol><li>외국인 5거래일 만에 순매수 전환</li><li>반도체·조선 강세, 2차전지 숨 고르기</li><li>환율 하락에 위험선호 회복</li></ol>
+                  <svg class="cnc-spark" viewBox="0 0 200 60" aria-hidden="true"><path d="M0 48 L20 44 L38 47 L58 36 L78 39 L98 28 L118 31 L138 20 L158 24 L178 12 L200 8"/></svg>
+                  <p class="cnc-foot">유진투자증권 리서치센터</p>
+                </div></article>
+                <article class="cnc cnc--peri"><div class="cnc-in">
+                  <p class="cnc-meta">THEME IN ONE PAGE</p>
+                  <h4>AI 반도체,<br>다음 승부처는<br>전력.</h4>
+                  <div class="cnc-bars" aria-hidden="true"><i style="--h:38%"></i><i style="--h:56%"></i><i style="--h:47%"></i><i style="--h:72%"></i><i style="--h:88%"></i></div>
+                  <p class="cnc-keys"><span>HBM</span><span>전력 인프라</span><span>패키징</span></p>
+                  <p class="cnc-foot">테마 리포트 요약</p>
+                </div></article>
+                <article class="cnc cnc--white"><div class="cnc-in">
+                  <p class="cnc-meta">REPORT IN 3 MIN</p>
+                  <h4>실적 시즌,<br>이것만 체크.</h4>
+                  <ol class="cnc-check"><li>가이던스 상향 기업</li><li>마진이 개선되는 업종</li><li>컨센서스와의 괴리</li></ol>
+                  <p class="cnc-link">원문 리포트 보기 →</p>
+                  <p class="cnc-foot">유진투자증권 리서치센터</p>
+                </div></article>
+              </div>
+            </div>
+            <div class="cn-dots" aria-hidden="true"><i></i><i></i><i></i></div>
+            <div class="cn-actions" aria-hidden="true"><span>♡ 1.2k</span><span>저장</span><span>공유 ↗</span></div>
+          </div>
+
+          <div class="cn-desk">
+            <div class="cn-desk-head"><b>EUGENE CARD NEWS</b><span class="on">전체</span><span>시황</span><span>테마</span><span>리포트</span></div>
+            <div class="cn-desk-grid">
+              <article class="cnc cnc--navy"><div class="cnc-in"><p class="cnc-meta">EUGENE DAILY</p><h4>오늘 시장,<br>세 줄 요약</h4><svg class="cnc-spark" viewBox="0 0 200 60" aria-hidden="true"><path d="M0 48 L20 44 L38 47 L58 36 L78 39 L98 28 L118 31 L138 20 L158 24 L178 12 L200 8"/></svg><p class="cnc-foot">시황</p></div></article>
+              <article class="cnc cnc--peri"><div class="cnc-in"><p class="cnc-meta">THEME</p><h4>AI 반도체,<br>다음 승부처는<br>전력.</h4><div class="cnc-bars" aria-hidden="true"><i style="--h:38%"></i><i style="--h:56%"></i><i style="--h:47%"></i><i style="--h:72%"></i><i style="--h:88%"></i></div><p class="cnc-foot">테마</p></div></article>
+              <article class="cnc cnc--blue"><div class="cnc-in"><p class="cnc-meta">GLOBAL</p><h4>미 국채 10년,<br>방향을 바꾸다</h4><svg class="cnc-spark" viewBox="0 0 200 60" aria-hidden="true"><path d="M0 14 L25 18 L50 12 L75 22 L100 30 L125 27 L150 38 L175 44 L200 50"/></svg><p class="cnc-foot">금리</p></div></article>
+              <article class="cnc cnc--white"><div class="cnc-in"><p class="cnc-meta">REPORT IN 3 MIN</p><h4>실적 시즌,<br>이것만 체크.</h4><ol class="cnc-check"><li>가이던스 상향</li><li>마진 개선</li><li>컨센서스 괴리</li></ol><p class="cnc-foot">리포트</p></div></article>
+            </div>
+          </div>
+        </div>
+
+        <a class="cn-tag" href="reports.html#cardnews" tabindex="-1">
+          <span class="cn-tag-stack">
+            <span>DAILY MARKET · 오늘의 시황</span>
+            <span>THEME · 테마 한 장</span>
+            <span>REPORT · 3분 요약</span>
+            <span>리서치 리포트 더 보기 ↗</span>
+          </span>
+        </a>
+
+        <div class="cn-cursor" style="--c:#245ce7"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 2l7.5 19 2.6-7.9L21 10.5z"/></svg><span>애널리스트</span></div>
+        <div class="cn-cursor" style="--c:#7a5af5"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 2l7.5 19 2.6-7.9L21 10.5z"/></svg><span>AI 요약</span></div>
+        <div class="cn-cursor" style="--c:#ef8a3c"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 2l7.5 19 2.6-7.9L21 10.5z"/></svg><span>에디터</span></div>
+        <div class="cn-cursor" style="--c:#1fae8b"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 2l7.5 19 2.6-7.9L21 10.5z"/></svg><span>컴플라이언스</span></div>
+      </div>
+    </section>
+
+<!-- 테마(버블 차트)는 위 시황·테마 가로 카드로 이동 -->
+
 <!-- ════════ 4. 종목 이벤트 (Event-Driven) ════════ -->
-<section class="section section--tint" id="events">
+
+<!-- ════════ 종목 이벤트 미리보기 (웹 효과) — 전체는 events.html ════════ -->
+<section class="v2 evfx" id="events-fx" aria-labelledby="evfx-title">
+  <div class="evfx-inner">
+    <div class="evfx-head">
+      <div>
+        <p class="section-kicker">EVENT-DRIVEN</p>
+        <h2 id="evfx-title">오늘, 주가를 움직일<br><em>이벤트</em>를 먼저.</h2>
+      </div>
+      <div class="evfx-side">
+        <p>실적 서프라이즈와 배당·자사주·분할 같은 기업 액션을 공시로 추적해 한눈에 정리합니다.</p>
+        <div class="evfx-stats"><div><b data-evc="earnings">0</b><span>어닝 서프라이즈</span></div><div><b data-evc="actions">0</b><span>기업 액션</span></div></div>
+        <a class="blue-button" href="events.html">종목 이벤트 전체 보기 <span aria-hidden="true">↗</span></a>
+      </div>
+    </div>
+  </div>
+  <div class="evfx-rows" aria-label="오늘의 종목 이벤트 미리보기">
+    <div class="evfx-row"><div class="evfx-track" data-kind="earnings"></div></div>
+    <div class="evfx-row evfx-row--rev"><div class="evfx-track" data-kind="actions"></div></div>
+  </div>
+</section>
+<section class="section section--tint" id="events" hidden>
   <div class="wrap">
     <div class="sec-head">
       <div class="sec-eyebrow"><span class="dot"></span>EVENT-DRIVEN</div>
@@ -209,7 +349,7 @@
 </section>
 
 <!-- ════════ 5. 해외주식 AI 리서치 ════════ -->
-<section class="section" id="global">
+<section class="section" id="global" hidden>
   <div class="wrap">
     <div class="row-between sec-head">
       <div>
@@ -223,8 +363,32 @@
   </div>
 </section>
 
+<!-- ════════ 퀀트 스튜디오로 넘어가는 전환 ════════ -->
+<section class="v2 qg" id="quant-gate" aria-labelledby="qg-title">
+  <div class="qg-sticky">
+    <div class="qg-grid" aria-hidden="true"></div>
+    <svg class="qg-curve" viewBox="0 0 1200 500" preserveAspectRatio="none" aria-hidden="true">
+      <defs><linearGradient id="qgFill" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5aa6ff" stop-opacity=".22"/><stop offset="1" stop-color="#5aa6ff" stop-opacity="0"/></linearGradient></defs>
+      <path class="qg-area"/><path class="qg-bench" pathLength="1"/><path class="qg-line" pathLength="1"/>
+    </svg>
+    <div aria-hidden="true"><span class="qg-chip" style="--x:56%;--y:64%">모멘텀</span><span class="qg-chip" style="--x:68%;--y:52%">밸류</span><span class="qg-chip" style="--x:80%;--y:40%">퀄리티</span><span class="qg-chip" style="--x:43%;--y:74%">저변동성</span><span class="qg-chip" style="--x:90%;--y:30%">배당</span><span class="qg-chip" style="--x:62%;--y:36%">수급</span></div>
+    <div class="qg-copy">
+      <p class="section-kicker">QUANT STUDIO</p>
+      <h2 id="qg-title"><span>읽는 투자에서,</span><span>설계하는 투자로.</span></h2>
+      <p>테마를 고르고 팩터를 조합하고, 10년 데이터로 검증까지. 퀀트가 쓰던 도구를 코드 한 줄 없이, 클릭만으로.</p>
+    </div>
+    <div class="qg-iris">
+      <div class="qg-iris-in">
+        <p class="section-kicker">QUANT STUDIO</p>
+        <h3>이제, 나만의 전략을<br>직접 만들어 보세요.</h3>
+        <div class="qg-actions"><a class="blue-button" href="quant.html">퀀트 스튜디오 열기 <span aria-hidden="true">↗</span></a></div>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- ════════ 6. 나도 퀀트로 투자하기 (다이렉트 인덱싱 + 백테스팅) ════════ -->
-<section class="section section--tint" id="quant">
+<section class="section section--tint" id="quant" hidden>
   <div class="wrap">
     <div class="row-between sec-head">
       <div>
@@ -476,6 +640,7 @@ function openReport(url,title){ if(url){window.open(url,'_blank','noopener');} e
     const cta=$('#mnavCta'); if(!cta)return;
     cta.innerHTML = user
       ? `<div style="font-size:var(--text-body);color:var(--color-muted);padding:0 2px 6px">${user.email}</div>
+         <a class="btn btn--primary btn--block" href="lounge.html" style="color:#fff">마이 라운지</a>
          <button class="btn btn--secondary btn--block" data-close onclick="signOut()">로그아웃</button>`
       : `<button class="btn btn--secondary btn--block" data-close onclick="openAuth('login')">로그인</button>
          <button class="btn btn--primary btn--block" data-close onclick="openAuth('signup')">회원가입</button>`;
@@ -706,10 +871,28 @@ function renderBubbles(){
   const wrap=$('#bubbleWrap'); if(!wrap)return; wrap.innerHTML='';
   const scale=Math.min(1.05,Math.max(.62,(wrap.clientWidth||620)/640));
   const tip=document.createElement('div');tip.className='bubble-tip';wrap.appendChild(tip);
+  // ── 버블 지름 = 1개월 수익률 기준(테마 최소~최대를 실제 크기로 정규화해 차이를 크게) ──
+  const rets=themes.map(t=>t.ret), rMin=Math.min(...rets), rMax=Math.max(...rets), rSpan=rMax-rMin||1;
+  const D_MIN=58, D_MAX=180; // px @ scale=1
+  const diaOf=t=>(D_MIN+((t.ret-rMin)/rSpan)*(D_MAX-D_MIN))*scale;
+  const isBig=t=>((t.ret-rMin)/rSpan)>0.55;
+  // ── 겹침 방지: 지정 위치를 시작점으로 원 충돌을 반복 완화(relaxation) ──
+  const W=wrap.clientWidth||620, H=wrap.clientHeight||440, GAP=-14*scale; // 음수 = 살짝 겹침 허용
+  const nodes=themes.map(t=>{const d=diaOf(t); return {r:d/2,x:t.x/100*W,y:t.y/100*H};});
+  const clamp=n=>{n.x=Math.max(n.r,Math.min(W-n.r,n.x));n.y=Math.max(n.r,Math.min(H-n.r,n.y));};
+  nodes.forEach(clamp);
+  for(let it=0;it<120;it++){
+    for(let a=0;a<nodes.length;a++)for(let b2=a+1;b2<nodes.length;b2++){
+      const A=nodes[a],B=nodes[b2];let dx=B.x-A.x,dy=B.y-A.y;
+      let dist=Math.hypot(dx,dy)||.01;const min=A.r+B.r+GAP;
+      if(dist<min){const push=(min-dist)/2,ux=dx/dist,uy=dy/dist;
+        A.x-=ux*push;A.y-=uy*push;B.x+=ux*push;B.y+=uy*push;clamp(A);clamp(B);}
+    }
+  }
   themes.forEach((t,i)=>{
-    const d=(46+t.con*12)*scale, big=t.con>5;
+    const d=diaOf(t), big=isBig(t);
     const pos=document.createElement('div');pos.className='bubble-pos';
-    pos.style.left=t.x+'%';pos.style.top=t.y+'%';pos.style.width=pos.style.height=d+'px';
+    pos.style.left=nodes[i].x+'px';pos.style.top=nodes[i].y+'px';pos.style.width=pos.style.height=d+'px';
     const b=document.createElement('div');b.className='bubble'+(t.n===curTheme?' sel':'');b.dataset.theme=t.n;
     b.style.background=PASTEL[i%PASTEL.length];b.style.fontSize=((big?13:11)*scale)+'px';
     b.innerHTML=`<span class="bn">${t.n}</span><span class="bv" style="font-size:${((big?12:10)*scale)}px">${sign(t.ret)}%</span>`;
@@ -1198,7 +1381,9 @@ let sb=null, currentUser=null;
 try { sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON); } catch(e){ console.warn('supabase init failed', e); }
 
 let authMode='login';
-function openAuth(mode='login', email=''){
+/* 라운지 프로토타입: 로그인 · 회원가입은 고객 유형을 고르는 login.html로 (기존 모달은 openAuthModal) */
+function openAuth(mode='login'){ location.href='login.html'+(mode==='signup'?'?mode=signup':''); }
+function openAuthModal(mode='login', email=''){
   authMode=mode;
   $$('#authTabs button').forEach(b=>b.classList.toggle('is-active',b.dataset.a===mode));
   $('#authSubmit').textContent = mode==='signup' ? '회원가입' : '로그인';
@@ -1208,7 +1393,7 @@ function openAuth(mode='login', email=''){
 }
 function closeAuth(){ $('#authOverlay').classList.remove('show'); }
 function setAuthMsg(t,kind){ const m=$('#authMsg'); m.textContent=t||''; m.className='auth-msg'+(kind?(' '+kind):''); }
-$$('#authTabs button').forEach(b=>b.onclick=()=>openAuth(b.dataset.a,$('#authEmail').value));
+$$('#authTabs button').forEach(b=>b.onclick=()=>openAuthModal(b.dataset.a,$('#authEmail').value));
 $('#authForm').addEventListener('submit',doAuth);
 
 async function doAuth(){
@@ -1235,23 +1420,26 @@ async function doAuth(){
     else setAuthMsg(msg||'오류가 발생했습니다.','err');
   }finally{ $('#authSubmit').disabled=false; }
 }
-async function signOut(){ if(sb){ await sb.auth.signOut(); } toast('로그아웃되었습니다.'); }
+async function signOut(){ if(sb){ await sb.auth.signOut(); } try{ localStorage.removeItem('il.session'); }catch(e){} toast('로그아웃되었습니다.'); updateAuthUI(null); }
+function loungeUser(){ try{ const s=JSON.parse(localStorage.getItem('il.session')||'null'); const N={am:'김민준',ia:'이서연',dma:'박지훈',hnw:'최은정'};
+  return s&&s.persona ? {email:(N[s.persona]||'고객')+'님'} : null; }catch(e){ return null; } }
 
 function updateAuthUI(user){
   currentUser=user||null;
+  const shown=currentUser||loungeUser();   // 헤더 표시는 라운지 시연 세션 포함, currentUser는 실제 사용자만
   const guest=$('#navGuest'), u=$('#navUser');
-  if(currentUser){
+  if(shown){
     guest.style.display='none'; u.style.display='inline-flex';
-    $('#navEmail').textContent=currentUser.email;
+    $('#navEmail').textContent=shown.email;
   }else{
     u.style.display='none'; guest.style.display='inline-flex';
   }
-  if(window.syncMnavCta)window.syncMnavCta(currentUser);
+  if(window.syncMnavCta)window.syncMnavCta(shown);
 }
 if(sb){
   sb.auth.getSession().then(({data})=>updateAuthUI(data.session&&data.session.user));
   sb.auth.onAuthStateChange((_e,session)=>updateAuthUI(session&&session.user));
-}
+} else { updateAuthUI(null); }
 
 /* 전략 저장 (다이렉트 인덱싱) */
 async function saveStrategy(){
@@ -1468,5 +1656,192 @@ loadContent();
   armAnims();
 })();
 </script>
+<script>
+/* v2: 원래 시황·해외 데이터(기본값 → DB 덮어쓰기)를 새 시황 카드로 전달 */
+(function(){
+  function emit(){ try{ window.__v2data={market:marketData,extra:heroExtra,global:globalData}; dispatchEvent(new CustomEvent('v2:data',{detail:window.__v2data})); }catch(e){} }
+  var rm=renderMarket; renderMarket=function(m){ rm(m); emit(); };
+  var rg=renderGlobal; renderGlobal=function(l){ rg(l); emit(); };
+  emit();
+})();
+/* v2: 테마 버블 — 영역 크기에 맞춰 버블 지름을 자동 축소하고, 서로 겹치지 않게 배치 */
+(function(){
+  renderBubbles=function(){
+    var wrap=document.getElementById('bubbleWrap'); if(!wrap||!themes||!themes.length) return; wrap.innerHTML='';
+    var W=wrap.clientWidth||620, H=wrap.clientHeight||440, GAP=6;
+    var tip=document.createElement('div'); tip.className='bubble-tip'; wrap.appendChild(tip);
+    var rets=themes.map(function(t){return t.ret;}), rMin=Math.min.apply(null,rets), rMax=Math.max.apply(null,rets), span=(rMax-rMin)||1;
+    var rel=themes.map(function(t){return .45+.55*((t.ret-rMin)/span);});           // 상대 반지름 0.45~1
+    var area=rel.reduce(function(a,r){return a+Math.PI*r*r;},0);
+    var unit=Math.min(H*.19, Math.sqrt(.46*W*H/area));                                // 버블들이 영역의 약 46%만 차지
+    // 데이터 위치(x,y %)를 영역 전체에 고르게 펴서 한쪽으로 몰리지 않게
+    var xs=themes.map(function(t){return t.x;}), ys=themes.map(function(t){return t.y;});
+    var x0=Math.min.apply(null,xs), x1=Math.max.apply(null,xs), y0=Math.min.apply(null,ys), y1=Math.max.apply(null,ys);
+    var nx=function(v){return .1+.8*((v-x0)/((x1-x0)||1));}, ny=function(v){return .12+.76*((v-y0)/((y1-y0)||1));};
+    var nodes=themes.map(function(t,i){return {r:rel[i]*unit, x:nx(t.x)*W, y:ny(t.y)*H};});
+    var clamp=function(n){ n.x=Math.max(n.r+2,Math.min(W-n.r-2,n.x)); n.y=Math.max(n.r+2,Math.min(H-n.r-2,n.y)); };
+    nodes.forEach(clamp);
+    for(var it=0;it<400;it++){ var moved=false;
+      for(var a=0;a<nodes.length;a++)for(var b=a+1;b<nodes.length;b++){
+        var A=nodes[a],Bn=nodes[b],dx=Bn.x-A.x,dy=Bn.y-A.y,dist=Math.hypot(dx,dy)||.01,min=A.r+Bn.r+GAP;
+        if(dist<min){var push=(min-dist)/2,ux=dx/dist,uy=dy/dist;A.x-=ux*push;A.y-=uy*push;Bn.x+=ux*push;Bn.y+=uy*push;clamp(A);clamp(Bn);moved=true;}
+      }
+      if(!moved) break;
+    }
+    themes.forEach(function(t,i){
+      var n=nodes[i], d=n.r*2, fs=Math.max(10,Math.min(15,n.r*.24));
+      var pos=document.createElement('div'); pos.className='bubble-pos';
+      pos.style.left=n.x+'px'; pos.style.top=n.y+'px'; pos.style.width=pos.style.height=d+'px';
+      var el=document.createElement('div'); el.className='bubble'+(t.n===curTheme?' sel':''); el.dataset.theme=t.n;
+      el.style.background=PASTEL[i%PASTEL.length]; el.style.fontSize=fs+'px';
+      el.innerHTML='<span class="bn">'+t.n+'</span><span class="bv" style="font-size:'+Math.max(9,fs-1.5)+'px">'+sign(t.ret)+'%</span>';
+      pos.onmousemove=function(e){var r=wrap.getBoundingClientRect();tip.style.left=(e.clientX-r.left+14)+'px';tip.style.top=(e.clientY-r.top+14)+'px';tip.style.opacity=1;
+        tip.innerHTML='<b>'+t.n+'</b><br/>자금 집중도 '+fmt(t.con,1)+'<br/>1개월 수익률 '+sign(t.ret)+'%';};
+      pos.onmouseleave=function(){tip.style.opacity=0;};
+      el.onclick=function(){openThemeDetail(t.n);};
+      pos.appendChild(el); wrap.appendChild(pos);
+    });
+    if(!curTheme&&themes[0]) openThemeDetail(themes[0].n);
+  };
+  renderBubbles();
+})();
+/* v2: 카드뉴스 이펙트 마지막 아카이브 카드 = 최신 리포트 4건 (클릭 → 원문)
+   사진 자동 선택: 제목 키워드 → (없으면) PDF 파일명의 업종코드(GICS, 예: B2510=자동차) → 기업 리포트는 종목코드로 stocks 테이블의 회사명·업종 */
+(function(){
+  var esc=function(x){return String(x==null?'':x).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});};
+  var val=function(x){ return (x==null||x==='null'||x==='undefined')?'':String(x).trim(); };
+  // 업종코드(GICS) → [표시 이름, repTheme 키워드]
+  var GICS={'10':['에너지','에너지'],'1010':['에너지','에너지'],'15':['소재','에너지'],'1510':['화학','2차전지'],'1520':['소재','에너지'],'1540':['철강·금속','에너지'],
+    '20':['산업재','기계'],'2010':['자본재','기계'],'2020':['상업서비스','기계'],'2030':['운송','운송'],'2040':['조선·기계','조선'],
+    '25':['경기소비재','소비'],'2510':['자동차','자동차'],'2520':['내구소비재','소비'],'2530':['소비자서비스','소비'],'2550':['유통','유통'],
+    '30':['필수소비재','소비'],'35':['헬스케어','바이오'],'3510':['의료기기','의료'],'3520':['제약·바이오','바이오'],'40':['금융','금융'],
+    '45':['IT','반도체'],'4510':['소프트웨어','소프트웨어'],'4520':['IT하드웨어','반도체'],'4530':['반도체','반도체'],
+    '50':['미디어·통신','미디어'],'55':['유틸리티','전력'],'60':['부동산','부동산']};
+  // stocks.sector(국문) → repTheme 키워드
+  var SECTOR=[[/반도체|IT하드웨어|IT가전|디스플레이/,'반도체'],[/건강|제약|바이오|의료/,'바이오'],[/자동차/,'자동차'],[/화학|2차전지/,'2차전지'],
+    [/조선|기계|자본재|운송|상사/,'기계'],[/건설|건축/,'건설'],[/은행|증권|보험|금융/,'금융'],[/에너지|유틸리티|전력/,'에너지'],[/철강|비철|목재/,'에너지'],
+    [/소프트웨어|인터넷/,'소프트웨어'],[/미디어|교육|게임|엔터|화장품|소비|유통|호텔|레저|음식/,'소비']];
+  var stockInfo={}, baseTheme=repTheme;
+  var IMG=function(k){ return REP_IMG_BASE+k+'.jpg'; };
+  // 매크로(투자전략) 리포트 주제 → 사진
+  var MACRO=[[/FICC|FI Weekly|Fixed Income|채권|금리|국채|크레딧/,'bonds'],[/환율|달러|외환|FX|원\/달러/,'currency'],
+    [/China|중국|위안|홍콩|상해|상하이/,'china'],[/Equity|증시|코스피|KOSPI|코스닥|시황|주식|ETF|IPO|악재|반등|조정|천선|아래로|위로|하락|상승|급락|급등|랠리/,'market']];
+  function codeOf(r){ var m=/\d{8}_([A-Z]?\d*)_/.exec(r.url||''); return m?m[1]:''; }
+  function info(r){
+    var code=codeOf(r), label='', kw='', name='';
+    if(/^\d{6}$/.test(code)){ var st=stockInfo[code]; if(st){ name=st.name; label=st.sector||''; for(var i=0;i<SECTOR.length;i++) if(SECTOR[i][0].test(st.sector||'')){kw=SECTOR[i][1];break;} } }
+    else if(/^B\d+$/.test(code)){ var g=GICS[code.slice(1)]||GICS[code.slice(1,3)]; if(g){ label=g[0]; kw=g[1]; } }
+    var th=baseTheme(r);
+    if(/finance\.jpg$/.test(th.img)&&kw) th=baseTheme({title:kw});
+    // 국내 경제·수출 매크로 리포트 → 서울 스카이라인
+    if(/finance\.jpg$/.test(th.img)&&/Korea Economy|수출|국내 경제|GDP|물가/.test(r.title||'')) th={icon:th.icon,img:'assets/hero-skyline.jpg',grad:th.grad};
+    if(/finance\.jpg$/.test(th.img)){ for(var j=0;j<MACRO.length;j++) if(MACRO[j][0].test(r.title||'')){ th={icon:th.icon,img:IMG(MACRO[j][1]),grad:th.grad}; break; } }
+    var placeholder=/^\s*\[[^\]]+\]\s*리포트\s*$/.test(r.title||'')||!val(r.title);
+    var cat=(r.cat||'리포트').replace(/^\[|\]$/g,'');
+    var title=placeholder?((name||label)?((name||label)+' '+cat):(cat+' 리포트')):r.title;
+    return {th:th,label:name?(name+(label?' · '+label:'')):label,title:title};
+  }
+  var origRR=renderReps;
+  function renderDesk(){
+    var cards=document.querySelectorAll('.cn-desk-grid .cnc'); if(!cards.length||!reports.length) return;
+    // 최신 40건 중에서 사진이 서로 겹치지 않게 4건 선택(부족하면 최신순으로 채움)
+    var pool=reports.slice(0,40), picks=[], seen={};
+    pool.forEach(function(r){ if(picks.length<cards.length){ var k=info(r).th.img; if(!seen[k]){ seen[k]=1; picks.push(r); } } });
+    pool.forEach(function(r){ if(picks.length<cards.length&&picks.indexOf(r)<0) picks.push(r); });
+    picks.sort(function(a,b){ return String(b.d||'').localeCompare(String(a.d||'')); });
+    cards.forEach(function(el,i){
+      var r=picks[i]; if(!r) return;
+      var x=info(r), co=val(r.co);
+      el.classList.add('rcn');
+      el.setAttribute('role','link'); el.setAttribute('aria-label',x.title+' 원문 보기');
+      el.dataset.url=r.url||''; el.dataset.title=(x.title||'').replace(/'/g,'');
+      el.innerHTML='<div class="cnc-in">'
+        +'<p class="cnc-meta">'+esc(r.cat||'리포트')+(x.label?' · '+esc(x.label):'')+(r.d?' · '+esc(r.d):'')+'</p>'
+        +'<h4>'+esc(x.title)+'</h4>'
+        +'<div class="rcn-art" style="background:'+x.th.grad+'"><img src="'+x.th.img+'" alt="" loading="lazy" onerror="this.remove()"><span class="rcn-ic" aria-hidden="true">'+x.th.icon+'</span></div>'
+        +'<p class="cnc-foot">'+(co?esc(co)+' · ':'')+'원문 보기 →</p>'
+        +'</div>';
+    });
+    // 기업 리포트(종목코드)는 stocks 테이블에서 회사명·업종을 받아 한 번 더 그림
+    var need=reports.slice(0,40).map(codeOf).filter(function(c){return /^\d{6}$/.test(c)&&!stockInfo[c];});
+    if(need.length&&typeof sb!=='undefined'&&sb){
+      sb.from('stocks').select('code,name,sector').in('code',need.map(function(c){return 'A'+c;})).then(function(res){
+        (res.data||[]).forEach(function(s){ stockInfo[String(s.code).replace(/^A/,'')]=s; });
+        need.forEach(function(c){ if(!stockInfo[c]) stockInfo[c]={name:'',sector:''}; });
+        renderReps();
+      });
+    }
+  }
+  // 원래 리포트 카드에도 같은 사진 규칙 적용
+  repTheme=function(r){ return info(r).th; };
+  // 리포트 찾기: 검색어로 걸러서 원래 renderReps로 그림(필터 칩은 원래 그대로)
+  var qEl=document.getElementById('homeRepQ'), cntEl=document.getElementById('homeRepCount');
+  renderReps=function(){
+    var all=reports, q=(qEl&&qEl.value||'').trim().toLowerCase();
+    if(q) reports=all.filter(function(r){ return [r.title,r.co,r.cat,r.a].some(function(v){ return String(v||'').toLowerCase().indexOf(q)>=0; }); });
+    try{ origRR(); }finally{ reports=all; }
+    if(cntEl){ var n=document.querySelectorAll('#repBody .rep-card').length; cntEl.textContent=q?('“'+qEl.value.trim()+'” 검색 결과 '+n+'건'):''; }
+    renderDesk();
+  };
+  if(qEl){ var qT; qEl.addEventListener('input',function(){ clearTimeout(qT); qT=setTimeout(renderReps,160); }); }
+  var grid=document.querySelector('.cn-desk-grid');
+  if(grid){
+    var open=function(el){ openReport(el.dataset.url, el.dataset.title); };
+    grid.addEventListener('click',function(e){ var c=e.target.closest('.rcn'); if(c) open(c); });
+    grid.addEventListener('keydown',function(e){ var c=e.target.closest('.rcn'); if(c&&(e.key==='Enter'||e.key===' ')){ e.preventDefault(); open(c); } });
+  }
+  renderReps();
+})();
+/* v2: 종목 이벤트 미리보기 — 두 줄 티켓이 서로 반대 방향으로 흐름 */
+(function(){
+  var esc=function(x){return String(x==null?'':x).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});};
+  function tickets(kind){
+    var e=(typeof events!=='undefined'&&events[kind])||{rows:[]};
+    return (e.rows||[]).map(function(r){
+      if(kind==='earnings') return '<a class="evt evt--'+(r[5]==='down'?'down':'up')+'" href="events.html"><span class="evt-type">어닝 서프라이즈</span><b class="evt-co">'+esc(r[0])+'</b><span class="evt-sub">'+esc(r[1])+'</span><span class="evt-val">'+esc(r[4])+'</span><span class="evt-meta">발표 EPS '+esc(r[2])+' · 당일 '+esc(r[6])+'</span></a>';
+      return '<a class="evt evt--'+(r[5]==='down'?'down':'up')+'" href="events.html"><span class="evt-type">'+esc(r[1])+'</span><b class="evt-co">'+esc(r[0])+'</b><span class="evt-sub">'+esc(r[2])+'</span><span class="evt-val">'+esc(r[4])+'</span><span class="evt-meta">기준일 '+esc(r[3])+'</span></a>';
+    }).join('');
+  }
+  function fill(){
+    document.querySelectorAll('.evfx-track').forEach(function(t){ var h=tickets(t.dataset.kind); t.innerHTML=h+'<span class="evfx-dup" aria-hidden="true">'+h+'</span>'; t.querySelectorAll('.evfx-dup a').forEach(function(a){ a.tabIndex=-1; }); });
+    document.querySelectorAll('[data-evc]').forEach(function(b){ var e=(typeof events!=='undefined'&&events[b.dataset.evc])||{rows:[]}; b.dataset.n=(e.rows||[]).length; if(b.dataset.done) b.textContent=b.dataset.n; });
+  }
+  var sec=document.getElementById('events-fx');
+  if(sec) new IntersectionObserver(function(es,o){ es.forEach(function(e){ if(!e.isIntersecting) return; o.disconnect();
+    document.querySelectorAll('[data-evc]').forEach(function(b){ var n=+b.dataset.n||0, t0=performance.now();
+      (function tick(now){ var p=Math.min(1,(now-t0)/1100); b.textContent=Math.round(n*(1-Math.pow(1-p,3))); if(p<1) requestAnimationFrame(tick); else b.dataset.done=1; })(t0); }); }); },{threshold:.3}).observe(sec);
+  if(typeof renderEvents==='function'){ var ore=renderEvents; renderEvents=function(){ ore.apply(this,arguments); fill(); }; }
+  fill();
+})();
+/* v2: 오늘 발간 리포트 AI 앵커(리포트 페이지와 같은 ai_briefings kind='reports') */
+(function(){
+  var brief=null;
+  function md(d){ var m=/(\d{4})-(\d{2})-(\d{2})/.exec(d||''); return m?(m[2]+'.'+m[3]):''; }
+  function render(){
+    var host=document.getElementById('homeReportAnchor'); if(!host||!window.renderAnchor) return;
+    var top=(reports||[]).slice().sort(function(a,b){ return String(b.d||'').localeCompare(String(a.d||'')); }).slice(0,5);
+    var latest=top[0]&&top[0].d, today=(reports||[]).filter(function(r){ return r.d===latest; }).length;
+    renderAnchor(host,{
+      layout:'card', tag:'유진 AI 앵커', objectPosition:'center 60%',
+      liveLabel:(latest?latest:'')+' 브리핑',
+      eyebrow:'AI ANCHOR · 리포트 브리핑', title:(brief&&brief.title)||'오늘의 리포트, AI 앵커가 3분 요약',
+      caption:(brief&&brief.caption)||('오늘 발간된 '+today+'개 리포트의 핵심만 모았어요.'),
+      thumbnail:(brief&&brief.thumbnail_url)||null, videoUrl:(brief&&brief.video_url)||null,
+      chaptersLabel:'오늘 브리핑에 담긴 리포트',
+      chapters:top.map(function(r,i){ return {n:i+1,title:r.title,sub:(r.co||r.cat||''),time:Math.floor(i*40/60)+':'+String((i*40)%60).padStart(2,'0')}; })
+    });
+  }
+  var orr=renderReps; renderReps=function(){ orr(); render(); };
+  render();
+  if(typeof sb!=='undefined'&&sb){
+    sb.from('ai_briefings').select('*').eq('kind','reports').order('brief_date',{ascending:false}).limit(1)
+      .then(function(res){ if(res.data&&res.data.length){ brief=res.data[0]; render(); } });
+  }
+})();
+</script>
+<script type="module" src="assets/v2/experience.js?v=1791604140"></script>
+<script type="module" src="assets/v2/v2.js?v=1791604140"></script>
+<script src="assets/v2/edit-copy.js?v=1791604140" defer></script>
+<script src="assets/cardnews/home-archive.js?v=1791604140" defer></script>
 </body>
 </html>

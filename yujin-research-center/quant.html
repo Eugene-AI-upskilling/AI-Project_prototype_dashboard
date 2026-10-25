@@ -57,6 +57,23 @@
 .gate{text-align:center;padding:48px 24px;border:1px dashed var(--color-hairline);border-radius:var(--radius-lg,16px);background:var(--surface-tint)}
 .gate h4{font-size:var(--text-lg);font-weight:800;color:var(--ink-900);margin-bottom:6px}
 .gate p{font-size:var(--text-body);color:var(--color-muted);margin-bottom:18px}
+/* 실데이터 배지 — 기존 .sim-flag 자리를 대체한다(더 이상 시뮬레이션이 아님) */
+.data-flag{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:700;
+  color:var(--color-primary);background:rgba(49,130,246,.10);border-radius:999px;padding:4px 10px}
+/* 티어시트 모달 — 사전 생성된 tossquant 리포트를 iframe 으로 띄운다 */
+.ts-modal{position:fixed;inset:0;z-index:120;display:none;align-items:center;justify-content:center;padding:24px;
+  background:rgba(15,23,42,.55)}
+.ts-modal.is-open{display:flex}
+.ts-modal__box{background:var(--white);border-radius:var(--radius-lg,16px);width:min(1080px,100%);height:min(88vh,900px);
+  display:flex;flex-direction:column;overflow:hidden;box-shadow:0 24px 60px rgba(15,23,42,.28)}
+.ts-modal__head{display:flex;align-items:center;gap:12px;padding:16px 20px;border-bottom:1px solid var(--color-hairline);flex-wrap:wrap}
+.ts-modal__title{font-size:var(--text-lg);font-weight:800;color:var(--ink-900);margin-right:auto}
+.ts-modal__frame{flex:1;border:0;width:100%;background:var(--surface-tint)}
+.ts-modal__note{padding:10px 20px;border-top:1px solid var(--color-hairline);font-size:11px;color:var(--color-muted);line-height:1.6}
+.ts-close{border:0;background:var(--surface-tint);border-radius:999px;width:32px;height:32px;cursor:pointer;
+  font-size:18px;line-height:1;color:var(--color-muted)}
+.ts-close:hover{background:var(--color-hairline)}
+@media(max-width:560px){.ts-modal{padding:0}.ts-modal__box{height:100vh;border-radius:0}}
 </style>
 </head>
 <body
@@ -92,8 +109,10 @@
             <div id="diSliders"></div>
           </div>
           <div class="panel">
-            <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap"><h4 style="margin:0">예상 포트폴리오</h4><span class="sim-flag"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l9 16H3z"/><path d="M12 10v4"/><path d="M12 17.5v.2"/></svg>시뮬레이션 예시</span></div>
-            <div class="hint" style="margin-top:6px">과거 10년 데이터 기준 추정치입니다(실제 투자 결과가 아니며 미래 수익을 보장하지 않습니다).</div>
+            <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap"><h4 style="margin:0">예상 포트폴리오</h4><span class="data-flag"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>실제 데이터</span></div>
+            <div class="hint" style="margin-top:6px">구성종목이 실제로 낸 과거 수익률·변동성·배당수익률·최대낙폭을 비중으로 가중한 값입니다(최근 10년 월말 기준). 변동성과 최대낙폭은 종목 간 상관을 1로 본 보수적 상한이라, 실제 분산효과가 있으면 이보다 낫습니다. 과거 실적이며 미래 수익을 보장하지 않습니다.
+              <b>이디오</b>는 시장·스타일 팩터로 설명되지 않는 고유 부분입니다 — 종목 수익률을 시장과 팩터 롱숏에 회귀해 남은 잔차로,
+              종목을 늘릴수록 이디오 변동성은 줄어듭니다(분산효과).</div>
             <div class="donut-wrap">
               <div class="donut" id="diDonut"><div class="donut__c"><div class="big cn-figure" id="diCount">0</div><div class="lbl">종목</div></div></div>
               <div class="legend-list" id="diLegend"></div>
@@ -103,6 +122,10 @@
               <div class="metric"><div class="l">예상 변동성</div><div class="v cn-figure" id="diVol">–</div></div>
               <div class="metric"><div class="l">배당수익률</div><div class="v cn-figure" id="diDiv">–</div></div>
               <div class="metric"><div class="l">최대낙폭(MDD)</div><div class="v down cn-figure" id="diMdd">–</div></div>
+              <div class="metric" title="시장·스타일 팩터로 설명되지 않는 고유 수익률">
+                <div class="l">이디오 수익률</div><div class="v cn-figure" id="diIdio">–</div></div>
+              <div class="metric" title="분산투자로 줄일 수 있는 종목 고유 위험">
+                <div class="l">이디오 변동성</div><div class="v cn-figure" id="diIdioVol">–</div></div>
             </div>
             <div style="display:flex;gap:10px;margin-top:18px">
               <button class="btn btn--secondary" style="flex:1" onclick="saveStrategy()">내 전략 저장</button>
@@ -121,7 +144,8 @@
         <div class="tool">
           <div class="panel">
             <h4>팩터 &amp; 기간 설정</h4>
-            <div class="hint">팩터를 여러 개 선택하면 동일 비중으로 결합한 전략을 코스피와 비교합니다.</div>
+            <div class="hint">팩터를 여러 개 선택하면 동일 비중으로 결합한 전략을 코스피와 비교합니다.
+              아무것도 고르지 않으면 팩터 틸트 없는 <b>동일가중</b>(유니버스 전 종목 같은 비중)으로 돌아갑니다.</div>
             <div class="factor-grid" id="btFactors"></div>
             <div class="field" style="margin-top:18px;display:flex;gap:12px;align-items:center;flex-wrap:wrap">
               <label style="margin:0">기간</label>
@@ -145,7 +169,7 @@
             <button class="btn btn--secondary btn--block" style="margin-top:10px" onclick="saveBacktest()">이 백테스트 저장</button>
           </div>
           <div class="panel">
-            <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap"><h4 style="margin:0">누적 수익률</h4><span class="sim-flag"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l9 16H3z"/><path d="M12 10v4"/><path d="M12 17.5v.2"/></svg>시뮬레이션 예시</span></div>
+            <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap"><h4 style="margin:0">누적 수익률</h4><span class="data-flag"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>실제 데이터</span></div>
             <div class="hint" id="btSubtitle" style="margin-top:6px">팩터를 선택하고 실행 버튼을 눌러보세요.</div>
             <div class="chart-box"><svg id="btChart" width="100%" height="100%" viewBox="0 0 560 210" preserveAspectRatio="none"></svg></div>
             <div style="display:flex;gap:18px;margin-top:10px;font-size:var(--text-micro);color:var(--color-muted)">
@@ -158,6 +182,10 @@
               <div class="metric"><div class="l">샤프지수</div><div class="v cn-figure" id="btSharpe">–</div></div>
               <div class="metric"><div class="l">최대낙폭</div><div class="v down cn-figure" id="btMdd">–</div></div>
             </div>
+            <button class="btn btn--secondary btn--block" style="margin-top:14px" id="btSheet">
+              상세 성과 리포트 열기
+            </button>
+            <p class="hint" id="btSheetNote" style="margin-top:8px"></p>
           </div>
         </div>
 
@@ -250,36 +278,150 @@
 
 </main>
 
+<!-- 상세 성과 리포트(tossquant 티어시트) — 정적 호스팅이라 미리 만들어 둔 HTML 을 띄운다 -->
+<div class="ts-modal" id="tsModal" role="dialog" aria-modal="true" aria-labelledby="tsTitle">
+  <div class="ts-modal__box">
+    <div class="ts-modal__head">
+      <span class="ts-modal__title" id="tsTitle">상세 성과 리포트</span>
+      <a class="btn btn--primary" id="tsDownload" download>HTML 내려받기</a>
+      <button class="ts-close" id="tsClose" aria-label="닫기">&times;</button>
+    </div>
+    <iframe class="ts-modal__frame" id="tsFrame" title="상세 성과 리포트" src="about:blank"></iframe>
+    <p class="ts-modal__note" id="tsNote"></p>
+  </div>
+</div>
+
 <script src="assets/partials.js"></script>
 <script>
 /* ═════════ 퀀트 스튜디오 — 전략 설계 · 백테스트 · 보관함 ═════════ */
 
-/* ───────── 1. 다이렉트 인덱싱 (index.html #quant diThemes/diInit/diCalc 이식·확장) ───────── */
-const diThemes={
-  'AI 반도체':[{n:'SK하이닉스',w:40,cagr:24,vol:34,div:1.1},{n:'한미반도체',w:30,cagr:31,vol:46,div:0.4},{n:'삼성전자',w:30,cagr:12,vol:24,div:2.1}],
-  '고배당 안정':[{n:'KB금융',w:35,cagr:9,vol:18,div:5.2},{n:'POSCO홀딩스',w:30,cagr:7,vol:22,div:4.1},{n:'SK텔레콤',w:35,cagr:6,vol:14,div:6.3}],
-  '미국 빅테크':[{n:'엔비디아',w:40,cagr:38,vol:42,div:0.1},{n:'마이크로소프트',w:30,cagr:22,vol:26,div:0.8},{n:'애플',w:30,cagr:19,vol:28,div:0.5}],
-  '2차전지':[{n:'LG에너지솔루션',w:40,cagr:16,vol:40,div:0.3},{n:'삼성SDI',w:30,cagr:12,vol:38,div:0.9},{n:'에코프로비엠',w:30,cagr:20,vol:52,div:0.2}],
-  'K-방산':[{n:'한화에어로스페이스',w:40,cagr:28,vol:36,div:0.8},{n:'현대로템',w:30,cagr:22,vol:34,div:0.6},{n:'LIG넥스원',w:30,cagr:24,vol:32,div:1.0}],
-  '조선·기자재':[{n:'HD한국조선해양',w:40,cagr:19,vol:33,div:0.5},{n:'삼성중공업',w:30,cagr:17,vol:38,div:0.0},{n:'한화오션',w:30,cagr:21,vol:41,div:0.0}],
-};
-let diTheme='AI 반도체',diW=[];
+/* ───────── 0. 실데이터 로딩 (quant_lab 배치가 채우는 Supabase 테이블) ─────────
+   예전 이 페이지는 팩터 CAGR/변동성/샤프가 코드에 박힌 상수였고, 수익률 곡선은
+   시드 난수(mulberry)로 그린 그림이었다. 지금은 아래 3종을 읽어 실제로 계산한다.
+     quant_factor_returns : 팩터 6종 + 코스피 벤치마크의 월별 수익률 (pykrx 월말 패널 기반)
+     quant_tearsheets     : 사전 생성된 tossquant 상세 리포트 인덱스
+     theme_constituents + quant_stock_stats : 테마별 실제 구성종목과 그 종목의 실측 지표
+   네트워크 실패 시에도 화면이 죽지 않도록 로딩 상태를 두고, 데이터 없이는
+   숫자를 지어내지 않는다(빈 값 '–' 유지). */
+const RET={};            // {factor_id: [{m:'2026-08-31', r:0.0123}, ...]}
+const TEARSHEETS={};     // {key: {title,url,cagr,sharpe,mdd,period_years}}
+let FACTOR_META={};      // {factor_id: {name_ko, description}}
+let DATA_READY=false;
+
+async function loadQuantData(){
+  if(!window.sb){ console.warn('supabase 없음 — 퀀트 데이터 로드 불가'); return false; }
+  try{
+    const [meta,rets,sheets]=await Promise.all([
+      sb.from('quant_factor_meta').select('*'),
+      // 팩터 7종 × 월수라 지금은 822행이지만 매달 7행씩 는다. PostgREST 기본 상한(1000)에
+      // 닿으면 오래된 달부터 조용히 잘리므로 명시적으로 넉넉히 잡는다.
+      sb.from('quant_factor_returns').select('factor_id,month,ret').order('month').limit(20000),
+      sb.from('quant_tearsheets').select('*'),
+    ]);
+    (meta.data||[]).forEach(r=>FACTOR_META[r.factor_id]=r);
+    (rets.data||[]).forEach(r=>{ (RET[r.factor_id]=RET[r.factor_id]||[]).push({m:r.month,r:+r.ret}); });
+    (sheets.data||[]).forEach(r=>TEARSHEETS[r.key]=r);
+    DATA_READY=Object.keys(RET).length>0;
+    return DATA_READY;
+  }catch(e){ console.warn('퀀트 데이터 로드 실패', e); return false; }
+}
+
+/* ───────── 1. 다이렉트 인덱싱 — Theme Master 기반 테마 + 실측 지표 ─────────
+   구성종목은 theme_rotation_report 의 **Theme Master**(Finup/AlphaSquare/FnGuide/Naver/ETF
+   다섯 소스를 교차검증한 테마-종목 마스터)에서 Core 등급만 추린 것이다. quant_lab 배치가
+   quant_theme_constituents 에 채운다.
+   (Supabase theme_constituents 는 주간 리포트가 거래대금 상위로 뽑은 것이라 테마 정의와
+    느슨하게 이어져 있다 — 시총 상위로 자르면 '수소'에 SK하이닉스가 들어온다. 그래서 안 쓴다.)
+   숫자(cagr/vol/div/mdd)는 quant_stock_stats 실측치. */
+const DI_CHIP_MAX=15;         // 마스터에 36개 테마가 있어 다 깔면 칩 줄이 무너진다
+let diThemes={};              // {테마명: [{n,code,w,cagr,vol,div,mdd}]}
+let diTheme=null, diW=[];
+
+async function loadThemes(){
+  if(!window.sb) return;
+  try{
+    const [cons,featured]=await Promise.all([
+      sb.from('quant_theme_constituents')
+        .select('theme_name,code,stock_name,source_count,rank,mcap_bil')
+        .order('theme_name').order('rank').limit(5000),
+      sb.from('themes').select('name'),        // 이번 주 버블차트에 뜨는 테마 → 앞으로
+    ]);
+    const rows=cons.data||[];
+    // 필요한 종목만 집어서 가져온다. quant_stock_stats 전체를 select 하면 PostgREST 기본
+    // 상한(1000행)에 걸려 2,800여 종목 중 앞부분만 오고 뒤쪽이 조용히 빠진다.
+    const codes=[...new Set(rows.map(r=>r.code))];
+    const S={};
+    for(let i=0;i<codes.length;i+=200){       // in() 필터가 너무 길어지지 않게 나눠 조회
+      const {data}=await sb.from('quant_stock_stats')
+        .select('code,cagr,vol,div,mdd,idio_cagr,idio_vol,r2').in('code',codes.slice(i,i+200));
+      (data||[]).forEach(r=>S[r.code]=r);
+    }
+
+    const by={};
+    rows.forEach(r=>{
+      const st=S[r.code]; if(!st) return;      // 실측치 없는 종목은 넣지 않는다
+      (by[r.theme_name]=by[r.theme_name]||[]).push({
+        n:r.stock_name, code:r.code, src:r.source_count, mcap:r.mcap_bil??0,
+        cagr:(st.cagr??0)*100, vol:(st.vol??0)*100, div:st.div??0, mdd:(st.mdd??0)*100,
+        idio:(st.idio_cagr??0)*100, idioVol:(st.idio_vol??0)*100, r2:st.r2,
+      });
+    });
+
+    const feat=new Set((featured.data||[]).map(r=>r.name));
+    const order=Object.keys(by).filter(k=>by[k].length>=3).sort((a,b)=>{
+      const fa=feat.has(a), fb=feat.has(b);
+      if(fa!==fb) return fa?-1:1;              // 이번 주 주목 테마 먼저
+      const sum=x=>by[x].reduce((t,s)=>t+s.mcap,0);
+      return sum(b)-sum(a);
+    }).slice(0,DI_CHIP_MAX);
+
+    order.forEach(k=>{
+      // 초기값도 합이 정확히 100이 되게 나눈다(3종목이면 34/33/33).
+      const eq=pctShares(by[k].map(()=>1));
+      diThemes[k]=by[k].map((s,i)=>({...s,w:eq[i]}));
+    });
+    diTheme=order[0]||null;
+  }catch(e){ console.warn('테마 구성종목 로드 실패', e); }
+}
 function diInit(){
+  if(!diTheme||!diThemes[diTheme]){
+    $('#diThemeChips').innerHTML='<span class="hint">테마 데이터를 불러오는 중…</span>';
+    $('#diSliders').innerHTML=''; return;
+  }
   $('#diThemeChips').innerHTML=Object.keys(diThemes).map(k=>`<button class="chip ${k===diTheme?'is-active':''}" data-k="${k}">${k}</button>`).join('');
   $$('#diThemeChips .chip').forEach(b=>b.onclick=()=>{diTheme=b.dataset.k;diW=diThemes[diTheme].map(s=>s.w);diInit();});
   if(!diW.length||diW.length!==diThemes[diTheme].length)diW=diThemes[diTheme].map(s=>s.w);
   const stocks=diThemes[diTheme];
+  // 슬라이더는 '상대 비중' 입력이고, 옆에 찍히는 %는 정규화된 실제 편입비중이다.
+  // (하나를 올리면 나머지 비중이 줄어드는 게 맞다 — 합은 항상 100%)
   $('#diSliders').innerHTML=stocks.map((s,i)=>`<div class="slider-row">
     <span class="name">${s.n}</span>
     <input type="range" min="0" max="100" value="${diW[i]}" data-i="${i}" aria-label="${s.n} 비중">
-    <span class="val cn-figure" id="diVal${i}">${diW[i]}%</span></div>`).join('');
-  $$('#diSliders input').forEach(inp=>inp.oninput=()=>{diW[+inp.dataset.i]=+inp.value;$('#diVal'+inp.dataset.i).textContent=inp.value+'%';diCalc();});
+    <span class="val cn-figure" id="diVal${i}">–</span></div>`).join('')
+    +`<div class="slider-row" style="border-top:1px solid var(--color-hairline);margin-top:6px;padding-top:10px">
+        <span class="name" style="font-weight:700">합계</span><span></span>
+        <span class="val cn-figure" id="diTotal" style="font-weight:800">100%</span></div>`;
+  $$('#diSliders input').forEach(inp=>inp.oninput=()=>{diW[+inp.dataset.i]=+inp.value;diCalc();});
   diCalc();
 }
 /* 도넛/범례 색 — 명도 대비가 뚜렷한 온브랜드 블루 램프(종목 구분용) */
 const DI_PAL=['#0b2e6b','#1c6fe6','#3182f6','#74b0fb','#c0dbfd'];
 const diCol=i=>DI_PAL[i%DI_PAL.length];
+/** 비중을 정수 %로 바꾸되 합계가 정확히 100이 되게 한다(최대잉여법).
+ *  단순 반올림은 3종목이면 33+33+33=99, 7종목이면 14×7=98 로 어긋난다. */
+function pctShares(weights){
+  const sum=weights.reduce((a,b)=>a+b,0);
+  if(!sum) return weights.map(()=>0);
+  const exact=weights.map(w=>w/sum*100);
+  const floor=exact.map(Math.floor);
+  let left=100-floor.reduce((a,b)=>a+b,0);
+  // 소수부가 큰 것부터 1%씩 나눠 준다.
+  const order=exact.map((v,i)=>[v-floor[i],i]).sort((a,b)=>b[0]-a[0]);
+  for(let k=0;k<left;k++) floor[order[k%order.length][1]]++;
+  return floor;
+}
 function diCalc(){
+  if(!diTheme||!diThemes[diTheme]) return;
   const stocks=diThemes[diTheme];const sum=diW.reduce((a,b)=>a+b,0)||1;
   const norm=diW.map(w=>w/sum);
   const GAP=1.4; let acc=0; const segs=[];
@@ -288,31 +430,76 @@ function diCalc(){
   });
   $('#diDonut').style.background=`conic-gradient(${segs.join(',')})`;
   $('#diCount').textContent=stocks.filter((s,i)=>diW[i]>0).length;
-  $('#diLegend').innerHTML=stocks.map((s,i)=>`<div class="li"><i style="background:${diCol(i)}"></i>${s.n}<span class="pct cn-figure">${Math.round(norm[i]*100)}%</span></div>`).join('');
+  // 표시용 정수 비중 — 슬라이더 라벨·범례·합계가 모두 같은 값을 쓰고, 합은 항상 100%.
+  const shares=pctShares(diW);
+  $('#diLegend').innerHTML=stocks.map((s,i)=>`<div class="li"><i style="background:${diCol(i)}"></i>${s.n}<span class="pct cn-figure">${shares[i]}%</span></div>`).join('');
+  shares.forEach((p,i)=>{ const el=$('#diVal'+i); if(el) el.textContent=p+'%'; });
+  const total=$('#diTotal'); if(total) total.textContent=shares.reduce((a,b)=>a+b,0)+'%';
+  // 종목별 실측치(quant_stock_stats)를 비중으로 가중. 변동성·최대낙폭은 종목 간 상관을
+  // 1로 본 보수적 상한이다(실제 분산효과가 있으면 이보다 낮게 나온다).
   const cagr=stocks.reduce((a,s,i)=>a+s.cagr*norm[i],0);
   const vol =stocks.reduce((a,s,i)=>a+s.vol*norm[i],0);
   const div =stocks.reduce((a,s,i)=>a+s.div*norm[i],0);
-  const mdd =-(vol*1.15);
-  $('#diCagr').textContent=sign(cagr)+'%';
+  const mdd =stocks.reduce((a,s,i)=>a+(s.mdd||0)*norm[i],0);
+  // 이디오(고유) 수익률은 비중 가중 평균.
+  // 이디오 변동성은 잔차가 종목 간 독립이라는 전제에서 √(Σ wᵢ²·σᵢ²) — 위의 총변동성과 달리
+  // 분산효과가 실제로 반영되므로, 종목을 늘릴수록 줄어드는 게 화면에 보인다.
+  const idio=stocks.reduce((a,s,i)=>a+(s.idio||0)*norm[i],0);
+  const idioVol=Math.sqrt(stocks.reduce((a,s,i)=>a+Math.pow(norm[i]*(s.idioVol||0),2),0));
+  $('#diCagr').textContent=sign(cagr)+'%';$('#diCagr').className='v cn-figure '+(cagr>=0?'up':'down');
   $('#diVol').textContent=fmt(vol,1)+'%';$('#diVol').className='v cn-figure';
   $('#diDiv').textContent=fmt(div,2)+'%';$('#diDiv').className='v cn-figure';
   $('#diMdd').textContent=fmt(mdd,1)+'%';
+  $('#diIdio').textContent=sign(idio)+'%';$('#diIdio').className='v cn-figure '+(idio>=0?'up':'down');
+  $('#diIdioVol').textContent=fmt(idioVol,1)+'%';
 }
-diInit();
 
-/* ───────── 2. 백테스트 (index.html #quant factors/btRun/drawChart/smoothPath 이식·확장) ───────── */
+/* ───────── 2. 백테스트 — quant_factor_returns 의 실제 월별 수익률로 계산 ───────── */
 const factors=[
-  {k:'value',n:'가치 (Value)',d:'저PER·저PBR',cagr:11,vol:16,sh:0.9},
-  {k:'mom',n:'모멘텀 (Momentum)',d:'최근 추세 강세',cagr:15,vol:22,sh:0.8},
-  {k:'qual',n:'퀄리티 (Quality)',d:'고ROE·저부채',cagr:13,vol:15,sh:1.1},
-  {k:'lowvol',n:'저변동성',d:'변동성 하위',cagr:9,vol:11,sh:1.0},
-  {k:'div',n:'배당 (Dividend)',d:'고배당 우량주',cagr:8,vol:12,sh:0.95},
-  {k:'size',n:'소형주 (Size)',d:'중소형 성장',cagr:14,vol:24,sh:0.7},
+  {k:'value',n:'가치 (Value)',d:'저PER·저PBR'},
+  {k:'mom',n:'모멘텀 (Momentum)',d:'최근 추세 강세'},
+  {k:'qual',n:'퀄리티 (Quality)',d:'고ROE'},
+  {k:'lowvol',n:'저변동성',d:'변동성 하위'},
+  {k:'div',n:'배당 (Dividend)',d:'고배당 우량주'},
+  {k:'size',n:'소형주 (Size)',d:'중소형 성장'},
 ];
 const btSel=new Set(['qual','mom']);
 const REBAL_LB={q:'분기',m:'월',y:'연'};
 const REBAL_TURN={y:1,q:2,m:4};   // 연간 회전 배수 → 거래비용 드래그 산출
 let lastBt=null;                  // 저장용 마지막 백테스트 결과
+
+/* ── 실수익률 유틸 ── */
+const MONTHS_PER_YEAR=12;
+/** 선택 팩터를 동일비중 결합하고 거래비용을 뺀 월별 순수익률 계열을 만든다.
+ *  배치(quant_lab.factors.combine)와 같은 식이라 티어시트 숫자와 화면 숫자가 어긋나지 않는다. */
+function combineFactors(keys,years,rebal,cost){
+  const series=keys.map(k=>RET[k]).filter(Boolean);
+  if(!series.length) return [];
+  const months=series[0].map(p=>p.m).filter(m=>series.every(s=>s.some(p=>p.m===m)));
+  const idx=series.map(s=>{const o={};s.forEach(p=>o[p.m]=p.r);return o;});
+  const drag=(cost/100)*REBAL_TURN[rebal]/MONTHS_PER_YEAR;
+  const all=months.map(m=>({m, r:idx.reduce((a,o)=>a+o[m],0)/idx.length-drag}));
+  return all.slice(Math.max(0,all.length-years*MONTHS_PER_YEAR));
+}
+function benchSeries(months){
+  const o={}; (RET['BENCHMARK']||[]).forEach(p=>o[p.m]=p.r);
+  return months.map(m=>o[m]??0);
+}
+/** 월 수익률 배열 → 100 기준 누적 지수 경로 */
+function toPath(rets){ const p=[100]; rets.forEach(r=>p.push(p[p.length-1]*(1+r))); return p; }
+function cagrOf(path,n){ return (Math.pow(path[path.length-1]/path[0],MONTHS_PER_YEAR/n)-1)*100; }
+function mddOf(path){ let peak=path[0],mdd=0; path.forEach(v=>{peak=Math.max(peak,v);mdd=Math.min(mdd,(v-peak)/peak*100);}); return mdd; }
+function sharpeOf(rets){
+  const n=rets.length; if(n<2) return 0;
+  const mu=rets.reduce((a,b)=>a+b,0)/n;
+  const sd=Math.sqrt(rets.reduce((a,b)=>a+(b-mu)**2,0)/(n-1));
+  return sd?mu/sd*Math.sqrt(MONTHS_PER_YEAR):0;
+}
+/** 팩터를 하나도 안 골랐을 때 쓰는 기준선 계열(유니버스 동일가중). */
+const EW_KEY='EQUAL_WEIGHT';
+/** 팩터 조합 → 티어시트 조회 키 (배치가 만드는 키와 동일 규칙: 정렬 후 '+').
+ *  선택이 비어 있으면 동일가중 키로 본다. */
+const sheetKey=keys=>{const a=[...keys]; return (a.length?a:[EW_KEY]).sort().join('+');};
 function btRenderFactors(){
   $('#btFactors').innerHTML=factors.map(f=>`<label class="factor ${btSel.has(f.k)?'is-on':''}" data-k="${f.k}">
     <input type="checkbox" ${btSel.has(f.k)?'checked':''}/>
@@ -322,55 +509,59 @@ function btRenderFactors(){
   $$('#btFactors input').forEach(inp=>inp.onchange=()=>{const el=inp.closest('.factor');toggleFactor(el.dataset.k,inp.checked,el);});
 }
 function toggleFactor(k,on,el){on?btSel.add(k):btSel.delete(k);el.classList.toggle('is-on',on);}
-// seeded pseudo-random for deterministic-but-wiggly path
-function mulberry(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
 function btRun(){
   const sel=factors.filter(f=>btSel.has(f.k));
-  if(!sel.length){toast('팩터를 1개 이상 선택해 주세요.');return;}
   const yrs=+$('#btPeriod').value;
   const rebal=$('#btRebal').value, cost=+$('#btCost').value;
-  const grossCagr=sel.reduce((a,f)=>a+f.cagr,0)/sel.length;
-  const vol =sel.reduce((a,f)=>a+f.vol,0)/sel.length;
-  const sharpe=sel.reduce((a,f)=>a+f.sh,0)/sel.length;
-  // 거래비용 드래그: 비용률 × 연간 회전 배수(리밸런싱 주기 반영)
-  const drag=cost*REBAL_TURN[rebal];
-  const cagr=Math.max(0,grossCagr-drag);
-  const months=yrs*12, bmCagr=6.5;
-  let seed=sel.reduce((a,f)=>a+f.k.length*7,yrs*13);
-  const rnd=mulberry(seed), rnd2=mulberry(seed+99);
-  const stratMul=Math.pow(1+cagr/100,1/12), bmMul=Math.pow(1+bmCagr/100,1/12);
-  const strat=[100],bm=[100];let peak=100,mdd=0;
-  for(let i=1;i<=months;i++){
-    const sShock=1+((rnd()-.5)*vol/100*0.9);
-    const bShock=1+((rnd2()-.5)*15/100*0.9);
-    strat.push(strat[i-1]*stratMul*sShock);
-    bm.push(bm[i-1]*bmMul*bShock);
-    peak=Math.max(peak,strat[i]);mdd=Math.min(mdd,(strat[i]-peak)/peak*100);
+
+  // 팩터를 하나도 안 고르면 '동일가중'(유니버스 전 종목 동일비중)으로 돌린다.
+  // 팩터 틸트가 전혀 없는 기준선이라, 팩터가 실제로 보탠 값을 여기에 견줘 볼 수 있다.
+  const keys=sel.length?[...btSel]:[EW_KEY];
+  const series=combineFactors(keys,yrs,rebal,cost);
+  if(!series.length){
+    $('#btSubtitle').textContent=DATA_READY
+      ? '선택한 팩터의 수익률 데이터가 아직 없습니다.'
+      : '실데이터를 불러오는 중입니다…';
+    ['#btTot','#btCagr','#btSharpe','#btMdd','#btAlpha','#btBmTot'].forEach(s=>$(s).textContent='–');
+    $('#btYears').innerHTML=''; updateSheetButton(); return;
   }
+
+  const months=series.map(p=>p.m);
+  const sRets=series.map(p=>p.r), bRets=benchSeries(months);
+  const strat=toPath(sRets), bm=toPath(bRets);
+  const n=sRets.length;
+
   drawChart(strat,bm);
   const tot=strat[strat.length-1]-100, bmTot=bm[bm.length-1]-100, alpha=tot-bmTot;
-  $('#btTot').textContent=sign(tot)+'%';
-  $('#btCagr').textContent=sign(cagr)+'%';
+  const cagr=cagrOf(strat,n), sharpe=sharpeOf(sRets), mdd=mddOf(strat);
+  $('#btTot').textContent=sign(tot)+'%';   $('#btTot').className='v cn-figure '+(tot>=0?'up':'down');
+  $('#btCagr').textContent=sign(cagr)+'%'; $('#btCagr').className='v cn-figure '+(cagr>=0?'up':'down');
   $('#btSharpe').textContent=fmt(sharpe,2);$('#btSharpe').className='v cn-figure';
   $('#btMdd').textContent=fmt(mdd,1)+'%';
   $('#btAlpha').textContent=sign(alpha)+'%';$('#btAlpha').className='al-v cn-figure '+(alpha>=0?'up':'down');
   $('#btBmTot').textContent=sign(bmTot)+'%';
-  $('#btSubtitle').textContent=`${sel.map(f=>f.n.split(' ')[0]).join(' + ')} · 최근 ${yrs}년 · ${REBAL_LB[rebal]} 리밸런싱 · 비용 ${cost}%`;
-  renderYears(strat,bm,yrs);
-  lastBt={factors:[...btSel],period:yrs,rebal,cost,cagr:+cagr.toFixed(1),sharpe:+sharpe.toFixed(2),tot:+tot.toFixed(1),alpha:+alpha.toFixed(1)};
+  const from=months[0].slice(0,7).replace('-','.'), to=months[months.length-1].slice(0,7).replace('-','.');
+  const label=sel.length?sel.map(f=>f.n.split(' ')[0]).join(' + '):'동일가중 (팩터 없음)';
+  $('#btSubtitle').textContent=`${label} · ${from}~${to}(${n}개월) · ${REBAL_LB[rebal]} 리밸런싱 · 비용 ${cost}%`;
+  renderYears(months,sRets,bRets);
+  lastBt={factors:keys,period:yrs,rebal,cost,cagr:+cagr.toFixed(1),sharpe:+sharpe.toFixed(2),tot:+tot.toFixed(1),alpha:+alpha.toFixed(1)};
+  updateSheetButton();
 }
-/* 연도별 성과 (내 전략 수익 막대 + 코스피 마커) */
-function renderYears(strat,bm,yrs){
-  const rows=[];let maxAbs=1;
-  for(let y=0;y<yrs;y++){
-    const s=(strat[(y+1)*12]/strat[y*12]-1)*100, b=(bm[(y+1)*12]/bm[y*12]-1)*100;
-    rows.push({y:y+1,s,b}); maxAbs=Math.max(maxAbs,Math.abs(s),Math.abs(b));
-  }
+/* 연도별 성과 — 달력 연도 기준 실제 수익률 (내 전략 막대 + 코스피 마커) */
+function renderYears(months,sRets,bRets){
+  const acc={};
+  months.forEach((m,i)=>{
+    const y=m.slice(0,4);
+    acc[y]=acc[y]||{s:1,b:1};
+    acc[y].s*=(1+sRets[i]); acc[y].b*=(1+bRets[i]);
+  });
+  const rows=Object.keys(acc).sort().map(y=>({y,s:(acc[y].s-1)*100,b:(acc[y].b-1)*100}));
+  const maxAbs=Math.max(1,...rows.flatMap(r=>[Math.abs(r.s),Math.abs(r.b)]));
   $('#btYears').innerHTML=rows.map(r=>{
     const up=r.s>=0, w=Math.min(50,Math.abs(r.s)/maxAbs*50);
     const bmLeft=50+Math.max(-50,Math.min(50,r.b/maxAbs*50));
     return `<div class="yr-row">
-      <span class="yr-lb">${r.y}년차</span>
+      <span class="yr-lb">${r.y}년</span>
       <span class="yr-track"><span class="yr-mid"></span>
         <span class="yr-bar ${up?'up':'down'}" style="width:${w}%"></span>
         <span class="yr-bm" style="left:${bmLeft}%" title="코스피 ${sign(r.b)}%"></span></span>
@@ -418,47 +609,124 @@ function drawChart(strat,bm){
 }
 $('#btRun').onclick=btRun;
 $('#btPeriod').onchange=btRun;$('#btRebal').onchange=btRun;$('#btCost').onchange=btRun;
-btRenderFactors();btRun();
+
+/* ───────── 2-b. 상세 성과 리포트 (tossquant 티어시트) ─────────
+   정적 호스팅이라 브라우저에서 파이썬을 돌릴 수 없어, quant_lab 배치가 대표 전략
+   12종(단일 팩터 6 + 추천 템플릿 6)을 미리 만들어 Supabase Storage 에 올려 둔다.
+   그 밖의 조합은 화면 지표·차트는 실제로 계산되지만 리포트는 없으므로 안내한다. */
+function updateSheetButton(){
+  const btn=$('#btSheet'), note=$('#btSheetNote');
+  if(!btn) return;
+  const sheet=TEARSHEETS[sheetKey(btSel)];
+  if(sheet){
+    btn.disabled=false; btn.textContent='상세 성과 리포트 열기';
+    note.textContent=`${sheet.title} · 최근 ${sheet.period_years}년 · 분기 리밸런싱/비용 0.3% 기준`;
+  }else{
+    btn.disabled=true; btn.textContent='상세 리포트 없는 조합';
+    const names=Object.values(TEARSHEETS).map(s=>s.title);
+    note.textContent=names.length
+      ? `상세 리포트는 대표 전략에만 준비돼 있어요. 아래 추천 전략을 고르거나 팩터를 하나만 선택하면 열립니다.`
+      : '상세 리포트를 불러오는 중입니다…';
+  }
+}
+/* Supabase Storage 는 XSS 방지로 공개 객체의 HTML 을 text/plain 으로 내려준다.
+   그래서 iframe src 로 직접 걸면 소스가 글자로 보인다. 본문을 받아 Blob(text/html)
+   으로 만들어 띄우고, 같은 Blob 을 내려받기에도 쓴다. */
+const TS_BLOB={};        // key → blob URL (한 번 받으면 재사용)
+async function tearsheetBlobUrl(sheet){
+  if(TS_BLOB[sheet.key]) return TS_BLOB[sheet.key];
+  const res=await fetch(sheet.url);
+  if(!res.ok) throw new Error('HTTP '+res.status);
+  const html=await res.text();
+  return (TS_BLOB[sheet.key]=URL.createObjectURL(new Blob([html],{type:'text/html'})));
+}
+async function openTearsheet(){
+  const sheet=TEARSHEETS[sheetKey(btSel)];
+  if(!sheet){ toast('이 조합은 상세 리포트가 준비돼 있지 않아요.'); return; }
+  $('#tsTitle').textContent=`${sheet.title} · 상세 성과 리포트`;
+  $('#tsNote').textContent=
+    `최근 ${sheet.period_years}년 월별 수익률 · 분기 리밸런싱 · 거래비용 0.3% 기준으로 산출했습니다. `+
+    `CAGR ${(sheet.cagr*100).toFixed(1)}% · 샤프 ${sheet.sharpe.toFixed(2)} · 최대낙폭 ${(sheet.mdd*100).toFixed(1)}%. `+
+    `과거 데이터 기반 추정이며 미래 수익을 보장하지 않습니다.`;
+  $('#tsModal').classList.add('is-open');
+  document.body.style.overflow='hidden';
+  $('#tsFrame').removeAttribute('src');
+  const dl=$('#tsDownload'); dl.removeAttribute('href'); dl.textContent='불러오는 중…';
+  try{
+    const url=await tearsheetBlobUrl(sheet);
+    $('#tsFrame').src=url;
+    dl.href=url; dl.setAttribute('download',`${sheet.key}_tearsheet.html`); dl.textContent='HTML 내려받기';
+  }catch(e){
+    dl.textContent='불러오기 실패';
+    toast('리포트를 불러오지 못했어요. 잠시 후 다시 시도해 주세요.');
+    console.warn('tearsheet load failed', e);
+  }
+}
+function closeTearsheet(){
+  $('#tsModal').classList.remove('is-open');
+  $('#tsFrame').removeAttribute('src');     // iframe 을 비워 뒤에서 계속 돌지 않게
+  document.body.style.overflow='';
+}
+$('#btSheet').onclick=openTearsheet;
+$('#tsClose').onclick=closeTearsheet;
+$('#tsModal').addEventListener('click',e=>{ if(e.target===$('#tsModal')) closeTearsheet(); });
+document.addEventListener('keydown',e=>{ if(e.key==='Escape'&&$('#tsModal').classList.contains('is-open')) closeTearsheet(); });
+
+btRenderFactors();
 
 /* ───────── 3. 추천 전략 템플릿 갤러리 ───────── */
+/* 배치(quant_lab.run_quant_lab.TEMPLATES)와 같은 조합 — 그래야 상세 리포트가 매칭된다. */
 const TEMPLATES=[
-  {name:'AI 슈퍼사이클',theme:'AI 반도체',factors:['mom','qual'],badge:'공격형',desc:'AI 반도체 대표 3종목에 모멘텀·퀄리티 팩터를 결합한 성장 전략.'},
-  {name:'월급처럼 배당',theme:'고배당 안정',factors:['div','lowvol'],badge:'안정형',desc:'고배당 우량주 중심 + 저변동성으로 꾸준한 현금흐름을 노립니다.'},
-  {name:'글로벌 빅테크',theme:'미국 빅테크',factors:['mom','qual'],badge:'공격형',desc:'미국 대표 기술주에 집중해 글로벌 성장에 올라탑니다.'},
-  {name:'K-방산 모멘텀',theme:'K-방산',factors:['mom','size'],badge:'공격형',desc:'방산 수출 사이클을 타는 모멘텀·중소형 성장 조합.'},
-  {name:'가치+퀄리티 코어',theme:'고배당 안정',factors:['value','qual'],badge:'중립형',desc:'저평가·우량 팩터로 방어와 성장을 함께 챙기는 코어 전략.'},
-  {name:'2차전지 반등',theme:'2차전지',factors:['value','mom'],badge:'공격형',desc:'낙폭과대 2차전지의 가치·모멘텀 반등 국면을 겨냥합니다.'},
+  {name:'AI 슈퍼사이클',factors:['mom','qual'],badge:'공격형',desc:'추세가 살아있는 종목 중 수익성 좋은 기업만 골라 담는 성장 전략.'},
+  {name:'월급처럼 배당',factors:['div','lowvol'],badge:'안정형',desc:'고배당 + 저변동성으로 꾸준한 현금흐름과 낮은 흔들림을 함께.'},
+  {name:'가치+퀄리티 코어',factors:['value','qual'],badge:'중립형',desc:'저평가·우량 팩터로 방어와 성장을 함께 챙기는 코어 전략.'},
+  {name:'K-방산 모멘텀',factors:['mom','size'],badge:'공격형',desc:'추세 강한 중소형주에 실리는 모멘텀·사이즈 조합.'},
+  {name:'낙폭과대 반등',factors:['value','mom'],badge:'공격형',desc:'싸진 종목 중 반등이 시작된 것만 고르는 가치·모멘텀 결합.'},
+  {name:'안정 인컴',factors:['div','qual','lowvol'],badge:'안정형',desc:'배당·퀄리티·저변동성 3중 필터로 변동성을 최대한 눌렀습니다.'},
 ];
 const BADGE_CLS={공격형:'badge--down',안정형:'badge--up',중립형:'badge--muted'};
+/** 템플릿 카드의 CAGR — 사전 생성된 티어시트의 실측치를 그대로 쓴다. */
 function tmplCagr(tp){
-  const stocks=diThemes[tp.theme]; const sum=stocks.reduce((a,s)=>a+s.w,0)||1;
-  const themeCagr=stocks.reduce((a,s)=>a+s.cagr*s.w/sum,0);
-  const sel=factors.filter(f=>tp.factors.includes(f.k));
-  const facCagr=sel.reduce((a,f)=>a+f.cagr,0)/(sel.length||1);
-  return (themeCagr+facCagr)/2;
+  const sheet=TEARSHEETS[sheetKey(tp.factors)];
+  if(sheet&&sheet.cagr!=null) return sheet.cagr*100;
+  const s=combineFactors(tp.factors,10,'q',0.3);
+  return s.length?cagrOf(toPath(s.map(p=>p.r)),s.length):null;
 }
 function renderTemplates(){
   $('#tmplGrid').innerHTML=TEMPLATES.map((tp,i)=>{
     const c=tmplCagr(tp);
+    const cagrHtml=c==null?'<span class="tm-cagr" style="color:var(--color-muted)">–</span>'
+                          :`<span class="tm-cagr ${c>=0?'up':'down'}">${sign(c)}%</span>`;
     return `<button class="tmpl" data-i="${i}">
       <div class="tm-top"><span class="tm-name">${tp.name}</span><span class="badge ${BADGE_CLS[tp.badge]}">${tp.badge}</span></div>
       <div class="tm-desc">${tp.desc}</div>
       <div class="tm-foot">
-        <span style="color:var(--color-muted)">예상 CAGR</span>
-        <span class="tm-cagr up">${sign(c)}%</span>
+        <span style="color:var(--color-muted)">실측 CAGR</span>
+        ${cagrHtml}
         <span class="tm-go">불러오기 →</span>
       </div></button>`;
   }).join('');
   $$('#tmplGrid .tmpl').forEach(b=>b.onclick=()=>applyTemplate(TEMPLATES[+b.dataset.i]));
 }
 function applyTemplate(tp){
-  diTheme=tp.theme; diW=diThemes[diTheme].map(s=>s.w); diInit();
   btSel.clear(); tp.factors.forEach(k=>btSel.add(k)); btRenderFactors(); btRun();
-  document.querySelector('#qtTabs button[data-q=index]').click();
-  $('#secIndex').scrollIntoView({behavior:'smooth',block:'start'});
+  document.querySelector('#qtTabs button[data-q=bt]').click();
+  $('#secBt').scrollIntoView({behavior:'smooth',block:'start'});
   toast(`'${tp.name}' 전략을 불러왔어요.`);
 }
-renderTemplates();
+
+/* ───────── 3-b. 부트스트랩 — 실데이터를 받은 뒤에 한 번 그린다 ─────────
+   숫자를 먼저 지어 보여주고 나중에 덮어쓰지 않도록, 화면은 '불러오는 중'으로 시작해
+   데이터가 도착하면 그때 렌더한다. 실패하면 값은 '–' 로 남고 안내만 노출된다. */
+(async function bootQuant(){
+  renderTemplates();          // 로딩 표시용(값은 '–')
+  updateSheetButton();
+  await Promise.all([loadQuantData(), loadThemes()]);
+  diInit();
+  btRun();
+  renderTemplates();
+  if(!DATA_READY) toast('퀀트 데이터를 불러오지 못했어요. 잠시 후 새로고침해 주세요.');
+})();
 
 /* ───────── 4. 탭 전환 (전략 만들기 ↔ 백테스트 ↔ 보관함) ───────── */
 $$('#qtTabs button').forEach(b=>b.onclick=()=>{
@@ -474,9 +742,11 @@ $$('#qtTabs button').forEach(b=>b.onclick=()=>{
 async function saveStrategy(){
   if(!getUser()){ toast('로그인 후 저장할 수 있어요.'); openAuth('login'); return; }
   if(!sb){ toast('연결 오류로 저장하지 못했어요.'); return; }
-  const stocks=diThemes[diTheme];
-  const sum=diW.reduce((a,b)=>a+b,0)||1;
-  const config={ theme:diTheme, weights:stocks.map((s,i)=>({name:s.n, pct:Math.round(diW[i]/sum*100)})) };
+  const stocks=diTheme&&diThemes[diTheme];
+  if(!stocks){ toast('테마 데이터를 불러온 뒤에 저장할 수 있어요.'); return; }
+  // 화면에 보이는 것과 같은 정수 비중으로 저장한다(합계 100% 보장).
+  const shares=pctShares(diW);
+  const config={ theme:diTheme, weights:stocks.map((s,i)=>({name:s.n, code:s.code, pct:shares[i]})) };
   const {error}=await sb.from('saved_strategies').insert({user_id:getUser().id, kind:'index', title:diTheme+' 전략', config});
   toast(error?('저장 실패: '+error.message):'내 전략으로 저장했어요.');
   if(!error && $('#secLib').style.display!=='none') loadLibrary();

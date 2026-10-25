@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>마이 라운지 · 유진 Insight Lab</title>
+<meta name="description" content="내 관심 분야 브리핑, 질문 이력, 행사 신청, 담당자 상담을 한곳에서." />
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
+<link rel="preload" href="assets/fonts/PretendardVariable.woff2" as="font" type="font/woff2" crossorigin />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" />
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<link rel="stylesheet" href="assets/app.css" />
+<link rel="stylesheet" href="assets/lounge.css" />
+</head>
+<body>
+<main id="main">
+  <div id="demoSlot"></div>
+
+  <!-- 인사 밴드 -->
+  <section class="lx-hello">
+    <div class="wrap">
+      <div class="lx-hello__in">
+        <div class="who">
+          <div class="lx-av" id="hAv">김</div>
+          <div>
+            <h1 id="hTitle">김민준님의 리서치 라운지</h1>
+            <div class="meta" id="hMeta"></div>
+          </div>
+        </div>
+        <div class="acts">
+          <a class="btn btn--secondary btn--sm" href="#notify">알림 설정</a>
+          <a class="btn btn--primary btn--sm" href="ask.html">AI에게 질문하기</a>
+        </div>
+      </div>
+      <div class="lx-kpis" id="kpis"></div>
+    </div>
+  </section>
+
+  <div class="wrap">
+    <div class="lx-main">
+      <!-- 왼쪽 -->
+      <div class="lx-col">
+        <section class="lx-card" aria-labelledby="bT">
+          <div class="lx-card__h"><h2 id="bT">오늘의 맞춤 브리핑</h2><span class="lx-ai">AI 요약 · 검수 완료</span></div>
+          <div class="lx-card__b"><div class="lx-brief" id="briefs"></div></div>
+        </section>
+
+        <section class="lx-card" aria-labelledby="qT">
+          <div class="lx-card__h"><h2 id="qT">내 질문</h2><a class="more" href="ask.html">전체 보기 ›</a></div>
+          <div class="lx-card__b">
+            <form class="lx-askbox" id="askForm" onsubmit="return false">
+              <input class="lx-input" id="askIn" placeholder="궁금한 시장 이슈를 물어보세요. 예: HBM 공급 과잉 우려, 내년까지?" aria-label="질문 입력" />
+              <button class="btn btn--primary" type="submit" style="height:46px">질문</button>
+            </form>
+            <div class="lx-qlist" id="qlist" style="margin-top:10px"></div>
+          </div>
+        </section>
+
+        <section class="lx-card" aria-labelledby="dT">
+          <div class="lx-card__h"><h2 id="dT">맞춤 자료함</h2><span class="lx-muted" style="font-size:var(--text-micro)" id="dFmt"></span></div>
+          <div class="lx-card__b"><div class="lx-docs" id="docs"></div></div>
+        </section>
+      </div>
+
+      <!-- 오른쪽 -->
+      <div class="lx-col">
+        <section class="lx-card" aria-labelledby="eT">
+          <div class="lx-card__h"><h2 id="eT">다가오는 행사</h2><span class="lx-muted" style="font-size:var(--text-micro)" id="eFor"></span></div>
+          <div class="lx-card__b"><div class="lx-ev" id="events"></div></div>
+        </section>
+
+        <section class="lx-card" aria-labelledby="cT">
+          <div class="lx-card__h"><h2 id="cT">상담 · 담당자</h2></div>
+          <div class="lx-card__b">
+            <div class="lx-cs" id="consults"></div>
+            <div class="lx-mgr">
+              <span class="ic"><svg viewBox="0 0 24 24"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"/></svg></span>
+              <div><b id="mgrT">법인영업 담당 연결</b><span>질문 이력을 요약해 함께 전달합니다</span></div>
+              <button class="btn" id="mgrBtn" type="button">상담 요청</button>
+            </div>
+          </div>
+        </section>
+
+        <section class="lx-card" id="notify" aria-labelledby="iT">
+          <div class="lx-card__h"><h2 id="iT">관심 종목 · 테마</h2></div>
+          <div class="lx-card__b">
+            <div class="lx-tags" id="tags"></div>
+            <div class="lx-notify">
+              <label class="lx-tg">새 리포트 알림<span class="lx-sw"><input type="checkbox" checked aria-label="새 리포트 알림" /><i></i></span></label>
+              <label class="lx-tg">내 답변 ‘재검토 필요’ 알림<span class="lx-sw"><input type="checkbox" checked aria-label="재검토 알림" /><i></i></span></label>
+              <label class="lx-tg">행사 · 콥데이 알림<span class="lx-sw"><input type="checkbox" checked aria-label="행사 알림" /><i></i></span></label>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- 상담 요청 모달 -->
+<div class="lx-ov" id="csOv" role="dialog" aria-modal="true" aria-labelledby="csH">
+  <div class="lx-modal">
+    <div class="lx-modal__h"><div><div class="lx-eyebrow">상담 요청</div><h3 id="csH">담당자에게 연결합니다</h3></div><button class="auth-x" data-x aria-label="닫기">×</button></div>
+    <label class="lx-field"><span>상담 종류</span>
+      <select class="lx-select" id="csKind"><option>DMA 상담</option><option>법인계좌 개설</option><option>애널리스트 미팅</option><option>세미나 · 행사 문의</option></select></label>
+    <div class="lx-field"><span>함께 전달되는 맥락 (AI 요약)</span>
+      <div class="lx-ctx" id="csCtx"></div></div>
+    <label class="lx-field"><span>메모 (선택)</span><textarea class="lx-textarea" placeholder="원하는 상담 시간이나 궁금한 점을 적어 주세요."></textarea></label>
+    <button class="btn btn--primary btn--block" id="csGo">요청 보내기</button>
+  </div>
+</div>
+
+<script src="assets/lounge-proto.js"></script>
+<script src="assets/lounge-api.js"></script>
+<script src="assets/partials.js"></script>
+<script>
+(async function(){
+  const live = !!(await ILAPI.ready());
+  let myQ = [];
+  const E=IL.esc;
+  const BRIEFS={
+    '반도체':   {t:'반도체 3Q 실적 프리뷰: 범용 메모리 둔화, HBM은 견조', p:'새 리포트가 나왔습니다. 이 리포트와 겹치는 내 답변 1건에 ‘재검토 필요’가 붙었습니다.', chg:'변경점 · 4Q 범용 DRAM 가격 전망 하향'},
+    'AI 인프라':{t:'AI 데이터센터 전력 투자, 전력기기 수주로 이어지는 중', p:'변압기 · 배전 수주 흐름을 점검한 리포트 요약입니다.', chg:''},
+    '2차전지': {t:'2차전지 소재: 재고 조정 마무리 신호는 아직', p:'가격 반등 근거는 제한적이라는 당사 견해가 유지됐습니다.', chg:''},
+    '금리':    {t:'국고채 금리 하락 폭 축소, 크레딧 스프레드 안정', p:'채권 전략 주간 요약입니다.', chg:''},
+    '배당주':  {t:'연말 배당 시즌, 고배당 업종 점검', p:'배당 성향과 금리 민감도를 함께 본 리포트 요약입니다.', chg:'변경점 · 은행 업종 배당 추정치 상향'},
+    '미국 기술주':{t:'미국 빅테크 3Q 실적 일정과 관전 포인트', p:'해외 AI 리서치가 밤사이 정리한 요약입니다.', chg:''},
+    '환율':    {t:'원/달러 환율, 수출주 실적에 주는 영향', p:'업종별 환율 민감도를 정리했습니다.', chg:''},
+    '미국 금리':{t:'미국 금리 경로와 국내 자산 배분', p:'WM 고객용 쉬운 요약이 카드뉴스로 준비돼 있습니다.', chg:''},
+  };
+  const DOCS={
+    brief:    [['회의용 브리핑','반도체 하락 원인 점검 (가설 3개)','PDF · 2쪽'],['회의용 브리핑','배당주 금리 민감도','PDF · 2쪽'],['리포트 원문','반도체 3Q 실적 프리뷰','PDF · 18쪽'],['AI 앵커 영상','오늘의 시황 브리핑','영상 · 3분']],
+    explainer:[['고객 설명자료','반도체 하락, 고객에게 이렇게 설명하세요','PDF · 4쪽'],['고객 설명자료','금리 인하와 배당주','PDF · 3쪽'],['리포트 원문','반도체 3Q 실적 프리뷰','PDF · 18쪽'],['카드뉴스','반도체 하락 원인 3가지','이미지 · 4장']],
+    cardnews: [['카드뉴스','반도체 하락 원인 3가지','이미지 · 4장'],['카드뉴스','미국 금리와 내 자산','이미지 · 5장'],['AI 앵커 영상','오늘의 시황 브리핑','영상 · 3분'],['세미나 자료','2027 시장 전망 미리보기','PDF · 6쪽']],
+  };
+
+  function render(){
+    const P=IL.persona(), s=IL.getSession();
+    document.getElementById('hAv').textContent=P.name[0];
+    document.getElementById('hTitle').textContent=`${P.name}님의 리서치 라운지`;
+    const verified = P.seg==='WM' ? '<span class="lx-st lx-st--ok">초대 코드 확인</span>' : '<span class="lx-st lx-st--ok">소속 확인 완료</span>';
+    document.getElementById('hMeta').innerHTML=`<span class="badge badge--brand">${P.seg} · ${P.type}</span><span>${E(P.org)} · ${E(P.role)}</span>${verified}${s?'':'<span class="lx-proto">로그인 전 · 시연 기본값</span>'}`;
+    const Q = live ? myQ.map(d=>({id:d.id,q:d.text,status:d.status,stale:d.stale,asked:new Date(d.created_at*1000).toISOString().slice(0,10).replace(/-/g,'.')}))
+                   : Object.values(IL.ANSWERS).map(a=>({id:a.id,q:a.q,status:a.status,stale:a.stale&&a.stale.on,asked:a.asked}));
+    const stale=Q.filter(a=>a.stale).length, pend=Q.filter(a=>a.status==='pending'||a.status==='drafting').length;
+    const evs=IL.EVENTS.filter(e=>e.who===P.seg);
+    document.getElementById('kpis').innerHTML=`
+      <div class="lx-kpi"><div class="l">새 브리핑</div><div class="v">${P.interests.length}<small>건</small></div></div>
+      <div class="lx-kpi"><div class="l">내 질문 · 검수 대기</div><div class="v">${Q.length}<small>건 · ${pend}</small></div></div>
+      <div class="lx-kpi warn"><div class="l">재검토 필요</div><div class="v">${stale}<small>건</small></div></div>
+      <div class="lx-kpi"><div class="l">신청한 행사</div><div class="v">${evs.filter(e=>e.state==='applied').length}<small>건</small></div></div>`;
+    // 브리핑
+    document.getElementById('briefs').innerHTML=P.interests.map(k=>{const b=BRIEFS[k]; if(!b)return'';
+      return `<article class="lx-brief__it"><span class="lx-brief__tg">${E(k)}</span>
+        <div><b>${E(b.t)}</b><p>${E(b.p)}</p>${b.chg?`<span class="lx-brief__chg">● ${E(b.chg)}</span>`:''}</div>
+        <a class="btn btn--secondary btn--sm" href="ask.html?q=q1" style="height:34px;font-size:12.5px">${E(P.formatLabel)}로 보기</a></article>`;}).join('');
+    // 질문
+    document.getElementById('qlist').innerHTML=(Q.length?'':'<p class="ax-disc" style="padding:10px 4px">아직 질문이 없습니다. 위에서 첫 질문을 남겨 보세요.</p>')+Q.map(a=>{
+      const st = a.stale ? IL.statusBadge('stale') : a.status==='drafting' ? '<span class="lx-st lx-st--wait">AI 초안 작성 중</span>' : a.status==='routed' ? '<span class="lx-st lx-st--ok">담당자 연결</span>' : a.status==='error' ? '<span class="lx-st lx-st--hold">접수됨</span>' : IL.statusBadge(a.status);
+      return `<a class="lx-q" href="ask.html?q=${a.id}"><span class="t">${E(a.q)}</span>${st}<span class="d">${E(a.asked.slice(5,10))}</span></a>`;}).join('');
+    // 자료함
+    document.getElementById('dFmt').textContent=`기본 형식 · ${P.formatLabel}`;
+    document.getElementById('docs').innerHTML=DOCS[P.format].map(([ty,t,m])=>`<button class="lx-doc" type="button" onclick="toast('미리보기 화면입니다. 기능 연동 후 내려받을 수 있어요.')"><span class="ty">${E(ty)}</span><b>${E(t)}</b><span>${E(m)}</span></button>`).join('');
+    // 행사
+    document.getElementById('eFor').textContent=`${P.seg} 고객 대상`;
+    const btn=e=>e.state==='applied'?'<button class="lx-ev__btn done" type="button" disabled>신청 완료</button>'
+      : e.state==='waitlist'?`<button class="lx-ev__btn wait" type="button" data-ev="${e.id}">대기 신청</button>`
+      : `<button class="lx-ev__btn primary" type="button" data-ev="${e.id}">신청</button>`;
+    document.getElementById('events').innerHTML=(evs.length?evs:IL.EVENTS).map(e=>`<div class="lx-ev__row">
+      <div class="lx-ev__d"><b>${e.date}</b><span>${e.dow}</span></div>
+      <div class="lx-ev__b"><b>${E(e.title)}</b><span>${E(e.host)} · ${E(e.fmt)}</span></div>${btn(e)}</div>`).join('');
+    // 상담
+    const cs = P.seg==='WM' ? [{kind:'세미나 · 행사 문의',state:'접수',to:'담당 PB',when:'10.22',ctx:'자산가 세미나 일정 문의 · 미국 금리 카드뉴스 열람'}] : IL.CONSULTS;
+    document.getElementById('consults').innerHTML=cs.map(c=>`<div class="lx-cs__it"><div class="lx-cs__top"><b>${E(c.kind)}</b>
+      <span class="lx-st ${c.state==='연결 완료'?'lx-st--ok':'lx-st--wait'}">${E(c.state)}</span></div>
+      <p>${E(c.ctx)}</p><div class="lx-cs__to">→ ${E(c.to)} · ${E(c.when)}</div></div>`).join('');
+    document.getElementById('mgrT').textContent=`${P.contact} 연결`;
+    // 관심
+    document.getElementById('tags').innerHTML=P.interests.map(t=>`<span class="lx-tag">${E(t)}<button type="button" aria-label="${E(t)} 삭제">×</button></span>`).join('')
+      +'<button class="lx-tag lx-tag--add" type="button" onclick="soon(\'관심 종목 추가\')">+ 추가</button>';
+  }
+
+  // 시연용 고객 전환 바
+  async function load(){ if(live){ try{ myQ=await ILAPI.questions(IL.persona().key); }catch(e){ myQ=[]; } } render(); }
+  document.getElementById('demoSlot').appendChild(IL.personaBar(async()=>{ await load(); toast('시연 고객을 바꿨습니다.');}));
+  await load();
+
+  // 이벤트 위임
+  document.addEventListener('click',e=>{
+    const ev=e.target.closest('[data-ev]');
+    if(ev){ if(live) ILAPI.applyEvent(ev.dataset.ev, IL.persona().key, ev.textContent==='대기 신청'?'waitlist':'applied').catch(()=>{}); ev.className='lx-ev__btn done'; ev.textContent=ev.textContent==='대기 신청'?'대기 등록':'신청 완료'; ev.disabled=true; toast('신청했습니다. 일정 하루 전 알림을 보내드려요.'); }
+    if(e.target.closest('.lx-tag button')){ e.target.closest('.lx-tag').remove(); }
+  });
+  document.getElementById('askForm').addEventListener('submit',()=>{
+    const v=document.getElementById('askIn').value.trim(); location.href='ask.html'+(v?('?new='+encodeURIComponent(v)):''); });
+
+  // 상담 모달
+  const ov=document.getElementById('csOv');
+  function openCs(){ const P=IL.persona();
+    document.getElementById('csCtx').innerHTML=`<b>${E(P.name)} · ${E(P.org)}</b> (${P.seg} · ${E(P.type)})<br/>최근 질문: “반도체주 하락, AI 수요 둔화 때문인가?” 외 3건<br/>관심: ${P.interests.map(E).join(' · ')}<br/>받는 사람: <b>${E(P.contact)}</b>`;
+    if(P.key==='dma') document.getElementById('csKind').value='DMA 상담';
+    ov.classList.add('show'); setTimeout(()=>document.getElementById('csKind').focus(),50); }
+  function closeCs(){ ov.classList.remove('show'); }
+  document.getElementById('mgrBtn').addEventListener('click',openCs);
+  ov.addEventListener('click',e=>{ if(e.target===ov||e.target.closest('[data-x]')) closeCs(); });
+  document.addEventListener('keydown',e=>{ if(e.key==='Escape'&&ov.classList.contains('show')) closeCs(); });
+  document.getElementById('csGo').addEventListener('click',()=>{ const P=IL.persona();
+    if(live) ILAPI.consult({persona:P.key, kind:document.getElementById('csKind').value, context:document.getElementById('csCtx').innerText.replace(/\n/g,' · '), memo:document.querySelector('#csOv textarea').value}).catch(()=>{});
+    closeCs(); toast(`${IL.persona().contact}에게 요청을 보냈습니다. 영업일 기준 당일 연락드려요.`); });
+})();
+</script>
+</body>
+</html>

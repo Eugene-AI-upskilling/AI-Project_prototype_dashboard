@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>시안 B · AI 앵커 미디어 — 유진 Insight Lab</title>
+<link rel="preload" href="../assets/fonts/PretendardVariable.woff2" as="font" type="font/woff2" crossorigin />
+<link rel="stylesheet" href="../assets/app.css" />
+<style>
+@font-face{font-family:"Pretendard Variable";font-weight:45 920;font-display:swap;src:url("../assets/fonts/PretendardVariable.woff2") format("woff2-variations")}
+:root{
+  --s-ground:#0c0d10; --s-raise:#16181d; --s-line:rgba(255,255,255,.1); --s-line-2:rgba(255,255,255,.18);
+  --s-ink:#f4f5f7; --s-body:#c9ced6; --s-muted:#99a1ad;
+  --s-red:#d21f23; --s-red-hi:#ff4a4e; --s-up:#ff6474; --s-down:#7aa2ff;
+  --s-ease:cubic-bezier(.16,1,.3,1); --s-drawer:cubic-bezier(.32,.72,0,1);
+}
+::selection{background:rgba(210,31,35,.45);color:#fff}
+.stage{word-break:keep-all}
+.tnum{font-variant-numeric:tabular-nums;font-feature-settings:"tnum"}
+.up{color:var(--s-up)} .down{color:var(--s-down)}
+:focus-visible{outline:2px solid #fff;outline-offset:3px;border-radius:8px}
+
+.stage{position:relative;isolation:isolate;background:var(--s-ground);color:var(--s-body);overflow:hidden;min-height:calc(100svh - var(--nav-h,72px));display:flex;flex-direction:column}
+/* ambient light sampled from the anchor footage */
+.amb{position:absolute;inset:-10%;z-index:-1;width:120%;height:120%;filter:blur(70px) saturate(1.3);opacity:.5;transform:scale(1.05);transition:opacity 1.2s}
+.stage::after{content:"";position:absolute;inset:0;z-index:-1;background:radial-gradient(120% 90% at 30% 40%,transparent 0,rgba(12,13,16,.55) 55%,var(--s-ground) 100%)}
+
+.stage__in{flex:1;width:100%;max-width:1320px;margin:0 auto;padding:40px 40px 32px;display:grid;grid-template-columns:auto minmax(0,1fr);gap:64px;align-items:center}
+
+/* the broadcast frame */
+.frame{position:relative;height:min(74svh,760px);aspect-ratio:9/15;border-radius:28px;overflow:hidden;background:#000;
+  box-shadow:0 30px 80px -20px rgba(0,0,0,.7),0 0 0 1px rgba(255,255,255,.08)}
+.frame video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 85%}
+.bug{position:absolute;top:16px;left:16px;right:16px;display:flex;justify-content:space-between;align-items:center;z-index:2}
+.bug__ch{display:inline-flex;align-items:center;gap:8px;background:var(--s-red);color:#fff;font-weight:800;font-size:13px;height:30px;padding:0 12px 0 10px;border-radius:8px}
+.bug__ch i{width:7px;height:7px;border-radius:50%;background:#fff;animation:onair 1.6s ease-in-out infinite}
+@keyframes onair{50%{opacity:.25}}
+.bug__mute{width:40px;height:40px;border-radius:50%;border:0;background:rgba(12,13,16,.6);backdrop-filter:blur(8px);display:grid;place-items:center;cursor:pointer;color:#fff;transition:transform .16s var(--s-ease)}
+.bug__mute:active{transform:scale(.94)}
+.bug__mute svg{width:18px;height:18px}
+.lower3{position:absolute;left:12px;right:12px;bottom:14px;z-index:2}
+.lower3__tag{display:inline-block;background:#fff;color:var(--s-ground);font-weight:800;font-size:12px;padding:5px 9px;border-radius:6px 6px 0 0}
+.lower3__box{background:rgba(12,13,16,.78);backdrop-filter:blur(10px);border-radius:0 12px 12px 12px;padding:12px 14px 14px;min-height:76px;overflow:hidden}
+.cap{font-size:17px;line-height:1.5;font-weight:700;color:#fff;text-wrap:pretty}
+.cap.in{animation:capIn .45s var(--s-ease) both}
+@keyframes capIn{from{opacity:0;transform:translateY(10px);filter:blur(4px)}}
+.lower3__bar{height:3px;background:rgba(255,255,255,.18);border-radius:2px;margin-top:10px;overflow:hidden}
+.lower3__bar i{display:block;height:100%;width:0;background:var(--s-red-hi)}
+
+/* program side */
+.prog__date{display:flex;align-items:center;gap:10px;font-size:14px;font-weight:700;color:var(--s-muted)}
+.prog__date b{color:var(--s-ink)}
+.prog h1{font-size:clamp(34px,4.2vw,64px);line-height:1.14;letter-spacing:-.035em;font-weight:800;color:var(--s-ink);margin:16px 0 0;text-wrap:balance;max-width:11em}
+.prog h1 em{font-style:normal;color:var(--s-red-hi)}
+.prog__sub{font-size:17px;line-height:1.65;color:var(--s-body);margin:18px 0 0;max-width:30em;text-wrap:pretty}
+.prog__acts{display:flex;gap:14px;margin-top:28px;flex-wrap:wrap;align-items:center}
+.sbtn{display:inline-flex;align-items:center;gap:10px;height:52px;padding:0 24px 0 20px;border-radius:999px;border:0;background:#fff;color:var(--s-ground);font:800 16px/1 inherit;font-family:inherit;cursor:pointer;transition:transform .16s var(--s-ease),box-shadow .25s}
+.sbtn svg{width:18px;height:18px;fill:currentColor}
+.sbtn:hover{box-shadow:0 8px 30px -6px rgba(255,255,255,.35)}
+.sbtn:active{transform:scale(.97)}
+.slink{color:var(--s-ink);font-weight:700;font-size:15px;text-decoration:none;padding:14px 4px;text-underline-offset:5px}
+.slink:hover{text-decoration:underline}
+
+/* rundown — the script is the navigation */
+.run{margin-top:36px;border-top:1px solid var(--s-line);max-width:640px}
+.run__tabs{display:flex;gap:6px;padding:14px 0 6px}
+.run__tabs button{display:flex;align-items:center;gap:10px;border:1px solid var(--s-line-2);background:transparent;color:var(--s-body);border-radius:12px;height:44px;padding:0 14px 0 6px;font:700 14px inherit;font-family:inherit;cursor:pointer;transition:background .2s,border-color .2s}
+.run__tabs button img{width:32px;height:32px;border-radius:8px;object-fit:cover;background:#222}
+.run__tabs button[aria-pressed=true]{background:#fff;color:var(--s-ground);border-color:#fff}
+.run ol{list-style:none;margin:8px 0 0;padding:0;max-height:204px;overflow-y:auto;scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.25) transparent;mask-image:linear-gradient(#000 80%,transparent)}
+.run li button{display:grid;grid-template-columns:52px 1fr;gap:8px;width:100%;text-align:left;border:0;background:none;padding:10px 0;color:var(--s-muted);font:500 15px/1.55 inherit;font-family:inherit;cursor:pointer;border-radius:8px;transition:color .25s}
+.run li button:hover{color:var(--s-ink)}
+.run li .t{font-weight:700;font-size:13px;padding-top:2px}
+.run li.on button{color:var(--s-ink)}
+.run li.on .t{color:var(--s-red-hi)}
+
+/* ticker crawl */
+.crawl{position:relative;display:flex;align-items:stretch;border-top:1px solid var(--s-line);background:rgba(12,13,16,.85);height:52px;font-size:15px}
+.crawl__lbl{flex:none;display:flex;align-items:center;padding:0 18px;background:var(--s-red);color:#fff;font-weight:800;font-size:13px;letter-spacing:.02em;z-index:1}
+.crawl__view{flex:1;overflow:hidden;mask-image:linear-gradient(90deg,transparent,#000 3%,#000 97%,transparent)}
+.crawl__track{display:flex;width:max-content;height:100%;align-items:center;animation:crawl 48s linear infinite}
+.crawl:hover .crawl__track,.crawl.is-paused .crawl__track{animation-play-state:paused}
+.crawl__ctl{flex:none;width:52px;border:0;border-left:1px solid var(--s-line);background:transparent;color:var(--s-ink);cursor:pointer;display:grid;place-items:center}
+.crawl__ctl svg{width:16px;height:16px;fill:currentColor}
+.crawl__ctl:hover{background:rgba(255,255,255,.06)}
+@keyframes crawl{to{transform:translateX(-50%)}}
+.ci{display:inline-flex;align-items:center;gap:8px;padding:0 22px;white-space:nowrap;color:var(--s-ink);font-weight:700}
+.ci small{color:var(--s-muted);font-weight:600;font-size:13px}
+.ci::after{content:"";width:4px;height:4px;border-radius:50%;background:var(--s-line-2);margin-left:22px;margin-right:-22px}
+
+.peek{background:#fff;padding:32px 40px;text-align:center;font-size:14px;color:#5b6573}
+
+@media (max-width:980px){
+  .stage__in{grid-template-columns:1fr;gap:28px;padding:20px 16px 24px}
+  .frame{height:auto;width:100%;max-width:440px;margin:0 auto;aspect-ratio:9/14}
+  .prog h1{font-size:clamp(30px,8vw,44px)}
+}
+@media (max-width:560px){
+  .stage__in{padding:0 0 24px}
+  .frame{border-radius:0;max-width:none;aspect-ratio:auto;height:min(72svh,620px);box-shadow:none}
+  .prog{padding:0 16px}
+  .prog__sub{font-size:16px}
+  .sbtn{flex:1;justify-content:center}
+  .crawl{height:46px;font-size:14px}
+}
+@media (prefers-reduced-motion:reduce){
+  .crawl__track{animation:none;flex-wrap:wrap}
+  .cap.in,.bug__ch i{animation:none}
+}
+</style>
+</head>
+<body>
+<header class="nav">
+  <div class="nav__brand">
+    <img class="nav__logoimg" src="../assets/eugene-logo.png" alt="유진투자증권" />
+    <span class="nav__divider"></span>
+    <span class="nav__sub">Insight Lab</span>
+  </div>
+  <nav class="nav__links">
+    <a href="../market.html">시황·테마</a><a href="../reports.html">리서치 리포트</a><a href="../events.html">종목 이벤트</a>
+    <a href="../global.html">해외 AI 리서치</a><a href="../quant.html">퀀트 투자</a><a href="#">인사이트</a>
+  </nav>
+  <div class="nav__spacer"></div>
+  <div class="nav__auth"><span style="display:inline-flex;align-items:center;gap:12px">
+    <button class="btn btn--text" style="font-size:var(--text-body)">로그인</button>
+    <button class="btn btn--primary btn--sm">회원가입</button></span></div>
+</header>
+
+<main>
+<section class="stage" aria-labelledby="pTitle">
+  <canvas class="amb" id="amb" width="18" height="32" aria-hidden="true"></canvas>
+  <div class="stage__in">
+    <div class="frame">
+      <video id="v" autoplay muted playsinline loop crossorigin="anonymous" preload="auto"></video>
+      <div class="bug">
+        <span class="bug__ch"><i aria-hidden="true"></i><span id="bugTx">유진 AI 앵커</span></span>
+        <button class="bug__mute" id="mute" type="button" aria-label="소리 켜기" aria-pressed="false">
+          <svg id="icoMute" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H2v6h4l5 4z"/><path d="m23 9-6 6M17 9l6 6"/></svg>
+          <svg id="icoSnd" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" hidden><path d="M11 5 6 9H2v6h4l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M19 5a10 10 0 0 1 0 14"/></svg>
+        </button>
+      </div>
+      <div class="lower3">
+        <span class="lower3__tag" id="l3tag">오늘의 시황</span>
+        <div class="lower3__box"><div class="cap" id="cap" aria-live="polite">&nbsp;</div><div class="lower3__bar" aria-hidden="true"><i id="bar"></i></div></div>
+      </div>
+    </div>
+
+    <div class="prog">
+      <div class="prog__date"><b id="dKo">오늘</b><span aria-hidden="true">·</span><span id="dMeta">AI 앵커 데일리 브리핑</span></div>
+      <h1 id="pTitle"><span id="secs">22초</span>면<br/>오늘 시장이 <em>보여요.</em></h1>
+      <p class="prog__sub" id="pSub">매일 아침, 유진투자증권 리서치센터의 시황과 새 리포트를 AI 앵커가 짧게 브리핑해 드려요.</p>
+      <div class="prog__acts">
+        <button class="sbtn" id="playSound" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>소리 켜고 처음부터</button>
+        <a class="slink" href="../market.html">시황 자세히 보기 →</a>
+      </div>
+      <div class="run" aria-label="브리핑 대본">
+        <div class="run__tabs" id="tabs" role="group" aria-label="브리핑 선택"></div>
+        <ol id="lines"></ol>
+      </div>
+    </div>
+  </div>
+  <div class="crawl" aria-label="시장 지표">
+    <span class="crawl__lbl">MARKET</span>
+    <div class="crawl__view"><div class="crawl__track" id="crawl"></div></div>
+    <button class="crawl__ctl" id="crawlCtl" type="button" aria-label="티커 일시정지" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path id="crawlIco" d="M7 5h3v14H7zM14 5h3v14h-3z"/></svg></button>
+  </div>
+</section>
+<div class="peek">↓ 아래로 리서치 리포트 · 테마 · 퀀트 섹션이 이어집니다 (시안 비교용 표시)</div>
+</main>
+
+<script src="hero-data.js"></script>
+<script>
+(async function(){
+  const $=s=>document.querySelector(s), {num,dir,signed,pct,fmt,eok,dateKo,mmdd,sentences,reduced}=HD;
+  const nav=document.querySelector('.nav'); if(nav) document.documentElement.style.setProperty('--nav-h',nav.offsetHeight+'px');
+  const D=await loadHeroData(), m=D.market, B=D.briefings;
+  const v=$('#v'); let cur=0, lines=[], spans=[], lastK=-1;
+
+  $('#dKo').textContent=dateKo(m.date).replace(/ \S+요일$/,'')+' 마감';
+  $('#tabs').innerHTML=B.map((b,i)=>`<button type="button" data-i="${i}" aria-pressed="${i===0}">${b.thumbnail_url?`<img src="${b.thumbnail_url}" alt="">`:'<img alt="">'}${b.kind==='market'?'시황':'리포트'} ${mmdd(b.brief_date)}</button>`).join('');
+
+  function load(i,{sound=false}={}){
+    cur=i; const b=B[i]; if(!b) return;
+    lines=sentences(b.script); lastK=-1;
+    $('#l3tag').textContent=b.kind==='market'?'오늘의 시황':'오늘의 리포트';
+    $('#bugTx').textContent=`유진 AI 앵커 · ${mmdd(b.brief_date)}`;
+    $('#lines').innerHTML=lines.map((l,k)=>`<li data-k="${k}"><button type="button"><span class="t tnum" data-t>0:00</span><span>${l}</span></button></li>`).join('');
+    document.querySelectorAll('#tabs button').forEach(x=>x.setAttribute('aria-pressed',+x.dataset.i===i));
+    v.src=b.video_url; if(b.thumbnail_url) v.poster=b.thumbnail_url;
+    v.muted=!sound; v.loop=!sound; v.play().catch(()=>{});
+    setMute(v.muted);
+  }
+  function setMute(mu){ $('#mute').setAttribute('aria-pressed',!mu); $('#mute').setAttribute('aria-label',mu?'소리 켜기':'소리 끄기');
+    $('#icoMute').style.display=mu?'':'none'; $('#icoSnd').style.display=mu?'none':''; }
+  v.addEventListener('loadedmetadata',()=>{
+    const s=Math.round(v.duration); $('#secs').textContent=s<60?`${s}초`:`${Math.round(s/60)}분`;
+    const tot=lines.reduce((a,l)=>a+l.length,0)||1; let acc=0;
+    spans=lines.map(l=>{const a=acc/tot*v.duration; acc+=l.length; return [a,acc/tot*v.duration];});
+    document.querySelectorAll('#lines [data-t]').forEach((el,k)=>{const t=Math.round(spans[k][0]); el.textContent=`0:${String(t).padStart(2,'0')}`;});
+  });
+  v.addEventListener('timeupdate',()=>{
+    $('#bar').style.width=(v.currentTime/v.duration*100)+'%';
+    const k=spans.findIndex(([a,b])=>v.currentTime>=a&&v.currentTime<b);
+    if(k>=0&&k!==lastK){ lastK=k; const c=$('#cap'); c.textContent=lines[k]; c.classList.remove('in'); void c.offsetWidth; c.classList.add('in');
+      document.querySelectorAll('#lines li').forEach(li=>li.classList.toggle('on',+li.dataset.k===k));
+      const on=document.querySelector('#lines li.on'), ol=$('#lines'); if(on) ol.scrollTo({top:on.offsetTop-ol.offsetTop-8,behavior:reduced()?'auto':'smooth'}); }
+  });
+  v.addEventListener('ended',()=>{ if(!v.loop && B.length>1){ load((cur+1)%B.length,{sound:!v.muted}); } });
+
+  $('#lines').addEventListener('click',e=>{const li=e.target.closest('li'); if(!li||!spans.length) return; v.currentTime=spans[+li.dataset.k][0]+.01; v.play();});
+  $('#tabs').addEventListener('click',e=>{const b=e.target.closest('button'); if(b) load(+b.dataset.i,{sound:!v.muted});});
+  $('#mute').addEventListener('click',()=>{ v.muted=!v.muted; if(!v.muted) v.loop=false; setMute(v.muted); v.play(); });
+  $('#playSound').addEventListener('click',()=>{ v.currentTime=0; v.muted=false; v.loop=false; setMute(false); v.play(); });
+
+  /* ambient light: sample the footage into an 18×32 canvas, the CSS blur does the rest */
+  const cv=$('#amb'), cx=cv.getContext('2d',{willReadFrequently:false}); let ambOk=true;
+  (function amb(){ if(ambOk && v.readyState>=2){ try{ cx.drawImage(v,0,0,cv.width,cv.height);}catch(e){ambOk=false;} }
+    setTimeout(()=>requestAnimationFrame(amb), reduced()?2000:180); })();
+
+  /* ticker crawl — duplicated once for a seamless loop */
+  const g=n=>(D.globals||[]).find(x=>x.name===n);
+  const it=[['코스피',m.kospi,m.kospi_chg],['코스닥',m.kosdaq,m.kosdaq_chg],['원/달러',m.usdkrw,m.usdkrw_chg],
+    g('NASDAQ')&&['나스닥',fmt(g('NASDAQ').price),pct(g('NASDAQ').change_pct)],g('S&P 500')&&['S&P 500',fmt(g('S&P 500').price),pct(g('S&P 500').change_pct)]]
+    .filter(Boolean).map(([n,val,c])=>`<span class="ci"><small>${n}</small><span class="tnum">${val}</span><span class="${dir(c)} tnum">${signed(c)}</span></span>`);
+  const f=(m.flows||{}).kospi||{};
+  if(f.foreign) it.push(`<span class="ci"><small>외국인 코스피</small><span class="${dir(f.foreign)} tnum">${eok(f.foreign)}</span></span>`);
+  (m.strong||[]).slice(0,2).forEach(s=>it.push(`<span class="ci"><small>강세</small>${s.name}<span class="up tnum">${signed(s.chg)}</span></span>`));
+  (m.weak||[]).slice(0,2).forEach(s=>it.push(`<span class="ci"><small>약세</small>${s.name}<span class="down tnum">${signed(s.chg)}</span></span>`));
+  (D.events||[]).slice(0,2).forEach(e=>it.push(`<span class="ci"><small>공시</small>${e.name}${e.tag?` · ${e.tag}`:''}</span>`));
+  $('#crawl').innerHTML=it.join('')+it.join('').replace(/class="ci"/g,'class="ci" aria-hidden="true"');
+
+  $('#crawlCtl').addEventListener('click',e=>{const c=document.querySelector('.crawl'), p=c.classList.toggle('is-paused');
+    e.currentTarget.setAttribute('aria-pressed',p); e.currentTarget.setAttribute('aria-label',p?'티커 재생':'티커 일시정지');
+    $('#crawlIco').setAttribute('d',p?'M8 5v14l11-7z':'M7 5h3v14H7zM14 5h3v14h-3z');});
+  load(0);
+})();
+</script>
+</body>
+</html>

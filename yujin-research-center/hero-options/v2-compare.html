@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>히어로 시안 비교 · A 리서치 터미널 vs B AI 앵커 미디어</title>
+<style>
+@font-face{font-family:"Pretendard Variable";font-weight:45 920;font-display:swap;src:url("../assets/fonts/PretendardVariable.woff2") format("woff2-variations")}
+:root{--ink:#0d0f12;--muted:#5b6573;--line:#e4e8ee;--wash:#f5f7fa}
+*{box-sizing:border-box}
+body{margin:0;font-family:"Pretendard Variable",Pretendard,system-ui,sans-serif;background:var(--wash);color:var(--ink);word-break:keep-all}
+header{display:flex;align-items:center;gap:20px;padding:20px 32px;background:#fff;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:2}
+header h1{font-size:18px;margin:0;font-weight:800}
+.sp{flex:1}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:10px;padding:3px;background:var(--wash)}
+.seg button{border:0;background:none;font:700 14px inherit;font-family:inherit;color:var(--muted);height:34px;padding:0 16px;border-radius:8px;cursor:pointer}
+.seg button[aria-pressed=true]{background:#fff;color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.1)}
+main{display:grid;grid-template-columns:1fr 1fr;gap:28px;padding:28px 32px 48px}
+.col h2{font-size:22px;margin:0;font-weight:800;letter-spacing:-.02em}
+.col p{font-size:15px;line-height:1.6;color:var(--muted);margin:8px 0 0}
+.col ul{margin:12px 0 18px;padding-left:18px;font-size:14px;line-height:1.7;color:#2a2f36}
+.col ul b{color:var(--ink)}
+.dev{background:#fff;border:1px solid var(--line);border-radius:16px;overflow:hidden;box-shadow:0 10px 30px -12px rgba(13,15,18,.18)}
+.dev__bar{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-bottom:1px solid var(--line);font-size:13px;color:var(--muted)}
+.dev__bar a{color:#0f4fb8;font-weight:700;text-decoration:none}
+.vp{position:relative;overflow:hidden}
+.vp iframe{border:0;transform-origin:0 0;position:absolute;left:0;top:0;background:#fff}
+.mob .vp{margin:0 auto}
+@media (max-width:900px){main{grid-template-columns:1fr;padding:20px 16px}header{padding:14px 16px;flex-wrap:wrap}}
+</style>
+</head>
+<body>
+<header>
+  <h1>히어로 시안 비교</h1>
+  <span class="sp"></span>
+  <div class="seg" role="group" aria-label="화면 크기">
+    <button type="button" data-m="desk" aria-pressed="true">데스크톱 1440</button>
+    <button type="button" data-m="mob" aria-pressed="false">모바일 390</button>
+  </div>
+</header>
+<main>
+  <section class="col">
+    <h2>A · 리서치 터미널</h2>
+    <p>아침 7시 50분, 모니터 앞의 애널리스트·PB를 위한 첫 화면.</p>
+    <ul>
+      <li><b>헤드라인 자체가 시황</b> — 그날 숫자로 문장을 조립 (코스피/코스닥·외국인 수급·강약 업종)</li>
+      <li>시세판 · 투자자별 순매수 막대 · 업종 등락 → 스크롤 없이 시장의 톤 파악</li>
+      <li>오른쪽 레일: AI 앵커(대본 동기화 자막) · 새 리포트 · 주요 공시</li>
+      <li>장 상태(장 시작 전/장중/마감)를 KST 기준으로 표시</li>
+      <li><b>위험:</b> 첫 방문자에게는 무엇을 하는 곳인지 덜 친절함. 브랜드 인상이 약함</li>
+    </ul>
+    <div class="dev"><div class="dev__bar"><span>v2-terminal.html</span><a href="v2-terminal.html" target="_blank">새 창에서 열기 ↗</a></div><div class="vp" data-src="v2-terminal.html"></div></div>
+  </section>
+  <section class="col">
+    <h2>B · AI 앵커 미디어</h2>
+    <p>출근길 휴대폰·아침 데스크톱에서 "틀어놓고 듣는" 방송형 첫 화면.</p>
+    <ul>
+      <li><b>앵커 영상이 주인공</b> — 음소거 자동재생, 대본을 문장 단위로 동기화한 하단 자막</li>
+      <li>대본이 곧 내비게이션 — 문장을 누르면 그 지점으로 이동</li>
+      <li>시황 ↔ 리포트 브리핑 전환, 끝나면 다음 브리핑으로 이어짐</li>
+      <li>영상 프레임을 샘플링한 앰비언트 조명 · 하단 MARKET 티커</li>
+      <li><b>위험:</b> 숫자를 바로 원하는 사용자는 한 번 더 내려가야 함. 영상 품질에 첫인상이 좌우됨</li>
+    </ul>
+    <div class="dev"><div class="dev__bar"><span>v2-anchor.html</span><a href="v2-anchor.html" target="_blank">새 창에서 열기 ↗</a></div><div class="vp" data-src="v2-anchor.html"></div></div>
+  </section>
+</main>
+<script>
+const vps=[...document.querySelectorAll('.vp')];
+function mount(mode){
+  document.body.classList.toggle('mob',mode==='mob');
+  vps.forEach(vp=>{
+    const W=mode==='mob'?390:1440, H=mode==='mob'?844:900;
+    const avail=vp.parentElement.clientWidth, s=Math.min(1,avail/W);
+    let f=vp.querySelector('iframe');
+    if(!f||f.dataset.m!==mode){ vp.innerHTML=''; f=document.createElement('iframe'); f.src=vp.dataset.src; f.dataset.m=mode; f.title=vp.dataset.src; f.loading='lazy'; vp.appendChild(f); }
+    f.style.width=W+'px'; f.style.height=H+'px'; f.style.transform=`scale(${s})`;
+    vp.style.width=(W*s)+'px'; vp.style.height=(H*s)+'px';
+  });
+}
+let mode='desk';
+document.querySelectorAll('.seg button').forEach(b=>b.addEventListener('click',()=>{
+  mode=b.dataset.m; document.querySelectorAll('.seg button').forEach(x=>x.setAttribute('aria-pressed',x===b)); mount(mode);}));
+addEventListener('resize',()=>mount(mode)); mount(mode);
+</script>
+</body>
+</html>

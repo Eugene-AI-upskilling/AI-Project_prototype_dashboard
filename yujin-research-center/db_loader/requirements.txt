@@ -4,6 +4,9 @@ requests>=2.31
 python-dotenv>=1.0
 pymupdf>=1.24
 yfinance>=0.2
+# 카드뉴스 자동 생성 (make_cardnews.py) — Claude API + PNG 내보내기
+anthropic>=1.0
+playwright>=1.40
 # Gmail 자동화용
 google-api-python-client>=2.0
 google-auth>=2.0

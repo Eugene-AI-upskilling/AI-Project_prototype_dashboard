@@ -64,6 +64,16 @@ def _retail(f, i):
     return f"{'+' if v >= 0 else ''}{v:,}억"
 
 
+def _asof_date(row, path):
+    """스냅샷 날짜 = CSV 의 date 컬럼(실제 거래일) 우선, 없으면 파일명.
+
+    파일명은 '수집을 돌린 날'이다. 이 파이프라인은 07:25 에도 도는데 그 시각 KRX 최신 종가는
+    전일 것이라, 파일명을 그대로 믿으면 9/17 종가가 9/18 시황으로 올라간다(실제로 그랬다).
+    """
+    v = str(row.get("date") or "").strip()[:10]
+    return v if re.fullmatch(r"\d{4}-\d{2}-\d{2}", v) else config.date_from_path(path)
+
+
 def _saved_level(v):
     """market_tone에 저장된 지수 레벨(있으면 그대로 사용)."""
     if v is None:
@@ -95,6 +105,52 @@ def _build_flows(r):
     }
 
 
+def _sum_eok(values):
+    """['+28,350억', '-1,620억'] → '+26,730억'. 하나도 못 읽으면 None."""
+    total, ok = 0, False
+    for v in values:
+        try:
+            total += int(str(v).replace("억", "").replace(",", "").replace("+", ""))
+            ok = True
+        except (ValueError, AttributeError, TypeError):
+            pass
+    return f"{'+' if total >= 0 else ''}{total:,}억" if ok else None
+
+
+def _apply_kis_flows(snap, date):
+    """투자자 순매수를 KIS 실측치로 갱신한다.
+
+    · 개인(retail)은 원래 -(외국인+기관) 추정이었다 — 기타법인·연기금이 빠져 실제와 어긋난다.
+    · 외국인/기관도 KIS 를 우선한다. market_tone CSV 는 수집 실패한 날 전 항목이 '+0십억원'
+      으로 채워져 나오는데, 그대로 두면 화면에 0원으로 표시된다.
+      (2026-08-12 기준 KIS 값과 CSV 값이 정확히 일치함을 확인 — 같은 KRX 원천이다.)
+
+    KIS 키가 없거나 조회 실패면 아무것도 바꾸지 않는다(기존 CSV 값 유지).
+    """
+    from . import kis
+    if not kis.available():
+        return
+    got = kis.market_snapshot(date)
+    if not got:
+        return
+
+    picked = {"foreign": [], "inst": [], "retail": []}
+    for market in ("kospi", "kosdaq"):
+        row = got.get(market) or {}
+        for field in picked:
+            eok = _eok(row.get(field))
+            if eok is None:
+                continue
+            if snap.get("flows") and market in snap["flows"]:
+                snap["flows"][market][field] = eok
+            picked[field].append(eok)
+
+    for field, key in (("foreign", "foreign_net"), ("inst", "inst_net"), ("retail", "retail_net")):
+        total = _sum_eok(picked[field])
+        if total is not None:
+            snap[key] = total
+
+
 def extract(date=None, enrich=True, summary=True):
     path = _latest_valid_path(date)
     if not path or not os.path.exists(path):
@@ -105,7 +161,7 @@ def extract(date=None, enrich=True, summary=True):
     r = df.iloc[0]
 
     snap = {
-        "snapshot_date": config.date_from_path(path),
+        "snapshot_date": _asof_date(r, path),
         "kospi": None, "kospi_chg": T.clean(r.get("kospi_return")),
         "kosdaq": None, "kosdaq_chg": T.clean(r.get("kosdaq_return")),
         "usdkrw": None, "usdkrw_chg": None,
@@ -118,24 +174,42 @@ def extract(date=None, enrich=True, summary=True):
         "ai_summary": None,
     }
 
-    # ── yfinance 보강: 환율 + 지수 레벨 ──
-    # 등락률은 market_tone(=daily_report가 당일 yfinance close-to-close로 계산·저장)을 사용.
-    # yfinance엔 당일 종가가 늦게 올라와(지연) 직접 못 읽을 수 있으므로,
-    # 지수 레벨 = 직전 거래일 종가 × (1+당일 등락률) 로 재구성한다.
+    # ── 지수 레벨/등락률/환율 보강 ──
+    # 우선순위: ① KIS 확정 지수 → ② market_tone 저장값 → ③ yfinance → ④ 직전종가×등락률 역산.
+    # CSV 를 1순위로 두지 않는 건, 수집 실패한 날 전일 값이 그대로 복사돼 들어오기 때문이다
+    # (2026-08-13 파일이 08-12 의 6,579.04 를 담고 있었다). KIS 는 마감 직후 확정치를 준다.
     if enrich and snap["snapshot_date"]:
+        d = snap["snapshot_date"]
+        kis_lv = {}
+        try:
+            from . import kis
+            if kis.available():
+                kis_lv = kis.market_snapshot(d)
+        except Exception as e:
+            print("  [warn] KIS 지수 조회 실패:", e)
+
         try:
             from . import market_levels
-            d = snap["snapshot_date"]
             lv = market_levels.fetch_levels(d)
-            if not snap.get("kospi_chg"):  snap["kospi_chg"] = lv.get("kospi_chg")
-            if not snap.get("kosdaq_chg"): snap["kosdaq_chg"] = lv.get("kosdaq_chg")
-            # 레벨: ① market_tone 저장값(정확) → ② 직전종가×등락률 → ③ yfinance
-            snap["kospi"]  = _saved_level(r.get("kospi_level"))  or _level(market_levels.prev_close("^KS11", d), snap.get("kospi_chg"))  or lv.get("kospi")
-            snap["kosdaq"] = _saved_level(r.get("kosdaq_level")) or _level(market_levels.prev_close("^KQ11", d), snap.get("kosdaq_chg")) or lv.get("kosdaq")
+            for market, yf_tk in (("kospi", "^KS11"), ("kosdaq", "^KQ11")):
+                got = kis_lv.get(market) or {}
+                if got.get("chg"):
+                    snap[market + "_chg"] = got["chg"]
+                elif not snap.get(market + "_chg"):
+                    snap[market + "_chg"] = lv.get(market + "_chg")
+                snap[market] = (got.get("level") or _saved_level(r.get(market + "_level"))
+                                or lv.get(market)
+                                or _level(market_levels.prev_close(yf_tk, d), snap.get(market + "_chg")))
             if lv.get("usdkrw"):
                 snap["usdkrw"] = lv["usdkrw"]; snap["usdkrw_chg"] = lv.get("usdkrw_chg")
         except Exception as e:
-            print("  [warn] yfinance 보강 실패:", e)
+            print("  [warn] 지수/환율 보강 실패:", e)
+
+        # ── 투자자 순매수: CSV → KIS 실측 ──
+        try:
+            _apply_kis_flows(snap, snap["snapshot_date"])
+        except Exception as e:
+            print("  [warn] KIS 수급 갱신 실패(CSV 값 유지):", e)
 
     # ── AI 시황 요약: 텔레그램(허재환 채널) ──
     if summary:

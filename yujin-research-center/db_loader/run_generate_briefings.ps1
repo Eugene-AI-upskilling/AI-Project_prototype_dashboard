@@ -32,6 +32,12 @@ if (-not $py) {
 }
 "  python = $py" | Out-File -Append -Encoding utf8 -LiteralPath $log
 
+# 경쟁 상태 방지: 브리핑 전에 DB push를 먼저 실행해 최신(당일) market_snapshot 을 보장한다.
+# (DBPush 작업과 동시에 catch-up 실행돼 브리핑이 stale 데이터를 읽는 문제 방지. push 는 upsert 라 재실행 안전.)
+"  [pre] DB push 선행 실행..." | Out-File -Append -Encoding utf8 -LiteralPath $log
+& $py -m db_loader.run --push *>> $log
+"  [pre] DB push exit=$LASTEXITCODE" | Out-File -Append -Encoding utf8 -LiteralPath $log
+
 & $py -m db_loader.generate_briefings *>> $log
 $code = $LASTEXITCODE
 $te = Get-Date -Format 'yyyy-MM-dd HH:mm:ss'

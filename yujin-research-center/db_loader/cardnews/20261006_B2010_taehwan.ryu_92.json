@@ -1,0 +1,260 @@
+{
+ "report_url": "http://www.eugenefn.com/common/files/amail/20261006_B2010_taehwan.ryu_92.pdf",
+ "title": "SMR, 잠재가치가 보이는 시점",
+ "category": "산업분석",
+ "analyst": "류태환",
+ "team": "건설/부동산",
+ "published_at": "2026-10-06",
+ "brand": "EUGENE WEEKLY · 건설/부동산",
+ "source": "자료: 한국부동산원, Bloomberg, Quantiwise, 유진투자증권",
+ "slides": [
+  {
+   "type": "cover",
+   "title": "SMR,\n잠재가치가 보이는 시점",
+   "date": "2026.10.06 · 주간 건설/부동산",
+   "stats": [
+    {
+     "label": "BWRX-300",
+     "value": "건설허가",
+     "sub": "상업용 SMR 미국 최초"
+    },
+    {
+     "label": "수도권 아파트 매매",
+     "value": "+0.12%",
+     "sub": "주간 매매가격지수",
+     "tone": "up"
+    }
+   ]
+  },
+  {
+   "type": "content",
+   "kicker": "SMR 인허가",
+   "title": "BWRX-300, 美 상업용\nSMR 첫 건설허가",
+   "sub": "9월 29일 NRC가 TVA의 테네시 Clinch River BWRX-300(GE Vernova Hitachi)에 건설허가를 내줬어요.",
+   "blocks": [
+    {
+     "t": "stats",
+     "items": [
+      {
+       "label": "미국 내 SMR 건설허가",
+       "value": "2",
+       "unit": "번째",
+       "cap": "TerraPower Kemmerer Natrium에 이어"
+      },
+      {
+       "label": "NRC 검토 기간",
+       "value": "14",
+       "unit": "개월",
+       "cap": "TVA 신청 건설허가 승인",
+       "hl": true
+      }
+     ]
+    },
+    {
+     "t": "note",
+     "text": "BWRX-300은 캐나다 Darlington에서 2030년 상업운전을 목표로 이미 건설에 착수했어요."
+    }
+   ]
+  },
+  {
+   "type": "content",
+   "kicker": "SMR 인허가 파이프라인",
+   "title": "다음 차례는\nXe-100·SMR300",
+   "sub": "Natrium에 이어 BWRX-300까지 건설허가를 확보하며 미국 SMR 시장의 사업화가 본격화되고 있어요.",
+   "blocks": [
+    {
+     "t": "list",
+     "items": [
+      {
+       "title": "TerraPower Kemmerer Natrium",
+       "desc": "미국 첫 SMR 건설허가를 받았어요."
+      },
+      {
+       "title": "GE Vernova Hitachi BWRX-300",
+       "desc": "상업용 SMR로는 미국 최초로 건설허가를 받았어요."
+      },
+      {
+       "title": "X-energy Long Mott Xe-100",
+       "desc": "다음 건설허가 후보로, 환경심사를 마치고 최종 허가 절차가 진행 중이에요."
+      },
+      {
+       "title": "Holtec Palisades SMR-300",
+       "desc": "단계적 CP(건설허가)와 LWA(제한적 공사승인) 절차를 밟고 있어요."
+      }
+     ]
+    },
+    {
+     "t": "takeaway",
+     "text": "복수 노형의 인허가가 진전되면서 **실제 건설로 이어질 프로젝트**도 늘어나고 있어요."
+    }
+   ]
+  },
+  {
+   "type": "content",
+   "kicker": "하이퍼스케일러 수요",
+   "title": "후속 수요는\n빅테크가 받친다",
+   "sub": "초도호기의 진전은 하이퍼스케일러 전력 수요가 뒷받침하는 후속 프로젝트의 가시성을 높여요.",
+   "blocks": [
+    {
+     "t": "stats",
+     "items": [
+      {
+       "label": "TerraPower × Meta",
+       "value": "2.8",
+       "unit": "GW",
+       "cap": "최대 8기 Natrium 개발 계약"
+      },
+      {
+       "label": "X-energy × Amazon",
+       "value": "5",
+       "unit": "GW 이상",
+       "cap": "2039년까지 Xe-100 배치 추진",
+       "hl": true
+      }
+     ]
+    },
+    {
+     "t": "takeaway",
+     "text": "Meta·Amazon 등 하이퍼스케일러가 대규모 전력 수요를 기반으로 후속 배치를 지원하는 구조예요. 초도호기의 착공과 건설이 본격화될수록 **후속 프로젝트의 가치도 부각될 전망**이에요."
+    }
+   ]
+  },
+  {
+   "type": "content",
+   "kicker": "국내 건설사",
+   "title": "현대건설·DL이앤씨,\nSMR 파트너십 재평가",
+   "blocks": [
+    {
+     "t": "list",
+     "items": [
+      {
+       "title": "현대건설 × TerraPower",
+       "desc": "Natrium 후속호기 EPC 파트너십을 확보했어요."
+      },
+      {
+       "title": "DL이앤씨 × X-energy",
+       "desc": "지분투자와 설계 업무로 Xe-100 상용화 과정에 참여하고 있어요."
+      }
+     ]
+    },
+    {
+     "t": "note",
+     "text": "개별 후속 프로젝트의 발주 시점과 국내 건설사의 수행 범위에는 아직 불확실성이 남아 있어요."
+    },
+    {
+     "t": "takeaway",
+     "text": "초도호기 인허가·건설이 진전되고 Meta·Amazon의 후속 수요가 이미 확보돼 있어, 현대건설과 DL이앤씨가 구축한 **SMR 파트너십의 잠재 가치도 재평가될 수 있다**는 판단이에요."
+    }
+   ]
+  },
+  {
+   "type": "content",
+   "kicker": "주간 아파트가격",
+   "title": "수도권 매매 +0.12%,\n지방은 보합",
+   "blocks": [
+    {
+     "t": "stats",
+     "compact": true,
+     "items": [
+      {
+       "label": "전국 매매",
+       "value": "+0.06%",
+       "tone": "up"
+      },
+      {
+       "label": "수도권 매매",
+       "value": "+0.12%",
+       "tone": "up",
+       "hl": true
+      },
+      {
+       "label": "지방권 매매",
+       "value": "+0.00%"
+      },
+      {
+       "label": "서울 매매",
+       "value": "+0.09%",
+       "tone": "up"
+      }
+     ]
+    },
+    {
+     "t": "bars",
+     "title": "매매가격 상승 TOP3 지역",
+     "items": [
+      {
+       "name": "화성 동탄",
+       "value": "+0.47%",
+       "n": 0.47
+      },
+      {
+       "name": "서울 서대문구",
+       "value": "+0.41%",
+       "n": 0.41
+      },
+      {
+       "name": "성남 중원",
+       "value": "+0.39%",
+       "n": 0.39
+      }
+     ]
+    },
+    {
+     "t": "bars",
+     "title": "전세가격지수 주간 변동",
+     "items": [
+      {
+       "name": "서울",
+       "value": "+0.16%",
+       "n": 0.16
+      },
+      {
+       "name": "수도권",
+       "value": "+0.14%",
+       "n": 0.14
+      },
+      {
+       "name": "전국",
+       "value": "+0.09%",
+       "n": 0.09
+      },
+      {
+       "name": "지방권",
+       "value": "+0.03%",
+       "n": 0.03
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "type": "content",
+   "kicker": "주간 주요 뉴스",
+   "title": "원전·발전·규제,\n이번 주 이슈",
+   "disc": true,
+   "blocks": [
+    {
+     "t": "list",
+     "items": [
+      {
+       "title": "대미투자 1호 '텍사스 가스발전' 확정",
+       "desc": "대형원전 8기 건설을 추진하고, 알래스카 LNG 사업성 검토에도 착수했어요."
+      },
+      {
+       "title": "웨스팅하우스 주주사, 한미 원전 합의 환영",
+       "desc": "한미 양국의 원전 프레임워크 합의에 일제히 환영 입장을 냈어요."
+      },
+      {
+       "title": "서부T&D, 나진상가 부지에 6,240억원 투자",
+       "desc": "10/1 이사회에서 오피스·하이엔드 오피스텔 등 신규 시설투자를 결정했어요."
+      },
+      {
+       "title": "사망사고 반복 시 과징금 수백억원",
+       "desc": "반복 사망사고에 영업이익의 최대 5%를 과징금으로 부과하는 산업안전보건법 개정안이 국회를 통과했어요."
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

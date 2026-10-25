@@ -87,7 +87,32 @@ def extract(date=None, max_per_kind=12):
     if not any(e["kind"] == "earnings" for e in events):
         events += _earnings_from_consensus(date or d, max_per_kind)
 
+    _fill_price_moves(events, d)
+
     return {"events": events, "_source": path}
+
+
+def _fill_price_moves(events, date):
+    """이벤트 발생일의 종목 등락률(price_move)을 KIS 일봉으로 채운다.
+
+    종목당 1콜이라 중복 티커는 한 번만 조회한다. 키가 없거나 실패하면 None 그대로 둔다
+    (프론트는 값이 없으면 해당 칸을 비워서 그린다).
+    """
+    try:
+        from . import kis
+    except ImportError:
+        return
+    if not kis.available():
+        return
+
+    cache = {}
+    for e in events:
+        tk = e.get("ticker")
+        if not tk or e.get("price_move") is not None:
+            continue
+        if tk not in cache:
+            cache[tk] = kis.price_move(tk, date)
+        e["price_move"] = T.pct_sign(cache[tk], 1) if cache[tk] is not None else None
 
 
 def _fmt(v):

@@ -1,0 +1,257 @@
+{
+ "report_url": "http://www.eugenefn.com/common/files/amail/20261015_B2030_syyang0901_531.pdf",
+ "title": "애질리티 나스닥 상장·LIG 비궁 美 협력·MASGA 법",
+ "category": "산업분석",
+ "analyst": "양승윤",
+ "team": "로봇/기계/운송/조선",
+ "published_at": "2026-10-15",
+ "brand": "EUGENE DAILY SNAPSHOT",
+ "source": "자료: 유진투자증권",
+ "slides": [
+  {
+   "type": "cover",
+   "title": "로봇·방산·조선\n데일리 브리핑",
+   "date": "2026.10.15 · 10월 14일 뉴스 기준",
+   "stats": [
+    {
+     "label": "애질리티 거래종결 목표",
+     "value": "2026년 11월",
+     "sub": "티커 AGLT (나스닥)"
+    },
+    {
+     "label": "MASGA 특별법",
+     "value": "여야 공동 발의",
+     "sub": "조선산업 생태계 활성화"
+    }
+   ]
+  },
+  {
+   "type": "content",
+   "kicker": "로봇 Zoom-In",
+   "title": "애질리티 로보틱스,\n나스닥 상장 최종 단계",
+   "sub": "Agility Robotics의 나스닥 상장이 실제 종결 단계로 들어갔어요.",
+   "blocks": [
+    {
+     "t": "list",
+     "items": [
+      {
+       "title": "SPAC 합병으로 상장",
+       "desc": "Churchill Capital Corp XI와 합병해요. 합병 후 회사명은 Agility Robotics예요."
+      },
+      {
+       "title": "SEC, S-4 효력 승인",
+       "desc": "S-4 등록신고서의 효력이 승인됐어요."
+      },
+      {
+       "title": "2026년 11월 거래종결 목표",
+       "desc": "회사는 2026년 11월 거래종결을 목표로 하고 있어요."
+      }
+     ]
+    },
+    {
+     "t": "kv",
+     "label": "예정 티커",
+     "value": "AGLT"
+    }
+   ]
+  },
+  {
+   "type": "content",
+   "kicker": "로봇 주요 뉴스",
+   "title": "로봇핸드 1,000대 눈앞,\n휴머노이드는 양산으로",
+   "blocks": [
+    {
+     "t": "hero",
+     "label": "테솔로 로봇핸드 누적 판매",
+     "value": "1,000",
+     "unit": "대",
+     "cap": "누적 판매 1,000대를 눈앞에 두고 있어요."
+    },
+    {
+     "t": "list",
+     "items": [
+      {
+       "title": "뉴로메카",
+       "desc": "\"일하는 휴머노이드, 내년 양산 라인 투입\""
+      },
+      {
+       "title": "보스턴다이내믹스",
+       "desc": "프로토타입 양산 라인을 공개했어요."
+      },
+      {
+       "title": "유니트리 CEO",
+       "desc": "\"1~2년 내 챗GPT 순간\""
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "type": "content",
+   "kicker": "방산 Zoom-In",
+   "title": "LIG, 비궁 추진체\n미국 현지화 추진",
+   "sub": "LIG D&A가 AUSA 2026에서 미국 방산 스타트업 Firehawk Aerospace와 Teaming Agreement를 체결했어요.",
+   "blocks": [
+    {
+     "t": "stats",
+     "items": [
+      {
+       "label": "협력 대상",
+       "value": "비궁",
+       "cap": "2.75인치 유도로켓 (Poniard) 추진체계 개발"
+      },
+      {
+       "label": "파트너",
+       "value": "Firehawk",
+       "cap": "미국 방산 스타트업 Firehawk Aerospace",
+       "hl": true
+      }
+     ]
+    },
+    {
+     "t": "list",
+     "items": [
+      {
+       "title": "후속 양산",
+       "desc": "개발 완료 후 후속 양산까지 추진해요."
+      },
+      {
+       "title": "추가 기술협력",
+       "desc": "추가 기술협력도 함께 추진하기로 했어요."
+      },
+      {
+       "title": "미국 내 공동 마케팅·미 정부 대상 판촉",
+       "desc": "미국 시장 공동 마케팅과 미 정부 대상 판촉까지 추진해요."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "type": "content",
+   "kicker": "방산 주요 뉴스 · 국내",
+   "title": "항공엔진 개발부터\nLIG 제재 심의까지",
+   "blocks": [
+    {
+     "t": "list",
+     "items": [
+      {
+       "title": "LIG, 美 파이어호크와 협력",
+       "desc": "미군 '비궁' 추진체 개발에 협력해요."
+      },
+      {
+       "title": "1만파운드급 항공엔진 개발",
+       "desc": "한화에어로가 맡을 것으로 보여요."
+      },
+      {
+       "title": "방사청 20일 계약심의위원회",
+       "desc": "LIG 제재 여부를 심의해요."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "type": "content",
+   "kicker": "방산 주요 뉴스 · 해외",
+   "title": "드론·요격 무기\n뉴스가 이어졌다",
+   "blocks": [
+    {
+     "t": "list",
+     "items": [
+      {
+       "title": "RENK·KNDS",
+       "desc": "레오파르트 2 변속기 공급을 연장했어요."
+      },
+      {
+       "title": "L3해리스 뱀파이어",
+       "desc": "美 육군에 첫 인도됐어요."
+      },
+      {
+       "title": "사우디 아람코 본사",
+       "desc": "미사일 공격을 받아 화재가 났어요."
+      },
+      {
+       "title": "日 테라 드론",
+       "desc": "소형 요격 드론을 우크라이나에 납품해요."
+      },
+      {
+       "title": "튀르키예 바이카르",
+       "desc": "드론 자율 편대비행을 시연했어요."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "type": "content",
+   "kicker": "조선 Zoom-In",
+   "title": "MASGA 특별법,\n여야 공동 발의",
+   "sub": "'조선산업 생태계 활성화 및 경쟁력 강화를 위한 특별법안'이 공동대표 발의됐어요. 핵심 내용은 8가지예요.",
+   "blocks": [
+    {
+     "t": "list",
+     "items": [
+      {
+       "title": "5년 단위 조선산업 기본계획"
+      },
+      {
+       "title": "첨단조선전략회 설치"
+      },
+      {
+       "title": "첨단미래조선산업 클러스터 지정"
+      },
+      {
+       "title": "AI·스마트야드 전환"
+      },
+      {
+       "title": "숙련인력 양성"
+      },
+      {
+       "title": "핵심 기자재 국산화·공급망 강화"
+      },
+      {
+       "title": "세제·금융지원"
+      },
+      {
+       "title": "한미 조선협력 지원"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "type": "content",
+   "kicker": "조선 주요 뉴스",
+   "title": "사우디 해양플랜트부터\n필리조선소 명명식까지",
+   "disc": true,
+   "blocks": [
+    {
+     "t": "list",
+     "items": [
+      {
+       "title": "삼성중공업",
+       "desc": "'전기 하이브리드 셔틀탱커' 기본 인증을 받았어요."
+      },
+      {
+       "title": "HD현대 사우디 합작조선소",
+       "desc": "해양플랜트 사업에 처음 진출해요."
+      },
+      {
+       "title": "오스탈",
+       "desc": "\"한화, 美 사업부 실사 기한 연장\""
+      },
+      {
+       "title": "필리조선소",
+       "desc": "美 맷슨 1호 컨테이너선 명명식을 열었어요."
+      }
+     ]
+    },
+    {
+     "t": "note",
+     "text": "해외 조선 주요 뉴스는 없었어요."
+    }
+   ]
+  }
+ ]
+}

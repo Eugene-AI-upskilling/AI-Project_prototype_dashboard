@@ -1,0 +1,316 @@
+{
+ "report_url": "http://www.eugenefn.com/common/files/amail/20261008_000660_sij_21.pdf",
+ "title": "SK하이닉스, 증명의 시간",
+ "category": "기업분석",
+ "analyst": "손인준",
+ "team": "반도체",
+ "published_at": "2026-10-08",
+ "brand": "EUGENE COMPANY REPORT",
+ "source": "자료: 유진투자증권",
+ "slides": [
+  {
+   "type": "cover",
+   "title": "SK하이닉스\n증명의 시간",
+   "date": "2026.10.08 · 현재주가 1,723,000원(10/8)",
+   "stats": [
+    {
+     "label": "목표주가",
+     "value": "3,700,000원",
+     "sub": "투자의견 STRONG BUY(유지)"
+    },
+    {
+     "label": "3Q26 영업이익 전망",
+     "value": "75.7조원",
+     "sub": "+25% QoQ",
+     "tone": "up"
+    }
+   ]
+  },
+  {
+   "type": "content",
+   "kicker": "3Q26 실적 전망",
+   "title": "환율 하향에도\n이익률은 또 오른다",
+   "sub": "원화 강세를 반영해 추정치를 낮췄지만, 견조한 메모리 가격 상승이 이를 상쇄할 전망이에요.",
+   "blocks": [
+    {
+     "t": "hero",
+     "label": "3Q26 영업이익 전망",
+     "value": "75.7",
+     "unit": "조원",
+     "cap": "전분기 대비 +25%"
+    },
+    {
+     "t": "change",
+     "label": "원/달러 환율 가정",
+     "from": {
+      "label": "기존",
+      "value": "1,440원"
+     },
+     "to": {
+      "label": "변경",
+      "value": "1,400원",
+      "tone": "down"
+     },
+     "note": "2Q26 평균 1,502원 대비 -7%예요. 이를 반영해 실적 추정치를 하향 조정했어요."
+    },
+    {
+     "t": "kv",
+     "label": "3Q26 영업이익률 전망",
+     "value": "77.4% (+1.1%p QoQ)",
+     "tone": "up"
+    }
+   ]
+  },
+  {
+   "type": "content",
+   "kicker": "3Q26 제품별 전망",
+   "title": "DRAM·NAND·HBM\n가격이 모두 오른다",
+   "sub": "서버 DRAM 중심의 계약가 인상, eSSD 중심의 NAND 가격 인상이 이어지고 있는 것으로 보여요.",
+   "blocks": [
+    {
+     "t": "bars",
+     "title": "평균판매가격(ASP) 상승률 · QoQ",
+     "items": [
+      {
+       "name": "NAND",
+       "value": "+23%",
+       "n": 23
+      },
+      {
+       "name": "범용 DRAM",
+       "value": "+22%",
+       "n": 22
+      },
+      {
+       "name": "DRAM(Blended)",
+       "value": "+20%",
+       "n": 20
+      },
+      {
+       "name": "HBM",
+       "value": "+11%",
+       "n": 11
+      }
+     ]
+    },
+    {
+     "t": "bars",
+     "title": "출하량(B/G) 증가율 · QoQ",
+     "items": [
+      {
+       "name": "HBM",
+       "value": "+23%",
+       "n": 23
+      },
+      {
+       "name": "DRAM",
+       "value": "+12%",
+       "n": 12
+      },
+      {
+       "name": "NAND",
+       "value": "+3%",
+       "n": 3
+      }
+     ]
+    },
+    {
+     "t": "note",
+     "text": "NAND는 전환 투자에 따른 Capa 제약으로 출하가 묶였지만 영업이익률 72.8% 전망 · HBM은 HBM4 양산 비중 확대"
+    }
+   ]
+  },
+  {
+   "type": "content",
+   "kicker": "4Q26~1Q27 가격 전망",
+   "title": "가격 상승률,\n시장 예상 웃돈다",
+   "sub": "시장은 2H26부터 가격 상승세의 급격한 둔화를 가정하지만, 리포트는 상승이 이어질 것으로 추정해요.",
+   "blocks": [
+    {
+     "t": "stats",
+     "items": [
+      {
+       "label": "4Q26 범용 DRAM ASP",
+       "value": "+9",
+       "unit": "%",
+       "cap": "QoQ",
+       "tone": "up"
+      },
+      {
+       "label": "4Q26 NAND ASP",
+       "value": "+10",
+       "unit": "%",
+       "cap": "QoQ",
+       "tone": "up"
+      },
+      {
+       "label": "1Q27 범용 DRAM ASP",
+       "value": "+10",
+       "unit": "%",
+       "cap": "QoQ · 상승률 재확대",
+       "tone": "up",
+       "hl": true
+      },
+      {
+       "label": "1Q27 NAND ASP",
+       "value": "+3",
+       "unit": "%",
+       "cap": "QoQ",
+       "tone": "up"
+      }
+     ]
+    },
+    {
+     "t": "list",
+     "items": [
+      {
+       "title": "1Q27, 상승률 재확대 구간",
+       "desc": "연초 스마트폰향 제품 가격 상승과 HBM 연간 계약 갱신이 맞물려요."
+      },
+      {
+       "title": "2027년에도 공급 부족 지속",
+       "desc": "1cnm·V9 이후 공정 전환에 따른 bit 증가 폭 둔화와 신규 팹 가동 시점을 고려하면 공급 부족률 개선은 어려워요."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "type": "content",
+   "kicker": "이익 전망",
+   "title": "분기마다\n이익 레벨이 높아진다",
+   "blocks": [
+    {
+     "t": "bars",
+     "thick": true,
+     "title": "분기 영업이익 전망 · 조원",
+     "items": [
+      {
+       "name": "1Q27",
+       "value": "102.0조 (+14% QoQ)",
+       "n": 102.0
+      },
+      {
+       "name": "4Q26",
+       "value": "89.5조 (+18% QoQ)",
+       "n": 89.5
+      },
+      {
+       "name": "3Q26",
+       "value": "75.7조 (+25% QoQ)",
+       "n": 75.7
+      }
+     ]
+    },
+    {
+     "t": "change",
+     "label": "연간 영업이익 추정",
+     "from": {
+      "label": "2026년",
+      "value": "263.4조원",
+      "tone": "up"
+     },
+     "to": {
+      "label": "2027년",
+      "value": "454.1조원",
+      "tone": "up"
+     },
+     "note": "2026년 +455% YoY, 2027년 +72% YoY로 추정해요."
+    }
+   ]
+  },
+  {
+   "type": "content",
+   "kicker": "2027년 HBM 가격 협상",
+   "title": "HBM 협상,\n공급사에 유리하다",
+   "sub": "범용 DRAM 영업이익률이 80%를 웃돌면서, HBM에 투입되는 웨이퍼의 기회비용이 가격에 반영되는 구조예요.",
+   "blocks": [
+    {
+     "t": "hero",
+     "label": "2027년 HBM Blended ASP 추정",
+     "value": "$3.31",
+     "unit": "/Gb",
+     "cap": "전년 대비 +113%"
+    },
+    {
+     "t": "note",
+     "text": "2027년 HBM 가격 협상은 공급업체에 유리한 환경에서 견조하게 진행되고 있는 것으로 파악돼요."
+    }
+   ]
+  },
+  {
+   "type": "content",
+   "kicker": "시장의 시선 vs 실제 업황",
+   "title": "업황은 강한데\n주가는 완만한 이유",
+   "sub": "메모리 업황은 시장 예상보다 강하지만, 시장의 시선과 실제 업황 사이의 간극을 메우려면 시간이 필요해 보여요.",
+   "blocks": [
+    {
+     "t": "list",
+     "items": [
+      {
+       "title": "가격 상승률 둔화 = 사이클 정점?",
+       "desc": "상승률 둔화를 정점 신호로 해석하는 시각이 있어요."
+      },
+      {
+       "title": "2028년 공급 증가 우려",
+       "desc": "공급 확대에 대한 우려가 반복되고 있어요."
+      },
+      {
+       "title": "AI 수요 파괴 우려",
+       "desc": "이런 우려로 주가는 실적 대비 완만한 상승세를 이어갈 전망이에요."
+      }
+     ]
+    },
+    {
+     "t": "change",
+     "label": "상승률 둔화 구간에도 영업이익률은 상승",
+     "from": {
+      "label": "2026년",
+      "value": "76%"
+     },
+     "to": {
+      "label": "2027년",
+      "value": "80%",
+      "tone": "up"
+     },
+     "note": "CapEx Intensity는 10%대 수준에 머무를 것으로 보여요."
+    }
+   ]
+  },
+  {
+   "type": "content",
+   "kicker": "결론",
+   "title": "간극을 좁힐\n세 가지 열쇠",
+   "sub": "주요 초점은 가격 모멘텀에서 이익 레벨의 지속성으로 옮겨가고 있어요.",
+   "disc": true,
+   "blocks": [
+    {
+     "t": "list",
+     "items": [
+      {
+       "title": "분기마다 확인되는 실적",
+       "desc": "이익 레벨의 지속성을 분기별로 증명해요."
+      },
+      {
+       "title": "2027년 HBM 가격 협상 결과",
+       "desc": "공급업체에 유리한 환경에서 진행 중이에요."
+      },
+      {
+       "title": "잉여현금흐름 기반 주주환원 확대",
+       "desc": "현금 창출력이 주주환원으로 이어지는지가 관건이에요."
+      }
+     ]
+    },
+    {
+     "t": "takeaway",
+     "text": "세 요인이 간극을 순차적으로 좁혀갈 것이며, 주가는 **점진적인 상승세를 지속**할 수 있을 것으로 판단해요."
+    },
+    {
+     "t": "kv",
+     "label": "투자의견 STRONG BUY(유지) · 목표주가",
+     "value": "3,700,000원"
+    }
+   ]
+  }
+ ]
+}

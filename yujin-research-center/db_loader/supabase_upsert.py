@@ -29,19 +29,31 @@ def _check():
         raise RuntimeError("SUPABASE_URL / SUPABASE_SERVICE_ROLE_KEY 미설정 (.env 확인)")
 
 
-def replace_table(table, rows):
-    """기존 행 전체 삭제 후 새로 삽입 (스냅샷 교체)."""
+def replace_table(table, rows, on_conflict=None):
+    """기존 행 전체 삭제 후 새로 삽입 (스냅샷 교체).
+
+    DELETE→INSERT 는 원자적이지 않아서, INSERT 가 한 번 더 나가면(네트워크 재시도, 작업
+    중복 실행) 같은 스냅샷이 두 벌 남는다. 실제로 홈페이지 테마가 15개→30개로 두 번씩
+    보였고 theme_constituents/theme_news/events 도 같은 식으로 불어나 있었다. 그래서
+      · DELETE 결과를 확인하고(조용히 실패하면 중복의 출발점이 된다),
+      · on_conflict 가 주어지면 INSERT 를 merge 로 보내 재시도가 중복을 만들지 못하게 한다.
+    """
     _check()
     if rows is None:
         return 0
     if isinstance(rows, dict):
         rows = [rows]
-    # delete all
-    requests.delete(f"{URL}/rest/v1/{table}?id=gte.0",
-                    headers=_headers({"Prefer": "return=minimal"}), timeout=30)
+    res = requests.delete(f"{URL}/rest/v1/{table}?id=gte.0",
+                          headers=_headers({"Prefer": "return=minimal"}), timeout=30)
+    res.raise_for_status()
     if not rows:
         return 0
-    res = requests.post(f"{URL}/rest/v1/{table}", headers=_headers({"Prefer": "return=minimal"}),
+    url = f"{URL}/rest/v1/{table}"
+    prefer = "return=minimal"
+    if on_conflict:
+        url += f"?on_conflict={on_conflict}"
+        prefer = "resolution=merge-duplicates,return=minimal"
+    res = requests.post(url, headers=_headers({"Prefer": prefer}),
                         data=json.dumps(rows, default=str), timeout=60)
     res.raise_for_status()
     return len(rows)
@@ -111,9 +123,9 @@ def push_all(bundle):
     """run.assemble() 결과를 테이블별로 적재."""
     out = {}
     if bundle.get("themes"):
-        out["themes"] = replace_table("themes", bundle["themes"])
+        out["themes"] = replace_table("themes", bundle["themes"], "name,week_of")
     if bundle.get("events"):
-        out["events"] = replace_table("events", bundle["events"])
+        out["events"] = replace_table("events", bundle["events"], "kind,ticker,name,ref_date,detail")
     if bundle.get("market_snapshot"):
         out["market_snapshot"] = upsert("market_snapshot", bundle["market_snapshot"], "snapshot_date")
     # 테마 Long/Short 시그널
@@ -126,13 +138,14 @@ def push_all(bundle):
         sig.append({"side": "short", "rank": i, "name": x.get("name"), "themes": x.get("themes"),
                     "n_themes": None, "balance_change": x.get("balance_change"), "ret_1w": x.get("ret_1w")})
     if sig:
-        out["theme_signals"] = replace_table("theme_signals", sig)
+        out["theme_signals"] = replace_table("theme_signals", sig, "side,rank")
     if bundle.get("global_quotes"):
         out["global_quotes"] = upsert("global_quotes", bundle["global_quotes"], "ticker")
     if bundle.get("global_indices"):
         out["global_indices"] = upsert("global_indices", bundle["global_indices"], "symbol")
     if bundle.get("theme_constituents"):
-        out["theme_constituents"] = replace_table("theme_constituents", bundle["theme_constituents"])
+        out["theme_constituents"] = replace_table("theme_constituents", bundle["theme_constituents"],
+                                                   "theme_name,stock_code,week_of")
     if bundle.get("theme_news"):
-        out["theme_news"] = replace_table("theme_news", bundle["theme_news"])
+        out["theme_news"] = replace_table("theme_news", bundle["theme_news"], "theme_name,url")
     return out

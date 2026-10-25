@@ -1,0 +1,269 @@
+{
+ "report_url": "http://www.eugenefn.com/common/files/amail/20261006_B10_tjdgus2009_1027.pdf",
+ "title": "Bloom Energy가 그리는 800V DC 데이터센터",
+ "category": "산업분석",
+ "analyst": "황성현",
+ "team": "에너지/인프라/배터리",
+ "published_at": "2026-10-06",
+ "brand": "EUGENE NEXT ENERGY",
+ "source": "자료: Bloom Energy, 유진투자증권",
+ "slides": [
+  {
+   "type": "cover",
+   "title": "Bloom Energy가 그리는\n800V DC 데이터센터",
+   "date": "2026.10.06 · Weekly Power & Battery",
+   "stats": [
+    {
+     "label": "1GW 모델 전체 TCO",
+     "value": "-9%",
+     "sub": "800V DC 구조 적용 시"
+    },
+    {
+     "label": "동일 투자비 Compute",
+     "value": "약 +8%",
+     "sub": "CAPEX 절감분 재투입 시"
+    }
+   ]
+  },
+  {
+   "type": "content",
+   "kicker": "주간 주가 변동",
+   "title": "배터리는 강세,\n원자력은 약세",
+   "sub": "이번 주 배터리 4개 기업이 모두 올랐고, 원자력 기업은 모두 내렸어요.",
+   "blocks": [
+    {
+     "t": "bars",
+     "title": "배터리",
+     "items": [
+      {
+       "name": "LG에너지솔루션",
+       "value": "+5.5%",
+       "n": 5.5
+      },
+      {
+       "name": "LG화학",
+       "value": "+4.0%",
+       "n": 4.0
+      },
+      {
+       "name": "포스코퓨처엠",
+       "value": "+3.9%",
+       "n": 3.9
+      },
+      {
+       "name": "SK이노베이션",
+       "value": "+3.2%",
+       "n": 3.2
+      }
+     ]
+    },
+    {
+     "t": "bars",
+     "title": "원자력",
+     "items": [
+      {
+       "name": "Nuscale",
+       "value": "-8.0%",
+       "n": -8.0
+      },
+      {
+       "name": "Centrus",
+       "value": "-5.3%",
+       "n": -5.3
+      },
+      {
+       "name": "Cameco",
+       "value": "-3.3%",
+       "n": -3.3
+      },
+      {
+       "name": "두산에너빌리티",
+       "value": "-0.7%",
+       "n": -0.7
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "type": "content",
+   "kicker": "출발점은 GPU 전력밀도",
+   "title": "랙당 전력,\n6년 새 약 20배로",
+   "sub": "전력밀도가 치솟으면서 NVIDIA는 Rubin Ultra 이후 800V DC 도입을 추진하고 있어요.",
+   "blocks": [
+    {
+     "t": "change",
+     "label": "랙당 전력",
+     "from": {
+      "label": "2020년",
+      "value": "약 10kW"
+     },
+     "to": {
+      "label": "현재",
+      "value": "200kW",
+      "tone": "up"
+     },
+     "note": "NVIDIA Rubin Ultra NVL144에서는 600kW~1MW까지 확대될 전망이에요."
+    },
+    {
+     "t": "list",
+     "items": [
+      {
+       "title": "전류·구리 사용량 증가",
+       "desc": "기존 저전압 구조를 유지하면 전류와 구리 사용량이 늘어나요."
+      },
+      {
+       "title": "변압·배전설비 대형화",
+       "desc": "변압·배전설비 규모도 함께 커지기 때문이에요."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "type": "content",
+   "kicker": "The New Rules of AI Power",
+   "title": "연료전지의 핵심은\n'전력 아키텍처'",
+   "sub": "Bloom Energy는 발전원을 데이터센터 내부 전력 구조와 직접 연결하는 점을 강조해요.",
+   "blocks": [
+    {
+     "t": "list",
+     "items": [
+      {
+       "title": "전력망(AC) 방식",
+       "desc": "800V DC 랙을 쓰려면 변전소, Switchgear, SST 등 추가 설비가 필요해요."
+      },
+      {
+       "title": "연료전지(DC) 방식",
+       "desc": "처음부터 DC를 생산해 일부 변압·정류 단계를 생략할 수 있어요."
+      },
+      {
+       "title": "Bloom Energy가 말하는 효과",
+       "desc": "전력손실뿐 아니라 설비, 유지보수, 건축면적까지 줄일 수 있다고 해요."
+      }
+     ]
+    },
+    {
+     "t": "note",
+     "text": "Bloom Energy의 연료전지 사업을 부각하기 위한 자료라는 점은 감안해야 해요."
+    }
+   ]
+  },
+  {
+   "type": "content",
+   "kicker": "1GW 데이터센터 모델",
+   "title": "Non-compute 비용\n6십억달러 절감",
+   "sub": "기존 AC 방식의 5년 TCO는 63십억달러, 이 가운데 Non-compute 비용이 27십억달러예요.",
+   "blocks": [
+    {
+     "t": "change",
+     "label": "Non-compute 비용 (5년)",
+     "from": {
+      "label": "기존 AC",
+      "value": "27십억달러"
+     },
+     "to": {
+      "label": "800V DC",
+      "value": "21십억달러",
+      "tone": "down"
+     },
+     "note": "Bloom Energy의 800V DC 구조에서 총 6십억달러가 절감돼요."
+    },
+    {
+     "t": "stats",
+     "items": [
+      {
+       "label": "Non-compute CAPEX",
+       "value": "10",
+       "unit": "십억달러",
+       "cap": "**27%** 감소",
+       "tone": "down"
+      },
+      {
+       "label": "5년 OPEX",
+       "value": "12",
+       "unit": "십억달러",
+       "cap": "**14%** 감소",
+       "tone": "down"
+      },
+      {
+       "label": "전체 TCO 절감률",
+       "value": "9",
+       "unit": "%",
+       "cap": "기존 5년 TCO 63십억달러 대비",
+       "hl": true
+      },
+      {
+       "label": "동일 투자비 Compute",
+       "value": "약 8",
+       "unit": "%",
+       "cap": "CAPEX 절감분을 GPU·서버에 재투입 시 추가 확보"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "type": "content",
+   "kicker": "밸류체인 재편",
+   "title": "랙 인접 전력장비가\n중요해진다",
+   "sub": "Bloom Energy는 발전원과 랙 사이의 변환 단계를 얼마나 줄이느냐가 사업성의 핵심이 될 수 있다고 주장해요.",
+   "blocks": [
+    {
+     "t": "list",
+     "items": [
+      {
+       "title": "DC 배전·보호기기",
+       "desc": "800V DC 전환에 따라 중요도가 높아질 전망이에요."
+      },
+      {
+       "title": "Busbar",
+       "desc": "랙 인접 전력장비로 주목받을 수 있어요."
+      },
+      {
+       "title": "BBU·BESS",
+       "desc": "랙 인접 전력장비로 주목받을 수 있어요."
+      },
+      {
+       "title": "전력반도체",
+       "desc": "랙 인접 전력장비로 주목받을 수 있어요."
+      }
+     ]
+    },
+    {
+     "t": "takeaway",
+     "text": "800V DC 전환이 본격화될수록 **랙 인접 전력장비**의 중요도가 높아질 전망이며, 향후 **데이터센터 전력 밸류체인**도 이러한 방향으로 재편될 가능성이 있어요."
+    }
+   ]
+  },
+  {
+   "type": "content",
+   "kicker": "주간 주요 뉴스",
+   "title": "수주·입찰·MOU,\n이번 주 업계 소식",
+   "disc": true,
+   "blocks": [
+    {
+     "t": "list",
+     "items": [
+      {
+       "title": "두산에너빌리티, 베트남 가스복합발전소 EPC 수주",
+       "desc": "PVN과 오몬 3 가스복합발전소 건설공사 계약을 맺었어요. 약 8,400억원 규모로 스팀터빈도 공급해요."
+      },
+      {
+       "title": "한수원, 체코 두코바니 원전 입찰 본격화",
+       "desc": "보조기기 공급사 등록 단계에서 본격적인 입찰·구매 단계로 전환됐어요."
+      },
+      {
+       "title": "LG에너지솔루션, 美 인디고테크와 MOU",
+       "desc": "차세대 전기상용차 Flow Ride, Flow Cargo에 46 시리즈 원통형 셀 우선 적용을 협의해요."
+      },
+      {
+       "title": "SK온, 美 자회사 2조원 채무 인수",
+       "desc": "SK배터리아메리카의 약 2조원 규모 해외사채 채무를 인수해 외부 금융 부담을 덜기 위한 목적이에요."
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

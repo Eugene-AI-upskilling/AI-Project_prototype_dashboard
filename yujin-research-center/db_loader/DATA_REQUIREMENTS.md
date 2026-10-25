@@ -18,18 +18,23 @@
 - **코퍼레이트 액션 ✅:** event_category(자사주/배당/분할/유상증자/합병/상장폐지…) → kind=action, 예상효과·tone 매핑
 - **어닝 서프라이즈 🟡:** `signal in (Earning Surprise/Shock)` 또는 `op_consensus_<date>.csv` 조인으로 계산. 단,
   - **부족 1 — 잠정실적 실측치:** DART 잠정실적(op_actual)이 있는 날만 생성됨. 실적시즌 외 날짜는 어닝 0건.
-  - **부족 2 — 당일 주가(`price_move`):** signals에 없음 → **가격 데이터 조인 필요**(yfinance `collect_market_data` 또는 대신증권 API).
+  - **당일 주가(`price_move`) ✅:** KIS 일봉(`inquire-daily-itemchartprice`)으로 이벤트 발생일 등락률을 채운다.
+    일봉 응답에 등락률 필드가 없어 `stck_clpr`·`prdy_vrss` 로 직접 계산한다(`kis.price_move`).
   - **부족 3 — 컨센서스 상시 공급:** `quantiwise_estimates.xlsx`를 실적 전 미리 넣어야 surprise 계산 가능.
 
 ## 3. `market_snapshot` — 오늘의 시황  🟡 부분 연결됨
 - **소스:** `daily_report_agent / data/raw/market_tone_<YYYYMMDD>.csv`
 - **연결 ✅:** kospi_chg/kosdaq_chg(등락률), 외국인/기관 순매수(십억원→억), 강세/약세 업종(상위 3)
-- **부족(현재 None 처리, 추가 소스 필요):**
-  | 항목 | 필요 데이터 | 출처 후보 |
+- **KIS 연결 ✅ (`kis.py`):** 지수 레벨·등락률·투자자 순매수(개인 포함)를 한국투자증권 API 에서 직접 받는다.
+  `inquire-investor-daily-by-market`(FHPTJ04040000) 한 콜에 지수 레벨 + 개인/외국인/기관 순매수가 함께 온다.
+  - 우선순위: **KIS → market_tone CSV → yfinance → 역산**. CSV 를 1순위에서 내린 이유는
+    수집 실패한 날 전일 값이 그대로 복사돼 들어오기 때문(2026-08-13 파일이 08-12 값을 담고 있었음).
+  - `retail_net` 은 -(외국인+기관) 추정에서 **실측치로 교체**(2026-08-12 기준 -30,550억 → -28,780억).
+  - 단위: KIS 는 백만원 → 1,000 으로 나눠 십억원. 2026-08-12 기준 CSV 와 정확히 일치 확인.
+- **남은 항목:**
+  | 항목 | 필요 데이터 | 출처 |
   |---|---|---|
-  | `kospi`,`kosdaq` 지수 **레벨** | 종가 (2,742.18 형태) | yfinance `^KS11`/`^KQ11` 종가, KRX |
-  | `usdkrw`,`usdkrw_chg` | 원/달러 환율+등락 | yfinance `KRW=X`, 한국은행 |
-  | `retail_net` 정확값 | 개인 순매수 실측 | KRX 투자자별 매매동향 (현재는 -(외국인+기관) 추정) |
+  | `usdkrw`,`usdkrw_chg` | 원/달러 환율+등락 | yfinance `KRW=X` (KIS 에 환율 API 없음). 한국은행 ECOS 대안 |
   | `ai_summary` | 한 줄 AI 시황 요약 | daily 파이프라인 `telegram_summary` 또는 LLM 1회 호출 |
 
 ## 4. `reports` — 리서치 리포트  ❌ 소스 없음(이 두 폴더엔 없음)

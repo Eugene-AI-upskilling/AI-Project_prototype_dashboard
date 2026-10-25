@@ -33,6 +33,11 @@ if (-not $py) {
 
 & $py -m db_loader.gmail_reports --days 2 *>> $log
 $code = $LASTEXITCODE
+
+# 신규 리포트 → 카드뉴스 자동 생성(Claude) + PNG + card_news 적재. 실패해도 리포트 수집 결과(exit code)에는 영향 없음.
+"  --- 카드뉴스 생성 ---" | Out-File -Append -Encoding utf8 -LiteralPath $log
+& $py -m db_loader.make_cardnews --days 3 --png *>> $log
+"  카드뉴스 exit $LASTEXITCODE" | Out-File -Append -Encoding utf8 -LiteralPath $log
 $te = Get-Date -Format 'yyyy-MM-dd HH:mm:ss'
 "==== [$te] Gmail 리포트 수집 종료 (exit $code) ====" | Out-File -Append -Encoding utf8 -LiteralPath $log
 exit $code

@@ -3,7 +3,14 @@
 import os, glob, re
 
 # 기존 파이프라인 폴더 (실데이터 소스)
-WEEKLY_DIR = r"C:\Users\anjs9\OneDrive\바탕 화면\eugene_research\주간 테마 로테이션 자료 작성\weekly-theme-report"
+# 주간 테마 폴더는 "주간 테마 로테이션 자료 작성" → "theme_rotation_report" 로 이름이 바뀌었는데
+# 이 상수가 옛 이름을 가리키고 있어 metrics 파일을 못 찾았다(themes 0건 → 홈페이지 버블차트가
+# 2026-06-26 스냅샷에 멈춤). 실제로 존재하는 후보를 골라 쓴다 — 폴더명이 또 바뀌어도 죽지 않게.
+_WEEKLY_CANDIDATES = [
+    r"C:\Users\anjs9\OneDrive\바탕 화면\eugene_research\theme_rotation_report\weekly-theme-report",
+    r"C:\Users\anjs9\OneDrive\바탕 화면\eugene_research\주간 테마 로테이션 자료 작성\weekly-theme-report",
+]
+WEEKLY_DIR = next((d for d in _WEEKLY_CANDIDATES if os.path.isdir(d)), _WEEKLY_CANDIDATES[0])
 DAILY_DIR  = r"C:\Users\anjs9\OneDrive\바탕 화면\eugene_research\daily_report\daily_report_agent"
 EUGENE_AI_DIR = r"C:\Users\anjs9\OneDrive\바탕 화면\Eugene_AI_Project"
 

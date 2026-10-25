@@ -1,0 +1,379 @@
+{
+ "report_url": "http://www.eugenefn.com/common/files/amail/20261022_B_js.an_47.pdf",
+ "title": "업종에서 테마로, 주간 테마 로테이션",
+ "category": "투자전략",
+ "analyst": "안지선",
+ "team": "퀀트전략",
+ "published_at": "2026-10-22",
+ "brand": "EUGENE THEME SIGNAL",
+ "source": "자료: 유진투자증권",
+ "slides": [
+  {
+   "type": "cover",
+   "title": "업종에서\n테마로",
+   "date": "2026.10.22 · 10월 16일 주간 산출 기준",
+   "stats": [
+    {
+     "label": "테마 분류",
+     "value": "53개",
+     "sub": "Macro 12 × Sub 53"
+    },
+    {
+     "label": "Life Cycle 판정",
+     "value": "7단계",
+     "sub": "과열(Crowded)부터 순서대로"
+    }
+   ]
+  },
+  {
+   "type": "content",
+   "kicker": "왜 테마 로테이션인가",
+   "title": "업종 분류로는\n테마를 못 담는다",
+   "sub": "AI 인프라 한 테마가 정보기술·산업재·유틸리티·커뮤니케이션·소재 5개 섹터에 걸쳐 있어요.",
+   "blocks": [
+    {
+     "t": "list",
+     "items": [
+      {
+       "title": "과잉 편입",
+       "desc": "정보기술 비중을 늘리면 AI와 무관한 IT 종목까지 담겨요."
+      },
+      {
+       "title": "누락",
+       "desc": "전력기기·유틸리티 노출은 0이 돼요."
+      },
+      {
+       "title": "희석",
+       "desc": "실제 테마 노출이 의도보다 작아져요."
+      }
+     ]
+    },
+    {
+     "t": "note",
+     "text": "같은 +3%p 비중 확대라도 업종 틸팅과 테마 틸팅은 테마에 닿는 비중이 달라요."
+    }
+   ]
+  },
+  {
+   "type": "content",
+   "kicker": "배분 구조",
+   "title": "테마는 업종과 종목\n사이의 중간 계층",
+   "blocks": [
+    {
+     "t": "list",
+     "items": [
+      {
+       "title": "자산군",
+       "desc": "주식·채권·대체, 연 단위로 배분해요."
+      },
+      {
+       "title": "업종·스타일",
+       "desc": "산업 사이클·표준 업종, 분기 단위로 봐요."
+      },
+      {
+       "title": "테마 (meso-allocation)",
+       "desc": "Macro 12 × Sub 53, 주간 단위로 스코어링해요."
+      },
+      {
+       "title": "종목",
+       "desc": "가치사슬 위치·편입 근거·유동성을 따져요."
+      }
+     ]
+    },
+    {
+     "t": "takeaway",
+     "text": "테마 축은 업종 축을 **대체하지 않고 병렬로** 놓이는 두 번째 분류 차원이에요. 리스크 리포팅도 두 축 모두로 산출해요."
+    },
+    {
+     "t": "note",
+     "text": "테마 간 상관이 낮으면 독립 베팅 수(BR)가 늘어나요. IR = IC × √BR"
+    }
+   ]
+  },
+  {
+   "type": "content",
+   "kicker": "테마 구성 방법론",
+   "title": "흩어진 테마명을\n표준 ID로 묶는다",
+   "sub": "사업보고서·주요 품목·ETF PDF·애널리스트 보고서 등 여러 출처를 공통 스키마로 통합해 Theme Master를 만들어요.",
+   "blocks": [
+    {
+     "t": "stats",
+     "items": [
+      {
+       "label": "Macro 테마",
+       "value": "12",
+       "unit": "개",
+       "cap": "자금이 회전하는 단위"
+      },
+      {
+       "label": "Sub 테마",
+       "value": "53",
+       "unit": "개",
+       "cap": "가치사슬 위치를 정의"
+      },
+      {
+       "label": "실제 지수가 있는 Sub",
+       "value": "47",
+       "unit": "개",
+       "cap": "정의된 53개 중",
+       "hl": true
+      },
+      {
+       "label": "2차전지 Sub",
+       "value": "7",
+       "unit": "개",
+       "cap": "가장 세분화, 후보가 있는 Sub는 3개뿐"
+      }
+     ]
+    },
+    {
+     "t": "note",
+     "text": "'반도체장비'(사업보고서)와 '반도체 장비'(ETF PDF)도 같은 ID(SEMI_EQUIPMENT)로 연결해요."
+    }
+   ]
+  },
+  {
+   "type": "content",
+   "kicker": "테마 등급",
+   "title": "출처에 언급된 횟수로\n등급을 매긴다",
+   "sub": "한 소스에서만 확인된 테마-종목 쌍이 절반 이상이에요.",
+   "blocks": [
+    {
+     "t": "bars",
+     "title": "등급별 테마-종목 쌍 (UNKNOWN 제외 활성 5,479쌍)",
+     "items": [
+      {
+       "name": "Peripheral · 1개 소스",
+       "value": "2,926쌍 (53%)",
+       "n": 2926
+      },
+      {
+       "name": "Related · 2개 소스",
+       "value": "1,196쌍 (22%)",
+       "n": 1196
+      },
+      {
+       "name": "Core · 3개 이상",
+       "value": "1,357쌍 (25%)",
+       "n": 1357
+      }
+     ]
+    },
+    {
+     "t": "stats",
+     "items": [
+      {
+       "label": "필터 후 고유 종목 (Sub)",
+       "value": "597",
+       "unit": "개",
+       "cap": "시총 1,000억원↑·Sub 30개 상한"
+      },
+      {
+       "label": "필터 후 고유 종목 (Macro)",
+       "value": "311",
+       "unit": "개",
+       "cap": "필터를 거치면 4분의 1만 남아요"
+      }
+     ]
+    },
+    {
+     "t": "note",
+     "text": "source_count는 출처 간 합의 수이며, 매출 노출 비중이 아니에요."
+    }
+   ]
+  },
+  {
+   "type": "content",
+   "kicker": "테마 Life Cycle",
+   "title": "6개 축으로\n테마 위치를 잰다",
+   "sub": "같은 주차의 테마들 사이에서 상대 위치(백분위)를 따로 보여줘요.",
+   "blocks": [
+    {
+     "t": "list",
+     "items": [
+      {
+       "title": "Price · 모멘텀",
+       "desc": "1주·4주 수익률로 가격이 실제로 움직이는지 확인해요."
+      },
+      {
+       "title": "Volume · 거래대금",
+       "desc": "거래대금이 붙는지 봐요. 증가율이 아니에요."
+      },
+      {
+       "title": "Breadth · 확산",
+       "desc": "상승이 한 종목에 몰렸는지, 퍼졌는지 확인해요."
+      },
+      {
+       "title": "Flow · 수급",
+       "desc": "외국인·기관 순매수가 붙는지 봐요."
+      },
+      {
+       "title": "Catalyst · 뉴스",
+       "desc": "뉴스 흐름이 이어지는지 봐요. 가중치는 3일마다 약 1/e로 줄어요."
+      },
+      {
+       "title": "Risk · 경고 축",
+       "desc": "집중·공매도·과열을 합산해요. 높을수록 나쁘고, 단계 판정엔 직접 쓰이지 않아요."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "type": "content",
+   "kicker": "단계 판정 규칙",
+   "title": "7단계를 정해진\n순서대로 판정한다",
+   "blocks": [
+    {
+     "t": "list",
+     "items": [
+      {
+       "title": "Crowded",
+       "desc": "P≥75 ∧ C≥65 ∧ (B≤35 ∨ V≥85) · 성과·뉴스 최상위인데 쏠림·과열"
+      },
+      {
+       "title": "Leadership",
+       "desc": "P≥65 ∧ F≥50 ∧ B≥50 · 가격·수급·확산 동시 상위"
+      },
+      {
+       "title": "Acceleration",
+       "desc": "r4W>0 ∧ P≥50 ∧ (C≥50 ∨ V≥50) · 상승 초기"
+      },
+      {
+       "title": "Emerging",
+       "desc": "C≥60 ∧ P≤55 · 뉴스는 늘지만 가격은 아직"
+      },
+      {
+       "title": "Reversal",
+       "desc": "r1W > r4W+2%p ∧ r4W<0 · 월간 부진 속 단기 반등"
+      },
+      {
+       "title": "Cooling",
+       "desc": "P≤35 ∧ F≤50 ∧ B≤50 · 가격·수급·확산 약화"
+      },
+      {
+       "title": "Neutral",
+       "desc": "앞선 조건에 해당하지 않으면 판단 유보"
+      }
+     ]
+    },
+    {
+     "t": "takeaway",
+     "text": "위에서부터 처음 맞는 조건으로 판정하며, 겉으로 가장 좋아 보이는 테마 중 **과열(Crowded)을 먼저** 걸러내요."
+    },
+    {
+     "t": "note",
+     "text": "임계값은 설계값이며 백테스트로 최적화한 값이 아니에요. ±10 민감도 점검 예정이에요."
+    }
+   ]
+  },
+  {
+   "type": "content",
+   "kicker": "10/16 실제 판정",
+   "title": "뉴스만 앞선\nEmerging이 가장 많았다",
+   "sub": "전 테마가 크게 빠진 주라, 뉴스는 많았지만 가격이 크게 빠진 테마가 대부분이었어요.",
+   "blocks": [
+    {
+     "t": "bars",
+     "title": "단계별 테마 수",
+     "items": [
+      {
+       "name": "Emerging",
+       "value": "12개",
+       "n": 12
+      },
+      {
+       "name": "Reversal",
+       "value": "6개",
+       "n": 6
+      },
+      {
+       "name": "Crowded",
+       "value": "3개",
+       "n": 3
+      },
+      {
+       "name": "Acceleration",
+       "value": "1개",
+       "n": 1
+      },
+      {
+       "name": "Leadership",
+       "value": "0개",
+       "n": 0
+      },
+      {
+       "name": "Cooling",
+       "value": "0개",
+       "n": 0
+      }
+     ]
+    },
+    {
+     "t": "list",
+     "items": [
+      {
+       "title": "Crowded: 가상자산 플랫폼·스테이블코인·비만치료제",
+       "desc": "셋 다 상승이 소수 종목에 쏠려(B≤35) 과열로 분류됐어요."
+      },
+      {
+       "title": "Leadership: 해당 없음",
+       "desc": "가격 상위 테마들은 모두 확산(B 0~11)이 부족했어요."
+      },
+      {
+       "title": "Acceleration: 반도체 재료",
+       "desc": "1주 -14.8%였지만 4주 +4.7%로 플러스라 해당됐어요."
+      },
+      {
+       "title": "Reversal: 조선·전력기기·LNG 등",
+       "desc": "4주 하락 속에 1주 수익률이 개선된 테마들이에요."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "type": "content",
+   "kicker": "테마를 ETF로 옮길 때",
+   "title": "같은 원자력 ETF도\n담긴 종목은 제각각",
+   "sub": "Life Cycle 판정을 실제 ETF 노출로 옮길 땐 상품별 편입종목·비중부터 확인해요.",
+   "disc": true,
+   "blocks": [
+    {
+     "t": "stats",
+     "items": [
+      {
+       "label": "원자력 ETF 간 보유 중복도",
+       "value": "38~79",
+       "unit": "%",
+       "cap": "한 상품만 전력기기를 담아 낮은 쪽(38~47%)"
+      },
+      {
+       "label": "최대 단일종목 비중",
+       "value": "19~27",
+       "unit": "%",
+       "cap": "ETF별로 집중도가 달라요"
+      },
+      {
+       "label": "12개월 중 최대 구성변경",
+       "value": "51",
+       "unit": "%",
+       "cap": "26년 6월 말 · 리밸런싱은 분기·반기에 몰려요"
+      },
+      {
+       "label": "대시보드 비교 대상",
+       "value": "292",
+       "unit": "개 ETF",
+       "cap": "중복도·보유종목·구성변경 비교",
+       "hl": true
+      }
+     ]
+    },
+    {
+     "t": "takeaway",
+     "text": "보유 시점에 따라 노출이 바뀌므로 **매수 전 최신 PDF 확인**이 필요해요."
+    }
+   ]
+  }
+ ]
+}

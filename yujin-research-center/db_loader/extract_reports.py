@@ -54,6 +54,44 @@ def pdf_text(fp, max_pages=4):
     return "".join(doc[i].get_text() for i in range(min(max_pages, doc.page_count)))
 
 
+_NOISE = re.compile(r"@|eugenefn|^\(?\d[\d\s.,/()~-]*\)?$|^자료|단위|^\d{4}\s?\.?\s?\d|^\(.*\)$|^Weekly\s*\||^BUY|^HOLD|^SELL|원\(|^(OVER|UNDER)WEIGHT|^NEUTRAL|안녕하세요|에요[.!]?$")
+
+
+def pdf_title(fp):
+    """LLM 없이 PDF 첫 페이지 글씨 크기로 제목 추출.
+    유진 리포트 레이아웃: 30pt 이상 = 시리즈명(Equity Strategy·China Focus) 또는 기업명, 14~27pt = 그날의 헤드라인.
+    반환: (title, big) — big은 기업 리포트의 회사명 후보. 글자로 된 제목이 없으면 (None, None)."""
+    import fitz
+    try:
+        page = fitz.open(fp)[0]
+    except Exception:
+        return None, None
+    lines = []
+    for b in page.get_text("dict").get("blocks", []):
+        for l in b.get("lines", []):
+            t = re.sub(r"\s+", " ", "".join(s["text"] for s in l["spans"])).strip()
+            if len(t) < 2 or _NOISE.search(t):
+                continue
+            lines.append((max(s["size"] for s in l["spans"]), l["bbox"][1], t))
+    big = sorted([x for x in lines if x[0] >= 28], key=lambda x: x[1])
+    head = sorted([x for x in lines if 14 <= x[0] < 28], key=lambda x: (-round(x[0]), x[1]))
+    big_t = big[0][2] if big else None
+    head_t = None
+    if head:
+        sz, y, head_t = head[0]
+        for s2, y2, t2 in sorted([x for x in head if abs(x[0] - sz) < 0.6 and x[1] > y], key=lambda x: x[1]):
+            if y2 - y > sz * 1.9:              # 바로 아래 줄만 이어 붙임(두 줄 헤드라인)
+                break
+            head_t, y = f"{head_t} {t2}", y2
+    fix = lambda t: re.sub(r"(\d)\s+(월|분기|년|일|%)", r"\1\2", t) if t else t
+    big_t, head_t = fix(big_t), fix(head_t)
+    if big_t and head_t:
+        if head_t.startswith(big_t):          # 헤드라인이 시리즈명을 이미 포함하면 중복 생략
+            return head_t[:120], big_t
+        return f"{big_t}: {head_t}"[:120], big_t
+    return (head_t or big_t), big_t
+
+
 REPORT_SCHEMA = {
     "type": "object",
     "properties": {
@@ -87,7 +125,8 @@ def to_record(url):
     from . import llm
     key = llm.available()
     try:
-        text = pdf_text(download_pdf(url))
+        fp = download_pdf(url)
+        text = pdf_text(fp)
     except Exception as e:
         print("  [warn]", url.rsplit('/', 1)[-1], "PDF 열기 실패 → 스킵:", e)
         return None
@@ -111,14 +150,16 @@ def to_record(url):
         category = meta.get("category") or "리포트"
 
     rating = meta.get("rating")
+    # LLM 키가 없거나 요약 실패 시: PDF 첫 페이지 글씨 크기로 실제 제목·회사명 추출
+    ptitle, pbig = (None, None) if meta.get("title") else pdf_title(fp)
     return {
         "kind": info["kind"],                 # macro / sector / company → 프론트 3분류 필터
         "category": category,
         "risk": amap.get("desk") or None,
         "tone": "up" if (rating in ("매수", "Buy", "BUY") or not rating) else "down",
-        "title": meta.get("title") or f"[{category}] 리포트",
+        "title": meta.get("title") or ptitle or f"[{category}] 리포트",
         "summary": meta.get("summary"),
-        "company": meta.get("company"),
+        "company": meta.get("company") or (pbig if info["kind"] == "company" else None),
         "rating": rating,
         "target_price": meta.get("target_price"),
         "analyst": analyst,

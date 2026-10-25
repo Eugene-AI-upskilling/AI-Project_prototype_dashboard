@@ -61,3 +61,16 @@ temp_*
 **/_tmp.pdf
 netlify_site.zip
 **/netlify_dist/
+
+# KIS Open API 접근토큰 캐시 (절대 커밋 금지)
+.kis_token.json
+**/.kis_token.json
+
+# AI 리서치 라운지 로컬 DB (리포트 원문 포함 · lounge_api.ingest로 재생성)
+**/lounge_api/lounge.db
+
+# 대용량 미디어/데이터 (Netlify CLI로 직접 배포 · git엔 안 올림)
+yujin-research-center/assets/**/*.mp4
+**/quant_lab/data/
+**/quant_lab/output/
+**/quant_lab/logs/

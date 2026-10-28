@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<title>Private Desk · 유진 Insight Lab</title>
+<!-- 마이페이지(내 Event · 내 리서치)는 Private Desk(desk.html)로 통합됨. 예전 주소(#events · #research)는 해당 영역으로 넘긴다 -->
+<script>location.replace('desk.html'+(location.hash==='#events'||location.hash==='#research'?location.hash:''));</script>
+<meta http-equiv="refresh" content="0; url=desk.html" />
+</head>
+<body><p style="font-family:sans-serif;padding:24px">Private Desk로 이동합니다. <a href="desk.html">바로 가기</a></p></body>
+</html>

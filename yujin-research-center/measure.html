@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>효과 측정 · 유진 Insight Lab</title>
+<meta name="robots" content="noindex" />
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
+<link rel="preload" href="assets/fonts/PretendardVariable.woff2" as="font" type="font/woff2" crossorigin />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" />
+<link rel="stylesheet" href="assets/app.css?v=20261028e" />
+<link rel="stylesheet" href="assets/lounge.css?v=20261027b" />
+</head>
+<body class="ad-body">
+<div class="ad-shell">
+  <nav class="ad-nav" aria-label="관리자 메뉴">
+    <div class="ad-brand"><img src="assets/eugene-logo.png" alt="유진투자증권" /><span></span><span>Insight Lab 리서치 관리자</span><em>ADMIN</em></div>
+    <div class="ad-grp">검수</div>
+    <a class="ad-link" href="admin.html#review"><svg viewBox="0 0 24 24"><path d="M9 11l3 3 8-8"/><path d="M20 12v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h9"/></svg>검수 대기</a>
+    <a class="ad-link" href="admin.html#stale"><svg viewBox="0 0 24 24"><path d="M12 3l9 16H3z"/><path d="M12 10v4M12 17h.01"/></svg>재검토 필요</a>
+    <div class="ad-grp">운영</div>
+    <a class="ad-link" href="admin.html#metrics"><svg viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>운영 지표</a>
+    <a class="ad-link on" href="measure.html" aria-current="page"><svg viewBox="0 0 24 24"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2.5M9 2h6"/></svg>효과 측정</a>
+    <div class="ad-me"><span class="av">반</span><div><b>반도체 담당 애널리스트</b><span>리서치본부 · 검수 권한</span></div></div>
+  </nav>
+
+  <main class="ad-main" id="main">
+    <div class="ad-top">
+      <h1>효과 측정 · 기존 방식 vs AI 라운지</h1>
+      <div class="r" id="topR"></div>
+    </div>
+
+    <p class="ms-lead">기관 사용자 5~10명이 <b>난도가 같은 과제 2개</b>를 풉니다. 한 과제는 기존 방식(리포트 목록에서 직접 찾기), 다른 과제는 AI 라운지로 풀고,
+      참가자 번호에 따라 <b>과제 순서와 조건이 교차</b>됩니다. 탐색 시간과 근거 정확도(리포트 · 쪽 일치)를 자동으로 기록합니다.</p>
+
+    <div class="ms-grid">
+      <!-- 진행 -->
+      <section class="ad-panel" aria-labelledby="runH">
+        <div class="ad-panel__h"><h2 id="runH">측정 진행</h2><span class="ad-pill" id="seqTag">참가자를 입력하세요</span></div>
+        <div class="ad-panel__b">
+          <div class="ms-row">
+            <label class="lx-field" style="flex:1;margin:0"><span>참가자 코드</span><input class="lx-input" id="pIn" placeholder="예: P01" maxlength="12" /></label>
+            <button class="btn btn--secondary" id="pGo" style="height:46px;align-self:flex-end">순서 받기</button>
+          </div>
+          <div id="run" class="ms-run"></div>
+        </div>
+      </section>
+
+      <!-- 결과 요약 -->
+      <section class="ad-panel" aria-labelledby="sumH">
+        <div class="ad-panel__h"><h2 id="sumH">결과</h2><span id="sumTag"></span></div>
+        <div class="ad-panel__b">
+          <div class="ms-kpis" id="kpis"></div>
+          <div class="ms-legend" aria-hidden="true"><span><i class="lg-legacy"></i>기존 방식</span><span><i class="lg-lounge"></i>AI 라운지</span></div>
+          <div class="ms-charts">
+            <figure class="ms-fig"><figcaption>평균 탐색 시간 <small>분 · 짧을수록 좋음</small></figcaption><div id="chTime"></div></figure>
+            <figure class="ms-fig"><figcaption>근거 정확도 <small>% · 리포트와 쪽을 맞힌 정도</small></figcaption><div id="chAcc"></div></figure>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <section class="ad-panel" style="margin-top:18px" aria-labelledby="pairH">
+      <div class="ad-panel__h"><h2 id="pairH">참가자별 비교</h2><span class="lx-muted" style="font-size:12px">같은 사람이 두 방식으로 걸린 시간 · 선이 짧을수록 차이가 작음</span></div>
+      <div class="ad-panel__b"><div id="chPair"></div></div>
+    </section>
+
+    <section class="ad-panel" style="margin-top:18px" aria-labelledby="tblH">
+      <div class="ad-panel__h"><h2 id="tblH">측정 기록</h2><span class="lx-muted" style="font-size:12px">표로 보기</span></div>
+      <div class="ad-tbl-wrap"><table class="ad-tbl"><thead><tr><th>참가자</th><th>순서</th><th>과제</th><th>조건</th><th class="num">시간</th><th>답한 리포트 · 쪽</th><th class="num">정확도</th><th></th></tr></thead><tbody id="rows"></tbody></table></div>
+    </section>
+  </main>
+</div>
+<div class="ms-tip" id="tip" role="tooltip"></div>
+<div class="toast" id="toast"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="assets/lounge-proto.js?v=20261027b"></script>
+<script src="assets/config.js?v=20261028b"></script>
+<script src="assets/lounge-api.js?v=20261028b"></script>
+<script src="assets/lounge-auth.js?v=20261027b"></script>
+<script src="assets/admin-auth.js?v=20261027b"></script>
+<script src="assets/measure.js?v=20261027b"></script>
+</body>
+</html>

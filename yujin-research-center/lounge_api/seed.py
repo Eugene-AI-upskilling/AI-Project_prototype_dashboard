@@ -118,8 +118,10 @@ def _verify(d):
 
 def main():
     db.init()
-    for t in ("questions", "feedback", "event_apps", "consults"):
+    for t in ("questions", "feedback", "event_apps", "consults", "exports"):
         db.x(f"delete from {t}")
+    import os, shutil
+    shutil.rmtree(os.path.join(os.path.dirname(os.path.abspath(__file__)), "exports"), ignore_errors=True)
     now = time.time()
     for i, (text, persona, d, status) in enumerate(build()):
         ok, total = _verify(d)
@@ -131,6 +133,19 @@ def main():
               "퀀트전략 애널리스트" if status == "reviewed" else None, created,
               created + 5400 if status == "reviewed" else None, 0))
         print(f"  {status:<9} {text}  인용 대조 {ok}/{total}")
+    # 실시간(Claude)으로 생성했던 답변 초안 · 검수 답변 — seed_live.json (2026-10-27 생성, 인용 원문 대조 모두 일치)
+    import os
+    lp = os.path.join(os.path.dirname(os.path.abspath(__file__)), "seed_live.json")
+    if os.path.exists(lp):
+        for i, r in enumerate(json.load(open(lp, encoding="utf-8"))):
+            created = now - 1800 + i * 120
+            db.x("insert into questions(text,persona,topic,status,draft,answer,route,reviewer,created_at,reviewed_at,draft_secs) "
+                 "values(?,?,?,?,?,?,?,?,?,?,?)",
+                 (r["text"], r["persona"], r["topic"], r["status"], json.dumps(r["draft"], ensure_ascii=False),
+                  json.dumps(r["answer"], ensure_ascii=False) if r["answer"] else None, r["route"], r["reviewer"],
+                  created, created + 900 if r["status"] == "reviewed" else None, r["draft_secs"]))
+            m = r["draft"].get("meta") or {}
+            print(f"  {r['status']:<9} {r['text']}  인용 대조 {m.get('cite_ok')}/{m.get('cite_total')} (실시간 생성)")
     db.x("insert into consults(persona,kind,question_id,context,state,at) values(?,?,?,?,?,?)",
          ("dma", "DMA 상담", None, "반도체 답변 열람 후 DMA 수수료 · 주문 방식 문의", "연결 완료 · DMA 데스크", now - 86400))
 

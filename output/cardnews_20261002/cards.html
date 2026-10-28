@@ -1,0 +1,329 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>Daily Snapshot 카드뉴스 2026.10.02</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<style>
+  :root{
+    --ink:#0f1b2d; --ink-2:#3a4659; --ink-3:#7a8597;
+    --paper:#f6f4ef; --line:#e2ded4; --card:#ffffff;
+    --up:#e0322b; --up-soft:#fde9e7; --down:#1f5fd1; --down-soft:#e6eefc;
+    --accent:#e8501e; --navy:#0e1a2b; --navy-2:#18283f;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:#d9d6cf;font-family:"Pretendard Variable",Pretendard,"Malgun Gothic",sans-serif;color:var(--ink);
+       display:flex;flex-direction:column;align-items:center;gap:40px;padding:40px 0;
+       -webkit-font-smoothing:antialiased;letter-spacing:-0.02em}
+  .card{width:1080px;height:1350px;background:var(--paper);position:relative;overflow:hidden;
+        padding:84px 88px 0;display:flex;flex-direction:column}
+  .card.dark{background:var(--navy);color:#fff}
+  .top{display:flex;justify-content:space-between;align-items:center;font-size:24px;font-weight:600;
+       color:var(--ink-3);letter-spacing:0.02em}
+  .dark .top{color:#8d9ab0}
+  .top b{color:var(--accent);font-weight:800}
+  .kicker{margin-top:56px;font-size:30px;font-weight:700;color:var(--accent);letter-spacing:-0.01em}
+  h1{margin-top:20px;font-size:76px;line-height:1.16;font-weight:800;letter-spacing:-0.045em}
+  .sub{margin-top:28px;font-size:32px;line-height:1.5;color:var(--ink-2);font-weight:500}
+  .dark .sub{color:#b9c3d3}
+  .body{margin-top:44px;flex:1;display:flex;flex-direction:column;gap:22px}
+  .foot{flex-shrink:0;height:96px;border-top:2px solid var(--line);margin:0 -88px;padding:0 88px;
+        display:flex;align-items:center;justify-content:space-between;font-size:21px;color:var(--ink-3);font-weight:500}
+  .dark .foot{border-color:#24354f;color:#7c8aa1}
+  .up{color:var(--up)} .down{color:var(--down)}
+  .num{font-variant-numeric:tabular-nums;letter-spacing:-0.02em}
+
+  /* cover */
+  .cover h1{font-size:104px;margin-top:150px;line-height:1.08}
+  .cover .date{margin-top:36px;font-size:30px;color:#8d9ab0;font-weight:600}
+  .idx{margin-top:auto;margin-bottom:72px;display:grid;grid-template-columns:1fr 1fr;gap:24px}
+  .idx .box{min-width:0;background:var(--navy-2);border-radius:28px;padding:44px 44px 48px}
+  .idx .name{font-size:30px;font-weight:700;color:#b9c3d3}
+  .idx .chg{margin-top:18px;font-size:92px;font-weight:800;line-height:1;color:#ff5a4e;letter-spacing:-0.04em}
+  .idx .lvl{margin-top:20px;font-size:32px;color:#fff;font-weight:600}
+  .glow{position:absolute;right:-220px;top:-180px;width:760px;height:760px;border-radius:50%;
+        background:radial-gradient(circle,rgba(232,80,30,.38),rgba(232,80,30,0) 65%)}
+
+  /* rows */
+  .row{background:var(--card);border-radius:22px;padding:30px 36px;display:flex;align-items:center;justify-content:space-between;
+       font-size:34px;font-weight:600}
+  .row .v{font-size:40px;font-weight:800}
+  .row small{display:block;font-size:24px;color:var(--ink-3);font-weight:500;margin-top:6px}
+
+  /* rate track */
+  .rate{background:var(--card);border-radius:28px;padding:44px 44px 40px}
+  .rate .lab{font-size:26px;color:var(--ink-3);font-weight:600}
+  .rate .vals{display:flex;align-items:flex-end;gap:28px;margin-top:16px}
+  .rate .big{font-size:96px;font-weight:800;line-height:1;letter-spacing:-0.04em}
+  .rate .arrow{font-size:56px;color:var(--ink-3);padding-bottom:10px}
+  .rate .note{margin-top:22px;font-size:27px;color:var(--ink-2);line-height:1.5}
+
+  /* bar list */
+  .group{background:var(--card);border-radius:24px;padding:24px 36px 20px}
+  .group h3{font-size:25px;color:var(--ink-3);font-weight:700;margin-bottom:4px}
+  .bar{display:grid;grid-template-columns:250px 1fr 120px;align-items:center;gap:20px;height:46px;font-size:30px;font-weight:600}
+  .bar .track{height:18px;border-radius:9px;background:#f0ede6;position:relative;overflow:hidden}
+  .bar .fill{position:absolute;left:0;top:0;bottom:0;border-radius:9px;background:var(--up)}
+  .bar .p{text-align:right;font-weight:800}
+  .note-line{margin-top:auto;margin-bottom:36px;font-size:26px;color:var(--ink-2);background:#ece8df;border-radius:18px;padding:22px 28px;line-height:1.5}
+
+  /* tiles */
+  .tiles{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+  .tile{background:var(--card);border-radius:26px;padding:40px 38px;min-height:350px;display:flex;flex-direction:column}
+  .tile .lab{font-size:27px;color:var(--ink-3);font-weight:700}
+  .tile .big{margin-top:auto;font-size:84px;font-weight:800;line-height:1;letter-spacing:-0.04em}
+  .tile .big span{font-size:40px;font-weight:700;margin-left:4px}
+  .tile .cap{margin-top:16px;font-size:25px;color:var(--ink-2);line-height:1.45}
+  .tile.hl{background:var(--navy);color:#fff}
+  .tile.hl .lab{color:#8d9ab0} .tile.hl .cap{color:#b9c3d3}
+
+  /* hero stat */
+  .hero{background:var(--navy);color:#fff;border-radius:32px;padding:52px 48px}
+  .hero .lab{font-size:28px;color:#8d9ab0;font-weight:700}
+  .hero .big{margin-top:18px;font-size:150px;font-weight:800;line-height:1;letter-spacing:-0.05em}
+  .hero .big span{font-size:60px;margin-left:8px}
+  .hero .cap{margin-top:22px;font-size:32px;font-weight:700;color:#ff6a5e}
+
+  /* flows */
+  .flow{background:var(--card);border-radius:26px;padding:34px 38px}
+  .flow h3{font-size:28px;font-weight:800;margin-bottom:18px;display:flex;justify-content:space-between}
+  .flow h3 span{font-size:22px;color:var(--ink-3);font-weight:600}
+  .fbar{display:grid;grid-template-columns:150px 1fr 1fr 130px;align-items:center;height:62px;font-size:30px;font-weight:600}
+  .fbar .neg,.fbar .pos{height:30px;position:relative}
+  .fbar .neg{border-right:2px solid var(--ink-3)}
+  .fbar .neg i{position:absolute;right:0;top:0;bottom:0;background:var(--down);border-radius:6px 0 0 6px}
+  .fbar .pos i{position:absolute;left:0;top:0;bottom:0;background:var(--up);border-radius:0 6px 6px 0}
+  .fbar .p{text-align:right;font-weight:800}
+
+  /* sectors */
+  .cols{display:grid;grid-template-columns:1fr 1fr;gap:22px;flex:1;margin-bottom:56px}
+  .col{border-radius:28px;padding:36px 34px}
+  .col.u{background:var(--up-soft)} .col.d{background:var(--down-soft)}
+  .col h3{font-size:30px;font-weight:800;margin-bottom:10px}
+  .col.u h3{color:var(--up)} .col.d h3{color:var(--down)}
+  .sec{padding:18px 0;border-bottom:1.5px solid rgba(15,27,45,.08)}
+  .sec:last-child{border-bottom:0}
+  .sec .t{font-size:24px;font-weight:700;color:var(--ink-3)}
+  .sec .s{margin-top:6px;font-size:30px;font-weight:700;display:flex;justify-content:space-between}
+  .sec .why{margin-top:4px;font-size:23px;color:var(--ink-2);line-height:1.4}
+
+  /* compare */
+  .cmp{background:var(--card);border-radius:26px;padding:26px 38px 22px}
+  .cmp h3{font-size:27px;color:var(--ink-3);font-weight:700;margin-bottom:12px}
+  .cbar{display:grid;grid-template-columns:150px 1fr 140px;align-items:center;gap:18px;height:54px;font-size:30px;font-weight:700}
+  .cbar .track{height:34px;position:relative}
+  .cbar .track i{position:absolute;left:0;top:0;bottom:0;border-radius:8px}
+  .cbar .p{text-align:right;font-weight:800}
+  .gauge{background:var(--card);border-radius:26px;padding:26px 38px 30px}
+  .gauge h3{font-size:27px;color:var(--ink-3);font-weight:700}
+  .gauge .g{position:relative;height:136px;margin-top:14px}
+  .gauge .line{position:absolute;left:0;right:0;top:70px;height:14px;border-radius:7px;
+               background:linear-gradient(90deg,#d8e4f8 0%,#d8e4f8 40%,#fbd9d4 100%)}
+  .gauge .mk{position:absolute;top:0;transform:translateX(-50%);text-align:center;font-size:23px;font-weight:700;color:var(--ink-2);white-space:nowrap}
+  .gauge .mk .dot{width:4px;height:44px;background:var(--ink-3);margin:8px auto 0}
+  .gauge .mk.now{color:var(--accent)} .gauge .mk.now .dot{background:var(--accent);width:6px}
+  .gauge .mk .b{position:absolute;top:100px;left:50%;transform:translateX(-50%);font-size:22px;color:var(--ink-3);font-weight:600}
+  .gauge .cap{margin-top:0;font-size:25px;color:var(--ink-2);line-height:1.45}
+
+  /* signals */
+  .sig{background:var(--card);border-radius:26px;padding:26px 36px;display:grid;grid-template-columns:76px 1fr;gap:24px;align-items:start}
+  .sig .n{width:76px;height:76px;border-radius:50%;background:var(--navy);color:#fff;font-size:36px;font-weight:800;
+          display:flex;align-items:center;justify-content:center}
+  .sig .t{font-size:34px;font-weight:800;line-height:1.3}
+  .sig .d{margin-top:8px;font-size:26px;color:var(--ink-2);line-height:1.45}
+  .take{background:var(--navy);color:#fff;border-radius:26px;padding:30px 36px;font-size:27px;line-height:1.55;font-weight:600}
+  .take b{color:#ff7a5c}
+  .disc{margin-top:auto;margin-bottom:28px;font-size:17px;line-height:1.5;color:var(--ink-3)}
+</style>
+</head>
+<body>
+
+<!-- 01 cover -->
+<section class="card dark cover" id="c1">
+  <div class="glow"></div>
+  <div class="top"><span><b>EUGENE</b> DAILY SNAPSHOT</span><span>01 / 09</span></div>
+  <h1>10월의<br>기분 좋은 출발</h1>
+  <div class="date">2026.10.02 · 10월 1일 마감 기준</div>
+  <div class="idx">
+    <div class="box"><div class="name">KOSPI</div><div class="chg num">+1.95%</div><div class="lvl num">6,971.35</div></div>
+    <div class="box"><div class="name">KOSDAQ</div><div class="chg num">+4.48%</div><div class="lvl num">894.29</div></div>
+  </div>
+  <div class="foot"><span>자료: 코스콤, Quantiwise, 유진투자증권</span><span>글로벌 매크로팀 이준영</span></div>
+</section>
+
+<!-- 02 US rates -->
+<section class="card" id="c2">
+  <div class="top"><span><b>EUGENE</b> DAILY SNAPSHOT</span><span>02 / 09</span></div>
+  <div class="kicker">간밤 미국 증시</div>
+  <h1>美 10년물 금리,<br>24년 만의 최고치 찍고 반락</h1>
+  <div class="sub">금리가 밀리자 증시는 장 막판 낙폭을 만회하고 강보합으로 마감했어요.</div>
+  <div class="body">
+    <div class="rate">
+      <div class="lab">미국채 10년물 금리</div>
+      <div class="vals"><div><div class="lab">장중 고점</div><div class="big num up">5.34%</div></div>
+        <div class="arrow">→</div>
+        <div><div class="lab">종가</div><div class="big num">5.24%</div></div></div>
+      <div class="note">장 초반 금리 부담에 경기민감·금융·헬스케어 중심으로 매도가 확산됐어요.</div>
+    </div>
+    <div class="tiles">
+      <div class="tile" style="min-height:0;padding:30px 36px"><div class="lab">다우</div><div class="big num up" style="font-size:60px;margin-top:14px">+0.04%</div></div>
+      <div class="tile" style="min-height:0;padding:30px 36px"><div class="lab">S&amp;P500</div><div class="big num up" style="font-size:60px;margin-top:14px">+0.2%</div></div>
+      <div class="tile" style="min-height:0;padding:30px 36px"><div class="lab">나스닥</div><div class="big num up" style="font-size:60px;margin-top:14px">+0.04%</div></div>
+      <div class="tile hl" style="min-height:0;padding:30px 36px"><div class="lab">필라델피아 반도체</div><div class="big num" style="font-size:60px;margin-top:14px;color:#ff6a5e">+1.6%</div></div>
+    </div>
+  </div>
+  <div class="foot"><span>자료: 코스콤, Quantiwise, 유진투자증권</span><span>글로벌 매크로팀 이준영</span></div>
+</section>
+
+<!-- 03 US leaders -->
+<section class="card" id="c3">
+  <div class="top"><span><b>EUGENE</b> DAILY SNAPSHOT</span><span>03 / 09</span></div>
+  <div class="kicker">간밤 미국 증시</div>
+  <h1>상승은 메모리·장비·<br>광통신이 이끌었다</h1>
+  <div class="body" style="gap:14px;margin-top:36px">
+    <div class="group"><h3>메모리</h3>
+      <div class="bar"><span>SK하이닉스 ADR</span><div class="track"><i class="fill" style="width:46.8%"></i></div><span class="p num up">+5.1%</span></div>
+      <div class="bar"><span>마이크론</span><div class="track"><i class="fill" style="width:27.5%"></i></div><span class="p num up">+3.0%</span></div>
+      <div class="bar"><span>샌디스크</span><div class="track"><i class="fill" style="width:25.7%"></i></div><span class="p num up">+2.8%</span></div>
+    </div>
+    <div class="group"><h3>장비 · 마이크론 CapEx 상향 수혜</h3>
+      <div class="bar"><span>램리서치</span><div class="track"><i class="fill" style="width:32.1%"></i></div><span class="p num up">+3.5%</span></div>
+      <div class="bar"><span>AMAT</span><div class="track"><i class="fill" style="width:32.1%"></i></div><span class="p num up">+3.5%</span></div>
+      <div class="bar"><span>KLA</span><div class="track"><i class="fill" style="width:25.7%"></i></div><span class="p num up">+2.8%</span></div>
+    </div>
+    <div class="group"><h3>광통신</h3>
+      <div class="bar"><span>코히런트</span><div class="track"><i class="fill" style="width:100%"></i></div><span class="p num up">+10.9%</span></div>
+      <div class="bar"><span>루멘텀</span><div class="track"><i class="fill" style="width:70.6%"></i></div><span class="p num up">+7.7%</span></div>
+      <div class="bar"><span>시에나</span><div class="track"><i class="fill" style="width:69.7%"></i></div><span class="p num up">+7.6%</span></div>
+    </div>
+    <div class="note-line" style="padding:18px 28px">+ 앤스로픽, 이르면 11월 중순 IPO 추진</div>
+  </div>
+  <div class="foot"><span>자료: 코스콤, Quantiwise, 유진투자증권</span><span>글로벌 매크로팀 이준영</span></div>
+</section>
+
+<!-- 04 US data -->
+<section class="card" id="c4">
+  <div class="top"><span><b>EUGENE</b> DAILY SNAPSHOT</span><span>04 / 09</span></div>
+  <div class="kicker">미국 경제지표</div>
+  <h1>물가 압력은 커졌지만<br>10월 인상 확률은 뚝</h1>
+  <div class="body">
+    <div class="tiles">
+      <div class="tile"><div class="lab">9월 ISM 제조업지수</div><div class="big num">54.5</div><div class="cap">전월 54.6, 확장 국면 유지</div></div>
+      <div class="tile"><div class="lab">ISM 가격지불지수</div><div class="big num up">77.9</div><div class="cap">전월 71.1 → <b class="up">+6.8p</b> · 예상 72</div></div>
+      <div class="tile"><div class="lab">주간 신규 실업수당청구</div><div class="big num">19.7<span>만 건</span></div><div class="cap">예상 20.1만 건, 노동시장 견조</div></div>
+      <div class="tile hl"><div class="lab">10월 FOMC 금리 인상 확률</div><div class="big num">28<span>%</span></div><div class="cap">1주 전 69%에서 크게 낮아졌어요</div></div>
+    </div>
+  </div>
+  <div class="foot"><span>자료: 코스콤, Quantiwise, 유진투자증권</span><span>글로벌 매크로팀 이준영</span></div>
+</section>
+
+<!-- 05 exports -->
+<section class="card" id="c5">
+  <div class="top"><span><b>EUGENE</b> DAILY SNAPSHOT</span><span>05 / 09</span></div>
+  <div class="kicker">전일 국내 증시</div>
+  <h1>반도체 수출, 단일 품목<br>첫 600억 달러 돌파</h1>
+  <div class="body">
+    <div class="hero">
+      <div class="lab">9월 반도체 수출</div>
+      <div class="big num">603<span>억 달러</span></div>
+      <div class="cap">전년 대비 +262.8%</div>
+    </div>
+    <div class="tiles">
+      <div class="tile" style="min-height:250px"><div class="lab">9월 총수출 (사상 최대)</div><div class="big num" style="font-size:72px">1,209<span>억$</span></div><div class="cap"><b class="up">+83.5%</b> YoY · 일평균 +105%</div></div>
+      <div class="tile" style="min-height:250px"><div class="lab">마이크론 FY27 1Q 매출 가이던스</div><div class="big num" style="font-size:72px">615<span>억$</span></div><div class="cap">컨센서스 570억$ 상회</div></div>
+    </div>
+    <div class="row"><span>코스피 장중 저점 <span class="down num">-1.1%</span> → 종가</span><span class="v num up">+1.95%</span></div>
+  </div>
+  <div class="foot"><span>자료: 코스콤, Quantiwise, 유진투자증권</span><span>글로벌 매크로팀 이준영</span></div>
+</section>
+
+<!-- 06 flows -->
+<section class="card" id="c6">
+  <div class="top"><span><b>EUGENE</b> DAILY SNAPSHOT</span><span>06 / 09</span></div>
+  <div class="kicker">투자자별 수급</div>
+  <h1>코스닥에 외국인·기관<br>동반 순매수</h1>
+  <div class="sub">코스피는 개인과 외국인이 팔고 기타법인이 받았어요. 코스닥은 소부장·바이오·2차전지로 매수세가 번졌어요.</div>
+  <div class="body" style="gap:22px">
+    <div class="flow"><h3>KOSPI <span>정규장 기준 · 조원</span></h3>
+      <div class="fbar"><span>기타법인</span><div class="neg"></div><div class="pos"><i style="width:100%"></i></div><span class="p num up">+1.6</span></div>
+      <div class="fbar"><span>기관</span><div class="neg"></div><div class="pos"><i style="width:18.8%"></i></div><span class="p num up">+0.3</span></div>
+      <div class="fbar"><span>외국인</span><div class="neg"><i style="width:31.3%"></i></div><div class="pos"></div><span class="p num down">-0.5</span></div>
+      <div class="fbar"><span>개인</span><div class="neg"><i style="width:87.5%"></i></div><div class="pos"></div><span class="p num down">-1.4</span></div>
+    </div>
+    <div class="flow"><h3>KOSDAQ <span>조원</span></h3>
+      <div class="fbar"><span>기관</span><div class="neg"></div><div class="pos"><i style="width:37.5%"></i></div><span class="p num up">+0.6</span></div>
+      <div class="fbar"><span>외국인</span><div class="neg"></div><div class="pos"><i style="width:18.8%"></i></div><span class="p num up">+0.3</span></div>
+    </div>
+  </div>
+  <div class="foot"><span>자료: 코스콤, Quantiwise, 유진투자증권</span><span>글로벌 매크로팀 이준영</span></div>
+</section>
+
+<!-- 07 sectors -->
+<section class="card" id="c7">
+  <div class="top"><span><b>EUGENE</b> DAILY SNAPSHOT</span><span>07 / 09</span></div>
+  <div class="kicker">업종 · 테마</div>
+  <h1>성장주는 웃고<br>정유·은행은 울었다</h1>
+  <div class="body">
+    <div class="cols">
+      <div class="col u"><h3>▲ 강세</h3>
+        <div class="sec"><div class="t">반도체 소부장</div><div class="s"><span>대덕전자</span><span class="num up">+12.8%</span></div><div class="s"><span>유진테크</span><span class="num up">+10.9%</span></div></div>
+        <div class="sec"><div class="t">철강</div><div class="s"><span>대한제강</span><span class="num up">+16.8%</span></div><div class="why">한국 대미투자에 알래스카 LNG·원전 포함</div></div>
+        <div class="sec"><div class="t">바이오</div><div class="s"><span>삼천당제약</span><span class="num up">+15.4%</span></div><div class="why">낙폭과대 인식</div></div>
+        <div class="sec"><div class="t">게임</div><div class="s"><span>엔씨소프트</span><span class="num up">+10.1%</span></div><div class="why">'아이온2' 스팀 매출 1위</div></div>
+      </div>
+      <div class="col d"><h3>▼ 약세</h3>
+        <div class="sec"><div class="t">정유</div><div class="s"><span>S-Oil</span><span class="num down">-8.0%</span></div><div class="s"><span>SK이노베이션</span><span class="num down">-6.2%</span></div><div class="s"><span>GS</span><span class="num down">-4.7%</span></div></div>
+        <div class="sec"><div class="t">은행</div><div class="s"><span>우리금융지주</span><span class="num down">-4.7%</span></div><div class="s"><span>JB금융지주</span><span class="num down">-2.6%</span></div></div>
+        <div class="sec"><div class="t">보험 · 내수</div><div class="s"><span>코리안리</span><span class="num down">-1.9%</span></div><div class="s"><span>BGF리테일</span><span class="num down">-1.6%</span></div></div>
+      </div>
+    </div>
+  </div>
+  <div class="foot"><span>자료: 코스콤, Quantiwise, 유진투자증권</span><span>글로벌 매크로팀 이준영</span></div>
+</section>
+
+<!-- 08 closeup -->
+<section class="card" id="c8">
+  <div class="top"><span><b>EUGENE</b> DAILY SNAPSHOT</span><span>08 / 09</span></div>
+  <div class="kicker">오늘의 클로즈업</div>
+  <h1>코스닥의<br>수익률 따라잡기</h1>
+  <div class="sub" style="font-size:29px;margin-top:22px">대형 반도체가 쉬는 사이, AI 캐파 사이클의 온기가<br>중소형 소부장으로 번지고 있어요.</div>
+  <div class="body" style="margin-top:34px;gap:16px">
+    <div class="cmp"><h3>8~9월 누적 수익률</h3>
+      <div class="cbar"><span>코스닥</span><div class="track"><i style="width:100%;background:var(--up)"></i></div><span class="p num up">+18.9%</span></div>
+      <div class="cbar"><span>코스피</span><div class="track"><i style="width:19.6%;background:#c9c3b6"></i></div><span class="p num">+3.7%</span></div>
+    </div>
+    <div class="cmp"><h3>8~9월 반도체 업종 수익률</h3>
+      <div class="cbar"><span>코스닥</span><div class="track"><i style="width:100%;background:var(--up)"></i></div><span class="p num up">+44.5%</span></div>
+      <div class="cbar"><span>코스피</span><div class="track"><i style="width:7.4%;background:#c9c3b6"></i></div><span class="p num">+3.3%</span></div>
+    </div>
+    <div class="gauge"><h3>신용융자 / 시가총액 (코스닥)</h3>
+      <div class="g">
+        <div class="line"></div>
+        <div class="mk now" style="left:18.75%">현재 1.55%<div class="dot"></div></div>
+        <div class="mk" style="left:37.5%">1.7%<div class="dot"></div><span class="b">-2표준편차</span></div>
+        <div class="mk" style="left:87.5%">2.1%<div class="dot"></div><span class="b">3년 평균</span></div>
+      </div>
+      <div class="cap">신용융자는 2개월간 20% 늘었지만, 아직 과열 구간은 아니에요.</div>
+    </div>
+  </div>
+  <div class="foot"><span>자료: 코스콤, Quantiwise, 유진투자증권</span><span>글로벌 매크로팀 이준영</span></div>
+</section>
+
+<!-- 09 signals -->
+<section class="card" id="c9">
+  <div class="top"><span><b>EUGENE</b> DAILY SNAPSHOT</span><span>09 / 09</span></div>
+  <div class="kicker">오늘의 클로즈업</div>
+  <h1>코스닥 강세가 꺾일 수 있는<br>세 가지 신호</h1>
+  <div class="sub" style="font-size:27px;margin-top:22px">2017년 11월~2018년 1월과 닮았어요. 당시 코스닥의 초과 상승은 2018년 2월 미국 금리 급등으로 끝났어요.</div>
+  <div class="body" style="margin-top:32px;gap:14px">
+    <div class="sig"><div class="n">1</div><div><div class="t">美 10년물 5.5% 돌파</div><div class="d">성장주 전반의 밸류에이션 멀티플을 누를 수 있어요.</div></div></div>
+    <div class="sig"><div class="n">2</div><div><div class="t">삼성전자·SK하이닉스 실적 모멘텀 재점화</div><div class="d">수급이 대형 반도체로 다시 이동할 수 있어요.</div></div></div>
+    <div class="sig"><div class="n">3</div><div><div class="t">신용융자/시총 1.7% 상향 돌파</div><div class="d">과열 경계로 전환하는 신호예요.</div></div></div>
+    <div class="take">AI 캐파 사이클과 연동된 <b>소부장 중심</b>이 여전히 유리해 보여요. 바이오는 8~9월 상승률(+5.6%)이 낮아 가격 부담이 적어, <b>금리가 안정되면</b> 관심이 필요해요.</div>
+    <div class="disc">본 자료는 참고용이며 특정 주식에 대한 투자 목적으로 작성된 것이 아닙니다. 정확성이나 완전성을 보장할 수 없으며, 투자 결정은 투자자 본인의 판단과 책임 하에 이루어져야 합니다. 당사의 동의 없이 무단 복제·배포를 금합니다.</div>
+  </div>
+  <div class="foot"><span>자료: 코스콤, Quantiwise, 유진투자증권</span><span>글로벌 매크로팀 이준영</span></div>
+</section>
+
+</body>
+</html>

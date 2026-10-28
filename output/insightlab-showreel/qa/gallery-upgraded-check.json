@@ -1,0 +1,44 @@
+{
+  "url": "http://127.0.0.1:4183/claude-showreel/",
+  "initial": {
+    "muted": true,
+    "paused": true,
+    "controls": true,
+    "duration": 15,
+    "width": 1920,
+    "height": 1080,
+    "source": "http://127.0.0.1:4183/claude-showreel/EugeneInsightLab_Showreel_15s_Upgraded.mp4",
+    "overflow": false
+  },
+  "soundClick": {
+    "muted": false,
+    "paused": false,
+    "pressed": "true"
+  },
+  "original": {
+    "time": 8.62,
+    "muted": false,
+    "paused": true,
+    "source": "http://127.0.0.1:4183/claude-showreel/EugeneInsightLab_Showreel_15s.mp4",
+    "selected": "original"
+  },
+  "before": 8.62,
+  "upgraded": {
+    "time": 8.62,
+    "muted": true,
+    "paused": true,
+    "source": "http://127.0.0.1:4183/claude-showreel/EugeneInsightLab_Showreel_15s_Upgraded.mp4",
+    "selected": "upgraded"
+  },
+  "beforeBack": 8.62,
+  "originalMuted": true,
+  "resume": {
+    "paused": false,
+    "muted": true
+  },
+  "mobile": {
+    "overflow": false
+  },
+  "pageErrors": [],
+  "passed": true
+}

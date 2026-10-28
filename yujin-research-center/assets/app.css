@@ -744,3 +744,50 @@ button{font-family:inherit}
 .vchap__row .tt span{font-size:12px;color:var(--color-muted)}
 .vchap__row .tm{font-size:12px;color:var(--color-muted);font-variant-numeric:tabular-nums;flex:0 0 auto}
 @media(prefers-reduced-motion:reduce){.vanchor__live i,.vanchor__wave i{animation:none}}
+
+/* 헤더: 로그인 이름이 길어도 메뉴가 줄바꿈되지 않게 */
+.nav__links a{white-space:nowrap}
+#navEmail{max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:inline-block;vertical-align:middle}
+#navUser .btn{white-space:nowrap}
+
+/* ═════ 로그인 후 헤더: 프로필 메뉴 · 드로어 보조 링크 (partials.js) ═════ */
+.nav-prof{position:relative}
+.nav-prof__btn{display:inline-flex;align-items:center;gap:8px;height:38px;padding:0 10px 0 4px;border:1px solid var(--color-hairline);border-radius:var(--radius-full);background:#fff;font:inherit;font-size:var(--text-body);font-weight:600;color:var(--ink-800);cursor:pointer}
+.nav-prof__btn:hover{border-color:#b9cff3}
+.nav-prof__btn svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2}
+.nav-prof__av{width:30px;height:30px;border-radius:50%;background:var(--blue-navy);color:#fff;display:inline-flex;align-items:center;justify-content:center;font-size:13px;font-weight:700}
+.nav-prof__menu{position:absolute;right:0;top:calc(100% + 8px);min-width:240px;padding:8px;background:#fff;border:1px solid var(--color-hairline);border-radius:var(--radius-md);box-shadow:var(--shadow-pop);z-index:60;display:flex;flex-direction:column}
+.nav-prof__menu[hidden]{display:none}
+.nav-prof__menu a,.nav-prof__menu button{display:block;width:100%;text-align:left;padding:9px 12px;border-radius:8px;border:0;background:none;font:inherit;font-size:14px;color:var(--ink-800);cursor:pointer;text-decoration:none}
+.nav-prof__menu a:hover,.nav-prof__menu button:hover,.nav-prof__menu a:focus-visible,.nav-prof__menu button:focus-visible{background:var(--surface-tint);color:var(--color-primary)}
+.nav-prof__who{padding:8px 12px 10px;display:flex;flex-direction:column;gap:2px}
+.nav-prof__who b{font-size:15px;color:var(--ink-900)}
+.nav-prof__who span{font-size:12.5px;color:var(--color-muted)}
+.nav-prof__st{color:#11845a!important;font-weight:700}
+.nav-prof__sep{height:1px;background:var(--color-hairline);margin:6px 4px}
+.mnav__sub{display:flex;flex-direction:column;margin-top:8px;padding-top:8px;border-top:1px solid var(--color-hairline)}
+.mnav__sub a{font-size:14px!important;color:var(--color-muted)!important}
+@media(max-width:900px){.nav-prof__btn #navEmail{display:none}}
+.nav__logout{font-size:var(--text-body);color:var(--color-muted);padding:0 4px}
+.nav__logout:hover{color:var(--color-primary)}
+.nav__desk[aria-current]{color:var(--color-primary);font-weight:700}
+.nav--dark .nav__desk[aria-current]{color:#fff}
+
+/* 어두운 헤더 (홈: Jarvis 무대와 같은 네이비) */
+.nav.nav--dark,.nav.nav--dark.scrolled{background:#070e24;border-bottom-color:rgba(169,196,252,.12);box-shadow:none}
+.nav.nav--dark.scrolled{box-shadow:0 6px 20px -8px rgba(0,0,0,.5)}
+/* 로고 PNG는 흰 배경이 있어 반전 후 screen 합성으로 배경만 지운다 → 네이비 위 흰 로고 */
+.nav--dark .nav__logoimg{filter:grayscale(1) invert(1) brightness(2.2);mix-blend-mode:screen}
+.nav--dark .nav__divider{background:rgba(169,196,252,.3)}
+.nav--dark .nav__sub{color:#7fb2ff}
+.nav--dark .nav__links a{color:#cfdcf2}
+.nav--dark .nav__links a:hover{color:#fff}
+.nav--dark.nav--pill .nav__links a.is-current{background:#245ce7;color:#fff}
+.nav--dark .nav-prof__btn{background:rgba(255,255,255,.06);border-color:rgba(169,196,252,.25);color:#fff}
+.nav--dark .nav-prof__btn:hover{border-color:#7fb2ff}
+.nav--dark .nav-prof__av{background:#245ce7}
+.nav--dark .nav__logout{color:#a9bedf}
+.nav--dark .nav__logout:hover{color:#fff}
+.nav--dark .nav__burger{border-color:rgba(169,196,252,.3);background:transparent}
+.nav--dark .nav__burger svg{stroke:#fff}
+@media(max-width:900px){.nav--dark .nav__links{border-top-color:rgba(169,196,252,.15)}}

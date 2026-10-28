@@ -16,6 +16,8 @@ python -m lounge_api.server          # http://127.0.0.1:8765/login.html
 | `python -m lounge_api.ingest` | 캐시의 새 PDF만 추가로 적재 |
 | `python -m lounge_api.ingest 파일.pdf` | 특정 PDF 적재 |
 | `python -m lounge_api.seed` | 질문 · 상담 기록을 지우고 시연용 사전 생성 답변 4건을 다시 넣음 |
+| `python -m lounge_api.export 1` | 검수 완료 답변(id 1) → 브리핑 PDF · 설명자료 PDF · 카드뉴스 PNG (`lounge_api/exports/q1/`). 승인하면 자동 실행 |
+| `python -m lounge_api.export_static` | 공개 배포용 스냅샷(`assets/lounge-snapshot.json`) + 결과물(`assets/lounge-exports/`) 갱신 |
 
 Claude API 키는 `db_loader/llm.py`와 같은 방식으로 찾습니다(`CLAUDE_API_KEY` 또는 `ANTHROPIC_API_KEY`, 모델 `claude-opus-5-5`). 키나 사용 한도에 문제가 있으면 새 질문은 "접수됨"으로 처리되고 담당자 연결로 안내합니다.
 
@@ -29,6 +31,8 @@ Claude API 키는 `db_loader/llm.py`와 같은 방식으로 찾습니다(`CLAUDE
 | `qa.py` | 근거형 답변 초안 (Claude 구조화 출력) + 인용문 원문 대조 |
 | `server.py` | 정적 파일 + `/api/*` |
 | `seed.py` | 사전 생성 답변(백업) — 인용문 15개 모두 실제 원문과 일치 확인 |
+| `export.py` | 맞춤 전환 실물 출력 (AI 재호출 없이 검수 문장 · 출처만 템플릿에) |
+| `measure.py` | 효과 측정 과제 · 순서 교차 · 자동 채점 (`measure.html`) |
 
 ## 시연 흐름
 
@@ -36,7 +40,9 @@ Claude API 키는 `db_loader/llm.py`와 같은 방식으로 찾습니다(`CLAUDE
 2. `ask.html` → 반도체 답변의 출처 칩을 누르면 리포트 원문 해당 쪽이 열리고 인용 부분이 강조됨
 3. `admin.html` → 검수 대기의 배당주 초안 승인 → 자문사 고객 화면에 공개
 4. `admin.html#stale` → 반도체 리포트를 새 자료로 투입 → 고객 화면 반도체 답변에 '재검토 필요'
-5. 다시 시연하려면 `python -m lounge_api.seed`
+5. 반도체 답변의 '맞춤 전환'에서 PDF · 카드뉴스 받기 → 마이 라운지 자료함
+6. `measure.html` → 참가자 코드로 과제 2개 진행 (또는 예시 데이터 채우기)
+7. 다시 시연하려면 `python -m lounge_api.seed`
 
 ## 주요 API
 

@@ -1,0 +1,62 @@
+{
+  "url": "https://6abf1102138d43e8f65b194d--eugene-insightlab.netlify.app",
+  "checks": [
+    {
+      "hero": {
+        "width": 1280,
+        "height": 720,
+        "duration": 15,
+        "muted": true,
+        "paused": false,
+        "error": null
+      }
+    },
+    {
+      "full": {
+        "width": 1920,
+        "height": 1080,
+        "duration": 15,
+        "muted": false,
+        "audioBytes": 18430,
+        "error": null
+      }
+    },
+    {
+      "modalEscape": true,
+      "focusRestored": true
+    },
+    {
+      "mobile": {
+        "document": 390,
+        "viewport": 390,
+        "hero": 390
+      }
+    },
+    {
+      "reducedMotion": {
+        "paused": true,
+        "visibility": "hidden"
+      }
+    },
+    {
+      "gallery": true
+    },
+    {
+      "asset": "/assets/showreel/insightlab-hero-loop.mp4",
+      "status": 200,
+      "contentType": "video/mp4"
+    },
+    {
+      "asset": "/assets/showreel/insightlab-showreel-15s.mp4",
+      "status": 200,
+      "contentType": "video/mp4"
+    },
+    {
+      "asset": "/assets/showreel/insightlab-poster.jpg",
+      "status": 200,
+      "contentType": "image/jpeg"
+    }
+  ],
+  "errors": [],
+  "passed": true
+}

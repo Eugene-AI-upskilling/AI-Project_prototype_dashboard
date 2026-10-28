@@ -115,6 +115,11 @@
     return el;
   }
 
-  window.IL = { PERSONAS, SOURCES, ANSWERS, PRESETS, EVENTS, CONSULTS,
+  /* 승인 상태: 실제 계정(google · email)이 승인 전이면 'pending' · 반려면 'rejected', 그 외(시연 · 승인)는 'ok' */
+  function gate(){ const s=getSession(); if(!s||!(s.via==='google'||s.via==='email')) return 'ok';
+    return s.status==='approved'?'ok':s.status==='rejected'?'rejected':'pending'; }
+  const GATE_MSG={pending:'가입 승인 대기 중입니다. 리서치센터가 소속을 확인하면(1영업일) 질문 · 상담 · 자료 받기가 열립니다.',
+    rejected:'가입이 승인되지 않았습니다. 소속 정보를 확인해 다시 신청하거나 담당자에게 문의해 주세요.'};
+  window.IL = { gate, GATE_MSG, PERSONAS, SOURCES, ANSWERS, PRESETS, EVENTS, CONSULTS,
     getSession, setSession, clearSession, persona, setPersona, statusBadge, srcChip, esc, personaBar };
 })();

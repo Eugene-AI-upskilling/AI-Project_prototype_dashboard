@@ -1,0 +1,618 @@
+{
+  "checked": [
+    {
+      "file": "01-blue-current",
+      "name": "desktop",
+      "initial": {
+        "width": 1440,
+        "scrollWidth": 1440,
+        "phase": "signal",
+        "wave": {
+          "effectReady": "true",
+          "effectSource": "Originkit Scroll Wave Field",
+          "effectRenderer": "webgl",
+          "effectParticles": "13448",
+          "effectStatus": "running"
+        },
+        "hero": {
+          "x": 79.1875,
+          "y": 207.828125,
+          "width": 1238.390625,
+          "height": 429.296875,
+          "bottom": 637.125,
+          "right": 1317.578125
+        },
+        "bottom": {
+          "x": 79.1875,
+          "y": 835,
+          "width": 1281.625,
+          "height": 30,
+          "bottom": 865,
+          "right": 1360.8125
+        },
+        "world": {
+          "x": 0,
+          "y": 76,
+          "width": 1440,
+          "height": 824,
+          "bottom": 900,
+          "right": 1440
+        },
+        "panel": {
+          "x": 950.390625,
+          "y": 328.40625,
+          "width": 410.421875,
+          "height": 359.1875,
+          "bottom": 687.59375,
+          "right": 1360.8125
+        },
+        "h1font": "93.6px",
+        "video": {
+          "muted": true,
+          "paused": true
+        }
+      },
+      "folded": {
+        "width": 1440,
+        "scrollWidth": 1440,
+        "phase": "showreel",
+        "wave": {
+          "effectReady": "true",
+          "effectSource": "Originkit Scroll Wave Field",
+          "effectRenderer": "webgl",
+          "effectParticles": "13448",
+          "effectStatus": "paused"
+        },
+        "hero": {
+          "x": 122.734375,
+          "y": 322.515625,
+          "width": 681.109375,
+          "height": 330.765625,
+          "bottom": 653.28125,
+          "right": 803.84375
+        },
+        "bottom": {
+          "x": 122.734375,
+          "y": 645.75,
+          "width": 704.90625,
+          "height": 30,
+          "bottom": 675.75,
+          "right": 827.640625
+        },
+        "world": {
+          "x": 79.1875,
+          "y": 265.25,
+          "width": 792,
+          "height": 445.5,
+          "bottom": 710.75,
+          "right": 871.1875
+        },
+        "panel": {
+          "x": 950.390625,
+          "y": 308.40625,
+          "width": 410.421875,
+          "height": 359.1875,
+          "bottom": 667.59375,
+          "right": 1360.8125
+        },
+        "h1font": "51.48px",
+        "video": {
+          "muted": true,
+          "paused": false
+        }
+      }
+    },
+    {
+      "file": "01-blue-current",
+      "name": "mobile",
+      "initial": {
+        "width": 390,
+        "scrollWidth": 390,
+        "phase": "signal",
+        "wave": {
+          "effectReady": "true",
+          "effectSource": "Originkit Scroll Wave Field",
+          "effectRenderer": "webgl",
+          "effectParticles": "4050",
+          "effectStatus": "running"
+        },
+        "hero": {
+          "x": 24,
+          "y": 188.796875,
+          "width": 342,
+          "height": 279.71875,
+          "bottom": 468.515625,
+          "right": 366
+        },
+        "bottom": {
+          "x": 24,
+          "y": 793,
+          "width": 342,
+          "height": 24,
+          "bottom": 817,
+          "right": 366
+        },
+        "world": {
+          "x": 0,
+          "y": 64,
+          "width": 390,
+          "height": 780,
+          "bottom": 844,
+          "right": 390
+        },
+        "panel": {
+          "x": 24,
+          "y": 454.390625,
+          "width": 342,
+          "height": 278.28125,
+          "bottom": 732.671875,
+          "right": 366
+        },
+        "h1font": "39px",
+        "video": {
+          "muted": true,
+          "paused": true
+        }
+      },
+      "folded": {
+        "width": 390,
+        "scrollWidth": 390,
+        "phase": "showreel",
+        "wave": {
+          "effectReady": "true",
+          "effectSource": "Originkit Scroll Wave Field",
+          "effectRenderer": "webgl",
+          "effectParticles": "4050",
+          "effectStatus": "paused"
+        },
+        "hero": {
+          "x": 48,
+          "y": 182.15625,
+          "width": 294,
+          "height": 268,
+          "bottom": 450.15625,
+          "right": 342
+        },
+        "bottom": {
+          "x": 48,
+          "y": 306.765625,
+          "width": 294,
+          "height": 24,
+          "bottom": 330.765625,
+          "right": 342
+        },
+        "world": {
+          "x": 24,
+          "y": 165.390625,
+          "width": 342,
+          "height": 192.375,
+          "bottom": 357.765625,
+          "right": 366
+        },
+        "panel": {
+          "x": 24,
+          "y": 438.390625,
+          "width": 342,
+          "height": 278.28125,
+          "bottom": 716.671875,
+          "right": 366
+        },
+        "h1font": "34.2px",
+        "video": {
+          "muted": true,
+          "paused": false
+        }
+      }
+    },
+    {
+      "file": "01-blue-current",
+      "name": "short",
+      "initial": {
+        "width": 1265,
+        "scrollWidth": 1265,
+        "phase": "signal",
+        "wave": {
+          "effectReady": "true",
+          "effectSource": "Originkit Scroll Wave Field",
+          "effectRenderer": "webgl",
+          "effectParticles": "13448",
+          "effectStatus": "running"
+        },
+        "hero": {
+          "x": 69.5625,
+          "y": 122.890625,
+          "width": 1087.890625,
+          "height": 303.21875,
+          "bottom": 426.109375,
+          "right": 1157.453125
+        },
+        "bottom": {
+          "x": 69.5625,
+          "y": 493,
+          "width": 1125.875,
+          "height": 30,
+          "bottom": 523,
+          "right": 1195.4375
+        },
+        "world": {
+          "x": 0,
+          "y": 76,
+          "width": 1265,
+          "height": 469,
+          "bottom": 545,
+          "right": 1265
+        },
+        "panel": {
+          "x": 834.890625,
+          "y": 199.203125,
+          "width": 360.546875,
+          "height": 262.59375,
+          "bottom": 461.796875,
+          "right": 1195.4375
+        },
+        "h1font": "60.97px",
+        "video": {
+          "muted": true,
+          "paused": true
+        }
+      },
+      "folded": {
+        "width": 1265,
+        "scrollWidth": 1265,
+        "phase": "showreel",
+        "wave": {
+          "effectReady": "true",
+          "effectSource": "Originkit Scroll Wave Field",
+          "effectRenderer": "webgl",
+          "effectParticles": "4050",
+          "effectStatus": "paused"
+        },
+        "hero": {
+          "x": 107.828125,
+          "y": 139.9453125,
+          "width": 598.34375,
+          "height": 266.34375,
+          "bottom": 406.2890625,
+          "right": 706.171875
+        },
+        "bottom": {
+          "x": 107.828125,
+          "y": 454.1796875,
+          "width": 619.21875,
+          "height": 30,
+          "bottom": 484.1796875,
+          "right": 727.046875
+        },
+        "world": {
+          "x": 69.5625,
+          "y": 114.8203125,
+          "width": 695.75,
+          "height": 391.359375,
+          "bottom": 506.1796875,
+          "right": 765.3125
+        },
+        "panel": {
+          "x": 834.890625,
+          "y": 179.203125,
+          "width": 360.546875,
+          "height": 262.59375,
+          "bottom": 441.796875,
+          "right": 1195.4375
+        },
+        "h1font": "45.2238px",
+        "video": {
+          "muted": true,
+          "paused": false
+        }
+      }
+    },
+    {
+      "file": "02-white-current",
+      "name": "desktop",
+      "initial": {
+        "width": 1440,
+        "scrollWidth": 1440,
+        "phase": "signal",
+        "wave": {
+          "effectReady": "true",
+          "effectSource": "Originkit Scroll Wave Field",
+          "effectRenderer": "webgl",
+          "effectParticles": "13448",
+          "effectStatus": "running"
+        },
+        "hero": {
+          "x": 72,
+          "y": 191.359375,
+          "width": 1296,
+          "height": 390.875,
+          "bottom": 582.234375,
+          "right": 1368
+        },
+        "bottom": {
+          "x": 86.390625,
+          "y": 840,
+          "width": 1267.21875,
+          "height": 29,
+          "bottom": 869,
+          "right": 1353.609375
+        },
+        "world": {
+          "x": 0,
+          "y": 76,
+          "width": 1440,
+          "height": 824,
+          "bottom": 900,
+          "right": 1440
+        },
+        "panel": {
+          "x": 302.390625,
+          "y": 692.515625,
+          "width": 835.21875,
+          "height": 113.96875,
+          "bottom": 806.484375,
+          "right": 1137.609375
+        },
+        "h1font": "78.48px",
+        "video": {
+          "muted": true,
+          "paused": true
+        }
+      },
+      "folded": {
+        "width": 1440,
+        "scrollWidth": 1440,
+        "phase": "showreel",
+        "wave": {
+          "effectReady": "true",
+          "effectSource": "Originkit Scroll Wave Field",
+          "effectRenderer": "webgl",
+          "effectParticles": "13448",
+          "effectStatus": "paused"
+        },
+        "hero": {
+          "x": 344.140625,
+          "y": 185.4375,
+          "width": 751.65625,
+          "height": 311.09375,
+          "bottom": 496.53125,
+          "right": 1095.796875
+        },
+        "bottom": {
+          "x": 352.5,
+          "y": 543.453125,
+          "width": 734.96875,
+          "height": 29,
+          "bottom": 572.453125,
+          "right": 1087.46875
+        },
+        "world": {
+          "x": 302.390625,
+          "y": 133.671875,
+          "width": 835.1875,
+          "height": 469.78125,
+          "bottom": 603.453125,
+          "right": 1137.578125
+        },
+        "panel": {
+          "x": 302.390625,
+          "y": 677.515625,
+          "width": 835.21875,
+          "height": 113.96875,
+          "bottom": 791.484375,
+          "right": 1137.609375
+        },
+        "h1font": "45.5177px",
+        "video": {
+          "muted": true,
+          "paused": false
+        }
+      }
+    },
+    {
+      "file": "02-white-current",
+      "name": "mobile",
+      "initial": {
+        "width": 390,
+        "scrollWidth": 390,
+        "phase": "signal",
+        "wave": {
+          "effectReady": "true",
+          "effectSource": "Originkit Scroll Wave Field",
+          "effectRenderer": "webgl",
+          "effectParticles": "4050",
+          "effectStatus": "running"
+        },
+        "hero": {
+          "x": 24,
+          "y": 196.59375,
+          "width": 342,
+          "height": 281.109375,
+          "bottom": 477.703125,
+          "right": 366
+        },
+        "bottom": {
+          "x": 24,
+          "y": 793,
+          "width": 342,
+          "height": 24,
+          "bottom": 817,
+          "right": 366
+        },
+        "world": {
+          "x": 0,
+          "y": 64,
+          "width": 390,
+          "height": 780,
+          "bottom": 844,
+          "right": 390
+        },
+        "panel": {
+          "x": 24,
+          "y": 461.1875,
+          "width": 342,
+          "height": 234.59375,
+          "bottom": 695.78125,
+          "right": 366
+        },
+        "h1font": "39.78px",
+        "video": {
+          "muted": true,
+          "paused": true
+        }
+      },
+      "folded": {
+        "width": 390,
+        "scrollWidth": 390,
+        "phase": "showreel",
+        "wave": {
+          "effectReady": "true",
+          "effectSource": "Originkit Scroll Wave Field",
+          "effectRenderer": "webgl",
+          "effectParticles": "4050",
+          "effectStatus": "paused"
+        },
+        "hero": {
+          "x": 48,
+          "y": 191.890625,
+          "width": 294,
+          "height": 268.671875,
+          "bottom": 460.5625,
+          "right": 342
+        },
+        "bottom": {
+          "x": 48,
+          "y": 314.5625,
+          "width": 294,
+          "height": 24,
+          "bottom": 338.5625,
+          "right": 342
+        },
+        "world": {
+          "x": 24,
+          "y": 173.1875,
+          "width": 342,
+          "height": 192.375,
+          "bottom": 365.5625,
+          "right": 366
+        },
+        "panel": {
+          "x": 24,
+          "y": 446.1875,
+          "width": 342,
+          "height": 234.59375,
+          "bottom": 680.78125,
+          "right": 366
+        },
+        "h1font": "34.884px",
+        "video": {
+          "muted": true,
+          "paused": false
+        }
+      }
+    },
+    {
+      "file": "02-white-current",
+      "name": "short",
+      "initial": {
+        "width": 1265,
+        "scrollWidth": 1265,
+        "phase": "signal",
+        "wave": {
+          "effectReady": "true",
+          "effectSource": "Originkit Scroll Wave Field",
+          "effectRenderer": "webgl",
+          "effectParticles": "13448",
+          "effectStatus": "running"
+        },
+        "hero": {
+          "x": 63.25,
+          "y": 122.890625,
+          "width": 1138.5,
+          "height": 293.953125,
+          "bottom": 416.84375,
+          "right": 1201.75
+        },
+        "bottom": {
+          "x": 75.890625,
+          "y": 494,
+          "width": 1113.21875,
+          "height": 29,
+          "bottom": 523,
+          "right": 1189.109375
+        },
+        "world": {
+          "x": 0,
+          "y": 76,
+          "width": 1265,
+          "height": 469,
+          "bottom": 545,
+          "right": 1265
+        },
+        "panel": {
+          "x": 316.25,
+          "y": 423.984375,
+          "width": 632.5,
+          "height": 91.28125,
+          "bottom": 515.265625,
+          "right": 948.75
+        },
+        "h1font": "56.28px",
+        "video": {
+          "muted": true,
+          "paused": true
+        }
+      },
+      "folded": {
+        "width": 1265,
+        "scrollWidth": 1265,
+        "phase": "showreel",
+        "wave": {
+          "effectReady": "true",
+          "effectSource": "Originkit Scroll Wave Field",
+          "effectRenderer": "webgl",
+          "effectParticles": "4050",
+          "effectStatus": "paused"
+        },
+        "hero": {
+          "x": 404.796875,
+          "y": 113.890625,
+          "width": 455.390625,
+          "height": 249.703125,
+          "bottom": 363.59375,
+          "right": 860.1875
+        },
+        "bottom": {
+          "x": 409.859375,
+          "y": 333.0625,
+          "width": 445.28125,
+          "height": 29,
+          "bottom": 362.0625,
+          "right": 855.140625
+        },
+        "world": {
+          "x": 379.5,
+          "y": 99.4375,
+          "width": 506,
+          "height": 284.625,
+          "bottom": 384.0625,
+          "right": 885.5
+        },
+        "panel": {
+          "x": 316.25,
+          "y": 408.984375,
+          "width": 632.5,
+          "height": 91.28125,
+          "bottom": 500.265625,
+          "right": 948.75
+        },
+        "h1font": "38px",
+        "video": {
+          "muted": true,
+          "paused": false
+        }
+      }
+    }
+  ],
+  "errors": [],
+  "passed": true
+}

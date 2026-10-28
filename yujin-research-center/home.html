@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<script src="assets/gate.js?v=20261028a"></script>
+<title>Home · 유진 Insight Lab</title>
+<meta name="description" content="유진 Insight Lab — AI 리서치 어시스턴트, 맞춤 행사, 고객 유형별 리서치 콘텐츠" />
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
+<link rel="preload" href="assets/fonts/PretendardVariable.woff2" as="font" type="font/woff2" crossorigin />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" />
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<link rel="stylesheet" href="assets/app.css?v=20261028e" />
+<link rel="stylesheet" href="assets/v2/v2.css?v=1791604140" />
+<link rel="stylesheet" href="assets/orbit-books.css?v=20261028c" />
+<link rel="stylesheet" href="assets/home.css?v=20261028s" />
+</head>
+<body data-no-crumb data-nav="dark">
+<main id="main">
+
+  <!-- ═════ 1. Jarvis AI Hero — 홀로그램이 무대 전체 · 채팅은 버튼으로 가운데에 · 결과는 홀로그램 위에 덮어서
+         Research Workspace와 같은 엔진 · 같은 질문 기록 ═════ -->
+  <section class="jv" id="jarvis" aria-labelledby="jvTitle" data-mode="holo" data-state="STANDBY">
+    <h1 class="sr-only" id="jvTitle">Eugene AI 리서치 어시스턴트</h1>
+    <!-- 홀로그램: jarvis 앱(?embed=hero, 웹 모션 포함)을 무대 전체에 띄우고, 없으면 내장 대체 화면 -->
+    <div class="jv__holo" id="jvHolo" aria-hidden="true">
+      <div class="jv__orb"><i></i><i></i><i></i><b></b></div>
+    </div>
+    <p class="sr-only" id="jvState" aria-live="polite">질문을 기다리고 있습니다</p>
+
+    <!-- 왼쪽: 검수 완료된 질문 목록 (누르면 바로 답변) -->
+    <aside class="jv__list" id="jvList" aria-labelledby="jvListH" hidden>
+      <div class="jv__list-h"><b id="jvListH">검수 완료 질문</b><span>유진 애널리스트가 검수한 답변 · 누르면 바로 열립니다</span></div>
+      <div class="jv__list-items" id="jvListItems"></div>
+    </aside>
+
+    <!-- 채팅창: 버튼을 누르면 가운데에 -->
+    <div class="jv__win" id="jvWin" role="dialog" aria-labelledby="jvWinH" hidden>
+      <div class="jv__win-h">
+        <div><b id="jvWinH">유리 · AI 리서치</b><span id="jvHello"></span></div>
+      </div>
+      <div class="jv__chat" id="jvChat" role="log" aria-live="polite" aria-label="대화 기록"></div>
+      <div class="jv__presets" id="jvPresets" aria-label="검수된 질문 바로 보기"></div>
+      <form class="jv__ask" id="jvForm" autocomplete="off">
+        <label class="sr-only" for="jvIn">리서치 질문</label>
+        <input id="jvIn" maxlength="300" placeholder="예: HBM 공급 과잉 우려, 내년까지 이어질까?" />
+        <button type="button" class="jv__mic" id="jvMic" aria-pressed="false" aria-label="음성으로 질문" title="음성으로 질문">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>
+        </button>
+        <button type="submit" class="jv__send" id="jvSend">질문</button>
+      </form>
+    </div>
+
+    <!-- 결과: 홀로그램 위에 덮어서 -->
+    <div class="jv__answer" id="jvAnswer" role="region" aria-label="답변" aria-live="polite" hidden></div>
+
+    <!-- 전환 버튼 -->
+    <div class="jv__dock">
+      <span class="jv__pill" id="jvPill" hidden></span>
+      <div class="jv__dock-row">
+        <button type="button" class="jv__wake" id="jvWake" aria-pressed="false" title="'유리야'라고 부르면 대답합니다 · 이 탭을 보고 있을 때만 듣습니다 · 누르면 끄기/켜기">
+          <i aria-hidden="true"></i><span>유리 호출 켜기</span>
+        </button>
+        <button type="button" class="jv__toggle" id="jvToggle" aria-pressed="false" aria-controls="jvWin">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v11H8l-4 4z"/></svg><span>채팅으로 질문하기</span>
+        </button>
+      </div>
+      <p class="jv__wakehint" id="jvWakeHint" hidden>“유리야”라고 부른 뒤 질문해 보세요 · 예: 유리야, 반도체 전망 알려줘</p>
+    </div>
+  </section>
+
+  <!-- ═════ 2. Access Hub — D안 Orbit Books(행사 카테고리 책)를 전면에, 아래에 일정 카드 · Events와 같은 모듈 ═════ -->
+  <section class="hm-sec hm-access" id="events" aria-labelledby="evTitle">
+    <div class="wrap">
+      <p class="hm-access__k" id="evTitle">유진 Event</p>
+      <!-- 가운데 궤도 무대: 책을 누르면 정면으로 와서 왼쪽으로 비켜서며 펼쳐지고, 내용은 오른쪽에 (스리키 교재 방식) -->
+      <div class="shelf hm-shelf" id="hmShelf">
+        <div class="orbit-center" aria-hidden="true">Event.</div>
+        <div class="orbit-ring" aria-hidden="true"></div>
+        <div class="orbit-ring two" aria-hidden="true"></div>
+        <i class="orbit-star" aria-hidden="true"></i><i class="orbit-star two" aria-hidden="true"></i>
+        <button class="orbit-toggle" type="button" id="hmOrbitToggle" aria-pressed="false">Ⅱ 공전 멈추기</button>
+        <div class="book-track" id="hmBooks" role="group" aria-label="행사 카테고리 선택"></div>
+        <div class="hm-detail" id="hmDetail" aria-live="polite" hidden></div>
+      </div>
+      <div class="hm-cattabs" role="group" aria-label="행사 카테고리">
+        <button type="button" class="hm-arrow" data-cat-step="-1" aria-label="이전 카테고리">‹</button>
+        <div class="hm-cattabs__list" id="hmCatTabs"></div>
+        <button type="button" class="hm-arrow" data-cat-step="1" aria-label="다음 카테고리">›</button>
+      </div>
+      <div class="hm-bookdesc" id="hmBookDesc"></div>
+    </div>
+  </section>
+
+  <!-- ═════ 3. 기존 홈 섹션 (index와 같은 마크업 · 같은 모션 v2.js · 데이터 home-feed.js)
+         기관 · WM 공통: AI 앵커 → 리포트 카드뉴스 / 이후 기관=퀀트 스튜디오 안내, WM=테마 버블 ═════ -->
+<div class="blue-signal hm-legacy">
+<section class="v2 anc" id="anchor" aria-labelledby="anc-title">
+  <div class="anc-inner">
+    <div class="anc-copy">
+      <p class="section-kicker">EUGENE AI ANCHOR</p>
+      <h2 id="anc-title">매일 아침,<br>AI 앵커가<br><em>먼저 읽어드립니다.</em></h2>
+      <p class="anc-lead">장 시작 전 시황부터 오늘 발간된 리포트, 밤사이 해외 시장까지. 유진 리서치센터의 분석을 AI 앵커가 짧은 영상 브리핑으로 전합니다.</p>
+      <ol class="anc-points">
+        <li><b>01</b><div><h3>오늘의 시황 브리핑</h3><p>지수·수급·업종 흐름을 장 시작 전에 정리합니다.</p></div><small>매일 아침</small></li>
+        <li><b>02</b><div><h3>발간 리포트 브리핑</h3><p>오늘 나온 리포트의 핵심 논리를 먼저 짚어드립니다.</p></div><small>발간 당일</small></li>
+        <li><b>03</b><div><h3>해외 오버나이트</h3><p>밤사이 미국·글로벌 시장의 움직임을 요약합니다.</p></div><small>장 시작 전</small></li>
+      </ol>
+    </div>
+    <div class="anc-stage">
+      <div class="anc-badge"><i aria-hidden="true"></i>ON AIR · AI 브리핑</div>
+      <div id="homeAnchor" class="market-anchor"></div>
+      <div class="anc-lineup"><span>시황 앵커</span><span>리포트 앵커</span><span>해외 앵커</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="v2 cn" id="reports" aria-labelledby="cn-title">
+      <div id="repNav" hidden></div><div id="repBody" hidden></div>
+      <div class="cn-sticky">
+        <div class="cn-grid" aria-hidden="true"></div>
+        <div class="cn-ruler" aria-hidden="true"></div>
+        <h2 class="cn-title" id="cn-title"><span>수많은 리포트,</span><span>한 장의 카드로.</span></h2>
+
+        <div class="cn-side">
+          <p class="section-kicker">RESEARCH CARD NEWS</p>
+          <div class="cn-side-stack">
+            <div class="cn-side-item"><b>01</b><h3>매일 아침,<br>시황 세 줄.</h3><p>전일 시장의 핵심만 세 줄로.<br>출근길 1분이면 충분합니다.</p></div>
+            <div class="cn-side-item"><b>02</b><h3>테마는<br>한 장으로.</h3><p>복잡한 밸류체인을 키워드와<br>차트 한 장으로 정리합니다.</p></div>
+            <div class="cn-side-item"><b>03</b><h3>리포트는<br>3분 요약.</h3><p>원문의 논리를 지키면서<br>체크포인트만 먼저 보여줍니다.</p></div>
+          </div>
+        </div>
+
+        <div class="cn-device">
+          <div class="cn-phone">
+            <div class="cn-status"><span>8:00</span><span class="cn-notch"></span><span>●●● ▮</span></div>
+            <div class="cn-app"><span class="cn-logo" aria-hidden="true">e</span><b>유진 카드뉴스</b><span class="cn-follow">팔로우</span></div>
+            <div class="cn-viewport">
+              <div class="cn-slides">
+                <article class="cnc cnc--navy"><div class="cnc-in">
+                  <p class="cnc-meta">EUGENE DAILY · 10.02 FRI</p>
+                  <h4>오늘 시장,<br>세 줄 요약</h4>
+                  <ol><li>외국인 5거래일 만에 순매수 전환</li><li>반도체·조선 강세, 2차전지 숨 고르기</li><li>환율 하락에 위험선호 회복</li></ol>
+                  <svg class="cnc-spark" viewBox="0 0 200 60" aria-hidden="true"><path d="M0 48 L20 44 L38 47 L58 36 L78 39 L98 28 L118 31 L138 20 L158 24 L178 12 L200 8"/></svg>
+                  <p class="cnc-foot">유진투자증권 리서치센터</p>
+                </div></article>
+                <article class="cnc cnc--peri"><div class="cnc-in">
+                  <p class="cnc-meta">THEME IN ONE PAGE</p>
+                  <h4>AI 반도체,<br>다음 승부처는<br>전력.</h4>
+                  <div class="cnc-bars" aria-hidden="true"><i style="--h:38%"></i><i style="--h:56%"></i><i style="--h:47%"></i><i style="--h:72%"></i><i style="--h:88%"></i></div>
+                  <p class="cnc-keys"><span>HBM</span><span>전력 인프라</span><span>패키징</span></p>
+                  <p class="cnc-foot">테마 리포트 요약</p>
+                </div></article>
+                <article class="cnc cnc--white"><div class="cnc-in">
+                  <p class="cnc-meta">REPORT IN 3 MIN</p>
+                  <h4>실적 시즌,<br>이것만 체크.</h4>
+                  <ol class="cnc-check"><li>가이던스 상향 기업</li><li>마진이 개선되는 업종</li><li>컨센서스와의 괴리</li></ol>
+                  <p class="cnc-link">원문 리포트 보기 →</p>
+                  <p class="cnc-foot">유진투자증권 리서치센터</p>
+                </div></article>
+              </div>
+            </div>
+            <div class="cn-dots" aria-hidden="true"><i></i><i></i><i></i></div>
+            <div class="cn-actions" aria-hidden="true"><span>♡ 1.2k</span><span>저장</span><span>공유 ↗</span></div>
+          </div>
+
+          <div class="cn-desk">
+            <div class="cn-desk-head"><b>EUGENE CARD NEWS</b><span class="on">전체</span><span>시황</span><span>테마</span><span>리포트</span></div>
+            <div class="cn-desk-grid">
+              <article class="cnc cnc--navy"><div class="cnc-in"><p class="cnc-meta">EUGENE DAILY</p><h4>오늘 시장,<br>세 줄 요약</h4><svg class="cnc-spark" viewBox="0 0 200 60" aria-hidden="true"><path d="M0 48 L20 44 L38 47 L58 36 L78 39 L98 28 L118 31 L138 20 L158 24 L178 12 L200 8"/></svg><p class="cnc-foot">시황</p></div></article>
+              <article class="cnc cnc--peri"><div class="cnc-in"><p class="cnc-meta">THEME</p><h4>AI 반도체,<br>다음 승부처는<br>전력.</h4><div class="cnc-bars" aria-hidden="true"><i style="--h:38%"></i><i style="--h:56%"></i><i style="--h:47%"></i><i style="--h:72%"></i><i style="--h:88%"></i></div><p class="cnc-foot">테마</p></div></article>
+              <article class="cnc cnc--blue"><div class="cnc-in"><p class="cnc-meta">GLOBAL</p><h4>미 국채 10년,<br>방향을 바꾸다</h4><svg class="cnc-spark" viewBox="0 0 200 60" aria-hidden="true"><path d="M0 14 L25 18 L50 12 L75 22 L100 30 L125 27 L150 38 L175 44 L200 50"/></svg><p class="cnc-foot">금리</p></div></article>
+              <article class="cnc cnc--white"><div class="cnc-in"><p class="cnc-meta">REPORT IN 3 MIN</p><h4>실적 시즌,<br>이것만 체크.</h4><ol class="cnc-check"><li>가이던스 상향</li><li>마진 개선</li><li>컨센서스 괴리</li></ol><p class="cnc-foot">리포트</p></div></article>
+            </div>
+          </div>
+        </div>
+
+        <a class="cn-tag" href="desk.html#cardnews" tabindex="-1">
+          <span class="cn-tag-stack">
+            <span>DAILY MARKET · 오늘의 시황</span>
+            <span>THEME · 테마 한 장</span>
+            <span>REPORT · 3분 요약</span>
+            <span>카드뉴스는 Private Desk에서 ↗</span>
+          </span>
+        </a>
+
+        <div class="cn-cursor" style="--c:#245ce7"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 2l7.5 19 2.6-7.9L21 10.5z"/></svg><span>애널리스트</span></div>
+        <div class="cn-cursor" style="--c:#7a5af5"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 2l7.5 19 2.6-7.9L21 10.5z"/></svg><span>AI 요약</span></div>
+        <div class="cn-cursor" style="--c:#ef8a3c"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 2l7.5 19 2.6-7.9L21 10.5z"/></svg><span>에디터</span></div>
+        <div class="cn-cursor" style="--c:#1fae8b"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 2l7.5 19 2.6-7.9L21 10.5z"/></svg><span>컴플라이언스</span></div>
+      </div>
+    </section>
+
+<!-- 테마(버블 차트)는 위 시황·테마 가로 카드로 이동 -->
+
+<div data-for="inst">
+<section class="v2 qg" id="quant-gate" aria-labelledby="qg-title">
+  <div class="qg-sticky">
+    <div class="qg-grid" aria-hidden="true"></div>
+    <svg class="qg-curve" viewBox="0 0 1200 500" preserveAspectRatio="none" aria-hidden="true">
+      <defs><linearGradient id="qgFill" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5aa6ff" stop-opacity=".22"/><stop offset="1" stop-color="#5aa6ff" stop-opacity="0"/></linearGradient></defs>
+      <path class="qg-area"/><path class="qg-bench" pathLength="1"/><path class="qg-line" pathLength="1"/>
+    </svg>
+    <div aria-hidden="true"><span class="qg-chip" style="--x:56%;--y:64%">모멘텀</span><span class="qg-chip" style="--x:68%;--y:52%">밸류</span><span class="qg-chip" style="--x:80%;--y:40%">퀄리티</span><span class="qg-chip" style="--x:43%;--y:74%">저변동성</span><span class="qg-chip" style="--x:90%;--y:30%">배당</span><span class="qg-chip" style="--x:62%;--y:36%">수급</span></div>
+    <div class="qg-copy">
+      <p class="section-kicker">QUANT STUDIO</p>
+      <h2 id="qg-title"><span>읽는 투자에서,</span><span>설계하는 투자로.</span></h2>
+      <p>테마를 고르고 팩터를 조합하고, 10년 데이터로 검증까지. 퀀트가 쓰던 도구를 코드 한 줄 없이, 클릭만으로.</p>
+    </div>
+    <div class="qg-iris">
+      <div class="qg-iris-in">
+        <p class="section-kicker">QUANT STUDIO</p>
+        <h3>이제, 나만의 전략을<br>직접 만들어 보세요.</h3>
+        <div class="qg-actions"><a class="blue-button" href="quant.html">퀀트 스튜디오 열기 <span aria-hidden="true">↗</span></a></div>
+      </div>
+    </div>
+  </div>
+</section>
+</div>
+<div data-for="wm">
+<section class="v2 themes2" id="themes" aria-labelledby="themes-title">
+  <div class="themes2-inner">
+    <div class="themes2-head">
+      <div>
+        <p class="section-kicker">THEME ROTATION MONITOR</p>
+        <h2 id="themes-title">지금 돈이 몰리는<br>테마는?</h2>
+      </div>
+      <div class="themes2-side">
+        <p>주간 테마 로테이션 분석. 버블이 클수록 1개월 수익률이 높은 테마입니다. 주도·과열·반전 국면을 미리 읽으세요.</p>
+        <div class="themes2-links"><button class="btn btn--text" onclick="soon('주간 테마 리포트')">주간 테마 리포트 →</button><a class="btn btn--text" href="market.html">시황·테마 전체 보기 →</a></div>
+      </div>
+    </div>
+    <div class="theme-split">
+      <div class="bubble-box"><div class="bubble-wrap" id="bubbleWrap"></div></div>
+      <div class="card theme-panel"><div class="card__body" id="themePanel"></div></div>
+    </div>
+    <div class="bubble-legend">
+      <span>버블 크기 = 1개월 수익률 · 색 = 테마 구분 · 숫자 = 1개월 수익률</span>
+      <span class="sw" style="color:var(--color-primary)"><i style="background:var(--color-primary)"></i>버블 클릭 → 우측에 종목·전일수익률 / 리포트 / 뉴스</span>
+    </div>
+  </div>
+</section>
+</div>
+</div>
+<script>
+/* 고객 유형별 섹션: 쓰지 않는 쪽은 스크립트가 돌기 전에 문서에서 뺀다 (v2.js는 있는 섹션만 동작) */
+(function(){ var s=null; try{ s=JSON.parse(localStorage.getItem('il.session')||'null'); }catch(e){}
+  var wm=!!s&&s.persona==='hnw'; document.querySelector(wm?'[data-for="inst"]':'[data-for="wm"]').remove(); })();
+</script>
+
+  <!-- ═════ 4. 이어보기 ═════ -->
+  <section class="hm-sec" id="continue" aria-labelledby="ctTitle">
+    <div class="wrap">
+      <div class="hm-head"><div><p class="hm-kicker">CONTINUE</p><h2 id="ctTitle">이어서 보기</h2></div></div>
+      <div class="hm-grid hm-grid--2">
+        <article class="hm-card"><h3>최근 질문</h3><div id="ctQs" class="hm-rows"></div><a class="hm-more" href="desk.html#research">Private Desk에서 보기 →</a></article>
+        <article class="hm-card"><h3>신청한 행사</h3><div id="ctEv" class="hm-rows"></div><a class="hm-more" href="desk.html#events">Private Desk에서 보기 →</a></article>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<script src="assets/config.js?v=20261028b"></script>
+<script src="assets/partials.js?v=20261029a"></script>
+<script src="assets/lounge-proto.js?v=20261027b"></script>
+<script src="assets/lounge-api.js?v=20261028d"></script>
+<script src="assets/events-data.js?v=20261029a"></script>
+<script src="assets/orbit-books.js?v=20261029a"></script>
+<script src="assets/anchor.js"></script>
+<script src="assets/home-feed.js?v=20261028a"></script>
+<script src="assets/home.js?v=20261028p"></script>
+<script type="module" src="assets/v2/v2.js?v=1791604140"></script>
+<script src="assets/cardnews/home-archive.js?v=20261028b" defer></script>
+</body>
+</html>

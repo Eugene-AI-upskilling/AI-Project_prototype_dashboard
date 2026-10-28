@@ -1,6 +1,6 @@
 /* ══════════════════════════════════════════════════════════════════════
    lounge-api.js — 라운지 화면 ↔ 데이터 연결
-   1) 로컬 서버(lounge_api/server.py)가 있으면 실서버 API
+   1) lounge_api 서버가 있으면 실서버 API (주소: assets/config.js의 apiBase, 비우면 같은 출처)
    2) 없으면 정적 스냅샷(assets/lounge-snapshot.json) — 공개 배포용. 검수 · 새 리포트 투입 등은
       서버와 같은 규칙으로 이 브라우저 안에서만 반영(localStorage)
    3) 둘 다 없으면 ready()=false → 화면은 예시 데이터로 동작
@@ -10,9 +10,10 @@
   'use strict';
   let health=null, B=null;
 
+  const BASE=((window.IL_CONFIG&&window.IL_CONFIG.apiBase)||'').replace(/\/$/,'');
   async function req(path, body){
     const opt = body===undefined ? {} : {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body)};
-    const r = await fetch(path, opt);
+    const r = await fetch(path.startsWith('/api/')?BASE+path:path, opt);
     const j = await r.json().catch(()=>({error:'응답을 읽지 못했습니다'}));
     if(!r.ok) throw new Error(j.error||('HTTP '+r.status));
     return j;
@@ -23,10 +24,14 @@
     questions:p=>req('/api/questions'+(p?'?persona='+p:'')),
     question:(id,admin)=>req(`/api/questions/${id}`+(admin?'?admin=1':'')),
     ask:(text,persona)=>req('/api/ask',{text,persona}),
+    jarvis:(text,persona)=>req('/api/jarvis',{text,persona}),      // Home · Research 공용: 유진 근거 우선, 없으면 외부 웹 자료
+    jarvisWeb:id=>req('/api/jarvis/web',{id}),
     page:(rid,p)=>req(`/api/reports/${rid}/pages/${p}`),
     feedback:(question_id,vote,persona)=>req('/api/feedback',{question_id,vote,persona}),
     consult:b=>req('/api/consults',b),
     applyEvent:(event_id,persona,state)=>req('/api/events/apply',{event_id,persona,state}),
+    exports:p=>req('/api/exports'+(p?'?persona='+p:'')),
+    exportNow:(id,kinds)=>req('/api/export',{id,kinds}),
     admin:{ queue:()=>req('/api/admin/queue'), stale:()=>req('/api/admin/stale'), library:()=>req('/api/admin/library'),
       consults:()=>req('/api/admin/consults'), metrics:()=>req('/api/admin/metrics'), reports:n=>req('/api/reports?limit='+(n||20)),
       review:b=>req('/api/admin/review',b), newReport:report_id=>req('/api/admin/new-report',{report_id}) },
@@ -44,7 +49,7 @@
     }
     const save=()=>{ try{ localStorage.setItem(KEY,JSON.stringify(S)); }catch(e){} };
     const ok=v=>Promise.resolve(v);
-    const pub=(q,admin)=>{ const d={...q}; if(q.status!=='reviewed') delete d.answer; if(!admin) delete d.draft; return d; };
+    const pub=(q,admin)=>{ const d={...q}; if(q.status!=='reviewed') delete d.answer; if(!admin&&!(q.status==='pending'&&(!q.route||q.route==='answer'))) delete d.draft; return d; };
     const find=id=>S.questions.find(q=>String(q.id)===String(id));
     function metrics(){
       const rv=S.questions.filter(q=>q.status==='reviewed'&&q.reviewed_at);
@@ -65,10 +70,20 @@
         S.questions.push({id,text,persona,topic:'',status:'error',route:null,stale:0,created_at:now(),
           error:'공개 시연 버전에서는 새 질문의 AI 답변을 만들지 않습니다. 질문은 접수됐고, 담당자가 직접 안내드립니다.'});
         save(); return ok({id,status:'error'}); },
+      jarvis:(text,persona)=>{ text=(text||'').trim();
+        const hit=S.questions.find(q=>q.status==='reviewed'&&q.text===text);
+        if(hit) return ok({mode:'reviewed',id:hit.id});
+        const dr=S.questions.find(q=>q.status==='pending'&&(!q.route||q.route==='answer')&&q.draft&&q.text===text);
+        if(dr) return ok({mode:'eugene',id:dr.id,status:'pending'});
+        return B.ask(text,persona).then(r=>({mode:'none',id:r.id,error:'공개 시연 버전에서는 새 질문의 AI 답변을 만들지 않습니다. 질문은 접수됐고, 담당자가 직접 안내드립니다.'})); },
+      jarvisWeb:id=>Promise.reject(new Error('공개 시연 버전에서는 외부 자료 안내를 만들지 않습니다.')),
       page:(rid,p)=>{ const x=snap.pages[`${rid}-${p}`]; return x?ok(x):Promise.reject(new Error('공개 버전에는 인용된 쪽만 담겨 있습니다')); },
       feedback:(question_id,vote,persona)=>{ S.feedback.push({question_id,vote,persona,at:now()}); save(); return ok({ok:true}); },
       consult:b=>{ S.consults.unshift({id:S.consults.length+1,...b,state:'신규',at:now()}); save(); return ok({id:S.consults.length}); },
       applyEvent:(event_id,persona,state)=>{ S.apps.push({event_id,persona,state,at:now()}); save(); return ok({ok:true}); },
+      exports:p=>ok((snap.exports||[]).filter(e=>!p||e.persona===p)),
+      exportNow:(id,kinds)=>{ const out={}; (snap.exports||[]).filter(e=>e.question_id===+id&&(!kinds||kinds.includes(e.kind))).forEach(e=>out[e.kind]=e.files);
+        return Object.keys(out).length?ok(out):Promise.reject(new Error('공개 시연 버전에서는 미리 만든 결과물만 받을 수 있습니다. 로컬 서버에서는 승인 즉시 생성됩니다.')); },
       admin:{
         queue:()=>ok(S.questions.filter(q=>['drafting','pending','error'].includes(q.status)||q.stale).sort((a,b)=>(b.stale-a.stale)||(a.id-b.id)).map(q=>pub(q,true))),
         stale:()=>ok(S.questions.filter(q=>q.stale).map(q=>pub(q))),
@@ -121,7 +136,8 @@
       id:d.id, q:d.text, topic:d.topic||a.topic||'', status:d.status, persona:d.persona, route:d.route||a.route,
       stale:!!d.stale, staleNote:d.stale_reason||'', reviewer:d.reviewer||'', reviewedAt:fmt(d.reviewed_at), askedAt:fmt(d.created_at),
       baseDate:srcDates.length?srcDates[srcDates.length-1]:'', verdict:a.verdict||'', routeReason:a.route_reason||'', error:d.error||'',
-      meta:a.meta||{},
+      meta:a.meta||{}, web:d.web||null,
+      reviewed:d.status==='reviewed', isDraft:d.status!=='reviewed'&&!!(d.draft&&(d.draft.hypotheses||[]).length), reviewNote:a.review_note||'',   // 유진 근거가 없어 외부 웹 자료로 안내한 답 (검수 대상 아님)
       hyps:(a.hypotheses||[]).map(h=>({ t:h.title, strength:h.strength, tone:TONE[h.strength]||'neutral',
         facts:(h.facts||[]).map(stmt).filter(Boolean), view:stmt(h.view), counter:stmt(h.counter), check:h.checks||[] })),
     };
@@ -132,7 +148,9 @@
     ready, req, normAnswer,
     isStatic:()=>!!(health&&health.static),
     questions:call(['questions']), question:call(['question']), ask:call(['ask']), page:call(['page']),
+    jarvis:call(['jarvis']), jarvisWeb:call(['jarvisWeb']),
     feedback:call(['feedback']), consult:call(['consult']), applyEvent:call(['applyEvent']),
+    exports:call(['exports']), exportNow:call(['exportNow']),
     admin:{ queue:call(['admin','queue']), stale:call(['admin','stale']), library:call(['admin','library']),
       consults:call(['admin','consults']), metrics:call(['admin','metrics']), reports:call(['admin','reports']),
       review:call(['admin','review']), newReport:call(['admin','newReport']) },

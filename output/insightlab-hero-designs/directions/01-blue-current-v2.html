@@ -1,0 +1,236 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#070e24">
+  <title>01 v2 · Blue Current — Eugene Insight Lab</title>
+  <link rel="stylesheet" href="base.css"><link rel="stylesheet" href="01-blue-current.css"><link rel="stylesheet" href="01-blue-current-v2.css">
+  <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}</script>
+</head>
+<body class="experience-static blue-signal" data-direction="01" data-bg="#070e24" data-colors="#2563eb,#5aa6ff,#badcff">
+  <a class="skip-link" href="#market-pulse">본문으로 이동</a>
+  <header class="site-nav">
+    <a class="site-logo" href="index.html" aria-label="Eugene Insight Lab 디자인 비교"><span class="brand-e" aria-hidden="true">e</span><span>유진투자증권 <b>INSIGHT LAB</b></span></a>
+    <nav class="nav-links" aria-label="주요 메뉴"><a href="#market-pulse">시황·테마</a><a href="#cardnews">카드뉴스</a><a href="#perspective">분석 관점</a><a href="#platform">플랫폼</a></nav>
+    <a class="nav-end" href="#explore">리서치 탐색 <span aria-hidden="true">↗</span></a>
+  </header>
+  <main>
+    <section class="experience" aria-labelledby="hero-title">
+      <div class="experience-stage">
+        <div class="experience-target" aria-hidden="true"></div>
+        <div class="experience-world">
+          <div class="wave-host" aria-hidden="true"></div>
+          <div class="blue-shade" aria-hidden="true"></div>
+          <div class="hero-intro">
+            <p class="hero-overline">EUGENE INSIGHT LAB</p>
+            <h1 id="hero-title">변화의 흐름에서,<br>다음의 가능성을.</h1>
+            <p class="hero-description">시장과 산업, 기업을 연결하는 리서치.<br>복잡한 변화 속에서 나만의 관점을 찾으세요.</p>
+            <a class="blue-button" href="#market-pulse">인사이트 살펴보기 <span aria-hidden="true">↗</span></a>
+          </div>
+          <div class="hero-bottom"><a href="#showreel" data-jump-reel>우리의 관점 만나보기 <span aria-hidden="true">↓</span></a><button type="button" data-motion-toggle aria-pressed="false">모션 일시정지</button></div>
+          <div class="reel-card" id="showreel">
+            <video controls muted playsinline loop preload="none" poster="../assets/signal-reel-poster.jpg" aria-label="유진 Insight Lab 쇼릴 미리보기"><source src="../assets/signal-reel-preview.mp4" type="video/mp4"></video>
+            <button type="button" class="reel-open" data-open-reel aria-label="15초 쇼릴 전체 보기"><span aria-hidden="true">↗</span><span>쇼릴 전체 보기</span></button>
+            <button type="button" class="reel-toggle" aria-label="쇼릴 미리보기 재생">재생</button>
+          </div>
+        </div>
+        <div class="experience-panel">
+          <p class="section-kicker">INSIGHT IN MOTION</p><h2>흐름을 읽고,<br>다음을 그립니다.</h2>
+          <p>데이터가 관점으로 이어지는 순간.<br>유진의 리서치가 바라보는 세상을 만나보세요.</p>
+          <button class="blue-button" type="button" data-open-reel>15초 쇼릴 보기 <span aria-hidden="true">↗</span></button>
+          <a class="panel-link" href="#market-pulse">시황·테마 보기 <span aria-hidden="true">→</span></a>
+        </div>
+      </div>
+    </section>
+
+    <!-- 시황 · 테마: 세로 스크롤이 카드를 가로로 넘깁니다 -->
+    <section class="pulse" id="market-pulse" aria-labelledby="pulse-title">
+      <div class="pulse-sticky">
+        <div class="pulse-track">
+          <div class="pulse-intro">
+            <p class="section-kicker">MARKET &amp; THEME</p>
+            <h2 id="pulse-title">오늘의 시장,<br>한 장씩<br>넘겨보세요.</h2>
+            <p>국내외 시황부터 지금 주목받는 테마까지.<br>리서치센터가 매일 정리한 흐름을 카드로 만납니다.</p>
+            <p class="pulse-hint"><span class="hint-mouse" aria-hidden="true"></span>스크롤하면 카드가 옆으로 넘어갑니다</p>
+          </div>
+
+          <article class="pulse-card" style="--card:#edf2ff;--pill:#dfe8ff">
+            <div class="pulse-visual"><canvas data-scene="candles" aria-hidden="true"></canvas></div>
+            <svg class="pulse-orbit" viewBox="0 0 600 600" aria-hidden="true"><circle cx="300" cy="300" r="290"/><circle cx="430" cy="210" r="210"/></svg>
+            <div class="pulse-body">
+              <p class="pulse-tag"><span>시황</span>국내 증시</p>
+              <h3>지수보다 먼저,<br>수급을 읽습니다.</h3>
+              <p>코스피·코스닥 마감 흐름과 외국인·기관 수급,<br>업종별 강약을 한 장에 정리합니다.</p>
+              <dl class="pulse-data">
+                <div><dt>KOSPI</dt><dd>7,084.12 <em class="up">▲ 0.82%</em></dd></div>
+                <div><dt>KOSDAQ</dt><dd>942.37 <em class="down">▼ 0.31%</em></dd></div>
+                <div><dt>외국인 순매수</dt><dd>+4,120억</dd></div>
+              </dl>
+            </div>
+            <span class="pulse-num" aria-hidden="true">01</span>
+          </article>
+
+          <article class="pulse-card" style="--card:#f1effb;--pill:#e4def8">
+            <div class="pulse-visual"><canvas data-scene="globe" aria-hidden="true"></canvas></div>
+            <svg class="pulse-orbit" viewBox="0 0 600 600" aria-hidden="true"><circle cx="300" cy="300" r="290"/><circle cx="430" cy="210" r="210"/></svg>
+            <div class="pulse-body">
+              <p class="pulse-tag"><span>시황</span>해외 증시</p>
+              <h3>밤사이 세계가<br>움직인 방향.</h3>
+              <p>뉴욕·유럽·아시아 마감과 주요 이벤트가<br>오늘 국내 시장에 남긴 신호를 짚습니다.</p>
+              <dl class="pulse-data">
+                <div><dt>S&amp;P 500</dt><dd>6,912.40 <em class="up">▲ 0.44%</em></dd></div>
+                <div><dt>NASDAQ</dt><dd>23,518.06 <em class="up">▲ 0.71%</em></dd></div>
+                <div><dt>SOX</dt><dd>7,264.91 <em class="down">▼ 0.18%</em></dd></div>
+              </dl>
+            </div>
+            <span class="pulse-num" aria-hidden="true">02</span>
+          </article>
+
+          <article class="pulse-card" style="--card:#ebf7f4;--pill:#d6efe8">
+            <div class="pulse-visual"><canvas data-scene="coins" aria-hidden="true"></canvas></div>
+            <svg class="pulse-orbit" viewBox="0 0 600 600" aria-hidden="true"><circle cx="300" cy="300" r="290"/><circle cx="430" cy="210" r="210"/></svg>
+            <div class="pulse-body">
+              <p class="pulse-tag"><span>시황</span>금리 · 환율</p>
+              <h3>돈의 가격이<br>말해주는 것.</h3>
+              <p>국고채·미 국채 금리 곡선과 원/달러 환율,<br>자금 흐름의 방향을 함께 읽습니다.</p>
+              <dl class="pulse-data">
+                <div><dt>국고채 3년</dt><dd>2.61% <em class="down">▼ 3bp</em></dd></div>
+                <div><dt>미 국채 10년</dt><dd>4.08% <em class="up">▲ 2bp</em></dd></div>
+                <div><dt>원/달러</dt><dd>1,352.4 <em class="down">▼ 4.1</em></dd></div>
+              </dl>
+            </div>
+            <span class="pulse-num" aria-hidden="true">03</span>
+          </article>
+
+          <article class="pulse-card" style="--card:#eef1f8;--pill:#dde3f2">
+            <div class="pulse-visual"><canvas data-scene="chip" aria-hidden="true"></canvas></div>
+            <svg class="pulse-orbit" viewBox="0 0 600 600" aria-hidden="true"><circle cx="300" cy="300" r="290"/><circle cx="430" cy="210" r="210"/></svg>
+            <div class="pulse-body">
+              <p class="pulse-tag"><span class="theme">테마</span>AI 반도체</p>
+              <h3>연산의 경쟁,<br>다음 병목은 어디.</h3>
+              <p>HBM부터 전력 인프라까지, AI 투자 사이클이<br>밸류체인 어디로 번지는지 추적합니다.</p>
+              <ul class="pulse-chips"><li>HBM</li><li>온디바이스 AI</li><li>전력 인프라</li><li>패키징</li></ul>
+            </div>
+            <span class="pulse-num" aria-hidden="true">04</span>
+          </article>
+
+          <article class="pulse-card" style="--card:#edf6f3;--pill:#d7eee8">
+            <div class="pulse-visual"><canvas data-scene="battery" aria-hidden="true"></canvas></div>
+            <svg class="pulse-orbit" viewBox="0 0 600 600" aria-hidden="true"><circle cx="300" cy="300" r="290"/><circle cx="430" cy="210" r="210"/></svg>
+            <div class="pulse-body">
+              <p class="pulse-tag"><span class="theme">테마</span>2차전지 · 에너지</p>
+              <h3>충전을 기다리는<br>시간의 신호.</h3>
+              <p>ESS 수요, 원자재 가격, 북미 공급망까지.<br>반등의 조건을 하나씩 점검합니다.</p>
+              <ul class="pulse-chips"><li>ESS</li><li>리튬 가격</li><li>북미 공급망</li><li>전력망</li></ul>
+            </div>
+            <span class="pulse-num" aria-hidden="true">05</span>
+          </article>
+
+          <a class="pulse-more" href="#cardnews">
+            <span class="section-kicker">MORE</span>
+            <b>시황·테마<br>전체 보기</b>
+            <span class="pulse-more-arrow" aria-hidden="true">↗</span>
+          </a>
+        </div>
+        <div class="pulse-progress" aria-hidden="true">
+          <span class="pulse-count"><b>01</b> / 05</span>
+          <i><b></b></i>
+          <span class="pulse-note">시안용 예시 수치</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- 카드뉴스: 스크롤 타임라인 (폰 등장 → 협업 커서 → 카드 전환 → 아카이브로 변형) -->
+    <section class="cn" id="cardnews" aria-labelledby="cn-title">
+      <div class="cn-sticky">
+        <div class="cn-grid" aria-hidden="true"></div>
+        <div class="cn-ruler" aria-hidden="true"></div>
+        <h2 class="cn-title" id="cn-title"><span>리서치를,</span><span>한 장의 카드로.</span></h2>
+
+        <div class="cn-side">
+          <p class="section-kicker">EUGENE CARD NEWS</p>
+          <div class="cn-side-stack">
+            <div class="cn-side-item"><b>01</b><h3>매일 아침,<br>시황 세 줄.</h3><p>전일 시장의 핵심만 세 줄로.<br>출근길 1분이면 충분합니다.</p></div>
+            <div class="cn-side-item"><b>02</b><h3>테마는<br>한 장으로.</h3><p>복잡한 밸류체인을 키워드와<br>차트 한 장으로 정리합니다.</p></div>
+            <div class="cn-side-item"><b>03</b><h3>리포트는<br>3분 요약.</h3><p>원문의 논리를 지키면서<br>체크포인트만 먼저 보여줍니다.</p></div>
+          </div>
+        </div>
+
+        <div class="cn-device">
+          <div class="cn-phone">
+            <div class="cn-status"><span>8:00</span><span class="cn-notch"></span><span>●●● ▮</span></div>
+            <div class="cn-app"><span class="brand-e" aria-hidden="true">e</span><b>유진 카드뉴스</b><span class="cn-follow">팔로우</span></div>
+            <div class="cn-viewport">
+              <div class="cn-slides">
+                <article class="cnc cnc--navy"><div class="cnc-in">
+                  <p class="cnc-meta">EUGENE DAILY · 10.02 FRI</p>
+                  <h4>오늘 시장,<br>세 줄 요약</h4>
+                  <ol><li>외국인 5거래일 만에 순매수 전환</li><li>반도체·조선 강세, 2차전지 숨 고르기</li><li>환율 하락에 위험선호 회복</li></ol>
+                  <svg class="cnc-spark" viewBox="0 0 200 60" aria-hidden="true"><path d="M0 48 L20 44 L38 47 L58 36 L78 39 L98 28 L118 31 L138 20 L158 24 L178 12 L200 8"/></svg>
+                  <p class="cnc-foot">유진투자증권 리서치센터</p>
+                </div></article>
+                <article class="cnc cnc--peri"><div class="cnc-in">
+                  <p class="cnc-meta">THEME IN ONE PAGE</p>
+                  <h4>AI 반도체,<br>다음 승부처는<br>전력.</h4>
+                  <div class="cnc-bars" aria-hidden="true"><i style="--h:38%"></i><i style="--h:56%"></i><i style="--h:47%"></i><i style="--h:72%"></i><i style="--h:88%"></i></div>
+                  <p class="cnc-keys"><span>HBM</span><span>전력 인프라</span><span>패키징</span></p>
+                  <p class="cnc-foot">테마 리포트 요약</p>
+                </div></article>
+                <article class="cnc cnc--white"><div class="cnc-in">
+                  <p class="cnc-meta">REPORT IN 3 MIN</p>
+                  <h4>실적 시즌,<br>이것만 체크.</h4>
+                  <ol class="cnc-check"><li>가이던스 상향 기업</li><li>마진이 개선되는 업종</li><li>컨센서스와의 괴리</li></ol>
+                  <p class="cnc-link">원문 리포트 보기 →</p>
+                  <p class="cnc-foot">유진투자증권 리서치센터</p>
+                </div></article>
+              </div>
+            </div>
+            <div class="cn-dots" aria-hidden="true"><i></i><i></i><i></i></div>
+            <div class="cn-actions" aria-hidden="true"><span>♡ 1.2k</span><span>저장</span><span>공유 ↗</span></div>
+          </div>
+
+          <div class="cn-desk">
+            <div class="cn-desk-head"><b>EUGENE CARD NEWS</b><span class="on">전체</span><span>시황</span><span>테마</span><span>리포트</span></div>
+            <div class="cn-desk-grid">
+              <article class="cnc cnc--navy"><div class="cnc-in"><p class="cnc-meta">EUGENE DAILY</p><h4>오늘 시장,<br>세 줄 요약</h4><svg class="cnc-spark" viewBox="0 0 200 60" aria-hidden="true"><path d="M0 48 L20 44 L38 47 L58 36 L78 39 L98 28 L118 31 L138 20 L158 24 L178 12 L200 8"/></svg><p class="cnc-foot">시황</p></div></article>
+              <article class="cnc cnc--peri"><div class="cnc-in"><p class="cnc-meta">THEME</p><h4>AI 반도체,<br>다음 승부처는<br>전력.</h4><div class="cnc-bars" aria-hidden="true"><i style="--h:38%"></i><i style="--h:56%"></i><i style="--h:47%"></i><i style="--h:72%"></i><i style="--h:88%"></i></div><p class="cnc-foot">테마</p></div></article>
+              <article class="cnc cnc--blue"><div class="cnc-in"><p class="cnc-meta">GLOBAL</p><h4>미 국채 10년,<br>방향을 바꾸다</h4><svg class="cnc-spark" viewBox="0 0 200 60" aria-hidden="true"><path d="M0 14 L25 18 L50 12 L75 22 L100 30 L125 27 L150 38 L175 44 L200 50"/></svg><p class="cnc-foot">금리</p></div></article>
+              <article class="cnc cnc--white"><div class="cnc-in"><p class="cnc-meta">REPORT IN 3 MIN</p><h4>실적 시즌,<br>이것만 체크.</h4><ol class="cnc-check"><li>가이던스 상향</li><li>마진 개선</li><li>컨센서스 괴리</li></ol><p class="cnc-foot">리포트</p></div></article>
+            </div>
+          </div>
+        </div>
+
+        <a class="cn-tag" href="#perspective" tabindex="-1">
+          <span class="cn-tag-stack">
+            <span>DAILY MARKET · 오늘의 시황</span>
+            <span>THEME · 테마 한 장</span>
+            <span>REPORT · 3분 요약</span>
+            <span>카드뉴스 모아보기 ↗</span>
+          </span>
+        </a>
+
+        <div class="cn-cursor" style="--c:#245ce7"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 2l7.5 19 2.6-7.9L21 10.5z"/></svg><span>애널리스트</span></div>
+        <div class="cn-cursor" style="--c:#7a5af5"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 2l7.5 19 2.6-7.9L21 10.5z"/></svg><span>AI 요약</span></div>
+        <div class="cn-cursor" style="--c:#ef8a3c"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 2l7.5 19 2.6-7.9L21 10.5z"/></svg><span>에디터</span></div>
+        <div class="cn-cursor" style="--c:#1fae8b"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 2l7.5 19 2.6-7.9L21 10.5z"/></svg><span>컴플라이언스</span></div>
+      </div>
+    </section>
+
+    <section class="perspective-section" id="perspective" aria-labelledby="perspective-title">
+      <div class="perspective-heading"><p class="section-kicker">OUR PERSPECTIVE</p><h2 id="perspective-title">넓게 보고.<br>깊게 읽고.<br><em>함께 연결합니다.</em></h2></div>
+      <div class="perspective-list">
+        <article id="market"><span>01</span><div><h3>시장의 큰 방향</h3><p>거시 환경과 자산의 흐름을 함께 읽으며,<br>오늘의 변화를 더 넓은 맥락에서 바라봅니다.</p></div></article>
+        <article id="industry"><span>02</span><div><h3>산업의 새로운 구조</h3><p>기술과 수요, 공급망의 연결을 살피며<br>산업의 변화가 만드는 기회를 탐색합니다.</p></div></article>
+        <article id="company"><span>03</span><div><h3>기업의 본질과 가능성</h3><p>사업과 실적, 경쟁 환경을 함께 분석해<br>기업의 현재와 다음을 이해합니다.</p></div></article>
+      </div>
+    </section>
+    <section class="blue-section platform-section" id="platform" aria-labelledby="platform-title">
+      <div class="platform-intro"><p class="section-kicker">YOUR RESEARCH DESK</p><h2 id="platform-title">좋은 관점을,<br>더 편리하게.</h2><p>궁금한 시장, 관심 있는 산업과 기업.<br>내가 찾는 인사이트에 빠르게 도달하세요.</p><a class="blue-button" href="#explore">탐색 시작하기 <span aria-hidden="true">↗</span></a></div>
+      <div class="desk-preview" aria-label="리서치 탐색 구성 예시"><div class="desk-title"><b>INSIGHT LAB</b><span>리서치 탐색</span></div><div class="desk-search">어떤 인사이트를 찾고 있나요? <span aria-hidden="true">⌕</span></div><div class="desk-tabs"><span class="active">전체</span><span>시장</span><span>산업</span><span>기업</span></div><a href="#market"><small>시장</small><b>시장의 큰 흐름을 읽다</b><span aria-hidden="true">↗</span></a><a href="#industry"><small>산업</small><b>변화하는 산업의 연결</b><span aria-hidden="true">↗</span></a><a href="#company"><small>기업</small><b>기업의 본질과 가능성</b><span aria-hidden="true">↗</span></a><p class="preview-caption">리서치 탐색 화면의 구성 예시</p></div>
+    </section>
+    <section class="explore-section" id="explore" aria-labelledby="explore-title"><p class="section-kicker">FIND YOUR NEXT PERSPECTIVE</p><h2 id="explore-title">당신의 다음 관점은<br>어디에서 시작될까요?</h2><a class="explore-button" href="https://eugene-insightlab.netlify.app/">Insight Lab에서 탐색하기 <span aria-hidden="true">↗</span></a></section>
+  </main>
+  <footer class="site-footer"><a href="#hero-title">유진투자증권 <b>INSIGHT LAB</b></a><span>디자인 검토용 시안 · Blue Current v2</span><a href="index.html">시안 비교 ↗</a></footer>
+  <script type="module" src="experience.js"></script>
+  <script type="module" src="blue-v2.js"></script>
+</body>
+</html>

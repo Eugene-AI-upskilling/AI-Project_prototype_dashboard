@@ -1,0 +1,137 @@
+{
+  "checks": [
+    {
+      "desktopOpen": {
+        "width": 1440,
+        "scrollWidth": 1440,
+        "progress": "0.000",
+        "static": false,
+        "effects": [
+          {
+            "ready": "true",
+            "renderer": "webgl",
+            "status": "running"
+          },
+          {
+            "ready": "true",
+            "renderer": "webgl",
+            "status": "running"
+          }
+        ],
+        "h1": "95.76px",
+        "copyInert": true
+      }
+    },
+    {
+      "desktopSettled": {
+        "width": 1440,
+        "scrollWidth": 1440,
+        "progress": "0.860",
+        "static": false,
+        "effects": [
+          {
+            "ready": "true",
+            "renderer": "webgl",
+            "status": "running"
+          },
+          {
+            "ready": "true",
+            "renderer": "webgl",
+            "status": "running"
+          }
+        ],
+        "h1": "42.134px",
+        "copyInert": false
+      }
+    },
+    {
+      "paused": {
+        "width": 1440,
+        "scrollWidth": 1440,
+        "progress": "0.000",
+        "static": false,
+        "effects": [
+          {
+            "ready": "true",
+            "renderer": "webgl",
+            "status": "paused"
+          },
+          {
+            "ready": "true",
+            "renderer": "webgl",
+            "status": "paused"
+          }
+        ],
+        "h1": "95.76px",
+        "copyInert": true
+      }
+    },
+    {
+      "mobile": {
+        "width": 390,
+        "scrollWidth": 390,
+        "progress": "0.000",
+        "static": false,
+        "effects": [
+          {
+            "ready": "true",
+            "renderer": "webgl",
+            "status": "running"
+          },
+          {
+            "ready": "true",
+            "renderer": "webgl",
+            "status": "running"
+          }
+        ],
+        "h1": "39px",
+        "copyInert": true
+      }
+    },
+    {
+      "mobileSettled": {
+        "width": 390,
+        "scrollWidth": 390,
+        "progress": "0.860",
+        "static": false,
+        "effects": [
+          {
+            "ready": "true",
+            "renderer": "webgl",
+            "status": "running"
+          },
+          {
+            "ready": "true",
+            "renderer": "webgl",
+            "status": "running"
+          }
+        ],
+        "h1": "26.6px",
+        "copyInert": false
+      }
+    },
+    {
+      "reduced": {
+        "width": 1440,
+        "scrollWidth": 1440,
+        "static": true,
+        "effects": [
+          {
+            "ready": "true",
+            "renderer": "webgl",
+            "status": "static"
+          },
+          {
+            "ready": "true",
+            "renderer": "static",
+            "status": "reduced-motion"
+          }
+        ],
+        "h1": "95.76px",
+        "copyInert": false
+      }
+    }
+  ],
+  "errors": [],
+  "passed": true
+}

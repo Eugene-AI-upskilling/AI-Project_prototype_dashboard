@@ -74,3 +74,16 @@ yujin-research-center/assets/**/*.mp4
 **/quant_lab/data/
 **/quant_lab/output/
 **/quant_lab/logs/
+
+# ── Node 앱 · 로컬 비밀 · 도구 산출물 (2026-10-29 추가) ──
+**/node_modules/
+**/.next/
+**/.env.local
+**/.env.*.local
+.playwright-mcp/
+# 쇼릴 영상 렌더 결과물 (GitHub 100MB 제한 · zip 백업에만 포함)
+output/**/*.mp4
+output/**/*.mov
+output/**/*.webm
+"Coinone Design System-handoff.zip"
+jarvis/

@@ -1,0 +1,98 @@
+{
+  "pages": [
+    {
+      "direction": "05",
+      "desktop": {
+        "width": 1440,
+        "scrollWidth": 1440,
+        "renderer": "webgl",
+        "status": "running"
+      },
+      "settled": {
+        "phase": "showreel",
+        "card": {
+          "x": 583.21875,
+          "y": 269.3046875,
+          "width": 777.59375,
+          "height": 437.390625
+        },
+        "panel": {
+          "x": 93.59375,
+          "y": 278.984375,
+          "width": 460.796875,
+          "height": 418.03125
+        },
+        "panelInert": false
+      },
+      "mobile": {
+        "width": 390,
+        "scrollWidth": 390,
+        "h1": "41.73px"
+      },
+      "mobileSettled": {
+        "phase": "showreel",
+        "card": {
+          "x": 23.390625,
+          "y": 188.796875,
+          "width": 343.1875,
+          "height": 193.03125
+        },
+        "panel": {
+          "x": 27.296875,
+          "y": 477.390625,
+          "width": 335.390625,
+          "height": 294.234375
+        },
+        "panelInert": false
+      }
+    },
+    {
+      "direction": "06",
+      "desktop": {
+        "width": 1440,
+        "scrollWidth": 1440,
+        "renderer": "webgl",
+        "status": "running"
+      },
+      "settled": {
+        "phase": "showreel",
+        "card": {
+          "x": 79.1875,
+          "y": 273.359375,
+          "width": 763.1875,
+          "height": 429.28125
+        },
+        "panel": {
+          "x": 921.59375,
+          "y": 301.5,
+          "width": 439.21875,
+          "height": 373
+        },
+        "panelInert": false
+      },
+      "mobile": {
+        "width": 390,
+        "scrollWidth": 390,
+        "h1": "43.68px"
+      },
+      "mobileSettled": {
+        "phase": "showreel",
+        "card": {
+          "x": 23.390625,
+          "y": 173.1875,
+          "width": 343.1875,
+          "height": 193.03125
+        },
+        "panel": {
+          "x": 27.296875,
+          "y": 454,
+          "width": 335.40625,
+          "height": 293.96875
+        },
+        "panelInert": false
+      }
+    }
+  ],
+  "errors": [],
+  "passed": true
+}

@@ -1,0 +1,73 @@
+[
+  {
+    "name": "desktop",
+    "errors": [],
+    "width": 1440,
+    "scrollWidth": 1440,
+    "status": {
+      "effectReady": "true",
+      "effectSource": "Originkit Scroll Wave Field",
+      "effectRenderer": "webgl",
+      "effectParticles": "24200",
+      "effectStatus": "running"
+    },
+    "heading": {
+      "x": 64.796875,
+      "y": 245,
+      "width": 1080,
+      "height": 225.5,
+      "top": 245,
+      "right": 1144.796875,
+      "bottom": 470.5,
+      "left": 64.796875
+    },
+    "paused": "paused",
+    "resumed": "running"
+  },
+  {
+    "name": "mobile",
+    "errors": [],
+    "width": 390,
+    "scrollWidth": 390,
+    "status": {
+      "effectReady": "true",
+      "effectSource": "Originkit Scroll Wave Field",
+      "effectRenderer": "webgl",
+      "effectParticles": "7688",
+      "effectStatus": "running"
+    },
+    "heading": {
+      "x": 23.390625,
+      "y": 213,
+      "width": 343.21875,
+      "height": 100.40625,
+      "top": 213,
+      "right": 366.609375,
+      "bottom": 313.40625,
+      "left": 23.390625
+    }
+  },
+  {
+    "name": "reduced",
+    "errors": [],
+    "width": 1440,
+    "scrollWidth": 1440,
+    "status": {
+      "effectReady": "true",
+      "effectSource": "Originkit Scroll Wave Field",
+      "effectRenderer": "webgl",
+      "effectParticles": "24200",
+      "effectStatus": "static"
+    },
+    "heading": {
+      "x": 64.796875,
+      "y": 245,
+      "width": 1080,
+      "height": 225.5,
+      "top": 245,
+      "right": 1144.796875,
+      "bottom": 470.5,
+      "left": 64.796875
+    }
+  }
+]

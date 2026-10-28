@@ -3,18 +3,50 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>시황·테마 · 유진 Insight Lab</title>
-<meta name="description" content="오늘의 시황, 5분이면 끝 — 지수·수급·업종 흐름과 테마 로테이션을 매일 아침 정리해 드립니다." />
+<script src="assets/gate.js?v=20261028a"></script>
+<title>Research · 유진 Insight Lab</title>
+<meta name="description" content="오늘의 시황 — AI 앵커 브리핑, 국내·해외 주요 지수와 업종 히트맵을 한 화면에서." />
 
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
 <link rel="preload" href="assets/fonts/PretendardVariable.woff2" as="font" type="font/woff2" crossorigin />
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" />
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<link rel="stylesheet" href="assets/app.css" />
+<link rel="stylesheet" href="assets/app.css?v=20261028e" />
+<link rel="stylesheet" href="assets/stock-events.css?v=20261028a" />
 
 <style>
-/* ── 시황 페이지 전용 (기존 토큰만 사용) ── */
-/* 지수 스트립 (다크, 히어로 인덱스와 동일 톤) */
+/* ── Research(시황 중심) 전용 (기존 토큰만 사용) ── */
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+.mk-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:18px;margin-top:18px;align-items:stretch}
+@media(max-width:1000px){.mk-row{grid-template-columns:1fr}}
+/* 국내 / 해외 전환: 지수 · 시황 · 히트맵 · 종목 이벤트가 같은 상태를 쓴다 */
+.rg-bar{position:sticky;top:64px;z-index:30;background:rgba(255,255,255,.92);backdrop-filter:saturate(1.4) blur(10px);
+  border-bottom:1px solid var(--color-hairline)}
+.rg-bar .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-top:10px;padding-bottom:10px}
+.rg-sw{position:relative;display:inline-flex;padding:4px;background:var(--surface-tint);border-radius:var(--radius-full)}
+.rg-sw button{position:relative;z-index:1;border:0;background:transparent;cursor:pointer;font-family:inherit;
+  height:38px;padding:0 22px;border-radius:var(--radius-full);font-size:var(--text-body);font-weight:700;color:var(--color-muted);
+  display:inline-flex;align-items:baseline;gap:7px;transition:color .2s var(--ease-out)}
+.rg-sw button small{font-size:11px;font-weight:600;opacity:.75}
+.rg-sw button[aria-selected="true"]{color:var(--ink-900)}
+.rg-sw__pill{position:absolute;z-index:0;top:4px;bottom:4px;left:4px;border-radius:var(--radius-full);background:#fff;
+  box-shadow:var(--shadow-soft);transition:transform .32s cubic-bezier(.2,.8,.2,1),width .32s cubic-bezier(.2,.8,.2,1)}
+.rg-asof{font-size:var(--text-micro);color:var(--color-muted);font-weight:600}
+.rg-pane[hidden]{display:none!important}
+.rg-pane.rg-in{animation:rgIn .38s cubic-bezier(.2,.8,.2,1)}
+@keyframes rgIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@media(prefers-reduced-motion:reduce){.rg-pane.rg-in{animation:none}.rg-sw__pill{transition:none}}
+@media(max-width:600px){.rg-bar .wrap{flex-wrap:wrap}.rg-sw button{padding:0 16px}.rg-asof{display:none}}
+
+/* AI 앵커: 리포트 앵커와 같은 크기의 카드형(세로 영상) + 오른쪽 챕터 */
+.anc-wide .vanchor-wrap{grid-template-columns:340px 1fr;gap:24px;align-items:stretch}
+.anc-wide .vanchor--card{max-width:none}
+.anc-wide .vanchor--card .vanchor__stage{aspect-ratio:4/5}
+.anc-wide .vanchor-wrap>.card{display:flex;flex-direction:column}
+.anc-wide .vanchor-wrap>.card .card__body{flex:1}
+@media(max-width:800px){.anc-wide .vanchor-wrap{grid-template-columns:1fr}.anc-wide .vanchor--card .vanchor__stage{aspect-ratio:16/11}}
+
+/* 지수 스트립 (다크) — 국내 */
 .ix-strip{width:100%;background:rgba(18,26,52,.96);border-radius:16px;box-shadow:var(--shadow-soft);
   display:flex;overflow-x:auto;margin-top:8px}
 .ix-strip .ix{flex:1 0 0;min-width:140px;padding:16px 22px;border-right:1px solid rgba(255,255,255,.07);
@@ -25,176 +57,201 @@
 .ix-strip .ix .v{font-size:21px;font-weight:800;color:#fff;font-variant-numeric:tabular-nums;line-height:1}
 .ix-strip .ix .c{font-size:13px;font-weight:700;font-variant-numeric:tabular-nums}
 .ix-strip .ix .c.up{color:#fa5a6e}.ix-strip .ix .c.down{color:#6e8fd6}
-/* 업종 히트맵 */
+/* 지수 스트립 — 해외 (지역 그룹, global.html과 같은 규약) */
+.ix-strip--gl{flex-wrap:wrap;overflow:hidden}
+.ix-grp{display:flex;flex-direction:column;border-right:1px solid rgba(255,255,255,.12);flex:1 1 auto;box-shadow:0 1px 0 rgba(255,255,255,.12)}
+.ix-grp:last-child{border-right:none}
+.ix-grp__lbl{font-size:10px;font-weight:700;letter-spacing:.08em;color:#6e8fd6;padding:12px 18px 0}
+.ix-grp__row{display:flex}
+.ix-strip--gl .ix{min-width:118px;padding:8px 18px 16px;border-right:0}
+.ix-strip--gl .ix .v{font-size:20px}
+@media(max-width:720px){.ix-grp{flex-basis:100%;border-right:none}.ix-grp__row{overflow-x:auto}}
+
+/* 업종 히트맵 — 국내 */
 .heat{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
 @media(max-width:700px){.heat{grid-template-columns:repeat(2,1fr)}}
 .heat .tile{border-radius:var(--radius-md);padding:14px 14px 12px;min-height:74px;display:flex;flex-direction:column;
   justify-content:space-between;border:1px solid var(--color-hairline)}
 .heat .tile .hn{font-size:var(--text-micro);font-weight:700;line-height:1.3;white-space:normal}
 .heat .tile .hc{font-size:var(--text-lg);font-weight:800;font-variant-numeric:tabular-nums;margin-top:6px}
-/* 아카이브 */
+/* 업종 히트맵 — 해외 (global.html .hm 규약) */
+.hm{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
+.hm__t{border-radius:var(--radius-md);padding:14px 14px 12px;display:flex;flex-direction:column;gap:4px;min-height:86px;border:1px solid var(--color-hairline)}
+.hm__t .nm{font-size:var(--text-micro);font-weight:700;color:inherit;opacity:.88}
+.hm__t .tk{font-size:11px;font-variant-numeric:tabular-nums;opacity:.65}
+.hm__t .ch{font-size:20px;font-weight:800;font-variant-numeric:tabular-nums;margin-top:auto;letter-spacing:-.01em}
+@media(max-width:520px){.hm{grid-template-columns:repeat(2,1fr)}}
+.sec-row{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.sec-row .tabs{margin-bottom:0}
+
+/* 해외 시황 요약 칩 */
+.brief-idx{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+.brief-idx .bi{display:flex;flex-direction:column;gap:2px;padding:8px 14px;border-radius:var(--radius-md);background:var(--surface-tint);min-width:104px}
+.brief-idx .bi .bn{font-size:var(--text-micro);color:var(--color-muted);font-weight:600}
+.brief-idx .bi .bc{font-size:var(--text-body);font-weight:800;font-variant-numeric:tabular-nums}
+
+/* 데일리 아카이브 (국내 시황 타임머신) */
 .arch{display:flex;flex-direction:column;gap:2px}
-.arch__row{display:flex;align-items:center;gap:14px;width:100%;text-align:left;border:none;background:transparent;
-  padding:13px 14px;border-radius:var(--radius-md);cursor:pointer;transition:background var(--dur-micro) var(--ease-out)}
+.arch__row{display:flex;align-items:center;gap:14px;width:100%;text-align:left;border:none;background:transparent;font-family:inherit;
+  padding:12px 14px;border-radius:var(--radius-md);cursor:pointer;transition:background var(--dur-micro) var(--ease-out)}
 .arch__row:hover{background:var(--surface-tint)}
 .arch__row.on{background:var(--ink-900);color:#fff}
 .arch__row .ad{font-size:var(--text-body);font-weight:700;font-variant-numeric:tabular-nums;flex:0 0 84px}
 .arch__row .as{flex:1;font-size:var(--text-micro);color:var(--color-muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .arch__row.on .as{color:rgba(255,255,255,.75)}
 .arch__row .av{font-weight:700;font-variant-numeric:tabular-nums;flex:0 0 auto}
-/* 테마 버블 (index와 동일 규약) */
-.theme-split{display:grid;grid-template-columns:1.25fr .85fr;gap:18px;align-items:stretch}
-@media(max-width:860px){.theme-split{grid-template-columns:1fr}}
-.bubble-box{background:#fff;border:1px solid var(--color-hairline);border-radius:14px;padding:6px}
-.bubble-wrap{position:relative;width:100%;height:440px;border-radius:12px;overflow:hidden}
-@media(max-width:700px){.bubble-wrap{height:360px}}
-.bubble-pos{position:absolute;transform:translate(-50%,-50%)}
-.bubble{width:100%;height:100%;border-radius:50%;display:flex;flex-direction:column;align-items:center;
-  justify-content:center;text-align:center;cursor:pointer;color:#27324a;
-  transition:transform var(--dur-toggle) var(--ease-out),box-shadow var(--dur-toggle) var(--ease-out)}
-.bubble:hover{transform:scale(1.07);box-shadow:var(--shadow-pop);z-index:5}
-.bubble.sel{box-shadow:0 0 0 3px rgba(11,89,213,.45)}
-.bubble .bn{font-weight:800;line-height:1.1;padding:0 4px}
-.bubble .bv{font-weight:700;font-variant-numeric:tabular-nums;opacity:.78;margin-top:3px}
-.bubble-tip{position:absolute;pointer-events:none;background:var(--ink-900);color:#fff;padding:10px 12px;
-  border-radius:var(--radius-md);font-size:var(--text-micro);box-shadow:var(--shadow-pop);z-index:20;
-  opacity:0;transition:opacity var(--dur-micro);max-width:220px;line-height:1.5}
-.bubble-legend{display:flex;gap:18px;align-items:center;flex-wrap:wrap;margin-top:14px;font-size:var(--text-micro);color:var(--color-muted)}
-.theme-panel .card__body{display:flex;flex-direction:column;height:100%}
+
+/* 테마 (WM): Research의 주요 콘텐츠로 넓게 */
+.tr-wide .theme-split{grid-template-columns:1.45fr .9fr;gap:22px}
+.tr-wide .bubble-wrap{height:clamp(460px,58vh,600px)}
+.tr-wide .theme-panel .card__body{display:flex;flex-direction:column;height:100%;padding:24px}
+.tr-host .bubble{border:0;padding:0;font:inherit;color:#27324a}
+.tr-host .tr-list{flex:1;overflow-y:auto;overflow-x:hidden;max-height:340px;margin-top:8px}
+.tr-wide .tr-list{max-height:none}
+.tr-row{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:9px 2px;border-bottom:1px solid var(--color-hairline)}
+.tr-nm{font-weight:700;font-size:13.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tr-rep{display:block;padding:10px 2px;border-bottom:1px solid var(--color-hairline);text-decoration:none;color:inherit}
+.tr-rep:hover{color:var(--blue-cta)}
+@media(max-width:860px){.tr-wide .theme-split{grid-template-columns:1fr}.tr-wide .bubble-wrap{height:420px}}
 </style>
 </head>
 <body
-  data-page-eyebrow="DAILY MARKET"
-  data-page-title="시황·테마"
-  data-page-desc="오늘의 시황을 지수·수급·업종 흐름부터 테마 로테이션까지 한눈에. 과거 시황은 아래 데일리 아카이브에서 되돌려 볼 수 있어요.">
+  data-page-eyebrow="RESEARCH · DAILY MARKET"
+  data-page-title="Research"
+  data-page-desc="AI 앵커가 전하는 오늘의 시황부터 주요 지수, 업종 히트맵까지. 위에서 국내 · 해외를 고르면 아래 내용이 한 번에 바뀝니다.">
 
 <main id="main">
 
-  <!-- AI 시황 브리핑 (앵커, 플레이스홀더) -->
-  <section class="section" style="padding:24px 0 0">
-    <div class="wrap"><div id="marketAnchor"></div></div>
+  <!-- 국내 / 해외 전환 (지수 · 시황 · 히트맵 · 종목 이벤트 공통) -->
+  <div class="rg-bar">
+    <div class="wrap">
+      <div class="rg-sw" id="rgSw" role="tablist" aria-label="시장 선택">
+        <span class="rg-sw__pill" aria-hidden="true"></span>
+        <button type="button" role="tab" data-r="kr" aria-selected="true" aria-controls="main">국내 <small>KOSPI · KOSDAQ</small></button>
+        <button type="button" role="tab" data-r="global" aria-selected="false" tabindex="-1" aria-controls="main">해외 <small>미국 · 아시아</small></button>
+      </div>
+      <span class="rg-asof" id="rgAsof" aria-live="polite"></span>
+    </div>
+  </div>
+
+  <!-- 1. AI 앵커 + 시황 -->
+  <section class="section" style="padding:28px 0 0" aria-labelledby="ancH">
+    <div class="wrap">
+      <h2 class="sr-only" id="ancH">AI 앵커 시황 브리핑</h2>
+      <div class="anc-wide" id="marketAnchor"></div>
+
+      <!-- 국내 시황 -->
+      <div class="rg-pane" data-region="kr">
+        <div class="mk-row">
+          <div class="ai-summary" style="margin-top:0">
+            <div class="ai-summary__ic"><svg viewBox="0 0 24 24"><path d="M12 2l2.4 5.6L20 8l-4 4 1 6-5-2.8L7 18l1-6-4-4 5.6-.4z"/></svg></div>
+            <div><div class="ai-summary__tag">AI 데일리 요약</div><p id="aiSummary">—</p></div>
+          </div>
+          <div class="card"><div class="card__body">
+            <div class="rep__top"><span class="badge badge--brand">애널리스트 코멘트</span><span class="badge badge--muted">시황·전략</span></div>
+            <p id="analystNote" style="color:var(--color-body);line-height:1.7;margin-top:6px">—</p>
+          </div></div>
+          <div id="marketBox" style="display:flex"></div>
+        </div>
+        <details class="card mk-arch" style="margin-top:18px"><summary class="card__body" style="cursor:pointer;list-style:none;display:flex;align-items:center;gap:8px">
+            <span class="badge badge--brand">데일리 아카이브</span><span class="badge badge--muted">지난 국내 시황 다시 보기</span><span style="margin-left:auto;color:var(--color-muted);font-size:var(--text-micro)">펼치기 ▾</span></summary>
+          <div class="card__body" style="padding-top:0"><div class="arch" id="archive"></div></div>
+        </details>
+      </div>
+
+      <!-- 해외 시황 -->
+      <div class="rg-pane" data-region="global" hidden>
+        <div class="grid-2" style="margin-top:18px;align-items:stretch">
+          <div class="ai-summary" style="margin-top:0">
+            <div class="ai-summary__ic"><svg viewBox="0 0 24 24"><path d="M12 2l2.4 5.6L20 8l-4 4 1 6-5-2.8L7 18l1-6-4-4 5.6-.4z"/></svg></div>
+            <div><div class="ai-summary__tag" id="glBriefTitle">밤사이 해외 요약</div><p id="glBriefNote">밤사이 시황을 준비 중입니다.</p>
+              <div class="brief-idx" id="glBriefIdx"></div></div>
+          </div>
+          <div class="card"><div class="card__body" style="display:flex;flex-direction:column">
+            <div class="rep__top"><span class="badge badge--brand">해외 지수</span><span class="badge badge--muted" id="glBriefBadge">밤사이 기준</span></div>
+            <div id="glIdxList" style="flex:1;display:flex;flex-direction:column;justify-content:center"></div>
+            <a class="btn btn--text" href="global.html" style="margin-top:10px;align-self:flex-start">해외 신고가 · 실적 더 보기 →</a>
+          </div></div>
+        </div>
+      </div>
+    </div>
   </section>
 
-  <!-- 주요 지수 스트립 -->
-  <section class="section" style="padding:24px 0 0">
+  <!-- 2. 주요 지수 -->
+  <section class="section" style="padding:36px 0 0" aria-labelledby="ixH">
     <div class="wrap">
       <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
-        <span class="sec-eyebrow" style="margin:0"><span class="dot"></span>주요 지수</span>
+        <span class="sec-eyebrow" style="margin:0" id="ixH"><span class="dot"></span>주요 지수</span>
         <span id="asof" class="badge badge--point"></span>
       </div>
-      <div class="ix-strip" id="ixStrip"></div>
+      <div class="rg-pane" data-region="kr"><div class="ix-strip" id="ixStrip"></div></div>
+      <div class="rg-pane" data-region="global" hidden><div class="ix-strip ix-strip--gl" id="ixStripGl"></div></div>
     </div>
   </section>
 
-  <!-- 오늘의 시황 요약 + 지수/수급/업종 -->
-  <section class="section" style="padding-top:32px">
+  <!-- 3. 업종 히트맵 -->
+  <section class="section" aria-labelledby="heatH">
     <div class="wrap">
-      <div id="marketBox"></div>
-
-      <!-- AI 요약 + 애널리스트 코멘트 -->
-      <div class="grid-2" style="margin-top:18px;align-items:stretch">
-        <div class="ai-summary" style="margin-top:0">
-          <div class="ai-summary__ic">
-            <svg viewBox="0 0 24 24"><path d="M12 2l2.4 5.6L20 8l-4 4 1 6-5-2.8L7 18l1-6-4-4 5.6-.4z"/></svg>
-          </div>
-          <div>
-            <div class="ai-summary__tag">AI 데일리 요약</div>
-            <p id="aiSummary">—</p>
-          </div>
+      <div class="sec-row">
+        <div class="sec-head" style="margin-bottom:0">
+          <div class="sec-eyebrow"><span class="dot"></span>SECTOR HEATMAP</div>
+          <h2 class="sec-title" style="font-size:var(--text-title)" id="heatH">업종별 등락 히트맵</h2>
+          <p class="sec-sub" id="heatSub">색이 진할수록 등락 폭이 큽니다. <span class="up" style="font-weight:700">빨강=강세</span> · <span class="down" style="font-weight:700">파랑=약세</span>.</p>
         </div>
-        <div class="card"><div class="card__body">
-          <div class="rep__top"><span class="badge badge--brand">애널리스트 코멘트</span><span class="badge badge--muted">시황·전략</span></div>
-          <p id="analystNote" style="color:var(--color-body);line-height:1.7;margin-top:6px">—</p>
-          <div style="margin-top:14px"><a class="btn btn--text" href="insights.html">전략·시황 인사이트 더 보기 →</a></div>
-        </div></div>
+        <div class="tabs rg-pane" data-region="global" id="hmPeriod" hidden>
+          <button data-p="d1" class="is-active">1일</button><button data-p="w1">1주</button><button data-p="m1">1개월</button>
+        </div>
+      </div>
+      <div style="margin-top:18px">
+        <div class="rg-pane" data-region="kr"><div class="heat" id="heat"></div></div>
+        <div class="rg-pane" data-region="global" hidden><div class="hm" id="hmSector"></div>
+          <p class="sub" style="color:var(--color-muted);margin-top:10px;font-size:var(--text-micro)">미국 S&amp;P 500 섹터 ETF 기준</p></div>
       </div>
     </div>
   </section>
 
-  <!-- 순매수 상위 종목 -->
-  <section class="section section--tint">
+  <!-- 4. 종목 이벤트 (기관 고객) — 예전 Event Driven 페이지를 시황 화면 안으로 -->
+  <section class="section section--tint" id="stock-events" data-for="inst" aria-labelledby="seH">
     <div class="wrap">
       <div class="sec-head">
-        <div class="sec-eyebrow"><span class="dot"></span>NET BUYING</div>
-        <h2 class="sec-title" style="font-size:var(--text-title)">오늘 수급이 몰린 종목</h2>
-        <p class="sec-sub">외국인·기관이 오늘 가장 많이 사들인 종목입니다.</p>
+        <div class="sec-eyebrow"><span class="dot"></span>EVENT-DRIVEN</div>
+        <h2 class="sec-title" style="font-size:var(--text-title)" id="seH">종목 이벤트</h2>
+        <p class="sec-sub" id="seSub">DART 공시(배당 · 자사주 · 분할 · 실적)로 국내 종목 이벤트를 추적합니다.</p>
       </div>
-      <div class="tabs" id="nbTabs">
-        <button data-nb="foreign" class="is-active">외국인 순매수</button>
-        <button data-nb="inst">기관 순매수</button>
-      </div>
-      <div class="card"><div class="card__body" style="padding:8px 8px 4px">
-        <div class="tbl-scroll"><table class="tbl"><thead>
-          <tr><th>종목</th><th>업종</th><th class="num">순매수(억)</th><th class="num">등락률</th></tr>
-        </thead><tbody id="nbBody"></tbody></table></div>
-      </div></div>
+      <div id="stockEvents"></div>
     </div>
   </section>
 
-  <!-- 업종 히트맵 -->
-  <section class="section">
+  <!-- 4. 테마 (WM 고객) — Research의 주요 콘텐츠로 넓게 -->
+  <section class="section section--tint" id="themes" data-for="wm" aria-labelledby="thH">
     <div class="wrap">
-      <div class="sec-head">
-        <div class="sec-eyebrow"><span class="dot"></span>SECTOR HEATMAP</div>
-        <h2 class="sec-title" style="font-size:var(--text-title)">업종별 등락 히트맵</h2>
-        <p class="sec-sub">색이 진할수록 등락 폭이 큽니다. <span class="up" style="font-weight:700">빨강=강세</span> · <span class="down" style="font-weight:700">파랑=약세</span>.</p>
+      <div class="sec-row" style="margin-bottom:22px">
+        <div class="sec-head" style="margin-bottom:0">
+          <div class="sec-eyebrow"><span class="dot"></span>THEME ROTATION</div>
+          <h2 class="sec-title" style="font-size:var(--text-title)" id="thH">지금 돈이 몰리는 테마</h2>
+          <p class="sec-sub">주간 테마 로테이션 분석. 버블을 누르면 오른쪽에 구성 종목의 전일 수익률, 관련 리포트, 뉴스가 열립니다.</p>
+        </div>
       </div>
-      <div class="heat" id="heat"></div>
-    </div>
-  </section>
-
-  <!-- 테마 로테이션 + 데일리 아카이브 -->
-  <section class="section section--tint">
-    <div class="wrap">
-      <div class="sec-head">
-        <div class="sec-eyebrow"><span class="dot"></span>THEME ROTATION</div>
-        <h2 class="sec-title" style="font-size:var(--text-title)">지금 돈이 몰리는 테마</h2>
-        <p class="sec-sub">버블이 클수록 자금이 집중된 테마, 붉을수록 1개월 수익률이 높습니다.</p>
-      </div>
-      <div class="theme-split">
-        <div class="bubble-box"><div class="bubble-wrap" id="bubbleWrap"></div></div>
-        <div class="card theme-panel"><div class="card__body" id="themePanel"></div></div>
-      </div>
-      <div class="bubble-legend">
-        <span>버블 크기 = 자금 집중도 · 색 = 1개월 수익률 · 클릭 → 우측에 구성 종목</span>
-      </div>
-
-      <div class="grid-2" style="margin-top:22px;align-items:start">
-        <div class="card"><div class="card__body">
-          <div class="rep__top"><span class="badge badge--brand">데일리 아카이브</span><span class="badge badge--muted">시황 타임머신</span></div>
-          <div class="arch" id="archive" style="margin-top:10px"></div>
-        </div></div>
-        <div class="card"><div class="card__body">
-          <div class="rep__top"><span class="badge badge--point">바로가기</span></div>
-          <h3 style="font-size:var(--text-lg);font-weight:700;margin:6px 0 10px">더 깊이 파고들기</h3>
-          <div style="display:flex;flex-direction:column;gap:8px">
-            <a class="btn btn--secondary btn--block" href="reports.html">관련 리서치 리포트 →</a>
-            <a class="btn btn--secondary btn--block" href="events.html">오늘의 종목 이벤트 →</a>
-            <a class="btn btn--secondary btn--block" href="quant.html">이 테마로 전략 만들기 →</a>
-          </div>
-        </div></div>
-      </div>
-    </div>
-  </section>
-
-  <!-- CTA -->
-  <section class="cta-band">
-    <h2>매일 아침, 시황을 알림으로 받아보세요</h2>
-    <p>이메일 하나면 데일리 시황 · 테마 로테이션 · 수급 신호까지 30초면 충분해요.</p>
-    <div class="joinbox">
-      <input id="joinEmail" type="email" placeholder="you@example.com" />
-      <button class="btn btn--primary btn--lg" onclick="openAuth('signup', document.getElementById('joinEmail').value.trim())">무료로 시작하기</button>
+      <div id="themeRotation"></div>
     </div>
   </section>
 
 </main>
 
-<script src="assets/anchor.js"></script>
-<script src="assets/partials.js"></script>
 <script>
-/* ═════════ 시황 페이지 데이터 & 렌더 ═════════ */
+/* 고객 유형별 섹션: 쓰지 않는 쪽은 그리기 전에 문서에서 뺀다 (기관 = 종목 이벤트, WM = 테마) */
+(function(){ var s=null; try{ s=JSON.parse(localStorage.getItem('il.session')||'null'); }catch(e){}
+  var wm=!!s&&s.persona==='hnw'; var el=document.querySelector(wm?'[data-for="inst"]':'[data-for="wm"]'); if(el) el.remove(); })();
+</script>
+<script src="assets/anchor.js"></script>
+<script src="assets/partials.js?v=20261029a"></script>
+<script src="assets/stock-events.js?v=20261028a"></script>
+<script src="assets/theme-rotation.js?v=20261028a"></script>
+<script>
+/* ═════════ Research · 시황 데이터 & 렌더 (국내 / 해외 공통 상태) ═════════ */
+let REGION='kr';
 
-/* 기본 스냅샷 (Supabase 없거나 실패 시 폴백) */
+/* ── 국내: 기본 스냅샷 (Supabase 없거나 실패 시 폴백) ── */
 const DEFAULT_SNAP={
   snapshot_date:'2026-06-23', asof:'06.23 장마감',
   kospi:'8,203.99', kospi_chg:'-9.99%', kosdaq:'891.50', kosdaq_chg:'-7.94%', usdkrw:'1,539.1', usdkrw_chg:'+0.50%',
@@ -204,58 +261,53 @@ const DEFAULT_SNAP={
   weak_sectors:[{name:'반도체와반도체장비',chg:'-14.20%'},{name:'자동차',chg:'-12.80%'},{name:'전자제품',chg:'-11.50%'},{name:'화학',chg:'-8.30%'}],
   ai_summary:'반도체·자동차 등 주력 업종이 급락하며 코스피가 큰 폭으로 하락했습니다. 외국인·기관 동반 매도 속 변동성이 확대돼, 보수적 대응을 권고합니다.'
 };
-/* 해외 지수(스트립 표시용) — TODO: 실데이터(global_quotes/market_snapshot) 연결 */
-const HERO_EXTRA={nasdaq:{v:'17,689.36',c:'+1.18%'},sp500:{v:'5,321.41',c:'+0.72%'}};
-/* 순매수 상위 종목 — TODO: 실제 수급 테이블(net_buying 등) 연결. 현재는 예시 */
-const NET_BUY={
-  foreign:[['삼성전자','반도체','+1,240','+2.1'],['현대차','자동차','+880','+1.4'],['KB금융','금융','+640','+0.9'],['NAVER','인터넷','+510','+1.8'],['셀트리온','바이오','+430','-0.6']],
-  inst:[['SK하이닉스','반도체','+970','+3.2'],['POSCO홀딩스','철강','+560','+0.7'],['LG에너지솔루션','2차전지','+520','-1.1'],['기아','자동차','+410','+1.0'],['카카오','인터넷','+320','-2.3']]
-};
-
 const fmtMD=s=>s?String(s).slice(5).replace('-','.'):'';
 let SNAPSHOTS=[DEFAULT_SNAP];   // desc 정렬
 let curSnap=DEFAULT_SNAP;
 
-/* ── 지수 스트립 ── */
+/* ── 해외: 지수 · 밤사이 요약 · 섹터 (global.html과 같은 데이터 · 같은 예시 기본값) ── */
+const IX_GROUPS=[
+  {lbl:'미국', items:[{sym:'IXIC',n:'나스닥',todo:{v:'22,780.5',c:'+0.84%'}},{sym:'GSPC',n:'S&P 500',todo:{v:'6,712.3',c:'+0.41%'}},{sym:'DJI',n:'다우',todo:{v:'46,690.2',c:'-0.12%'}},{sym:'RUT',n:'러셀 2000',todo:{v:'2,481.6',c:'+0.66%'}}]},
+  {lbl:'아시아', items:[{sym:'N225',n:'닛케이 225',todo:{v:'45,770.0',c:'+1.12%'}},{sym:'HSI',n:'항셍',todo:{v:'26,957.8',c:'-0.48%'}},{sym:'SSEC',n:'상해종합',todo:{v:'3,882.8',c:'+0.21%'}}]},
+  {lbl:'매크로', items:[{sym:'VIX',n:'VIX',todo:{v:'16.65',c:'-3.20%'}},{sym:'TNX',n:'미 10년물',todo:{v:'4.12',c:'+0.03%p'}},{sym:'DXY',n:'달러 인덱스',todo:{v:'97.86',c:'+0.18%'}}]},
+];
+let IX_DATA={}, GL_LIVE=false;
+let BRIEF={ title:'미 증시, 반도체·AI 인프라 주도 상승', note:'SOX 지수가 2% 넘게 오르며 나스닥을 견인. 유틸리티·에너지는 약세로 섹터 간 온도 차 확대.',
+  rows:[{name:'S&P 500',chg:'+0.41%'},{name:'나스닥',chg:'+0.84%'},{name:'SOX',chg:'+2.31%'}], badge:'', asof:'' };
+let SECTORS=[
+  {symbol:'XLK',name:'기술',chg_1d:1.42,chg_1w:3.10,chg_1m:6.8},{symbol:'XLC',name:'커뮤니케이션',chg_1d:0.88,chg_1w:1.94,chg_1m:4.1},
+  {symbol:'XLY',name:'경기소비재',chg_1d:0.51,chg_1w:0.72,chg_1m:2.3},{symbol:'XLI',name:'산업재',chg_1d:0.34,chg_1w:1.21,chg_1m:3.0},
+  {symbol:'XLF',name:'금융',chg_1d:0.12,chg_1w:-0.40,chg_1m:1.2},{symbol:'XLB',name:'소재',chg_1d:-0.05,chg_1w:0.33,chg_1m:-0.8},
+  {symbol:'XLV',name:'헬스케어',chg_1d:-0.21,chg_1w:-1.12,chg_1m:-2.4},{symbol:'XLRE',name:'부동산',chg_1d:-0.38,chg_1w:-0.95,chg_1m:-1.7},
+  {symbol:'XLP',name:'필수소비재',chg_1d:-0.52,chg_1w:-1.30,chg_1m:-3.1},{symbol:'XLE',name:'에너지',chg_1d:-0.97,chg_1w:-2.41,chg_1m:-4.6},
+  {symbol:'XLU',name:'유틸리티',chg_1d:-1.18,chg_1w:0.52,chg_1m:3.9},
+];
+let hmPeriod='d1';
+const HM_KEY={d1:'chg_1d',w1:'chg_1w',m1:'chg_1m'}, HM_SCALE={d1:2.5,w1:5,m1:10};
+const fmtPct=(v,d=2)=>v==null||isNaN(v)?'—':(v>=0?'+':'')+Number(v).toFixed(d)+'%';
+const ixCls=c=>String(c).trim().startsWith('-')?'down':'up';
+
+/* ═════ 국내 렌더 ═════ */
 function renderIxStrip(d){
-  const ixCls=c=>String(c).trim().startsWith('-')?'down':'up';
-  const items=[
-    {n:'KOSPI',v:d.kospi,c:d.kospi_chg},{n:'KOSDAQ',v:d.kosdaq,c:d.kosdaq_chg},
-    {n:'NASDAQ',v:HERO_EXTRA.nasdaq.v,c:HERO_EXTRA.nasdaq.c},{n:'S&P 500',v:HERO_EXTRA.sp500.v,c:HERO_EXTRA.sp500.c},
-    {n:'USD/KRW',v:d.usdkrw,c:d.usdkrw_chg},
-  ];
+  const items=[{n:'KOSPI',v:d.kospi,c:d.kospi_chg},{n:'KOSDAQ',v:d.kosdaq,c:d.kosdaq_chg},{n:'USD/KRW',v:d.usdkrw,c:d.usdkrw_chg}];
   $('#ixStrip').innerHTML=items.map(it=>`<div class="ix"><span class="n">${it.n}</span>
     <span class="vr"><span class="v">${noDec(it.v)}</span><span class="c ${ixCls(it.c)}">${it.c}</span></span></div>`).join('');
 }
-
-/* ── 지수/수급 카드 (index #market 확장) ── */
 function renderMarketCards(d){
-  $('#asof').textContent=((d.snapshot_date?d.snapshot_date.replace(/-/g,'.'):(d.asof||'').replace(' 장마감',''))+' 종가 기준');
   const flows=d.flows;
   const flowRow=(name,val,last)=>`<div style="display:flex;justify-content:space-between;align-items:center;padding:13px 0;${last?'':'border-bottom:1px solid var(--color-hairline)'}"><span style="font-weight:600">${name}</span><span class="${dirCls(val)} cn-figure" style="font-weight:800;font-size:var(--text-link)">${val}</span></div>`;
-  const idxRow=(name,val,chg,last)=>`<div style="display:flex;justify-content:space-between;align-items:center;padding:13px 0;${last?'':'border-bottom:1px solid var(--color-hairline)'}"><span style="font-weight:700${last?';color:var(--color-muted)':''}">${name}</span><span style="display:flex;align-items:baseline;gap:8px"><span class="cn-figure" style="font-weight:800;font-size:var(--text-link)">${noDec(val)}</span><span class="${dirCls(chg)} cn-figure" style="font-weight:700">${chg}</span></span></div>`;
-  $('#marketBox').innerHTML=`<div class="grid-2">
-    <div class="card"><div class="card__body" style="display:flex;flex-direction:column">
-      <div class="rep__top"><span class="badge badge--brand">지수</span><span class="badge badge--muted">${d.asof||fmtMD(d.snapshot_date)+' 장마감'}</span></div>
-      <div style="flex:1;display:flex;flex-direction:column;justify-content:center">
-        ${idxRow('KOSPI',d.kospi,d.kospi_chg)}${idxRow('KOSDAQ',d.kosdaq,d.kosdaq_chg)}${idxRow('USD/KRW',d.usdkrw,d.usdkrw_chg,true)}
-      </div>
-    </div></div>
-    <div class="card"><div class="card__body" style="display:flex;flex-direction:column">
-      <div class="rep__top"><span class="badge badge--brand">투자자별 순매수</span><span class="badge badge--muted">단위 ·억</span></div>
+  $('#marketBox').innerHTML=`<div class="card" style="flex:1"><div class="card__body" style="display:flex;flex-direction:column;height:100%">
+      <div class="rep__top"><span class="badge badge--brand">투자자별 순매수</span><span class="badge badge--muted">${d.asof||fmtMD(d.snapshot_date)+' 장마감'} · 억</span></div>
       <div style="flex:1;display:flex;flex-direction:column;justify-content:center">
       ${flows?`<table class="tbl mk-flows"><thead><tr><th></th><th class="num">KOSPI</th><th class="num">KOSDAQ</th></tr></thead><tbody>
         ${['외국인','기관','개인'].map((nm,i)=>{const k=['foreign','inst','retail'][i];const a=flows.kospi[k],b=flows.kosdaq[k];return `<tr><td style="font-weight:600">${nm}</td><td class="num ${dirCls(a)} cn-figure" style="font-weight:800">${a||'—'}</td><td class="num ${dirCls(b)} cn-figure" style="font-weight:800">${b||'—'}</td></tr>`;}).join('')}
       </tbody></table>`:`${flowRow('외국인',d.foreign_net)}${flowRow('기관',d.inst_net)}${flowRow('개인',d.retail_net,true)}`}
       </div>
-    </div></div>
-  </div>`;
+    </div></div>`;
   $('#aiSummary').textContent=d.ai_summary||'요약을 준비 중입니다.';
   // TODO: 애널리스트 코멘트 전용 컬럼 연결. 현재는 요약 기반 안내 문구
   $('#analystNote').textContent=d.analyst_note||'지수 변동성이 확대되는 국면에서는 실적 가시성이 높은 대형주와 배당 방어주 중심의 대응이 유효합니다. 수급 이탈이 진정되는지 외국인 선물 포지션을 함께 확인하세요.';
 }
-
-/* ── 업종 히트맵 (strong/weak sectors → 색 강도) ── */
 function pctNum(chg){ const n=parseFloat(String(chg).replace(/[^0-9.\-]/g,'')); return isNaN(n)?0:n; }
 function heatColor(chg){
   const n=pctNum(chg), a=Math.min(1,Math.abs(n)/15), up=n>=0;
@@ -263,142 +315,147 @@ function heatColor(chg){
   return {bg:`rgba(${base},${(0.10+a*0.80).toFixed(2)})`, ink:a>0.55?'#fff':(up?'var(--price-up)':'var(--price-down)')};
 }
 function renderHeat(d){
-  const list=[...(d.strong_sectors||[]),...(d.weak_sectors||[])]
-    .sort((a,b)=>Math.abs(pctNum(b.chg))-Math.abs(pctNum(a.chg)));
+  const list=[...(d.strong_sectors||[]),...(d.weak_sectors||[])].sort((a,b)=>Math.abs(pctNum(b.chg))-Math.abs(pctNum(a.chg)));
   $('#heat').innerHTML=list.map(s=>{const c=heatColor(s.chg);
     return `<div class="tile" style="background:${c.bg};border-color:transparent">
-      <div class="hn" style="color:${c.ink}">${s.name}</div>
-      <div class="hc" style="color:${c.ink}">${s.chg}</div></div>`;}).join('')
+      <div class="hn" style="color:${c.ink}">${s.name}</div><div class="hc" style="color:${c.ink}">${s.chg}</div></div>`;}).join('')
     || '<div class="sub" style="color:var(--color-muted);padding:8px">업종 데이터 준비 중입니다.</div>';
 }
-
-/* ── 순매수 상위 종목 ── */
-let nbTab='foreign';
-function renderNetBuy(){
-  const rows=NET_BUY[nbTab]||[];
-  $('#nbBody').innerHTML=rows.map(r=>`<tr>
-    <td class="co">${r[0]}</td><td class="sub">${r[1]}</td>
-    <td class="num up cn-figure" style="font-weight:700">${r[2]}</td>
-    <td class="num ${(+r[3]>=0)?'up':'down'} cn-figure">${(+r[3]>=0?'+':'')+r[3]}%</td></tr>`).join('');
-}
-$$('#nbTabs button').forEach(b=>b.onclick=()=>{nbTab=b.dataset.nb;$$('#nbTabs button').forEach(x=>x.classList.toggle('is-active',x===b));renderNetBuy();});
-
-/* ── 데일리 아카이브 ── */
 function renderArchive(){
-  $('#archive').innerHTML=SNAPSHOTS.slice(0,12).map((s,i)=>{
-    const on=s===curSnap;
-    return `<button class="arch__row ${on?'on':''}" data-i="${i}">
+  $('#archive').innerHTML=SNAPSHOTS.slice(0,8).map((s,i)=>`<button class="arch__row ${s===curSnap?'on':''}" data-i="${i}">
       <span class="ad">${fmtMD(s.snapshot_date)||s.asof||'—'}</span>
-      <span class="as">${(s.ai_summary||'').slice(0,42)}${(s.ai_summary||'').length>42?'…':''}</span>
-      <span class="av ${dirCls(s.kospi_chg)}">${s.kospi_chg||''}</span></button>`;
-  }).join('');
-  $$('#archive .arch__row').forEach(b=>b.onclick=()=>{ curSnap=SNAPSHOTS[+b.dataset.i]; renderAll(curSnap);
-    document.getElementById('marketBox').scrollIntoView({behavior:'smooth',block:'start'}); });
+      <span class="as">${(s.ai_summary||'').slice(0,60)}${(s.ai_summary||'').length>60?'…':''}</span>
+      <span class="av ${dirCls(s.kospi_chg)}">${s.kospi_chg||''}</span></button>`).join('');
+  $$('#archive .arch__row').forEach(b=>b.onclick=()=>{ curSnap=SNAPSHOTS[+b.dataset.i]; renderKR();
+    document.querySelector('.rg-bar').nextElementSibling.scrollIntoView({behavior:'smooth',block:'start'}); });
 }
 
-/* ── 테마 버블 (index와 동일 규약) ── */
-let themes=[
-  {n:'AI 반도체',con:9.4,ret:14.2,x:32,y:42},{n:'전력기기',con:6.1,ret:11.0,x:64,y:30},
-  {n:'2차전지',con:7.0,ret:-3.2,x:50,y:68},{n:'바이오',con:4.4,ret:6.8,x:80,y:58},
-  {n:'방산',con:3.6,ret:8.1,x:18,y:72},{n:'엔터',con:2.8,ret:4.0,x:84,y:80},
-  {n:'조선',con:3.2,ret:9.5,x:43,y:22},{n:'금융/배당',con:5.2,ret:2.1,x:74,y:46},
-  {n:'로봇',con:2.4,ret:-1.5,x:24,y:24},
-];
-let themeConst={}, curTheme=null;
-const PASTEL=['rgba(168,218,220,.72)','rgba(241,192,232,.72)','rgba(207,186,240,.72)','rgba(163,196,243,.72)','rgba(144,219,244,.72)','rgba(142,236,245,.72)','rgba(152,216,200,.72)','rgba(247,215,148,.8)'];
-const STATE_DESC={Leadership:'자금이 가장 몰린 주도 테마',Acceleration:'모멘텀이 빨라지는 가속 국면',Emerging:'새로 부상하는 테마',Crowded:'쏠림이 큰 과열 구간 — 주의',Cooling:'열기가 식는 둔화 국면',Reversal:'바닥에서 반전 시도 구간'};
-function renderBubbles(){
-  const wrap=$('#bubbleWrap'); if(!wrap)return; wrap.innerHTML='';
-  const scale=Math.min(1.05,Math.max(.62,(wrap.clientWidth||620)/640));
-  const tip=document.createElement('div');tip.className='bubble-tip';wrap.appendChild(tip);
-  themes.forEach((t,i)=>{
-    const d=(46+t.con*12)*scale, big=t.con>5;
-    const pos=document.createElement('div');pos.className='bubble-pos';
-    pos.style.left=t.x+'%';pos.style.top=t.y+'%';pos.style.width=pos.style.height=d+'px';
-    const b=document.createElement('div');b.className='bubble'+(t.n===curTheme?' sel':'');b.dataset.theme=t.n;
-    b.style.background=PASTEL[i%PASTEL.length];b.style.fontSize=((big?13:11)*scale)+'px';
-    b.innerHTML=`<span class="bn">${t.n}</span><span class="bv" style="font-size:${((big?12:10)*scale)}px">${sign(t.ret)}%</span>`;
-    pos.onmousemove=e=>{const r=wrap.getBoundingClientRect();tip.style.left=(e.clientX-r.left+14)+'px';
-      tip.style.top=(e.clientY-r.top+14)+'px';tip.style.opacity=1;
-      tip.innerHTML=`<b>${t.n}</b><br/>자금 집중도 ${fmt(t.con,1)}<br/>1개월 수익률 ${sign(t.ret)}%`;};
-    pos.onmouseleave=()=>tip.style.opacity=0;
-    b.onclick=()=>openThemeDetail(t.n);
-    pos.appendChild(b);wrap.appendChild(pos);
-  });
-  if(!curTheme&&themes[0])openThemeDetail(themes[0].n);
+/* ═════ 해외 렌더 ═════ */
+function renderIxStripGl(){
+  $('#ixStripGl').innerHTML=IX_GROUPS.map(g=>`<div class="ix-grp"><div class="ix-grp__lbl">${g.lbl}</div><div class="ix-grp__row">${
+    g.items.map(it=>{ const d=IX_DATA[it.sym]||it.todo; return `<div class="ix"><span class="n">${it.n}</span>
+      <span class="vr"><span class="v">${d.v}</span><span class="c ${ixCls(d.c)}">${d.c}</span></span></div>`; }).join('')}</div></div>`).join('');
+  const us=IX_GROUPS[0].items;
+  $('#glIdxList').innerHTML=us.map((it,i)=>{ const d=IX_DATA[it.sym]||it.todo;
+    return `<div style="display:flex;justify-content:space-between;align-items:center;padding:12px 0;${i<us.length-1?'border-bottom:1px solid var(--color-hairline)':''}"><span style="font-weight:700">${it.n}</span>
+      <span style="display:flex;align-items:baseline;gap:8px"><span class="cn-figure" style="font-weight:800;font-size:var(--text-link)">${d.v}</span><span class="${ixCls(d.c)} cn-figure" style="font-weight:700">${d.c}</span></span></div>`; }).join('');
 }
-function openThemeDetail(name){ curTheme=name; $$('.bubble').forEach(b=>b.classList.toggle('sel',b.dataset.theme===name)); renderThemePanel(); }
-function renderThemePanel(){
-  const host=$('#themePanel'); if(!host)return; const name=curTheme;
-  const t=(themes||[]).find(x=>x.n===name)||{n:name};
-  const retCls=v=>v==null?'':(v>=0?'up':'down');
-  const cons=(themeConst[name]||[]).slice().sort((a,b)=>(b.ret_1d??-999)-(a.ret_1d??-999)).slice(0,12);
-  const list=cons.length?cons.map(s=>`<div style="display:flex;justify-content:space-between;align-items:center;gap:10px;padding:8px 2px;border-bottom:1px solid var(--color-hairline)">
-      <span style="font-weight:700;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${s.name}</span>
-      <span class="cn-figure ${retCls(s.ret_1d)}" style="font-weight:700;font-size:13px;flex:0 0 auto">${s.ret_1d==null?'—':sign(s.ret_1d)+'%'}</span></div>`).join('')
-    :'<div class="sub" style="padding:14px 4px;color:var(--color-muted)">구성 종목 데이터 준비 중입니다.</div>';
-  host.innerHTML=`
-    <div style="font-weight:800;font-size:18px;color:var(--blue-navy)">${name}</div>
-    <div style="font-size:var(--text-micro);color:var(--color-muted);margin-top:2px">${STATE_DESC[t.state]||'시장 자금 흐름을 추적하는 테마'}</div>
-    <div style="display:flex;gap:6px;flex-wrap:wrap;margin:10px 0 12px">
-      ${t.state?`<span class="badge badge--brand">${t.state}</span>`:''}
-      ${t.ret!=null?`<span class="badge ${t.ret>=0?'badge--up':'badge--down'} cn-figure">1M ${sign(t.ret)}%</span>`:''}
-      ${t.con!=null?`<span class="badge badge--muted cn-figure">집중도 ${fmt(t.con,1)}</span>`:''}
-    </div>
-    <div class="mk-sub" style="color:var(--color-muted);margin-bottom:4px">구성 종목 · 전일 수익률</div>
-    <div style="flex:1;overflow-y:auto;overflow-x:hidden;max-height:300px">${list}</div>
-    <a class="btn btn--text" href="reports.html" style="margin-top:10px">${name} 관련 리포트 →</a>`;
+function renderBriefGl(){
+  $('#glBriefTitle').textContent=BRIEF.title||'밤사이 해외 요약';
+  $('#glBriefNote').textContent=BRIEF.note||'밤사이 시황을 준비 중입니다.';
+  $('#glBriefBadge').textContent=BRIEF.asof?BRIEF.asof.slice(5).replace('-','.')+' 미국 마감':(GL_LIVE?'밤사이 기준':'예시 데이터');
+  $('#glBriefIdx').innerHTML=(BRIEF.rows||[]).map(r=>`<div class="bi"><span class="bn">${r.name}</span><span class="bc ${dirCls(r.chg)} cn-figure">${r.chg}</span></div>`).join('');
 }
+function hmTile(s){
+  const v=s[HM_KEY[hmPeriod]], a=Math.min(Math.abs(v)/HM_SCALE[hmPeriod],1);
+  const rgb=v>=0?'224,52,75':'20,63,150', strong=a>0.55;
+  return `<div class="hm__t" style="background:rgba(${rgb},${(0.06+a*0.72).toFixed(2)});color:${strong?'#fff':'var(--ink-900)'};border-color:${a>0.1?'transparent':'var(--color-hairline)'}" title="${s.name} (${s.symbol}) ${fmtPct(v)}">
+    <span class="nm">${s.name}</span><span class="tk">${s.symbol}</span>
+    <span class="ch cn-figure" ${strong?'':`style="color:var(--price-${v>=0?'up':'down'})"`}>${fmtPct(v)}</span></div>`;
+}
+function renderHeatGl(){ const k=HM_KEY[hmPeriod]; $('#hmSector').innerHTML=SECTORS.slice().sort((a,b)=>b[k]-a[k]).map(hmTile).join(''); }
+$$('#hmPeriod button').forEach(b=>b.onclick=()=>{ hmPeriod=b.dataset.p; $$('#hmPeriod button').forEach(x=>x.classList.toggle('is-active',x===b)); renderHeatGl(); });
 
-/* ── AI 시황 앵커 (bar) ── */
+/* ═════ AI 앵커 (여성 시황 앵커 · 리포트 앵커와 같은 카드 크기) ═════
+   국내: ai_briefings kind='market' 영상 · 해외: 해외 앵커 영상이 아직 없어 밤사이 요약 챕터만 (영상을 만들어 붙이지 않는다) */
 let marketBrief=null;
 function firstSentence(t){ if(!t)return ''; const s=String(t).trim(); const m=s.match(/^[\s\S]*?[.。다](?=\s|$)/); return (m?m[0]:s).trim().slice(0,96); }
 function renderMarketAnchor(){
   if(!window.renderAnchor) return;
+  const d=curSnap, gl=REGION==='global';
+  const strong=(d.strong_sectors||[])[0], weak=(d.weak_sectors||[])[0];
+  const chapters=gl
+    ? (BRIEF.rows||[]).map((r,i)=>({n:i+1,title:`${r.name} ${r.chg}`,sub:i===0?'밤사이 미국 증시':'',time:''}))
+        .concat([{n:(BRIEF.rows||[]).length+1,title:BRIEF.title||'밤사이 요약',sub:'해외 섹터 흐름',time:''}])
+    : [{n:1,title:`KOSPI ${noDec(d.kospi)} (${d.kospi_chg})`,sub:`KOSDAQ ${noDec(d.kosdaq)} (${d.kosdaq_chg})`,time:'0:00'},
+       {n:2,title:'투자자별 순매수',sub:d.flows?`외국인 ${d.flows.kospi.foreign} · 기관 ${d.flows.kospi.inst} (KOSPI)`:`외국인 ${d.foreign_net||'—'} · 기관 ${d.inst_net||'—'}`,time:'0:30'},
+       {n:3,title:'업종 흐름',sub:[strong?`강세 ${strong.name} ${strong.chg}`:'',weak?`약세 ${weak.name} ${weak.chg}`:''].filter(Boolean).join(' · '),time:'1:00'},
+       {n:4,title:`환율 USD/KRW ${noDec(d.usdkrw)}`,sub:d.usdkrw_chg||'',time:'1:20'}];
   renderAnchor($('#marketAnchor'),{
-    layout:'bar', tag:'유진 AI 앵커',
-    liveLabel:(curSnap.snapshot_date?fmtMD(curSnap.snapshot_date):'')+' 브리핑',
-    eyebrow:'DAILY MARKET BRIEFING', title:'오늘의 시장, 90초 브리핑',
-    caption:(marketBrief&&marketBrief.caption) || firstSentence(curSnap.ai_summary) || '오늘의 시황 브리핑을 준비 중입니다.',
+    layout:'card', tag:'유진 AI 앵커', objectPosition:'center 30%',
+    liveLabel:gl?(BRIEF.asof?fmtMD(BRIEF.asof)+' 해외':'해외 브리핑'):((curSnap.snapshot_date?fmtMD(curSnap.snapshot_date):'')+' 브리핑'),
+    eyebrow:gl?'OVERNIGHT · 해외 시황':'DAILY MARKET BRIEFING · 국내 시황',
+    title:gl?'밤사이 해외 시장, AI 앵커 요약':'오늘의 시장, 90초 브리핑',
+    caption:gl?(BRIEF.note?firstSentence(BRIEF.note):'밤사이 해외 시황을 준비 중입니다.')
+              :((marketBrief&&marketBrief.caption) || firstSentence(curSnap.ai_summary) || '오늘의 시황 브리핑을 준비 중입니다.'),
     thumbnail:(marketBrief&&marketBrief.thumbnail_url) || null,
-    videoUrl:(marketBrief&&marketBrief.video_url) || null,   // TODO: 생성형 AI 앵커 영상 URL 연결
+    videoUrl:gl?null:((marketBrief&&marketBrief.video_url) || null),
+    chaptersLabel:gl?'해외 브리핑 요약':'오늘 브리핑 순서',
+    chapters,
   });
 }
 
+/* ═════ 국내 / 해외 전환 ═════ */
+function syncAsof(){
+  const kr=(curSnap.snapshot_date?curSnap.snapshot_date.replace(/-/g,'.'):(curSnap.asof||'').replace(' 장마감',''))+' 종가 기준';
+  const gl=BRIEF.asof?BRIEF.asof.replace(/-/g,'.')+' 미국 종가 기준':(GL_LIVE?'밤사이 기준':'예시 데이터');
+  $('#asof').textContent=REGION==='global'?gl:kr;
+  $('#rgAsof').textContent=REGION==='global'?'해외 · '+gl:'국내 · '+kr;
+}
+function movePill(){
+  const sw=$('#rgSw'), b=sw.querySelector(`[data-r="${REGION}"]`), pill=sw.querySelector('.rg-sw__pill');
+  pill.style.width=b.offsetWidth+'px'; pill.style.transform=`translateX(${b.offsetLeft-4}px)`;
+}
+function setRegion(r, opts){
+  REGION=r==='global'?'global':'kr';
+  $$('#rgSw [data-r]').forEach(b=>{ const on=b.dataset.r===REGION; b.setAttribute('aria-selected',on); b.tabIndex=on?0:-1; });
+  $$('.rg-pane').forEach(p=>{ const show=p.dataset.region===REGION; const was=!p.hidden; p.hidden=!show;
+    if(show&&!was&&!(opts&&opts.instant)){ p.classList.remove('rg-in'); void p.offsetWidth; p.classList.add('rg-in'); } });
+  movePill(); syncAsof(); renderMarketAnchor();
+  if(window.StockEvents) StockEvents.setRegion(REGION);
+  const sub=$('#seSub'); if(sub) sub.textContent=REGION==='global'?'미국 주요기업의 실적 결과와 발표 일정을 추적합니다.':'DART 공시(배당 · 자사주 · 분할 · 실적)로 국내 종목 이벤트를 추적합니다.';
+  const u=new URL(location.href); if(REGION==='global') u.searchParams.set('region','global'); else u.searchParams.delete('region');
+  history.replaceState(null,'',u);
+}
+$$('#rgSw [data-r]').forEach(b=>b.onclick=()=>{ if(b.dataset.r!==REGION) setRegion(b.dataset.r); });
+$('#rgSw').addEventListener('keydown',e=>{ if(e.key!=='ArrowLeft'&&e.key!=='ArrowRight') return; e.preventDefault();
+  const n=REGION==='kr'?'global':'kr'; setRegion(n); $(`#rgSw [data-r="${n}"]`).focus(); });
+/* 국내/해외 바는 상단 메뉴 바로 아래에 붙는다 (모바일은 메뉴가 두 줄이라 높이가 다름) */
+function stickRg(){ const h=document.querySelector('header.nav'); $('.rg-bar').style.top=(h?h.offsetHeight:64)+'px'; }
+window.addEventListener('resize',()=>{ movePill(); stickRg(); });
+document.addEventListener('DOMContentLoaded',()=>{ stickRg();   // 메뉴는 partials.js가 DOMContentLoaded에 넣는다
+  const h=document.querySelector('header.nav'); if(h&&window.ResizeObserver) new ResizeObserver(stickRg).observe(h); });
+
 /* ── 전체 렌더 ── */
-function renderAll(d){ renderIxStrip(d); renderMarketCards(d); renderHeat(d); renderArchive(); renderMarketAnchor(); }
-renderAll(curSnap); renderNetBuy(); renderBubbles();
-let bubbleRT; window.addEventListener('resize',()=>{clearTimeout(bubbleRT);bubbleRT=setTimeout(renderBubbles,150);});
+function renderKR(){ renderIxStrip(curSnap); renderMarketCards(curSnap); renderHeat(curSnap); renderArchive(); syncAsof(); renderMarketAnchor(); }
+function renderGL(){ renderIxStripGl(); renderBriefGl(); renderHeatGl(); syncAsof(); if(REGION==='global') renderMarketAnchor(); }
+
+/* 기관: 종목 이벤트 · WM: 테마 (data-for로 남은 쪽만 마운트) */
+if(document.getElementById('stockEvents')) StockEvents.mount(document.getElementById('stockEvents'));
+if(document.getElementById('themeRotation')) ThemeRotation.mount(document.getElementById('themeRotation'),{wide:true});
+
+renderKR(); renderGL();
+setRegion(new URLSearchParams(location.search).get('region')==='global'?'global':'kr',{instant:true});
+if(document.fonts&&document.fonts.ready) document.fonts.ready.then(movePill);
 
 /* ── Supabase 로드 (있으면 덮어씀) ── */
 (async function loadContent(){
   if(!window.sb) return;
+  const q=p=>p.then(r=>r).catch(()=>({data:null}));
   try{
-    const [mk,th,tc,gi,ab]=await Promise.all([
-      sb.from('market_snapshot').select('*').order('snapshot_date',{ascending:false}).limit(30),
-      sb.from('themes').select('*').order('id'),
-      sb.from('theme_constituents').select('*'),
-      sb.from('global_indices').select('*'),   // NASDAQ·S&P500 (yfinance)
-      sb.from('ai_briefings').select('*').eq('kind','market').order('brief_date',{ascending:false}).limit(1),
+    const [mk,ab,gi,gr,gs]=await Promise.all([
+      q(sb.from('market_snapshot').select('*').order('snapshot_date',{ascending:false}).limit(30)),
+      q(sb.from('ai_briefings').select('*').eq('kind','market').order('brief_date',{ascending:false}).limit(1)),
+      q(sb.from('global_indices').select('*')),
+      q(sb.from('global_research').select('*').eq('kind','overnight').order('id',{ascending:false}).limit(1)),
+      q(sb.from('global_sectors').select('*')),
     ]);
-    if(ab.data&&ab.data.length){ marketBrief=ab.data[0]; renderMarketAnchor(); }
-    // 해외 지수 스트립: global_indices(yfinance)로 HERO_EXTRA 덮어씀
-    if(gi.data&&gi.data.length){
-      const bySym={}; gi.data.forEach(r=>bySym[r.symbol]=r);
-      const asIdx=r=>({v:Number(r.price).toLocaleString('ko-KR'),c:(r.change_pct>=0?'+':'')+Number(r.change_pct).toFixed(2)+'%'});
-      if(bySym.IXIC) HERO_EXTRA.nasdaq=asIdx(bySym.IXIC);
-      if(bySym.GSPC) HERO_EXTRA.sp500=asIdx(bySym.GSPC);
-      renderIxStrip(curSnap);
-    }
+    if(ab.data&&ab.data.length) marketBrief=ab.data[0];
     if(mk.data&&mk.data.length){
-      SNAPSHOTS=mk.data.map(r=>Object.assign({},r,{asof:fmtMD(r.snapshot_date)+' 장마감',
-        strong_sectors:r.strong_sectors||[],weak_sectors:r.weak_sectors||[]}));
-      curSnap=SNAPSHOTS[0]; renderAll(curSnap);
+      SNAPSHOTS=mk.data.map(r=>Object.assign({},r,{asof:fmtMD(r.snapshot_date)+' 장마감',strong_sectors:r.strong_sectors||[],weak_sectors:r.weak_sectors||[]}));
+      curSnap=SNAPSHOTS[0];
     }
-    if(th.data&&th.data.length){ themes=th.data.map(t=>({n:t.name,con:+t.concentration,ret:+t.ret_1m,x:+t.pos_x,y:+t.pos_y,state:t.state})); curTheme=null; renderBubbles(); }
-    if(tc.data&&tc.data.length){ const m={}; tc.data.forEach(r=>{(m[r.theme_name]||(m[r.theme_name]=[])).push({name:r.stock_name,ret_1d:r.ret_1d});}); themeConst=m; if(curTheme)renderThemePanel(); }
-    console.log('market content loaded from Supabase');
-  }catch(e){ console.warn('market load failed (keeping defaults)', e); }
+    if(gi.data&&gi.data.length){ GL_LIVE=true;
+      gi.data.forEach(r=>{ const pct=Number(r.change_pct); IX_DATA[r.symbol]={ v:Number(r.price).toLocaleString('en-US',{maximumFractionDigits:2}),
+        c:(r.symbol==='TNX'?(pct>=0?'+':'')+pct.toFixed(2)+'%p':(pct>=0?'+':'')+pct.toFixed(2)+'%') }; }); }
+    if(gr.data&&gr.data.length){ const ov=gr.data[0], b=ov.body||{};
+      // 4일 넘게 갱신되지 않은 요약(시드 데이터 등)은 실데이터로 보여주지 않음 (global.html과 같은 규칙)
+      const age=(Date.now()-new Date(b.asof||ov.created_at))/86400000;
+      if(age<=4) BRIEF={title:ov.title||BRIEF.title,note:b.note||BRIEF.note,rows:b.rows||BRIEF.rows,badge:ov.badge,asof:b.asof}; }
+    if(gs.data&&gs.data.length){ const sec=gs.data.filter(r=>r.kind==='sector'); if(sec.length) SECTORS=sec.map(r=>({...r,chg_1d:+r.chg_1d,chg_1w:+r.chg_1w,chg_1m:+r.chg_1m})); }
+    renderKR(); renderGL();
+    console.log('research content loaded from Supabase');
+  }catch(e){ console.warn('research load failed (keeping defaults)', e); }
 })();
 </script>
 </body>

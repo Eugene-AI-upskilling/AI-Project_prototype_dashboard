@@ -1,0 +1,17 @@
+/* Pretendard — Coinone's system-class Korean/Latin sans.
+   Self-hosted from the official orioncactus distribution (Pretendard Variable,
+   weights 45–920). No proprietary display face is used on web. */
+
+@font-face {
+  font-family: "Pretendard Variable";
+  font-weight: 45 920;
+  font-style: normal;
+  font-display: swap;
+  src: url("../assets/fonts/PretendardVariable.woff2") format("woff2-variations");
+}
+
+:root {
+  --font-sans: "Pretendard Variable", "Pretendard", -apple-system, BlinkMacSystemFont,
+    system-ui, "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
+  --font-mono: "SFMono-Regular", "SF Mono", ui-monospace, "Menlo", "Consolas", monospace;
+}

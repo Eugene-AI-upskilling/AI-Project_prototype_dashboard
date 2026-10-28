@@ -1,0 +1,317 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>유진 Insight Lab 기능 쇼릴</title>
+<style>
+@font-face{font-family:Pretendard;src:url(PretendardVariable.woff2) format("woff2");font-weight:100 900}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:#071c47}
+body{font-family:Pretendard,sans-serif;-webkit-font-smoothing:antialiased;word-break:keep-all}
+.stage{position:relative;width:1280px;height:720px;overflow:hidden;color:#fff;
+  background:radial-gradient(120% 90% at 0% 0%,#1d4fae 0%,#0b2e6b 48%,#071c47 100%)}
+.glow{position:absolute;right:-180px;bottom:-220px;width:620px;height:620px;border-radius:50%;
+  background:radial-gradient(circle,rgba(77,171,247,.30),transparent 65%);animation:drift 39s linear both}
+@keyframes drift{from{transform:translate(0,0)}50%{transform:translate(-160px,-60px)}to{transform:translate(0,0)}}
+
+/* 공통 머리 */
+.brand{position:absolute;left:72px;top:40px;display:flex;align-items:center;gap:12px;z-index:5}
+.pill{background:#fff;border-radius:999px;padding:8px 16px;display:flex;align-items:center}
+.pill img{height:22px;display:block}
+.brand b{font-size:19px;font-weight:700;color:#cfe3ff;letter-spacing:-.01em}
+
+/* 장면 공통 */
+.sc{position:absolute;inset:0;opacity:0;
+  animation:scIn .6s cubic-bezier(.2,.8,.2,1) both,scOut .45s ease-in forwards;
+  animation-delay:calc(var(--s)*1s),calc(var(--e)*1s - .45s)}
+@keyframes scIn{from{opacity:0;transform:translateY(26px)}to{opacity:1;transform:none}}
+@keyframes scOut{from{opacity:1}to{opacity:0;transform:translateY(-18px)}}
+.rv{animation:rv .55s cubic-bezier(.2,.8,.2,1) both;animation-delay:calc(var(--d)*1s)}
+@keyframes rv{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+.pop{animation:pop .45s cubic-bezier(.3,1.5,.5,1) both;animation-delay:calc(var(--d)*1s)}
+@keyframes pop{from{opacity:0;transform:scale(.7)}to{opacity:1;transform:none}}
+.gone{animation:gone .3s ease forwards;animation-delay:calc(var(--g)*1s)}
+@keyframes gone{to{opacity:0;transform:scale(.9)}}
+.rv.gone{animation:rv .55s cubic-bezier(.2,.8,.2,1) both,gone .3s ease forwards;animation-delay:calc(var(--d)*1s),calc(var(--g)*1s)}
+
+.cap{position:absolute;left:72px;top:150px;width:440px}
+.k{font-size:19px;font-weight:800;letter-spacing:.08em;color:#8fc4ff}
+.cap h2{font-size:52px;line-height:1.22;font-weight:800;letter-spacing:-.035em;margin-top:16px}
+.cap h2 em{font-style:normal;color:#8fc4ff}
+.cap p{font-size:23px;line-height:1.55;color:rgba(255,255,255,.76);margin-top:22px;font-weight:500}
+.ui{position:absolute;left:560px;top:112px;width:652px;height:490px}
+.card{background:#fff;color:#17181b;border-radius:22px;box-shadow:0 30px 70px -20px rgba(0,0,0,.45)}
+
+/* 하단 챕터 */
+.chap{position:absolute;left:72px;right:68px;bottom:34px;display:flex;gap:8px;opacity:0;
+  animation:scIn .6s ease both,scOut .45s ease-in forwards;animation-delay:3.4s,35.1s}
+.chap span{flex:1;font-size:16px;font-weight:700;color:rgba(255,255,255,.5);padding-top:12px;position:relative;white-space:nowrap}
+.chap span::before{content:"";position:absolute;left:0;right:0;top:0;height:4px;border-radius:4px;background:rgba(255,255,255,.16)}
+.chap span::after{content:"";position:absolute;left:0;top:0;height:4px;border-radius:4px;background:#4dabf7;width:0;
+  animation:fill linear both;animation-duration:calc((var(--e) - var(--s))*1s);animation-delay:calc(var(--s)*1s)}
+.chap span{animation:on .3s forwards,off .3s forwards;animation-delay:calc(var(--s)*1s),calc(var(--e)*1s)}
+@keyframes fill{to{width:100%}}
+@keyframes on{to{color:#fff}}
+@keyframes off{to{color:rgba(255,255,255,.5)}}
+
+/* S0 · S8 타이틀 */
+.title{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+.title .pill{padding:12px 24px}.title .pill img{height:34px}
+.title h1{font-size:96px;font-weight:800;letter-spacing:-.045em;margin-top:30px;line-height:1}
+.title h1 em{font-style:normal;color:#8fc4ff}
+.title .sub{font-size:34px;font-weight:600;margin-top:26px;color:#fff}
+.title .sm{font-size:22px;color:rgba(255,255,255,.66);margin-top:14px;font-weight:500}
+.recap{display:flex;gap:10px;margin-top:40px;flex-wrap:wrap;justify-content:center;max-width:1000px}
+.recap span{font-size:21px;font-weight:700;padding:11px 20px;border-radius:999px;background:rgba(143,196,255,.16);color:#d9ebff;border:1px solid rgba(143,196,255,.3)}
+
+/* S1 로그인 */
+.login{padding:34px 36px;height:100%}
+.login h3,.box h3{font-size:24px;font-weight:800;letter-spacing:-.02em}
+.mut{color:#6b7684;font-size:17px;margin-top:6px}
+.segs{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:22px}
+.seg{border:2px solid #dde4eb;border-radius:18px;padding:22px 22px;position:relative}
+.seg b{display:block;font-size:26px;font-weight:800;letter-spacing:-.02em}
+.seg span{display:block;font-size:17px;color:#6b7684;margin-top:8px;line-height:1.45}
+.seg.sel{animation:sel .35s forwards;animation-delay:calc(var(--d)*1s)}
+@keyframes sel{to{border-color:#3182f6;background:#eef5ff;box-shadow:0 0 0 5px rgba(49,130,246,.14)}}
+.google{margin-top:22px;height:62px;border:1.5px solid #cfd0d3;border-radius:16px;display:flex;align-items:center;justify-content:center;gap:12px;font-size:21px;font-weight:700}
+.status{position:relative;height:60px;margin-top:18px}
+.status>div{position:absolute;inset:0;border-radius:16px;display:flex;align-items:center;gap:12px;padding:0 20px;font-size:20px;font-weight:700}
+.st-wait{background:#fff6e6;color:#b25e00}
+.st-ok{background:#e8f7ef;color:#11845a}
+.dot{width:12px;height:12px;border-radius:50%;background:currentColor;flex:none}
+
+/* S2 Q&A */
+.q{padding:18px 22px;display:flex;align-items:center;gap:14px;height:84px}
+.q .in{flex:1;font-size:24px;font-weight:700;letter-spacing:-.02em;white-space:nowrap;overflow:hidden}
+.typ{display:inline-block;clip-path:inset(0 100% 0 0);animation:typ 1.3s steps(19) forwards;animation-delay:calc(var(--d)*1s)}
+@keyframes typ{to{clip-path:inset(0 0 0 0)}}
+.btn{background:#3182f6;color:#fff;border-radius:14px;font-size:19px;font-weight:700;padding:13px 22px;flex:none}
+.ans{margin-top:16px;padding:22px 26px;height:390px}
+.badges{display:flex;gap:8px}
+.bd{font-size:15px;font-weight:700;padding:6px 12px;border-radius:999px}
+.bd.g{background:#e8f7ef;color:#11845a}.bd.b{background:#eef5ff;color:#1c6fe6}.bd.a{background:#fff3df;color:#b25e00}
+.sum{margin-top:14px;background:#f3f7fd;border-left:5px solid #3182f6;border-radius:10px;padding:14px 18px;font-size:20px;font-weight:700;line-height:1.45}
+.row{display:grid;grid-template-columns:96px 1fr;gap:12px;margin-top:16px;align-items:start}
+.row .l{font-size:17px;font-weight:800;color:#6b7684;padding-top:2px}
+.row .l.v{color:#1c6fe6}.row .l.c{color:#e0344b}
+.row .t{font-size:19px;line-height:1.45;font-weight:500}
+.cite{display:inline-flex;margin-top:6px;font-size:14px;font-weight:700;color:#1c6fe6;border:1.5px solid #bcd6fb;border-radius:8px;padding:3px 9px}
+.cite.hl{animation:hl 1.4s ease forwards;animation-delay:calc(var(--h)*1s)}
+@keyframes hl{0%{}25%{background:#3182f6;color:#fff;border-color:#3182f6;box-shadow:0 0 0 6px rgba(49,130,246,.2)}100%{background:#3182f6;color:#fff;border-color:#3182f6}}
+
+/* S3 검수 */
+.box{padding:28px 32px;height:100%}
+.box .hd{display:flex;justify-content:space-between;align-items:center}
+.qt{font-size:25px;font-weight:800;letter-spacing:-.02em;margin-top:12px}
+.chk{margin-top:22px;display:flex;flex-direction:column;gap:12px}
+.chk div{display:flex;align-items:center;gap:14px;font-size:21px;font-weight:600;background:#f6f8fb;border-radius:14px;padding:13px 16px}
+.chk i{width:30px;height:30px;border-radius:9px;border:2px solid #cfd0d3;flex:none;position:relative}
+.chk i.on{animation:ck .3s forwards;animation-delay:calc(var(--d)*1s)}
+.chk i::after{content:"";position:absolute;left:9px;top:4px;width:8px;height:14px;border:solid #fff;border-width:0 3.5px 3.5px 0;transform:rotate(45deg);opacity:0}
+@keyframes ck{to{background:#11845a;border-color:#11845a}}
+.chk i.on::after{animation:ckm .3s forwards;animation-delay:calc(var(--d)*1s)}
+@keyframes ckm{to{opacity:1}}
+.act{display:flex;gap:12px;align-items:center;margin-top:22px}
+.press{animation:press .35s ease forwards;animation-delay:calc(var(--d)*1s)}
+@keyframes press{50%{transform:scale(.92)}100%{transform:scale(1)}}
+.who{font-size:17px;color:#6b7684;font-weight:600}
+.stamp{position:absolute;right:30px;bottom:30px;transform:rotate(-8deg);border:4px solid #11845a;color:#11845a;border-radius:16px;padding:10px 18px;font-size:26px;font-weight:900;background:rgba(255,255,255,.92)}
+
+/* S4 변화 추적 */
+.new{padding:22px 26px;border:2px solid #f2b155}
+.new .k2{font-size:16px;font-weight:800;color:#b25e00;letter-spacing:.04em}
+.new b{display:block;font-size:24px;font-weight:800;margin-top:8px;letter-spacing:-.02em;line-height:1.35}
+.link{height:70px;display:flex;align-items:center;justify-content:center}
+.link svg{width:40px;height:70px}
+.link path{stroke:#f2b155;stroke-width:4;fill:none;stroke-dasharray:80;stroke-dashoffset:80;animation:draw .5s forwards;animation-delay:calc(var(--d)*1s)}
+@keyframes draw{to{stroke-dashoffset:0}}
+.old{padding:24px 26px}
+.old .top{display:flex;justify-content:space-between;align-items:center}
+.old b{font-size:25px;font-weight:800;letter-spacing:-.02em}
+.swap{position:relative;width:150px;height:36px;flex:none}
+.swap .bd{position:absolute;right:0;top:0;font-size:17px;padding:7px 14px}
+.pulse{animation:rv .4s both,pl 1s ease 2;animation-delay:calc(var(--d)*1s),calc(var(--d)*1s + .4s)}
+@keyframes pl{50%{box-shadow:0 0 0 10px rgba(242,177,85,.35)}}
+.why{margin-top:16px;font-size:18px;color:#3d4450;background:#fff8ec;border-radius:12px;padding:12px 16px;line-height:1.5}
+
+/* S5 맞춤 전환 */
+.outs{position:absolute;inset:0}
+.doc{position:absolute;top:10px;width:224px;text-align:center}
+.doc img{width:100%;border-radius:14px;box-shadow:0 26px 60px -18px rgba(0,0,0,.6);display:block;background:#fff}
+.doc .tg{display:inline-block;margin-top:16px;font-size:17px;font-weight:800;color:#fff;background:rgba(143,196,255,.18);border:1px solid rgba(143,196,255,.35);padding:8px 16px;border-radius:999px}
+.doc .tg small{display:block;font-size:14px;font-weight:600;color:#bcd6fb;margin-top:2px}
+.fan{animation:fan .7s cubic-bezier(.2,.8,.2,1) both;animation-delay:calc(var(--d)*1s)}
+@keyframes fan{from{opacity:0;transform:translateY(60px) rotate(0deg) scale(.9)}to{opacity:1;transform:translateY(var(--y)) rotate(var(--r))}}
+
+/* S6 연결 */
+.two{display:flex;flex-direction:column;gap:18px}
+.lk{padding:26px 28px;display:flex;align-items:center;gap:20px}
+.ic{width:62px;height:62px;border-radius:18px;background:#eef5ff;display:flex;align-items:center;justify-content:center;flex:none}
+.ic svg{width:32px;height:32px;stroke:#1c6fe6;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.lk .tx{flex:1}
+.lk .tx b{display:block;font-size:24px;font-weight:800;letter-spacing:-.02em}
+.lk .tx span{display:block;font-size:17px;color:#6b7684;margin-top:6px}
+.sw{position:relative;width:170px;height:52px;flex:none}
+.sw>div{position:absolute;inset:0;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:800}
+.sw .a1{background:#3182f6;color:#fff}.sw .a2{background:#e8f7ef;color:#11845a}
+.ctx{font-size:17px;line-height:1.55;color:#3d4450;background:#f6f8fb;border-radius:12px;padding:12px 16px;margin-top:4px}
+
+/* S7 측정 */
+.ms{padding:30px 34px}
+.grp{margin-top:26px}
+.grp h4{font-size:20px;font-weight:800;margin-bottom:12px}
+.bar{display:grid;grid-template-columns:150px 1fr;align-items:center;gap:14px;margin-top:10px}
+.bar span{font-size:18px;font-weight:700;color:#3d4450}
+.bar i{display:block;height:34px;border-radius:0 8px 8px 0;transform-origin:left;animation:grow .8s cubic-bezier(.2,.8,.2,1) both;animation-delay:calc(var(--d)*1s)}
+@keyframes grow{from{transform:scaleX(0)}to{transform:none}}
+.bar .o{background:#b5bac2}.bar .n{background:#3182f6}
+.note{font-size:16px;color:#6b7684;margin-top:22px}
+</style>
+</head>
+<body>
+<div class="stage" id="stage">
+  <div class="glow"></div>
+  <div class="brand"><span class="pill"><img src="img/eugene-logo.png" alt=""></span><b>Insight Lab</b></div>
+
+  <!-- S0 타이틀 -->
+  <section class="sc" style="--s:0;--e:3.4">
+    <div class="title">
+      <h1 class="rv" style="--d:.2">유진 <em>Insight Lab</em></h1>
+      <div class="sub rv" style="--d:.7">담당자가 없어도 유진 리서치에 바로 닿는 창구</div>
+      <div class="sm rv" style="--d:1.1">기관 · 고액자산가 고객을 위한 근거형 리서치 라운지</div>
+    </div>
+  </section>
+
+  <!-- S1 로그인·승인 -->
+  <section class="sc" style="--s:3.4;--e:8">
+    <div class="cap"><div class="k">01 · 로그인과 승인</div><h2>고객 유형을 고르고<br><em>승인 후</em> 입장</h2><p>법인과 WM 고객 모두 Google로 로그인하고, 담당 직원이 승인합니다</p></div>
+    <div class="ui"><div class="card login rv" style="--d:3.8">
+      <h3>어떤 고객이신가요?</h3><div class="mut">고객 유형에 맞는 화면과 담당자를 연결합니다</div>
+      <div class="segs">
+        <div class="seg sel" style="--d:4.7"><b>법인 고객</b><span>자산운용사 · 투자자문사<br>DMA 전문투자자</span></div>
+        <div class="seg"><b>WM 고객</b><span>고액자산가<br>지점 초대 코드로 가입</span></div>
+      </div>
+      <div class="google rv" style="--d:5.3"><svg width="26" height="26" viewBox="0 0 48 48"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.4-.4-3.5z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-7.9l-6.5 5C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C37 39.2 44 34 44 24c0-1.3-.1-2.4-.4-3.5z"/></svg>Google 계정으로 계속</div>
+      <div class="status">
+        <div class="st-wait rv gone" style="--d:5.9;--g:6.8"><span class="dot"></span>승인 대기 · 담당 직원 확인 중</div>
+        <div class="st-ok pop" style="--d:6.9"><span class="dot"></span>승인 완료 · 김민준님, 환영합니다</div>
+      </div>
+    </div></div>
+  </section>
+
+  <!-- S2 근거형 Q&A -->
+  <section class="sc" style="--s:8;--e:14">
+    <div class="cap"><div class="k">02 · 근거형 Q&amp;A</div><h2>리포트 원문을 근거로<br><em>바로 답합니다</em></h2><p>사실 · 당사 견해 · 반대 근거를 나누고, 문장마다 출처를 붙입니다</p></div>
+    <div class="ui">
+      <div class="card q rv" style="--d:8.3"><div class="in"><span class="typ" style="--d:8.6">반도체주 하락, AI 수요 둔화 때문인가?</span></div><div class="btn press" style="--d:10">질문</div></div>
+      <div class="card ans rv" style="--d:10.3">
+        <div class="badges"><span class="bd g">● 검수 완료</span><span class="bd b">원문 대조 4/4</span></div>
+        <div class="sum">AI 수요가 꺾였다는 근거는 아직 약합니다</div>
+        <div class="row rv" style="--d:10.9"><div class="l">사실</div><div class="t">메타의 컴퓨팅 자원 임대 소식이 AI 버블 논란을 자극<br><span class="cite hl" style="--h:12.6">✓ [1] 원문 일치</span></div></div>
+        <div class="row rv" style="--d:11.4"><div class="l v">당사 견해</div><div class="t">이번 급락은 실적 훼손이 아닌 과도한 우려의 반영<br><span class="cite hl" style="--h:12.9">✓ [2] 원문 일치</span></div></div>
+        <div class="row rv" style="--d:11.9"><div class="l c">반대 근거</div><div class="t">실적이 기대를 크게 웃돌지 못하면 모멘텀 둔화로 해석<br><span class="cite hl" style="--h:13.2">✓ [3] 원문 일치</span></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S3 애널리스트 검수 -->
+  <section class="sc" style="--s:14;--e:19">
+    <div class="cap"><div class="k">03 · 애널리스트 검수</div><h2>AI 초안은 사람이<br><em>검수</em>한 뒤 공개</h2><p>인용 원문 · 매매 권유 표현 · 숫자를 자동 점검하고, 사람이 최종 판단합니다</p></div>
+    <div class="ui"><div class="card box rv" style="--d:14.3;position:relative">
+      <div class="hd"><span class="bd b">검수 대기 · AI 초안</span><span class="who">퀀트전략 애널리스트</span></div>
+      <div class="qt">반도체주 하락, AI 수요 둔화 때문인가?</div>
+      <div class="chk">
+        <div><i class="on" style="--d:15"></i>인용 원문 대조 4/4</div>
+        <div><i class="on" style="--d:15.45"></i>매매 권유 표현 없음</div>
+        <div><i class="on" style="--d:15.9"></i>모든 문장에 출처 표기</div>
+        <div><i class="on" style="--d:16.35"></i>숫자 원문 확인</div>
+      </div>
+      <div class="act"><div class="btn press" style="--d:17">승인 후 공개</div><div class="btn" style="background:#fff;color:#17181b;border:1.5px solid #cfd0d3">수정 저장</div></div>
+      <div class="stamp pop" style="--d:17.4">검수 완료 · 고객에게 공개</div>
+    </div></div>
+  </section>
+
+  <!-- S4 변화 추적 -->
+  <section class="sc" style="--s:19;--e:23.6">
+    <div class="cap"><div class="k">04 · 변화 추적</div><h2>새 리포트가 나오면<br><em>‘재검토 필요’</em></h2><p>근거가 겹치는 답변을 찾아 애널리스트와 고객에게 바로 알립니다</p></div>
+    <div class="ui">
+      <div class="card new rv" style="--d:19.5"><div class="k2">새 리포트 · 2026-10-14</div><b>이에스티: 디스플레이 및 반도체 공정용 정전척 전문 기업</b></div>
+      <div class="link"><svg viewBox="0 0 40 70"><path style="--d:20.3" d="M20 4v56M8 48l12 14 12-14"/></svg></div>
+      <div class="card old rv" style="--d:19.8">
+        <div class="top"><b>반도체주 하락, AI 수요 둔화 때문인가?</b>
+          <div class="swap"><span class="bd g gone" style="--g:20.9">● 검수 완료</span><span class="bd a pulse" style="--d:21">● 재검토 필요</span></div></div>
+        <div class="why rv" style="--d:21.6">새 리포트에 ‘반도체’가 26회 등장해 이 답변의 근거와 겹칩니다. 애널리스트가 다시 확인합니다.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S5 맞춤 전환 -->
+  <section class="sc" style="--s:23.6;--e:28.6">
+    <div class="cap"><div class="k">05 · 맞춤 전환</div><h2>검수된 답변 하나로<br><em>세 가지 자료</em></h2><p>기관 회의용 브리핑, 자문사 고객 설명자료, 고액자산가용 카드뉴스를 바로 받습니다</p></div>
+    <div class="ui"><div class="outs">
+      <div class="doc fan" style="--d:24;left:0;--r:-5deg;--y:18px"><img src="img/brief.png" alt=""><div class="tg">기관 · 회의용 브리핑<small>PDF</small></div></div>
+      <div class="doc fan" style="--d:24.5;left:214px;--r:0deg;--y:0px;z-index:2"><img src="img/explainer.png" alt=""><div class="tg">자문사 · 고객 설명자료<small>PDF</small></div></div>
+      <div class="doc fan" style="--d:25;left:428px;--r:5deg;--y:18px"><img src="img/card1.png" alt=""><div class="tg">고액자산가 · 카드뉴스<small>이미지 6장</small></div></div>
+    </div></div>
+  </section>
+
+  <!-- S6 행사·상담 연결 -->
+  <section class="sc" style="--s:28.6;--e:32.2">
+    <div class="cap"><div class="k">06 · 행사 · 상담 연결</div><h2>더 궁금하면<br><em>사람에게</em> 이어집니다</h2><p>관련 콥데이를 신청하고, 질문 맥락 그대로 법인영업 · PB · DMA 데스크에 전달합니다</p></div>
+    <div class="ui two" style="top:150px">
+      <div class="card lk rv" style="--d:28.9"><div class="ic"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg></div>
+        <div class="tx"><b>10.28 반도체 소부장 온라인 콥데이</b><span>이 질문과 관련된 행사</span></div>
+        <div class="sw"><div class="a1 press gone" style="--d:29.7;--g:30"><span>신청하기</span></div><div class="a2 pop" style="--d:30.05">✓ 신청 완료</div></div></div>
+      <div class="card lk rv" style="--d:29.2;flex-wrap:wrap"><div class="ic"><svg viewBox="0 0 24 24"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 21l1.9-5.4A8 8 0 1 1 21 12z"/></svg></div>
+        <div class="tx"><b>법인영업 담당에게 이어서 묻기</b><span>WM 고객은 담당 PB, DMA 고객은 DMA 데스크로</span></div>
+        <div class="sw"><div class="a1 press gone" style="--d:30.5;--g:30.8">요청하기</div><div class="a2 pop" style="--d:30.85">✓ 전달 완료</div></div>
+        <div class="ctx rv" style="--d:31;width:100%">함께 전달: 질문 · 답변 요약 · 인용 리포트 3건</div></div>
+    </div>
+  </section>
+
+  <!-- S7 효과 측정 -->
+  <section class="sc" style="--s:32.2;--e:35.5">
+    <div class="cap"><div class="k">07 · 효과 측정</div><h2>정말 나아졌는지<br><em>현장에서 측정</em></h2><p>같은 과제를 기존 방식과 Insight Lab으로 풀어 시간과 근거 정확도를 비교합니다</p></div>
+    <div class="ui"><div class="card ms rv" style="--d:32.4">
+      <div class="hd" style="display:flex;justify-content:space-between;align-items:center"><h3 style="font-size:24px;font-weight:800">효과 측정</h3><span class="bd b">참가자별 순서 교차</span></div>
+      <div class="grp"><h4>과제 시간 <span style="color:#6b7684;font-weight:600;font-size:16px">· 짧을수록 좋음</span></h4>
+        <div class="bar"><span>기존 방식</span><i class="o" style="--d:32.9;width:100%"></i></div>
+        <div class="bar"><span>Insight Lab</span><i class="n" style="--d:33.1;width:38%"></i></div></div>
+      <div class="grp"><h4>근거 정확도 <span style="color:#6b7684;font-weight:600;font-size:16px">· 높을수록 좋음</span></h4>
+        <div class="bar"><span>기존 방식</span><i class="o" style="--d:33.5;width:52%"></i></div>
+        <div class="bar"><span>Insight Lab</span><i class="n" style="--d:33.7;width:94%"></i></div></div>
+      <div class="note">예시 화면 · 실제 값은 본선 현장 측정으로 채웁니다</div>
+    </div></div>
+  </section>
+
+  <!-- S8 마무리 -->
+  <section class="sc" style="--s:35.5;--e:39.2">
+    <div class="title">
+      <span class="pill rv" style="--d:35.7"><img src="img/eugene-logo.png" alt=""></span>
+      <h1 class="rv" style="--d:35.9">유진 <em>Insight Lab</em></h1>
+      <div class="recap">
+        <span class="rv" style="--d:36.3">근거형 Q&amp;A</span><span class="rv" style="--d:36.45">애널리스트 검수</span><span class="rv" style="--d:36.6">변화 추적</span>
+        <span class="rv" style="--d:36.75">맞춤 전환</span><span class="rv" style="--d:36.9">행사 · 상담 연결</span>
+      </div>
+    </div>
+  </section>
+
+  <div class="chap">
+    <span style="--s:3.4;--e:8">로그인 · 승인</span><span style="--s:8;--e:14">근거형 Q&amp;A</span><span style="--s:14;--e:19">검수</span>
+    <span style="--s:19;--e:23.6">변화 추적</span><span style="--s:23.6;--e:28.6">맞춤 전환</span><span style="--s:28.6;--e:32.2">행사 · 상담</span><span style="--s:32.2;--e:35.5">효과 측정</span>
+  </div>
+</div>
+<script>
+const DUR = 39;
+window.seek = t => { for (const a of document.getAnimations()) { a.pause(); a.currentTime = t * 1000; } };
+window.ready = Promise.all([document.fonts.ready, ...[...document.images].map(i => i.decode().catch(() => {}))]);
+if (!/render=1/.test(location.search)) {
+  // 미리보기: 실시간 재생 + 반복
+  setInterval(() => { for (const a of document.getAnimations()) if (a.currentTime >= DUR * 1000) { a.currentTime = 0; a.play(); } }, 100);
+  const t0 = performance.now();
+  setInterval(() => { if (performance.now() - t0 > DUR * 1000) location.reload(); }, 500);
+}
+</script>
+</body>
+</html>

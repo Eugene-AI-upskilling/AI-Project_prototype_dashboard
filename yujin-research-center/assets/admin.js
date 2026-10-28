@@ -6,6 +6,7 @@
   'use strict';
   const $=(s,e=document)=>e.querySelector(s), $$=(s,e=document)=>[...e.querySelectorAll(s)], E=IL.esc;
   function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('show');clearTimeout(toast.t);toast.t=setTimeout(()=>t.classList.remove('show'),2600);}
+  const gate = window.AdminGate ? await AdminGate.ready : {mode:'demo'};   // 승인된 직원만 (또는 시연 모드)
   const live = !!(await ILAPI.ready());
   const PLABEL={am:'법인 · 자산운용사',ia:'법인 · 투자자문사',dma:'법인 · DMA 전문투자자',hnw:'WM · 고액자산가'};
   const who=p=>{const P=IL.PERSONAS[p];return P?`${P.name} · ${P.org}`:p;};
@@ -62,7 +63,9 @@
     const text=[d.verdict,...all.map(s=>s.text)].join(' ');
     return [[`인용 원문 대조 ${ok}/${all.length}`, all.length>0&&ok===all.length],
             ['매매 권유 표현 없음', !BAN.test(text)],
-            ['모든 문장에 출처 표기', all.every(s=>s.cite&&s.cite.source_id)]];
+            ['모든 문장에 출처 표기', all.every(s=>s.cite&&s.cite.source_id)],
+            ...(((d.meta||{}).num_check)?[(()=>{ const n=d.meta.num_check;
+              return [`요약 · 확인할 점 숫자 원문 확인 ${n.ok}/${n.total}`+(n.missing.length?` (원문에 없음: ${n.missing.join(', ')})`:''), !n.missing.length]; })()]:[])];
   }
 
   function liveQueue(){
@@ -95,6 +98,7 @@
       ${x.stale?`<div class="ax-stale" style="margin:0"><svg viewBox="0 0 24 24"><path d="M12 3l9 16H3z"/><path d="M12 10v4M12 17h.01"/></svg><div><b>재검토 필요</b><p>${E(x.stale_reason||'')}</p></div></div>`:''}
       ${r!=='answer'?`<div class="lg-note" style="margin:0"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg><div><b>AI 판단: ${E({pb:'담당 PB 연결',desk:'DMA 데스크 연결',hold:'근거 부족 · 보류'}[r]||r)}</b><br/>${E(d.route_reason||'')}</div></div>`:''}
       <div class="ad-box"><h4>요약 (고객이 먼저 읽는 문장)</h4><textarea rows="3" data-k="verdict">${E(d.verdict||'')}</textarea></div>
+      <div class="ad-box"><h4>애널리스트 코멘트 (승인 시 '검수 완료' 딱지와 함께 고객에게 표시)</h4><textarea rows="2" data-k="review_note" placeholder="예: 3Q 실적 발표 후 수치를 다시 확인할 예정입니다.">${E(d.review_note||'')}</textarea></div>
       ${(d.hypotheses||[]).map((h,i)=>`<div class="ad-hyp"><div class="ad-hyp__h"><b>${E(h.title)}</b><span class="ad-pill">근거 ${E(h.strength)}</span></div>
         ${h.facts.map((f,j)=>stmtBox('사실',f,`h${i}.f${j}`)).join('')}${stmtBox('당사 견해',h.view,`h${i}.view`)}${h.counter&&h.counter.text?stmtBox('반대 근거',h.counter,`h${i}.counter`):''}
         <div class="ad-box"><h4>확인할 점 (줄마다 하나)</h4><textarea rows="2" data-k="h${i}.checks">${E((h.checks||[]).join('\n'))}</textarea></div></div>`).join('')}
@@ -110,6 +114,7 @@
     const d=JSON.parse(JSON.stringify(x.draft));
     $$('#draft [data-k]').forEach(t=>{ const k=t.dataset.k, v=t.value.trim();
       if(k==='verdict'){ d.verdict=v; return; }
+      if(k==='review_note'){ d.review_note=v; return; }
       const m=k.match(/^h(\d+)\.(f(\d+)|view|counter|checks)$/); if(!m) return; const h=d.hypotheses[+m[1]];
       if(m[2]==='checks') h.checks=v.split('\n').map(s=>s.trim()).filter(Boolean);
       else if(m[3]!==undefined) h.facts[+m[3]].text=v; else h[m[2]].text=v; });
@@ -178,7 +183,7 @@
     const a=e.target.closest('[data-act]'); if(a){ const k=a.dataset.act;
       const msg={approve:'승인했습니다. 고객 화면에 공개되고 질문한 고객에게 알림이 갑니다.',save:'수정 내용을 저장했습니다.',hold:'보류했습니다. 고객에게 담당자 연결을 안내합니다.',route:'담당자에게 이관했습니다. 상담 요청 목록에 추가됐습니다.'}[k];
       if(live){ const x=Q.find(y=>y.id===sel); if(!x) return;
-        try{ await ILAPI.admin.review({id:x.id, action:k, draft:x.draft?collect(x):undefined}); toast(msg); loadQueue(); loadKpis(); }catch(err){ toast(err.message); } }
+        try{ await ILAPI.admin.review({id:x.id, action:k, draft:x.draft?collect(x):undefined, reviewer:gate.member?`${gate.member.name} (${gate.member.org||'리서치센터'})`:undefined}); toast(msg); loadQueue(); loadKpis(); }catch(err){ toast(err.message); } }
       else { toast(msg); if(k!=='save'){ MQ.splice(MQ.findIndex(x=>x.id===msel),1); msel=MQ[0]&&MQ[0].id; mockQueue(); } }
       return; }
     const rs=e.target.closest('[data-restale]'); if(rs){ sel=+rs.dataset.restale; show('review');

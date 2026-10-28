@@ -33,8 +33,11 @@ create table if not exists questions(
   reviewer text, created_at real, reviewed_at real, draft_secs real);
 create table if not exists feedback(id integer primary key, question_id integer, persona text, vote text, at real);
 create table if not exists event_apps(id integer primary key, event_id text, persona text, state text, at real);
+create table if not exists exports(id integer primary key, question_id integer, persona text, kind text,
+  files text, created_at real);
 create table if not exists consults(id integer primary key, persona text, kind text, question_id integer,
   context text, memo text, state text, at real);
+create table if not exists web_answers(question_id integer primary key, text text, sources text, secs real, created_at real);
 """
 
 

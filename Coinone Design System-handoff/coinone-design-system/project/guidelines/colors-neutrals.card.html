@@ -1,0 +1,22 @@
+<!-- @dsCard group="Colors" viewport="700x150" name="Ink & neutrals" subtitle="Near-black text → muted, with the BI gray scale" -->
+<!DOCTYPE html>
+<html lang="ko"><head><meta charset="utf-8" />
+<link rel="stylesheet" href="../styles.css" />
+<style>
+  body { margin: 0; padding: 20px; background: var(--color-canvas); }
+  .grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 12px; }
+  .chip { height: 60px; border-radius: var(--radius-md); border: 1px solid var(--color-hairline); }
+  .name { font-size: var(--text-micro); font-weight: 700; color: var(--color-foreground); margin-top: 8px; }
+  .hex { font-size: 11px; color: var(--color-muted); font-family: var(--font-mono); }
+</style></head>
+<body>
+<div class="grid">
+  <div><div class="chip" style="background:var(--ink-900)"></div><div class="name">Ink 900</div><div class="hex">#040505</div></div>
+  <div><div class="chip" style="background:var(--ink-800)"></div><div class="name">Ink 800</div><div class="hex">#17181B</div></div>
+  <div><div class="chip" style="background:var(--ink-500)"></div><div class="name">Muted 500</div><div class="hex">#6B7684</div></div>
+  <div><div class="chip" style="background:var(--gray-500)"></div><div class="name">Gray 500</div><div class="hex">#616670</div></div>
+  <div><div class="chip" style="background:var(--gray-400)"></div><div class="name">Gray 400</div><div class="hex">#8D9299</div></div>
+  <div><div class="chip" style="background:var(--gray-200)"></div><div class="name">Gray 200</div><div class="hex">#CFD0D3</div></div>
+  <div><div class="chip" style="background:var(--gray-100)"></div><div class="name">Gray 100</div><div class="hex">#EEEFF0</div></div>
+</div>
+</body></html>

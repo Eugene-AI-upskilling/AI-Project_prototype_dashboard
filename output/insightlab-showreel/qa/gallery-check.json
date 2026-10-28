@@ -1,0 +1,14 @@
+{
+  "desktop": {
+    "overflow": false,
+    "muted": true,
+    "duration": 15,
+    "decodedWidth": 1920,
+    "selected": "original"
+  },
+  "soundEnabled": true,
+  "mobile": {
+    "overflow": false
+  },
+  "pageErrors": []
+}

@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="252" height="46" viewBox="0 0 252 46" role="img" aria-label="유진투자증권">
+ <defs><radialGradient id="red" cx="35%" cy="25%"><stop stop-color="#fa6669"/><stop offset=".6" stop-color="#d21f23"/><stop offset="1" stop-color="#9b0f19"/></radialGradient><linearGradient id="silver"><stop stop-color="#fff"/><stop offset="1" stop-color="#aaa"/></linearGradient><clipPath id="sphere"><circle cx="228" cy="21" r="17"/></clipPath></defs>
+ <text x="0" y="34" fill="#d21f23" font-family="Pretendard,Malgun Gothic,Arial,sans-serif" font-weight="800" font-size="34" letter-spacing="-2">유진투자증권</text>
+ <circle cx="228" cy="21" r="17" fill="url(#red)"/><g clip-path="url(#sphere)" fill="url(#silver)"><path d="M228 3C244 5 251 18 239 25C230 28 230 20 237 14C240 9 232 9 228 3Z"/><path d="M208 24C211 9 222 7 224 14C225 19 215 18 215 24C215 30 208 33 208 24Z"/></g>
+</svg>

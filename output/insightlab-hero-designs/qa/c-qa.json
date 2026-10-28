@@ -1,0 +1,12 @@
+{
+  "errors": [],
+  "desktopOverflow": false,
+  "mobileOverflow": false,
+  "pointerSelection": "MARKET / MACRO",
+  "keyboardSelection": "DAILY / BRIEFING",
+  "mobileSelection": "IDEA / INSIGHT",
+  "motionOff": "true",
+  "reducedStatic": true,
+  "smallMobileOverflow": false,
+  "smallCardMinWidth": 158.5
+}

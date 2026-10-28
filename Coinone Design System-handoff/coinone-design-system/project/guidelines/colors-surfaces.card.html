@@ -1,0 +1,20 @@
+<!-- @dsCard group="Colors" viewport="700x150" name="Surfaces & trading direction" subtitle="White / tint / hairline — and KR price colors (up=red, down=blue)" -->
+<!DOCTYPE html>
+<html lang="ko"><head><meta charset="utf-8" />
+<link rel="stylesheet" href="../styles.css" />
+<style>
+  body { margin: 0; padding: 20px; background: var(--color-canvas); }
+  .grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; }
+  .chip { height: 60px; border-radius: var(--radius-md); border: 1px solid var(--color-hairline); display:flex; align-items:center; justify-content:center; font-weight:700; }
+  .name { font-size: var(--text-micro); font-weight: 700; color: var(--color-foreground); margin-top: 8px; }
+  .hex { font-size: 11px; color: var(--color-muted); font-family: var(--font-mono); }
+</style></head>
+<body>
+<div class="grid">
+  <div><div class="chip" style="background:var(--white)"></div><div class="name">Canvas</div><div class="hex">#FFFFFF</div></div>
+  <div><div class="chip" style="background:var(--surface-tint)"></div><div class="name">Surface tint</div><div class="hex">#EBF0F5</div></div>
+  <div><div class="chip" style="background:var(--white); border:1px solid var(--border-neutral)"></div><div class="name">Hairline</div><div class="hex">#DDE4EB</div></div>
+  <div><div class="chip" style="background:var(--price-up); color:#fff">+</div><div class="name">Price up</div><div class="hex">#E0344B</div></div>
+  <div><div class="chip" style="background:var(--price-down); color:#fff">−</div><div class="name">Price down</div><div class="hex">#0B59D5</div></div>
+</div>
+</body></html>

@@ -1,0 +1,867 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Research Data Copilot — 데이터 찾는 시간을 줄이는 AX Copilot</title>
+<link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" rel="stylesheet">
+<style>
+  :root{
+    --blue:#3182F6; --blue-dark:#1B64DA; --blue-soft:#E8F1FE; --blue-tint:#F4F8FF;
+    --bg:#F8FAFC; --card:#FFFFFF;
+    --navy:#191F28; --g700:#4E5968; --g500:#8B95A1; --g400:#B0B8C1; --g300:#D1D6DB;
+    --g100:#F2F4F6; --line:#E5E8EB;
+    --green:#15A06A; --green-soft:#E6F6EF; --amber:#C77F18; --amber-soft:#FDF3E2;
+    --red:#D14343; --red-soft:#FDECEC;
+    --r:18px; --r-sm:12px; --r-xs:8px;
+    --sh:0 1px 3px rgba(25,31,40,.04), 0 6px 20px rgba(25,31,40,.05);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Pretendard',-apple-system,BlinkMacSystemFont,sans-serif;background:var(--bg);
+    color:var(--navy);line-height:1.65;-webkit-font-smoothing:antialiased}
+  ::selection{background:var(--blue-soft)}
+  .wrap{max-width:940px;margin:0 auto;padding:0 28px}
+  p{color:var(--g700)}
+  b,strong{color:var(--navy)}
+
+  /* COVER */
+  .cover{background:linear-gradient(160deg,#0F2A52 0%,#1B64DA 55%,#3182F6 120%);color:#fff;
+    padding:66px 0 56px;position:relative;overflow:hidden}
+  .cover::after{content:"";position:absolute;right:-120px;top:-120px;width:380px;height:380px;
+    background:radial-gradient(circle,rgba(255,255,255,.16),transparent 70%)}
+  .cover .wrap{position:relative;z-index:1}
+  .kicker{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:700;letter-spacing:1px;
+    background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.28);padding:7px 15px;border-radius:999px;margin-bottom:20px}
+  .cover h1{font-size:38px;font-weight:800;letter-spacing:-1.5px;line-height:1.22}
+  .cover h1 .hl{color:#BFE0FF}
+  .cover .sub{font-size:17.5px;color:rgba(255,255,255,.92);margin-top:14px;font-weight:500}
+  .cover .meta{display:flex;flex-wrap:wrap;gap:10px;margin-top:28px}
+  .cover .meta span{font-size:13px;font-weight:600;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);
+    padding:8px 14px;border-radius:10px;color:#fff}
+
+  /* CRITERIA STRIP */
+  .crit-strip{background:#0F2A52;padding:18px 0}
+  .crit-strip .wrap{display:flex;gap:12px;flex-wrap:wrap;justify-content:space-between}
+  .crit-strip .ci{flex:1;min-width:180px;display:flex;align-items:center;gap:11px;color:#fff}
+  .crit-strip .ci .n{width:30px;height:30px;border-radius:8px;background:rgba(255,255,255,.16);display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
+  .crit-strip .ci b{color:#fff;font-size:14px;display:block}
+  .crit-strip .ci small{color:rgba(255,255,255,.72);font-size:11.5px}
+
+  /* SECTION */
+  section{padding:50px 0;border-bottom:1px solid var(--line)}
+  .eyebrow{display:flex;align-items:center;gap:11px;margin-bottom:14px}
+  .eyebrow .num{width:32px;height:32px;border-radius:9px;background:var(--blue);color:#fff;
+    display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px;flex-shrink:0}
+  .eyebrow .tag{font-size:12px;font-weight:700;letter-spacing:1px;color:var(--blue);text-transform:uppercase}
+  h2{font-size:25px;font-weight:800;letter-spacing:-.6px;color:var(--navy);margin-bottom:8px}
+  h3{font-size:16px;font-weight:700;color:var(--navy);margin:24px 0 10px}
+  .lead{font-size:16.5px;color:var(--g700);font-weight:500}
+  .badge{display:inline-block;font-size:11.5px;font-weight:700;color:var(--blue-dark);background:var(--blue-soft);
+    padding:4px 11px;border-radius:999px;margin-left:8px;vertical-align:middle}
+
+  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--sh)}
+  .grid{display:grid;gap:14px}
+  .g2{grid-template-columns:1fr 1fr}.g3{grid-template-columns:repeat(3,1fr)}
+
+  /* KEYPOINT BANNER */
+  .keypoint{background:var(--navy);color:#fff;border-radius:18px;padding:24px 28px;display:flex;gap:18px;align-items:center}
+  .keypoint .kn{font-size:30px;flex-shrink:0}
+  .keypoint p{color:#fff;font-size:17px;font-weight:600;margin:0;line-height:1.5}
+  .keypoint p b{color:#BFE0FF}
+  .keypoint-list{list-style:none;margin:0;display:grid;gap:8px}
+  .keypoint-list li{position:relative;color:#fff;font-size:17px;font-weight:700;line-height:1.45;padding-left:30px}
+  .keypoint-list li::before{content:"✓";position:absolute;left:0;top:1px;width:20px;height:20px;border-radius:6px;
+    background:#BFE0FF;color:#0F2A52;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:900}
+  .keypoint-list b{color:#BFE0FF}
+
+  /* EXEC */
+  .exec{background:var(--card);border:1px solid var(--line);border-left:5px solid var(--blue);
+    border-radius:var(--r);padding:24px 28px;box-shadow:var(--sh)}
+  .flowline{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:16px}
+  .flowline .fb{background:var(--blue-tint);border:1px solid var(--blue-soft);border-radius:10px;
+    padding:9px 14px;font-size:13.5px;font-weight:700;color:var(--blue-dark)}
+  .flowline .fa{color:var(--g400);font-weight:800}
+
+  /* BULLET LIST */
+  ul.bl{list-style:none}
+  ul.bl li{position:relative;padding:9px 0 9px 28px;font-size:15px;color:var(--g700);border-bottom:1px solid var(--g100)}
+  ul.bl li:last-child{border-bottom:none}
+  ul.bl li::before{content:"";position:absolute;left:4px;top:16px;width:8px;height:8px;border-radius:3px;background:var(--blue);transform:rotate(45deg)}
+  ul.bl li b{color:var(--navy)}
+
+  /* SCORE TABLE */
+  .score th:first-child{width:20%}.score th:nth-child(2){width:44%}
+  .score td:first-child{font-weight:800;color:var(--navy)}
+  .score .why{color:var(--blue-dark);font-weight:600}
+  .score td .cc{display:inline-flex;align-items:center;gap:7px}
+  .score .ic{width:26px;height:26px;border-radius:7px;background:var(--blue-soft);color:var(--blue-dark);display:inline-flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0}
+
+  /* STAGES */
+  .stages{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+  .stage{border-radius:16px;padding:22px 20px;border:1.5px solid var(--line);background:var(--card);box-shadow:var(--sh);position:relative}
+  .stage.s0{border-color:var(--blue);background:var(--blue-tint)}
+  .stage .sn{font-size:12px;font-weight:800;letter-spacing:1px;color:var(--blue)}
+  .stage h4{font-size:16px;margin:7px 0 8px;color:var(--navy)}
+  .stage>p{font-size:13px;color:var(--g500);margin:0}
+  .stage .now{position:absolute;top:-12px;left:20px;background:var(--blue);color:#fff;font-size:11px;font-weight:800;padding:5px 12px;border-radius:999px;box-shadow:0 4px 10px rgba(49,130,246,.3)}
+  .stage .tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+  .stage .tg{font-size:11.5px;font-weight:700;background:#fff;border:1px solid var(--blue-soft);color:var(--blue-dark);padding:5px 10px;border-radius:8px}
+  .note{text-align:center;font-size:13px;color:var(--g500);margin-top:16px}
+  .note b{color:var(--blue-dark)}
+
+  /* EQUATION */
+  .eqn{display:flex;flex-direction:column;gap:10px;margin-top:18px}
+  .eqrow{display:flex;align-items:center;gap:10px;flex-wrap:wrap;border-radius:14px;padding:14px 18px;border:1px solid var(--line);background:var(--card)}
+  .eqrow.bad{background:var(--red-soft);border-color:#F3D2D2}
+  .eqrow.good{background:var(--green-soft);border-color:#BCE8D3}
+  .eqchip{font-weight:700;font-size:14px;padding:8px 14px;border-radius:10px;background:#fff;border:1px solid var(--line);color:var(--navy)}
+  .eqop{font-weight:800;color:var(--g400);font-size:17px}
+  .eqres{font-weight:800;font-size:14.5px}
+  .eqrow.bad .eqres{color:#9B2C2C}.eqrow.good .eqres{color:#0B6B43}
+
+  /* PROBLEM CARDS */
+  .pcard{padding:20px 22px;border:1px solid var(--line);border-radius:var(--r);background:var(--card);box-shadow:var(--sh)}
+  .pcard .ic{width:40px;height:40px;border-radius:11px;background:var(--red-soft);color:var(--red);
+    display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;letter-spacing:0;margin-bottom:12px}
+  .pcard h4{font-size:15px;font-weight:700;color:var(--navy)}
+  .pcard p{font-size:13.5px;color:var(--g500);margin-top:6px}
+  .pcard.headline{grid-column:1/-1;border-left:5px solid var(--red);display:flex;gap:18px;align-items:center;background:var(--red-soft)}
+  .pcard.headline .ic{margin:0;background:var(--red);color:#fff;width:46px;height:46px;font-size:22px;flex-shrink:0}
+  .pcard.headline h4{font-size:17px}
+  .pcard.headline p{font-size:13.5px;color:#7a3b3b;margin-top:4px}
+
+  /* BEFORE / AFTER */
+  .ba{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  .ba .col{border-radius:var(--r);border:1px solid var(--line);background:var(--card);overflow:hidden;box-shadow:var(--sh)}
+  .ba .ch{padding:16px 22px;font-weight:800;font-size:15px;display:flex;align-items:center;justify-content:space-between}
+  .ba .before .ch{background:var(--red-soft);color:#9B2C2C}
+  .ba .after .ch{background:var(--green-soft);color:#0B6B43}
+  .ba .ch .tm{font-size:12px;font-weight:700;padding:4px 10px;border-radius:999px;background:rgba(255,255,255,.6)}
+  .steps{padding:14px 22px 20px}
+  .steps .st{display:flex;gap:12px;padding:9px 0;border-bottom:1px dashed var(--g100);font-size:14px}
+  .steps .st:last-child{border-bottom:none}
+  .steps .st .si{width:22px;height:22px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;
+    font-size:11.5px;font-weight:800;color:#fff}
+  .before .si{background:var(--g400)}.after .si{background:var(--green)}
+  .steps .st span{color:var(--g700)}
+  .after .steps .st span{color:var(--navy);font-weight:500}
+
+  /* SOLUTION PIPELINE */
+  .pipe{display:flex;align-items:stretch;gap:8px;flex-wrap:wrap}
+  .pipe .pp{flex:1;min-width:160px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px 16px;box-shadow:var(--sh)}
+  .pipe .pp .pi{width:42px;height:42px;border-radius:11px;background:var(--blue);color:#fff;display:flex;align-items:center;justify-content:center;font-size:20px;margin-bottom:11px}
+  .pipe .pp .pt{font-size:11px;font-weight:800;color:var(--blue);letter-spacing:.5px}
+  .pipe .pp h4{font-size:15px;margin:3px 0 10px;color:var(--navy)}
+  .pipe .pp .pchips{display:flex;flex-wrap:wrap;gap:5px}
+  .pipe .pp .pchips span{font-size:11.5px;font-weight:600;background:var(--blue-tint);border:1px solid var(--blue-soft);color:var(--blue-dark);padding:5px 9px;border-radius:7px}
+  .pipe .parrow{display:flex;align-items:center;color:var(--g300);font-weight:800;font-size:18px}
+
+  /* FEATURE CARDS */
+  .feat{padding:20px 22px;border:1px solid var(--line);border-radius:var(--r);background:var(--card);box-shadow:var(--sh)}
+  .feat .ft{display:flex;align-items:center;gap:12px;margin-bottom:9px}
+  .feat .fi{width:40px;height:40px;border-radius:11px;background:var(--blue);color:#fff;display:flex;align-items:center;justify-content:center;font-size:19px;flex-shrink:0}
+  .feat h4{font-size:15.5px;font-weight:700;color:var(--navy)}
+  .feat p{font-size:13.5px;color:var(--g700);margin:0}
+  .feat .ex{margin-top:11px;font-size:12.5px;color:var(--blue-dark);background:var(--blue-tint);
+    border:1px solid var(--blue-soft);border-radius:10px;padding:9px 12px}
+
+  /* DEPT CARDS */
+  .dept{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+  .dcard{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px 18px;box-shadow:var(--sh)}
+  .dcard .dh{display:flex;align-items:center;gap:11px;margin-bottom:9px}
+  .dcard .di{width:38px;height:38px;border-radius:10px;background:var(--blue-soft);color:var(--blue-dark);display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0}
+  .dcard b{font-size:14.5px;color:var(--navy)}
+  .dcard .qq{font-size:13px;color:var(--blue-dark);background:var(--blue-tint);border:1px solid var(--blue-soft);border-radius:9px;padding:8px 12px}
+
+  /* SCREENSHOT MOCK */
+  .shot{border-radius:16px;overflow:hidden;border:1px solid var(--line);box-shadow:0 16px 50px rgba(25,31,40,.14)}
+  .shot-bar{display:flex;align-items:center;gap:8px;padding:11px 16px;background:#EDF1F5;border-bottom:1px solid var(--line)}
+  .shot-bar .dot{width:11px;height:11px;border-radius:50%}
+  .shot-bar .d1{background:#FF5F57}.shot-bar .d2{background:#FEBC2E}.shot-bar .d3{background:#28C840}
+  .shot-bar .ad{margin-left:12px;background:#fff;border:1px solid var(--line);border-radius:7px;padding:5px 14px;font-size:12px;color:var(--g500)}
+  .shot-body{padding:26px 28px;background:var(--bg)}
+  .shot-h{text-align:center;font-size:19px;font-weight:800;color:var(--navy)}
+  .shot-sub{text-align:center;font-size:12.5px;color:var(--g500);margin-top:5px}
+  .shot-search{display:flex;gap:8px;margin:18px auto 0;max-width:520px}
+  .shot-search .si{flex:1;background:#fff;border:1.5px solid var(--blue);border-radius:12px;padding:11px 15px;font-size:13px;color:var(--navy);box-shadow:0 0 0 4px var(--blue-soft)}
+  .shot-search .sb{background:var(--blue);color:#fff;border-radius:12px;padding:11px 18px;font-size:13px;font-weight:700}
+  .shot-chips{display:flex;gap:7px;justify-content:center;flex-wrap:wrap;margin-top:12px}
+  .shot-chips span{font-size:11.5px;background:#fff;border:1px solid var(--line);color:var(--g700);padding:6px 12px;border-radius:999px}
+  .shot-intent{background:var(--blue-tint);border:1px solid var(--blue-soft);border-radius:10px;padding:11px 14px;font-size:12.5px;color:var(--blue-dark);margin-top:16px;display:flex;gap:9px;align-items:center}
+  .shot-intent .ai{width:26px;height:26px;border-radius:8px;background:var(--blue);color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0}
+  .shot-cards{display:grid;grid-template-columns:1.1fr 1fr;gap:12px;margin-top:12px}
+  .shot-card{background:#fff;border:1px solid var(--line);border-radius:12px;padding:13px 15px}
+  .shot-card .sct{display:flex;justify-content:space-between;align-items:center;font-size:11.5px;font-weight:700;color:var(--g500);margin-bottom:9px}
+  .shot-card .xls{font-size:10px;font-weight:800;color:var(--green);background:var(--green-soft);border:1px solid #BCE8D3;border-radius:6px;padding:3px 8px}
+  .mini-row{display:flex;justify-content:space-between;font-size:11.5px;padding:5px 0;border-bottom:1px solid var(--g100);color:var(--g700)}
+  .mini-row b{color:var(--navy)}
+  .mini-bars{display:flex;align-items:flex-end;gap:9px;height:96px;padding-top:8px}
+  .mini-bars .mb{flex:1;background:var(--blue);border-radius:5px 5px 0 0}
+  .mini-bars .mb:nth-child(2){background:#5B9DF8}.mini-bars .mb:nth-child(3){background:#9DC4FB}
+  .mini-bars .mb:nth-child(4){background:#C5DCFC}.mini-bars .mb:nth-child(5){background:#DCE9FD}
+  .shot-cap{text-align:center;font-size:12px;color:var(--g400);margin-top:12px}
+  .dash-link{display:inline-flex;align-items:center;gap:9px;background:var(--blue);color:#fff;
+    text-decoration:none;font-weight:700;font-size:14.5px;padding:13px 24px;border-radius:12px;box-shadow:0 6px 18px rgba(49,130,246,.25)}
+  .exec-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+  .exec-link{display:inline-flex;align-items:center;justify-content:center;background:var(--blue);color:#fff;text-decoration:none;
+    font-weight:800;font-size:14px;padding:12px 20px;border-radius:12px;box-shadow:0 6px 18px rgba(49,130,246,.22)}
+  .exec-link.secondary{background:#fff;color:var(--blue-dark);border:1px solid var(--blue-soft);box-shadow:none}
+  @media print{
+    @page{size:A4;margin:10mm 8mm}
+    *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+    .exec-actions,.dash-link{display:none!important}
+    body{background:#fff}
+    section{break-inside:avoid-page}
+    #roi .lead{font-size:14px;line-height:1.45}
+    #roi .roi-head{padding:16px 22px;margin-top:12px}
+    #roi .roi-head p{font-size:12.5px;line-height:1.55}
+    #roi .roi-grid{grid-template-columns:1.08fr .92fr!important;gap:10px;margin-top:12px}
+    #roi .roi-main{padding:14px 16px}
+    #roi .roi-main h4{font-size:15px;margin-bottom:5px}
+    #roi .roi-main p{font-size:12px;line-height:1.5}
+    #roi .roi-formula{grid-template-columns:1fr!important;gap:6px;margin-top:10px}
+    #roi .rf{padding:9px 11px}
+    #roi .rf p{font-size:11.5px;margin-top:3px}
+    #roi .roi-list{gap:7px}
+    #roi .roi-item{padding:10px 11px}
+    #roi .roi-item .rn{width:28px;height:28px;font-size:11px}
+    #roi .roi-item b{font-size:12.5px}
+    #roi .roi-item p{font-size:11.2px;line-height:1.45}
+  }
+
+  /* ARCH */
+  .arch{display:flex;flex-wrap:wrap;align-items:stretch;gap:8px;justify-content:center;margin-bottom:18px}
+  .arch .ab{flex:1;min-width:114px;background:var(--card);border:1px solid var(--line);border-radius:12px;
+    padding:14px 10px;text-align:center;box-shadow:var(--sh)}
+  .arch .ab .ai{font-size:20px}
+  .arch .ab b{display:block;font-size:12.5px;margin-top:6px;color:var(--navy)}
+  .arch .ar{display:flex;align-items:center;color:var(--g400);font-weight:800;font-size:16px}
+  .techrow{display:flex;gap:14px;align-items:flex-start;padding:15px 0;border-bottom:1px solid var(--g100)}
+  .techrow:last-child{border-bottom:none}
+  .techrow .tk{flex-shrink:0;width:150px;font-weight:800;font-size:14px;color:var(--blue-dark)}
+  .techrow .tv{font-size:13.5px;color:var(--g700)}
+
+  /* SECURITY */
+  .seclist{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .secitem{display:flex;gap:13px;align-items:flex-start;background:var(--card);border:1px solid var(--line);
+    border-radius:12px;padding:14px 16px}
+  .secitem .sci{width:34px;height:34px;border-radius:9px;background:var(--green-soft);color:var(--green);
+    display:flex;align-items:center;justify-content:center;font-size:10.5px;font-weight:800;letter-spacing:0;flex-shrink:0}
+  .secitem b{font-size:14px;color:var(--navy)}
+  .secitem p{font-size:12.5px;color:var(--g500);margin:3px 0 0}
+
+  /* LANES */
+  .lanes{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:18px}
+  .lane{border-radius:16px;padding:20px;border:1px solid var(--line);background:var(--card);box-shadow:var(--sh)}
+  .lane.auto{border-top:4px solid var(--green)}
+  .lane.manual{border-top:4px solid var(--blue)}
+  .lane .lt{display:flex;align-items:center;gap:10px;font-size:15px;font-weight:800;color:var(--navy);flex-wrap:wrap}
+  .lane .lt .lb{font-size:11px;font-weight:800;padding:4px 9px;border-radius:7px}
+  .lane.auto .lb{background:var(--green-soft);color:var(--green)}
+  .lane.manual .lb{background:var(--blue-soft);color:var(--blue-dark)}
+  .lane .ldesc{font-size:13px;color:var(--g500);margin:9px 0 0}
+  .lane .mini-flow{display:flex;flex-direction:column;gap:6px;margin-top:13px}
+  .lane .mf{display:flex;align-items:center;gap:9px;font-size:12.5px;color:var(--g700);background:var(--bg);border:1px solid var(--line);border-radius:9px;padding:8px 11px}
+  .lane .mf .mn{width:20px;height:20px;border-radius:6px;background:var(--blue);color:#fff;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+  .lane.auto .mf .mn{background:var(--green)}
+  .lane .mf .hl{color:var(--blue-dark);font-weight:700}
+
+  /* HITL */
+  .hitl-band{display:flex;align-items:center;justify-content:center;gap:12px;background:var(--navy);color:#fff;border-radius:16px;padding:18px;margin-bottom:18px;flex-wrap:wrap}
+  .hitl-band .hb{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:10px;padding:9px 15px;font-size:13.5px;font-weight:700}
+  .hitl-band .hb.h{background:#BFE0FF;color:#0F2A52;border:none}
+  .hitl-band .ha{color:#BFE0FF;font-weight:800;font-size:16px}
+  .hitl-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .hcard{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px;box-shadow:var(--sh)}
+  .hcard .hh{display:flex;align-items:center;gap:11px;margin-bottom:8px}
+  .hcard .hi{width:36px;height:36px;border-radius:10px;background:var(--blue-soft);color:var(--blue-dark);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+  .hcard b{font-size:14.5px;color:var(--navy)}
+  .hcard p{font-size:13px;color:var(--g500);margin:0}
+  .hcard .where{display:inline-block;font-size:11px;font-weight:700;color:var(--blue);background:var(--blue-tint);border:1px solid var(--blue-soft);border-radius:7px;padding:4px 9px;margin-top:10px}
+
+  /* TABLE */
+  table{width:100%;border-collapse:collapse;font-size:14px;background:var(--card);
+    border:1px solid var(--line);border-radius:14px;overflow:hidden;box-shadow:var(--sh)}
+  th{background:var(--navy);color:#fff;text-align:left;padding:12px 16px;font-size:13px;font-weight:600}
+  td{padding:12px 16px;border-top:1px solid var(--line);color:var(--g700);vertical-align:top}
+  tr:nth-child(even) td{background:#FAFBFC}
+  .hl-num{font-weight:800;color:var(--blue-dark)}
+
+  /* QUAL */
+  ul.qual{list-style:none;margin-top:6px}
+  ul.qual li{position:relative;padding:8px 0 8px 26px;font-size:14px;color:var(--g700);border-bottom:1px solid var(--g100)}
+  ul.qual li:last-child{border-bottom:none}
+  ul.qual li::before{content:"✓";position:absolute;left:0;top:8px;color:var(--green);font-weight:800}
+
+  /* ROI */
+  .roi-head{background:var(--navy);color:#fff;border-radius:18px;padding:24px 28px;margin-top:20px}
+  .roi-head p{color:rgba(255,255,255,.86);font-size:14.5px;margin-top:6px}
+  .roi-head b{color:#BFE0FF}
+  .roi-grid{display:grid;grid-template-columns:1.15fr 1fr;gap:14px;margin-top:18px}
+  .roi-main{background:var(--card);border:1px solid var(--line);border-left:5px solid var(--blue);border-radius:16px;padding:20px 22px;box-shadow:var(--sh)}
+  .roi-main .rt{font-size:12px;font-weight:800;color:var(--blue);letter-spacing:.6px;margin-bottom:6px}
+  .roi-main h4{font-size:17px;color:var(--navy);margin-bottom:8px}
+  .roi-main p{font-size:13.5px;color:var(--g700);margin:0}
+  .roi-list{display:grid;gap:10px}
+  .roi-item{display:flex;gap:12px;align-items:flex-start;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:15px 16px;box-shadow:var(--sh)}
+  .roi-item .rn{width:34px;height:34px;border-radius:9px;background:var(--blue-soft);color:var(--blue-dark);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;flex-shrink:0}
+  .roi-item b{font-size:14px;color:var(--navy)}
+  .roi-item p{font-size:12.5px;color:var(--g500);margin:3px 0 0}
+  .roi-formula{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:16px}
+  .rf{background:var(--blue-tint);border:1px solid var(--blue-soft);border-radius:13px;padding:14px 15px}
+  .rf .rk{font-size:11.5px;font-weight:800;color:var(--blue);letter-spacing:.4px}
+  .rf p{font-size:13px;color:var(--g700);margin:5px 0 0}
+
+  /* TIMELINE */
+  .tl{border-left:2px solid var(--line);margin-left:8px;padding-left:24px}
+  .tlx{position:relative;padding-bottom:20px}
+  .tlx::before{content:"";position:absolute;left:-33px;top:2px;width:16px;height:16px;border-radius:50%;
+    background:var(--blue);border:3px solid var(--bg)}
+  .tlx .wk{font-size:12.5px;font-weight:800;color:var(--blue);letter-spacing:.5px}
+  .tlx h4{font-size:15px;margin:3px 0 5px;color:var(--navy)}
+  .tlx p{font-size:13.5px;color:var(--g500);margin:0}
+
+  /* ROADMAP */
+  .road{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
+  .rc{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px 14px;box-shadow:var(--sh)}
+  .rc.first{border-color:var(--blue);background:var(--blue-tint)}
+  .rc .ph{font-size:11.5px;font-weight:800;color:var(--blue);letter-spacing:.5px}
+  .rc h4{font-size:13.5px;margin:6px 0 6px;color:var(--navy)}
+  .rc p{font-size:12px;color:var(--g500);margin:0}
+
+  footer{padding:40px 0 60px;text-align:center;color:var(--g400);font-size:13px}
+  footer .gl{width:46px;height:3px;background:var(--blue);margin:0 auto 16px;border-radius:2px}
+
+  @media(max-width:760px){
+    .cover h1{font-size:27px}
+    .g2,.g3,.ba,.clist,.dept,.stages,.seclist,.lanes,.hitl-grid,.shot-cards,.roi-grid,.roi-formula{grid-template-columns:1fr}
+    .road{grid-template-columns:1fr 1fr}
+    .arch,.pipe{flex-direction:column}.arch .ar,.pipe .parrow{justify-content:center;transform:rotate(90deg)}
+    .techrow{flex-direction:column;gap:4px}.techrow .tk{width:auto}
+    .pcard.headline{flex-direction:column;align-items:flex-start;gap:10px}
+  }
+  @media print{.cover,.crit-strip,.keypoint,.hitl-band{-webkit-print-color-adjust:exact;print-color-adjust:exact}}
+</style>
+</head>
+<body>
+
+<!-- COVER -->
+<header class="cover">
+  <div class="wrap">
+    <span class="kicker">AX 2026 상반기 · AX 혁신 아이디어 공모전</span>
+    <h1>Research Data Copilot<br><span class="hl">데이터 찾는 시간을 줄이는 AX Copilot</span></h1>
+    <p class="sub">리서치 PoC로 시작해 전사 데이터 활용 체계로 확장</p>
+    <div class="meta">
+      <span>선행과제 · 흩어진 데이터 정리</span>
+      <span>PoC · 리서치센터 적용</span>
+      <span>확장 · 전사 데이터 인프라</span>
+    </div>
+  </div>
+</header>
+
+<div class="crit-strip">
+  <div class="wrap">
+    <div class="ci"><span class="n">01</span><div><b>혁신성</b><small>Text-to-SQL → 표·엑셀·차트 자동화</small></div></div>
+    <div class="ci"><span class="n">02</span><div><b>효과성</b><small>데이터 탐색 수십 분 → 수십 초</small></div></div>
+    <div class="ci"><span class="n">03</span><div><b>실현가능성</b><small>4–6주 PoC · 읽기 전용 설계</small></div></div>
+    <div class="ci"><span class="n">04</span><div><b>확장성</b><small>리서치 → 전사 모든 부서</small></div></div>
+  </div>
+</div>
+
+<!-- 1. EXEC SUMMARY -->
+<section>
+  <div class="wrap">
+    <div class="eyebrow"><span class="num">1</span><span class="tag">Executive Summary</span></div>
+    <h2>핵심 요약</h2>
+    <div class="keypoint" style="margin-bottom:18px">
+      <ul class="keypoint-list">
+        <li>AX의 병목은 더 똑똑한 모델이 아니라 <b>데이터 접근성</b></li>
+        <li>흩어진 데이터를 정리하는 것이 모든 AX 과제의 <b>선행과제</b></li>
+        <li>리서치센터는 그 효과를 가장 먼저 증명할 <b>PoC 무대</b></li>
+      </ul>
+    </div>
+    <div class="exec">
+      <ul class="bl">
+        <li><b>Research Data Copilot</b>: 자연어 질문으로 데이터 위치 탐색, 읽기 전용 SQL 생성, <b>표·엑셀·차트 즉시 생성</b></li>
+        <li>SQL 지식이나 데이터 담당자 의존 없이, <b>질문 한 문장으로 탐색부터 시각화까지</b> 완료</li>
+        <li><b>리서치센터 PoC 검증</b> 후, <b>전 부서 확장</b> 가능한 구조</li>
+      </ul>
+      <div class="flowline">
+        <span class="fb">질문 한 문장</span><span class="fa">→</span>
+        <span class="fb">데이터 조회</span><span class="fa">→</span>
+        <span class="fb">표 · 엑셀 · 차트 자동 생성</span>
+      </div>
+      <div class="exec-actions">
+        <a class="exec-link" href="https://ax-data-copilot-demo.pages.dev/research_data_copilot" target="_blank" rel="noopener">샘플 대시보드 열기</a>
+        <a class="exec-link secondary" href="#roi">ROI 요약 보기</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 2. JUDGING CRITERIA -->
+<section>
+  <div class="wrap">
+    <div class="eyebrow"><span class="num">2</span><span class="tag">At a Glance</span></div>
+    <h2>한눈에 보는 Data Copilot</h2>
+    <p class="lead">Research Data Copilot의 변화를 네 가지 관점으로 요약</p>
+    <table class="score" style="margin-top:18px">
+      <thead><tr><th>핵심 가치</th><th>Data Copilot의 대응</th><th>한 줄 근거</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><span class="cc"><span class="ic">02</span>효과성</span></td>
+          <td>자연어 한 문장으로 조회 → 표·엑셀·차트 자동 생성</td>
+          <td class="why">탐데이터 가공 및 시각화 30분~수시간 이상->  → 1분 내</td>
+        </tr>
+        <tr>
+          <td><span class="cc"><span class="ic">04</span>확장 가능성</span></td>
+          <td>부서별 권한·데이터만 교체하면 동일 구조 재사용</td>
+          <td class="why">리서치 PoC 검증 후 전사 동일 플랫폼 확장</td>
+        </tr>
+        <tr>
+          <td><span class="cc"><span class="ic">01</span>혁신성</span></td>
+          <td>RAG·Text-to-SQL·Semantic Layer로 SQL 없는 셀프 분석</td>
+          <td class="why">비개발자가 직접 조회·검증·시각화</td>
+        </tr>
+        <tr>
+          <td><span class="cc"><span class="ic">03</span>실현 가능성</span></td>
+          <td>읽기 전용 DB·샘플 데이터·권한 통제로 즉시 시작</td>
+          <td class="why">4~6주 PoC로 검증 가능</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- 3. STARTING POINT OF AX -->
+<section>
+  <div class="wrap">
+    <div class="eyebrow"><span class="num">3</span><span class="tag">AX의 출발점</span></div>
+    <h2>데이터 정리는 AX의 선행과제 <span class="badge">전사 관점</span></h2>
+    <p class="lead">리서치 적용은 끝이 아니라 시작점(PoC). 그 앞에 데이터 정리가 먼저 필요</p>
+    <div class="stages" style="margin-top:26px">
+      <div class="stage s0">
+        <span class="now">지금 여기</span>
+        <div class="sn">STAGE 0 · 선행과제</div>
+        <h4>흩어진 데이터를 정리</h4>
+        <p>흩어진 데이터를 모으고 테이블링</p>
+        <div class="tags"><span class="tg">데이터 DB화·카탈로그</span><span class="tg">용어 정의 통일</span><span class="tg">접근·권한 체계</span></div>
+      </div>
+      <div class="stage">
+        <div class="sn">STAGE 1 · PoC</div>
+        <h4>리서치센터에서 검증</h4>
+        <p>자연어 기반 SQL의 업무 효율화 입증</p>
+        <div class="tags"><span class="tg">자연어 조회</span><span class="tg">표·엑셀·차트</span><span class="tg">효과 측정</span></div>
+      </div>
+      <div class="stage">
+        <div class="sn">STAGE 2 · 확장</div>
+        <h4>전 부서로 확대</h4>
+        <p>같은 방식으로 모든 부서가 셀프 데이터 활용.</p>
+        <div class="tags"><span class="tg">법인영업·WM</span><span class="tg">리스크·경영관리</span><span class="tg">전사 인프라</span></div>
+      </div>
+    </div>
+    <p class="note">데이터 정리 없이 AI만 붙이면 효과 제한. <b>정리 → PoC → 확장</b> 순서가 핵심</p>
+  </div>
+</section>
+
+<!-- 4. 제안 배경 -->
+<section>
+  <div class="wrap">
+    <div class="eyebrow"><span class="num">4</span><span class="tag">제안 배경</span></div>
+    <h2>왜 데이터 정리가 먼저인가</h2>
+    <p class="lead">데이터가 부족한 게 아니라, 꺼내 쓸 수 있는 형태가 아닌 상황 — 리서치를 포함한 전 부서 공통 이슈</p>
+    <div class="eqn">
+      <div class="eqrow bad">
+        <span class="eqchip">흩어진 데이터</span><span class="eqop">+</span><span class="eqchip">생성형 AI</span><span class="eqop">=</span>
+        <span class="eqres">여전히 못 꺼냄 ✕</span>
+      </div>
+      <div class="eqrow good">
+        <span class="eqchip">정리된 데이터</span><span class="eqop">+</span><span class="eqchip">생성형 AI</span><span class="eqop">=</span>
+        <span class="eqres">누구나 셀프 분석 ✓</span>
+      </div>
+    </div>
+    <div class="grid g3" style="margin-top:18px">
+      <div class="pcard"><div class="ic" style="background:var(--blue-soft);color:var(--blue-dark)">DB</div><h4>데이터는 충분하다</h4><p>KRX·Quantiwise·FnGuide·Bloomberg·담당 RA 파일 등 이미 방대한 데이터 보유</p></div>
+      <div class="pcard"><div class="ic" style="background:var(--blue-soft);color:var(--blue-dark)">DB</div><h4>그런데 DB가 없다</h4><p>대부분 엑셀로 흩어져 있어, 조회할 데이터베이스 자체 부재</p></div>
+      <div class="pcard"><div class="ic" style="background:var(--blue-soft);color:var(--blue-dark)">AUTH</div><h4>소수만 꺼낼 수 있다</h4><p>담당 RA·파일 위치 의존으로 셀프 분석 제약</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 5. AS-IS → TO-BE (한 페이지) -->
+<section>
+  <div class="wrap">
+    <div class="eyebrow"><span class="num">5</span><span class="tag">As-Is → To-Be</span></div>
+    <h2>현재의 문제와 달라지는 모습 <span class="badge">혁신성 · 효과성</span></h2>
+
+    <h3>As-Is · 지금의 문제</h3>
+    <div class="grid g3" style="margin-top:6px">
+      <div class="pcard headline">
+        <div class="ic">DB</div>
+        <div><h4>데이터가 DB화되어 있지 않음</h4>
+          <p>조회할 데이터베이스 자체 부재. 섹터별 담당 RA의 엑셀 파일로 흩어져 관리되어, 자연어든 SQL이든 "꺼낼 대상"이 없는 것이 근본 문제</p></div>
+      </div>
+      <div class="pcard"><div class="ic">FIND</div><h4>데이터 위치를 모름</h4><p>누가 어떤 파일을 가졌는지 파악부터 필요</p></div>
+      <div class="pcard"><div class="ic">RA</div><h4>담당 RA에 의존</h4><p>매번 사람에게 파일을 요청하고 대기</p></div>
+      <div class="pcard"><div class="ic">XLS</div><h4>엑셀·차트 수작업</h4><p>받은 파일을 직접 정리·차트화, 매번 20~40분.</p></div>
+      <div class="pcard"><div class="ic">DEF</div><h4>데이터 정의 불일치</h4><p>파일마다 기준이 달라 수치가 흔들림.</p></div>
+      <div class="pcard"><div class="ic">REQ</div><h4>같은 데이터 반복 요청</h4><p>동일 데이터를 주기적으로 다시 요청</p></div>
+    </div>
+
+    <h3 style="margin-top:30px">To-Be · 이렇게 바뀜</h3>
+    <p class="lead" style="font-size:15px">예시 — "시가총액 상위 10개 종목"을 보고 싶을 때</p>
+    <div class="ba" style="margin-top:14px">
+      <div class="col before">
+        <div class="ch">AS-IS <span class="tm">수십 분 ~ 수시간</span></div>
+        <div class="steps">
+          <div class="st"><span class="si">1</span><span>Quantiwise / FnGuide / Bloomberg / 담당 RA 파일 중 파악</span></div>
+          <div class="st"><span class="si">2</span><span>데이터 담당 RA에 문의</span></div>
+          <div class="st"><span class="si">3</span><span>엑셀 파일 요청 및 대기</span></div>
+          <div class="st"><span class="si">4</span><span>받은 데이터를 엑셀로 정리</span></div>
+          <div class="st"><span class="si">5</span><span>엑셀 차트 생성</span></div>
+          <div class="st"><span class="si">6</span><span>리포트 반영</span></div>
+        </div>
+      </div>
+      <div class="col after">
+        <div class="ch">TO-BE <span class="tm">10초 ~ 1분</span></div>
+        <div class="steps">
+          <div class="st"><span class="si">1</span><span>"시가총액 상위 10개 종목" 입력</span></div>
+          <div class="st"><span class="si">2</span><span>AI가 적절한 데이터셋·기준을 해석</span></div>
+          <div class="st"><span class="si">3</span><span>읽기 전용 SQL 자동 생성</span></div>
+          <div class="st"><span class="si">4</span><span>결과 테이블 생성</span></div>
+          <div class="st"><span class="si">5</span><span>Excel 다운로드 · 차트 자동 생성</span></div>
+          <div class="st"><span class="si">6</span><span>실행 SQL·기준일 검증 후 리포트 반영</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 6. SOLUTION -->
+<section>
+  <div class="wrap">
+    <div class="eyebrow"><span class="num">6</span><span class="tag">Solution</span></div>
+    <h2>솔루션 개요</h2>
+    <p class="lead">질문 한 문장이 4단계를 거쳐 검증 가능한 결과로 전환</p>
+    <div class="pipe" style="margin-top:22px">
+      <div class="pp">
+        <div class="pi">A</div><div class="pt">STEP A · 입력</div><h4>질문</h4>
+        <div class="pchips"><span>자연어 질문</span></div>
+      </div>
+      <div class="parrow">→</div>
+      <div class="pp">
+        <div class="pi">B</div><div class="pt">STEP B · 이해</div><h4>데이터 이해</h4>
+        <div class="pchips"><span>RAG 위치 검색</span><span>Semantic Layer</span></div>
+      </div>
+      <div class="parrow">→</div>
+      <div class="pp">
+        <div class="pi">C</div><div class="pt">STEP C · 실행</div><h4>안전한 실행</h4>
+        <div class="pchips"><span>Text-to-SQL</span><span>MCP 권한</span><span>Read-only</span></div>
+      </div>
+      <div class="parrow">→</div>
+      <div class="pp">
+        <div class="pi">D</div><div class="pt">STEP D · 결과</div><h4>결과·검증</h4>
+        <div class="pchips"><span>표·엑셀·차트</span><span>SQL·기준일</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 7. FEATURES -->
+<section>
+  <div class="wrap">
+    <div class="eyebrow"><span class="num">7</span><span class="tag">Core Features</span></div>
+    <h2>핵심 기능 5</h2>
+    <div class="grid g2" style="margin-top:20px">
+      <div class="feat"><div class="ft"><div class="fi">01</div><h4>1. 자연어 데이터 조회</h4></div>
+        <p>SQL·테이블 이름을 몰라도 질문 한 문장으로 조회</p>
+        <div class="ex">예 · <b>"시가총액 상위 10개 종목"</b></div></div>
+      <div class="feat"><div class="ft"><div class="fi">02</div><h4>2. 자동 SQL 생성 및 검증</h4></div>
+        <p>읽기 전용 SQL과 데이터 기준일을 함께 노출해 검증 가능</p>
+        <div class="ex">예 · <b>"실행된 SQL 보기"</b>, <b>"데이터 기준일 확인"</b></div></div>
+      <div class="feat"><div class="ft"><div class="fi">03</div><h4>3. 표·엑셀·차트 자동 생성</h4></div>
+        <p>결과 표·차트 생성과 엑셀 다운로드를 한 화면에서 처리</p>
+        <div class="ex">예 · <b>"DRAM·NAND 가격 추이를 라인차트로 그려줘"</b>, <b>"엑셀로 다운로드"</b></div></div>
+      <div class="feat"><div class="ft"><div class="fi">04</div><h4>4. 데이터 카탈로그 · RAG 검색</h4></div>
+        <p>데이터 위치·제공처와 조회 경로 안내</p>
+        <div class="ex">예 · <b>"코스피 지수·밸류에이션 추이"</b></div></div>
+      <div class="feat" style="grid-column:1 / -1"><div class="ft"><div class="fi">05</div><h4>5. 저장 쿼리 및 팀 공유</h4></div>
+        <p>자주 쓰는 분석 조건을 저장·공유하고, 반복 작업을 클릭 한 번으로 재실행</p>
+        <div class="ex">예 · <b>"2026년 YTD 수익률 상위 10개"</b></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- 8. DEPT -->
+<section>
+  <div class="wrap">
+    <div class="eyebrow"><span class="num">8</span><span class="tag">Company-wide</span></div>
+    <h2>리서치만이 아님 — 전 부서 활용 <span class="badge">확장성</span></h2>
+    <p class="lead">같은 플랫폼을 부서별 데이터·권한 안에서 재사용. 리서치는 첫 PoC 역할</p>
+    <div class="dept" style="margin-top:20px">
+      <div class="dcard"><div class="dh"><div class="di">R</div><b>리서치센터 <span class="badge" style="margin:0">PoC</span></b></div>
+        <div class="qq">"시가총액 상위 10개 종목"</div></div>
+      <div class="dcard"><div class="dh"><div class="di">IB</div><b>법인영업 · IB</b></div>
+        <div class="qq">"최근 3년 우리 주관 ECM 딜 연도별 조회"</div></div>
+      <div class="dcard"><div class="dh"><div class="di">WM</div><b>WM · 자산관리</b></div>
+        <div class="qq">"최근 1개월 수익률 상위 펀드를 유형별로"</div></div>
+      <div class="dcard"><div class="dh"><div class="di">RM</div><b>리스크관리</b></div>
+        <div class="qq">"VaR 한도 초과 종목의 일별 추이를 라인차트로"</div></div>
+      <div class="dcard"><div class="dh"><div class="di">MG</div><b>경영관리</b></div>
+        <div class="qq">"부서별 월간 예산 추이를 표로"</div></div>
+      <div class="dcard"><div class="dh"><div class="di">CP</div><b>준법·감사</b></div>
+        <div class="qq">"특정 기간 컴플라이언스 위반 사용자별로 조회"</div></div>
+    </div>
+    <p class="note" style="margin-top:16px">부서별 <b>접근 가능 데이터와 권한은 분리</b></p>
+  </div>
+</section>
+
+<!-- 9. SAMPLE DASHBOARD -->
+<section>
+  <div class="wrap">
+    <div class="eyebrow"><span class="num">9</span><span class="tag">Sample Dashboard</span></div>
+    <h2>샘플 대시보드 <span class="badge">실제 동작 데모</span></h2>
+    <p class="lead">아이디어는 화면으로 증명. 아래 화면은 실제 작동 데모의 미리보기</p>
+    <div class="shot" style="margin-top:20px">
+      <div class="shot-bar">
+        <span class="dot d1"></span><span class="dot d2"></span><span class="dot d3"></span>
+        <span class="ad">SEC research-copilot · 리서치 데이터 플랫폼</span>
+      </div>
+      <div class="shot-body">
+        <div class="shot-h">자연어 리서치 데이터 조회</div>
+        <div class="shot-sub">SQL을 몰라도 데이터를 찾고, 조회하고, 엑셀·차트로 바로 활용</div>
+        <div class="shot-search">
+          <div class="si">시가총액 상위 10개 종목</div>
+          <div class="sb">조회</div>
+        </div>
+        <div class="shot-chips"><span>DRAM·NAND 가격 추이</span><span>코스피 밸류에이션</span><span>삼성전자 영업이익 추정치</span></div>
+        <div class="shot-intent"><span class="ai">AI</span> 해석 · 시가총액 상위 10개 종목 조회</div>
+        <div class="shot-cards">
+          <div class="shot-card">
+            <div class="sct">TABLE 결과 테이블 <span class="xls">EXCEL</span></div>
+            <div class="mini-row"><b>삼성전자</b><span>510.0조</span></div>
+            <div class="mini-row"><b>SK하이닉스</b><span>220.0조</span></div>
+            <div class="mini-row"><b>현대차</b><span>58.0조</span></div>
+            <div class="mini-row"><b>기아</b><span>45.0조</span></div>
+          </div>
+          <div class="shot-card">
+            <div class="sct">CHART 시가총액 상위 10개 종목</div>
+            <div class="mini-bars"><div class="mb" style="height:96%"></div><div class="mb" style="height:66%"></div><div class="mb" style="height:18%"></div><div class="mb" style="height:11%"></div><div class="mb" style="height:8%"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <p class="shot-cap">※ 위 이미지는 샘플 대시보드 미리보기. 아래 버튼으로 실제 화면 연결</p>
+    <div style="margin-top:14px"><a class="dash-link" href="https://ax-data-copilot-demo.pages.dev/research_data_copilot" target="_blank" rel="noopener">샘플 대시보드 열기</a></div>
+  </div>
+</section>
+
+<!-- 10. ARCHITECTURE -->
+<section>
+  <div class="wrap">
+    <div class="eyebrow"><span class="num">10</span><span class="tag">Architecture</span></div>
+    <h2>기술 아키텍처</h2>
+    <p class="lead">비전문가도 이해할 수 있도록 각 기술의 역할을 단순화</p>
+    <div class="arch" style="margin-top:20px">
+      <div class="ab"><div class="ai">01</div><b>자연어 질문</b></div><div class="ar">→</div>
+      <div class="ab"><div class="ai">02</div><b>RAG 검색</b></div><div class="ar">→</div>
+      <div class="ab"><div class="ai">03</div><b>Semantic Layer</b></div><div class="ar">→</div>
+      <div class="ab"><div class="ai">04</div><b>Text-to-SQL</b></div><div class="ar">→</div>
+      <div class="ab"><div class="ai">05</div><b>MCP 연결</b></div><div class="ar">→</div>
+      <div class="ab"><div class="ai">06</div><b>Read-only DB</b></div>
+    </div>
+    <div class="card" style="padding:8px 24px">
+      <div class="techrow"><div class="tk">RAG</div><div class="tv">데이터가 <b>어디 있는지 찾아주는 검색 엔진</b>. 위치를 묻는 질문에 카탈로그 기반으로 응답</div></div>
+      <div class="techrow"><div class="tk">Semantic Layer</div><div class="tv">영업이익·PER·EPS 같은 <b>용어 정의를 고정하는 계층</b>. 수치 신뢰도 향상</div></div>
+      <div class="techrow"><div class="tk">Text-to-SQL</div><div class="tv">자연어 질문을 <b>SQL로 바꾸는 AI</b>. 정의·스키마 기반으로 정확한 쿼리를 만듦.</div></div>
+      <div class="techrow"><div class="tk">MCP / DB 연결</div><div class="tv">AI가 사내 DB에 <b>안전하게 접근하는 통제 계층</b>. 권한·읽기 전용 정책 강제</div></div>
+      <div class="techrow"><div class="tk">Read-only DB</div><div class="tv"><b>조회만 가능, 수정·삭제 불가</b>. 데이터 변조 위험 원천 차단</div></div>
+      <div class="techrow"><div class="tk">SQL 로그</div><div class="tv"><b>모든 실행 이력을 저장</b>해 감사 추적 가능</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- 11. SECURITY -->
+<section>
+  <div class="wrap">
+    <div class="eyebrow"><span class="num">11</span><span class="tag">Security & Compliance</span></div>
+    <h2>보안 · 컴플라이언스 대응 <span class="badge">실현가능성</span></h2>
+    <p class="lead">증권사 환경을 전제로 통제 장치를 설계 단계부터 내장</p>
+    <div class="seclist" style="margin-top:20px">
+      <div class="secitem"><div class="sci">SEC</div><div><b>읽기 전용 DB 계정</b><p>SELECT만 가능, 데이터 변경 원천 불가.</p></div></div>
+      <div class="secitem"><div class="sci">ACL</div><div><b>사용자별 테이블·컬럼 권한</b><p>직무·부서별 접근 범위 분리.</p></div></div>
+      <div class="secitem"><div class="sci">PII</div><div><b>고객·계좌 데이터는 범위 제외</b><p>망분리 등으로 범위가 커지는 민감 데이터는 DB화 대상에서 제외해 PoC 범위를 명확히 유지.</p></div></div>
+      <div class="secitem"><div class="sci">LOG</div><div><b>실행 SQL 로그 저장</b><p>질의·SQL·결과 메타 기록으로 감사 추적.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- 12. DATA INGESTION -->
+<section>
+  <div class="wrap">
+    <div class="eyebrow"><span class="num">12</span><span class="tag">Data Ingestion</span></div>
+    <h2>데이터 적재 전략 <span class="badge">라이선스 안전</span></h2>
+    <p class="lead">소스 특성에 맞춘 두 가지 적재 방식. 무리한 API 통합 대신 현재 사용 방식을 최대한 유지</p>
+    <div class="lanes">
+      <div class="lane auto">
+        <div class="lt">자동 적재 <span class="lb">API 가능 소스</span></div>
+        <p class="ldesc">API로 받아올 수 있는 소스는 스케줄 기반 자동 적재</p>
+        <div class="mini-flow">
+          <div class="mf"><span class="mn">1</span> API 연결 (KRX·내부 데이터 등)</div>
+          <div class="mf"><span class="mn">2</span> 정해진 주기로 <span class="hl">자동 적재</span></div>
+          <div class="mf"><span class="mn">3</span> 카탈로그 자동 갱신</div>
+        </div>
+      </div>
+      <div class="lane manual">
+        <div class="lt">엑셀 데이터 적재 매크로화 <span class="lb">주력 벤더</span></div>
+        <p class="ldesc">Bloomberg·Quantiwise·Refinitiv 등 실제 쓰는 데이터는, 다운로드한 엑셀/CSV를 <b>업데이트 주기에 따라 매크로로 적재</b></p>
+        <div class="mini-flow">
+          <div class="mf"><span class="mn">1</span> 기존 방식대로 엑셀/CSV 다운로드</div>
+          <div class="mf"><span class="mn">2</span> 업데이트 주기에 따라 <span class="hl">매크로로 적재</span></div>
+          <div class="mf"><span class="mn">3</span> <span class="hl">로컬 서버 한 곳</span>에 동일 포맷 동기화</div>
+          <div class="mf"><span class="mn">4</span> <span class="hl">갱신 확인 (HITL)</span></div>
+        </div>
+      </div>
+    </div>
+    <p class="note" style="margin-top:16px;text-align:left">별도 API 재계약이나 무분별한 재배포 없이 <b>현재 사용 중인 다운로드 방식을 그대로</b> 활용하므로, 라이선스 리스크와 비용 증가 최소화</p>
+  </div>
+</section>
+
+<!-- 13. HUMAN IN THE LOOP -->
+<section>
+  <div class="wrap">
+    <div class="eyebrow"><span class="num">13</span><span class="tag">Human in the Loop</span></div>
+    <h2>Human-in-the-loop 설계 <span class="badge">신뢰성</span></h2>
+    <p class="lead">자동화는 속도, 사람은 신뢰 담당. AI는 초안 생성, 핵심 판단은 사람이 확정</p>
+    <div class="hitl-band" style="margin-top:22px">
+      <span class="hb">AI가 초안 생성</span>
+      <span class="ha">→</span>
+      <span class="hb h">사람이 검증·확정</span>
+      <span class="ha">→</span>
+      <span class="hb">✅ 업무 반영</span>
+    </div>
+    <div class="hitl-grid">
+      <div class="hcard">
+        <div class="hh"><div class="hi">01</div><b>1. 데이터 업데이트 확인</b></div>
+        <p>매크로 적재 정상 반영 여부를 담당자가 확인</p>
+        <span class="where">적재 단계</span>
+      </div>
+      <div class="hcard">
+        <div class="hh"><div class="hi">DB</div><b>2. 카탈로그 등록 검증</b></div>
+        <p>새 데이터의 정의·분류·접근 방식을 사람이 확정 후 등록</p>
+        <span class="where">카탈로그 단계</span>
+      </div>
+      <div class="hcard">
+        <div class="hh"><div class="hi">03</div><b>3. 생성 SQL·기준일 검증</b></div>
+        <p>실행 SQL과 데이터 기준일을 노출해 사용자가 확인 후 활용</p>
+        <span class="where">조회 단계</span>
+      </div>
+      <div class="hcard">
+        <div class="hh"><div class="hi">04</div><b>4. 이상·권한 예외 처리</b></div>
+        <p>비정상 결과나 권한 밖 요청은 자동 차단 후 사람 승인</p>
+        <span class="where">실행 단계</span>
+      </div>
+    </div>
+    <p class="note" style="margin-top:16px">핵심 원칙 — <b>AI는 초안, 최종 판단은 사람</b>. 자동화와 통제의 균형으로 증권사 신뢰 수준 충족</p>
+  </div>
+</section>
+
+<!-- 14. EFFECTS -->
+<section>
+  <div class="wrap">
+    <div class="eyebrow"><span class="num">14</span><span class="tag">Impact</span></div>
+    <h2>기대 효과 <span class="badge">효과성</span></h2>
+    <h3>정량 효과</h3>
+    <table>
+      <thead><tr><th style="width:30%">항목</th><th style="width:35%">현재 (As-Is)</th><th style="width:35%">기대 (To-Be)</th></tr></thead>
+      <tbody>
+        <tr><td><b>데이터 탐색 시간</b></td><td>30분 ~ 수시간</td><td class="hl-num">10초 ~ 1분</td></tr>
+        <tr><td><b>단순 추출 요청</b></td><td>담당 RA·SQL 가능자 의존</td><td class="hl-num">비개발자 셀프 조회</td></tr>
+        <tr><td><b>엑셀·차트 가공</b></td><td>20 ~ 40분</td><td class="hl-num">즉시 생성</td></tr>
+        <tr><td><b>반복 조회</b></td><td>개인별 수작업 반복</td><td class="hl-num">저장 쿼리 재사용</td></tr>
+        <tr><td><b>중복 구독·비용</b></td><td>가시성 없음</td><td>카탈로그로 식별 → 정리 여지</td></tr>
+      </tbody>
+    </table>
+    <p class="note" style="text-align:left;margin-top:10px">※ 수치는 PoC에서 실제 측정 후 확정. 비용 절감과 시간 절감은 ROI 측정의 핵심 축</p>
+    <h3>정성 효과</h3>
+    <ul class="qual">
+      <li>애널리스트가 데이터 추출이 아니라 <b>해석과 인사이트</b>에 집중</li>
+      <li>용어 정의 통일로 <b>리포트 간 수치 일관성</b> 확보</li>
+      <li>신입·주니어의 <b>온보딩 속도</b> 개선</li>
+      <li>후속 AX 과제의 <b>기반 데이터 인프라</b> 확보</li>
+    </ul>
+  </div>
+</section>
+
+<!-- 15. ROI -->
+<section id="roi">
+  <div class="wrap">
+    <div class="eyebrow"><span class="num">15</span><span class="tag">ROI</span></div>
+    <h2>Data Copilot AI 도입 ROI <span class="badge">전사 확장 효과</span></h2>
+    <p class="lead">전사 확장 시 ROI는 단순 자동화 비용 절감을 넘어 데이터 계약·조회 시간·품질·통제 비용을 동시에 낮추는 구조</p>
+
+    <div class="roi-head">
+      <h3 style="margin:0;color:#fff">가장 먼저 확인 가능한 ROI: 데이터 비용 가시화</h3>
+      <p>데이터 카탈로그가 구축되면 <b>누가 어떤 데이터를 쓰는지, 같은 데이터가 중복 계약·중복 다운로드되는지</b> 확인 가능. 즉, Data Copilot의 첫 비용절감 포인트는 데이터 효율화를 통한 중복계약 문제 해결</p>
+    </div>
+
+    <div class="roi-grid">
+      <div class="roi-main">
+        <div class="rt">ROI 01 · 직접 비용 절감</div>
+        <h4>데이터 중복계약·중복 구독 식별 및 정리</h4>
+        <p>부서별로 따로 보유하던 벤더 데이터, 엑셀 다운로드, 내부 산출 데이터의 사용 현황을 카탈로그화. 동일 데이터의 중복 구매, 유사 데이터의 중복 유지, 사용 빈도가 낮은 데이터 계약을 식별해 계약 구조 조정 가능</p>
+        <div class="roi-formula">
+          <div class="rf"><div class="rk">절감 대상</div><p>중복 벤더 계약, 중복 데이터셋, 미사용 라이선스</p></div>
+          <div class="rf"><div class="rk">측정 방식</div><p>데이터셋별 사용 부서·조회 빈도·계약 비용 매핑</p></div>
+          <div class="rf"><div class="rk">기대 효과</div><p>가장 빠르게 재무 효과를 확인 가능한 영역</p></div>
+        </div>
+      </div>
+      <div class="roi-list">
+        <div class="roi-item"><div class="rn">02</div><div><b>업무 시간 절감</b><p>데이터 위치 확인, 담당자 문의, 엑셀 정리, 차트 생성 시간을 줄여 리서치·영업·관리 조직의 반복 업무 단축</p></div></div>
+        <div class="roi-item"><div class="rn">03</div><div><b>의사결정 속도 개선</b><p>보고서 작성 전 데이터 탐색 대기 시간을 줄이고, 필요한 수치를 즉시 확인해 회의·리포트·고객 대응 속도 향상</p></div></div>
+        <div class="roi-item"><div class="rn">04</div><div><b>데이터 품질 비용 감소</b><p>용어 정의와 기준일을 통일해 부서·리포트 간 수치 불일치로 생기는 재작업과 검증 비용 감소</p></div></div>
+        <div class="roi-item"><div class="rn">05</div><div><b>통제·감사 비용 감소</b><p>SQL 로그, 권한 분리, 읽기 전용 접근을 표준화해 사후 추적과 컴플라이언스 대응에 필요한 수작업 감소</p></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 16. POC -->
+<section>
+  <div class="wrap">
+    <div class="eyebrow"><span class="num">16</span><span class="tag">PoC Plan</span></div>
+    <h2>리서치센터 PoC 추진 계획 <span class="badge">4–6주</span></h2>
+    <p class="lead">앞단의 데이터 정리(Week 1–2)가 곧 AX 선행과제이며, 이후 자연어 조회 검증</p>
+    <div class="tl" style="margin-top:22px">
+      <div class="tlx"><div class="wk">WEEK 1 · 선행과제</div><h4>문제 정의 · 카탈로그 초안</h4><p>리서치센터 주요 반복 질문 10개 수집, 데이터 카탈로그 초안 작성.</p></div>
+      <div class="tlx"><div class="wk">WEEK 2 · 선행과제</div><h4>데이터 적재 · 샘플 DB</h4><p>API 자동 적재와 벤더 엑셀 매크로 적재 체계 구성, 샘플 DB 구축.</p></div>
+      <div class="tlx"><div class="wk">WEEK 3–4</div><h4>핵심 엔진 구현</h4><p>Text-to-SQL·Semantic Layer·권한 체계 적용, 자연어 조회 데모.</p></div>
+      <div class="tlx"><div class="wk">WEEK 5</div><h4>자동화 · 검증 화면</h4><p>표·엑셀·차트 자동 생성 연결, SQL 로그·검증 화면 구현.</p></div>
+      <div class="tlx"><div class="wk">WEEK 6</div><h4>사용자 테스트 · 발표</h4><p>데이터 발견·추출 시간과 만족도 측정, 발표용 데모 정리.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 17. ROADMAP -->
+<section style="border-bottom:none">
+  <div class="wrap">
+    <div class="eyebrow"><span class="num">17</span><span class="tag">Roadmap</span></div>
+    <h2>확장 로드맵 <span class="badge">확장성</span></h2>
+    <p class="lead">데이터 정리(선행과제)에서 시작해 전사 AX 인프라로 이어짐.</p>
+    <div class="road" style="margin-top:22px">
+      <div class="rc first"><div class="ph">PHASE 0</div><h4>데이터 정리</h4><p>카탈로그·정의·권한 (선행과제)</p></div>
+      <div class="rc"><div class="ph">PHASE 1</div><h4>리서치 PoC</h4><p>자연어 조회 효과 입증</p></div>
+      <div class="rc"><div class="ph">PHASE 2</div><h4>유관 부서</h4><p>법인영업·WM·리스크 확대</p></div>
+      <div class="rc"><div class="ph">PHASE 3</div><h4>전사 인프라</h4><p>전사 카탈로그·AX 데이터 기반</p></div>
+      <div class="rc"><div class="ph">PHASE 4</div><h4>후속 AX</h4><p>브리핑 자동화·알림·스크리닝</p></div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="gl"></div>
+  Research Data Copilot · 데이터 찾는 시간을 줄이는 AX Copilot &nbsp;|&nbsp; 데이터 정리(선행과제) → 리서치 PoC → 전사 확장
+</footer>
+
+</body>
+</html>

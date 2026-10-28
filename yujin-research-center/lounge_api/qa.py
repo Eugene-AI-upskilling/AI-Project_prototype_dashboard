@@ -32,6 +32,7 @@ SYSTEM = """너는 유진투자증권 리서치센터의 'AI 리서치 담당자
   · hold: 리서치 질문이지만 sources에 근거가 부족하다. 추측하지 말고 hold로 두고 hypotheses는 비운다.
   · pb: 일반투자자가 특정 상품·종목의 매매 여부를 묻는 등 적합성 확인이 필요한 요청 → 담당 PB 연결. hypotheses는 비운다.
   · desk: 수수료·계좌·DMA 이용 조건 같은 서비스 문의 → 담당 데스크 연결. hypotheses는 비운다.
+- topic은 질문이 다루는 업종·테마의 짧은 명사 하나다(예: 반도체, 전력기기, 배당주, 환율, 2차전지). 2~6자, 문장으로 쓰지 않는다. 새 리포트가 나왔을 때 이 단어로 답변 재검토 여부를 판단한다.
 - verdict는 고객이 먼저 읽는 2문장 요약이다. 근거 강도 순서를 말하고 단정하지 않는다.
 - 한국어, 짧고 평이한 문장. 고객 유형(기관/HNW)에 맞춰 용어 수준만 조절한다."""
 
@@ -98,7 +99,22 @@ def verify(cite, by_id):
             "date": src["date"], "url": f"{src['url']}#page={src['page']}"}
 
 
-def draft(question, persona="am"):
+EFFORT = os.environ.get("LOUNGE_EFFORT", "low")   # low: 답변 약 25초 · medium: 약 45초 (인용 정확도는 같았음, 2026-10-27 비교)
+
+
+_NUM = re.compile(r"[+-]?\d[\d,]*(?:\.\d+)?%?")
+
+
+def number_check(out, srcs):
+    """인용 표시가 없는 요약 · 확인할 점의 숫자가 근거 원문에 있는지(쉼표 · 공백 무시)."""
+    hay = re.sub(r"[\s,]", "", " ".join(s["text"] for s in srcs))
+    texts = [out.get("verdict", "")] + [c for h in out.get("hypotheses", []) for c in h.get("checks", [])]
+    nums = {n for t in texts for n in _NUM.findall(t) if len(re.sub(r"\D", "", n)) >= 2}
+    missing = sorted(n for n in nums if re.sub(r"[,+]", "", n).lstrip("-") not in hay)
+    return {"ok": len(nums) - len(missing), "total": len(nums), "missing": missing}
+
+
+def draft(question, persona="am", effort=None):
     """질문 → 검증된 답변 초안 dict. 실패 시 예외."""
     t0 = time.time()
     srcs = _sources(question)
@@ -111,7 +127,7 @@ def draft(question, persona="am"):
         model=llm.MODEL, max_tokens=16000,
         system=[{"type": "text", "text": SYSTEM, "cache_control": {"type": "ephemeral"}}],
         messages=[{"role": "user", "content": user}],
-        output_config={"effort": "medium", "format": {"type": "json_schema", "schema": SCHEMA}},
+        output_config={"effort": effort or EFFORT, "format": {"type": "json_schema", "schema": SCHEMA}},
         betas=llm._BETAS, fallbacks="default",
     )
     if resp.stop_reason == "refusal":
@@ -128,7 +144,7 @@ def draft(question, persona="am"):
                 s["verify"] = verify(s.get("cite"), by_id)
                 total += 1
                 checked += s["verify"]["status"] == "ok"
-    out["meta"] = {"model": resp.model, "secs": round(time.time() - t0, 1), "cite_ok": checked, "cite_total": total,
+    out["meta"] = {"num_check": number_check(out, srcs), "model": resp.model, "effort": effort or EFFORT, "secs": round(time.time() - t0, 1), "cite_ok": checked, "cite_total": total,
                    "sources": [{k: s[k] for k in ("id", "report_id", "page", "title", "date", "url")} for s in srcs],
                    "usage": {"in": resp.usage.input_tokens, "out": resp.usage.output_tokens}}
     return out

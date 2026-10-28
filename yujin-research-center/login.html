@@ -4,174 +4,18 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>로그인 · 유진 Insight Lab</title>
-<meta name="description" content="법인·WM 고객을 위한 유진 AI 리서치 라운지 로그인" />
-<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
-<link rel="preload" href="assets/fonts/PretendardVariable.woff2" as="font" type="font/woff2" crossorigin />
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" />
-<link rel="stylesheet" href="assets/app.css" />
-<link rel="stylesheet" href="assets/lounge.css" />
-</head>
-<body class="lg-body">
-
-<header class="lg-top">
-  <a href="index.html" style="text-decoration:none">
-    <span class="nav__brand">
-      <img class="nav__logoimg" src="assets/eugene-logo.png" alt="유진투자증권" />
-      <span class="nav__divider"></span>
-      <span class="nav__sub">Insight Lab</span>
-    </span>
-  </a>
-  <a class="home" href="index.html">← 홈으로</a>
-</header>
-
-<main class="lg-shell" id="main">
-  <!-- 좌측: 서비스 소개 -->
-  <aside class="lg-side">
-    <div class="eye">AI RESEARCH LOUNGE</div>
-    <h1>담당자가 없어도<br/><em>유진 리서치</em>에<br/>바로 닿는 창구</h1>
-    <p>질문하면 AI 리서치 담당자가 유진 리포트 원문을 근거로 답하고, 새 자료가 나오면 답을 다시 점검합니다.</p>
-    <ul class="lg-feats">
-      <li><span class="n">1</span><div><b>근거형 Q&amp;A</b><span>사실 · 당사 견해 · 반대 근거를 출처와 함께</span></div></li>
-      <li><span class="n">2</span><div><b>변화 추적</b><span>새 리포트가 나오면 ‘재검토 필요’ 알림</span></div></li>
-      <li><span class="n">3</span><div><b>행사 · 상담 연결</b><span>콥데이 · 세미나 신청, 법인영업 · PB 연결</span></div></li>
-    </ul>
-  </aside>
-
-  <!-- 우측: 단계별 로그인 -->
-  <section class="lg-main">
-    <div class="lg-steps" aria-label="진행 단계">
-      <span class="s on" data-s="1"><i>1</i>고객 유형</span><span class="bar"></span>
-      <span class="s" data-s="2"><i>2</i>소속 확인</span><span class="bar"></span>
-      <span class="s" data-s="3"><i>3</i>로그인</span>
-    </div>
-
-    <!-- STEP 1 -->
-    <div class="lg-pane on" data-p="1">
-      <h2>어떤 고객이신가요?</h2>
-      <p class="lead">고객 유형에 맞춰 라운지 화면과 자료 형식이 달라집니다.</p>
-      <div class="lg-segs" role="radiogroup" aria-label="고객 유형">
-        <button type="button" class="lg-seg" data-seg="corp" role="radio" aria-checked="false">
-          <span class="chk"><svg viewBox="0 0 24 24"><path d="M5 12l5 5 9-10"/></svg></span>
-          <span class="ic"><svg viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M9 7h2M13 7h2M9 11h2M13 11h2M9 15h2M13 15h2M10 21v-3h4v3"/></svg></span>
-          <b>법인 고객</b>
-          <span>운용 · 자문 · 일임사와 DMA 이용 전문투자자</span>
-          <span class="who"><em>자산운용사</em><em>투자자문사</em><em>DMA</em></span>
-        </button>
-        <button type="button" class="lg-seg" data-seg="wm" role="radio" aria-checked="false">
-          <span class="chk"><svg viewBox="0 0 24 24"><path d="M5 12l5 5 9-10"/></svg></span>
-          <span class="ic"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg></span>
-          <b>WM 고객</b>
-          <span>유진 WM 지점 고객 · 초대받은 고액자산가</span>
-          <span class="who"><em>고액자산가</em><em>지점 초대</em></span>
-        </button>
-      </div>
-      <div class="lg-actions"><button class="btn btn--primary" id="to2" disabled>다음</button></div>
-    </div>
-
-    <!-- STEP 2: 법인 -->
-    <div class="lg-pane" data-p="2corp">
-      <h2>소속을 알려 주세요</h2>
-      <p class="lead">법인 고객은 소속 확인 후 이용 범위가 열립니다.</p>
-      <div class="lg-types" role="radiogroup" aria-label="법인 세부 유형">
-        <button type="button" class="lg-type" data-type="am" role="radio"><span class="rd"></span><div><b>자산운용사</b><span>펀드 · 일임 운용역, 리서치 담당</span></div></button>
-        <button type="button" class="lg-type" data-type="ia" role="radio"><span class="rd"></span><div><b>투자자문 · 일임사</b><span>고객 설명자료가 필요한 자문 인력</span></div></button>
-        <button type="button" class="lg-type" data-type="dma" role="radio"><span class="rd"></span><div><b>DMA 이용 전문투자자</b><span>DMA 주문 · 수수료 상담 연결</span></div></button>
-        <button type="button" class="lg-type" data-type="etc" role="radio"><span class="rd"></span><div><b>기타 기관</b><span>연기금 · 보험 · 은행 · 공제회</span></div></button>
-      </div>
-      <label class="lx-field lg-code"><span>소속 기관명</span><input class="lx-input" placeholder="예: 한빛자산운용" value="" /></label>
-      <div class="lg-note"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg>
-        <div>소속은 1영업일 안에 확인합니다. 확인 전에도 공개 리포트와 AI Q&amp;A 미리보기는 바로 쓸 수 있습니다.</div></div>
-      <div class="lg-actions"><button class="btn btn--secondary" data-back="1">이전</button><button class="btn btn--primary" id="to3c" disabled>다음</button></div>
-    </div>
-
-    <!-- STEP 2: WM -->
-    <div class="lg-pane" data-p="2wm">
-      <h2>WM 고객 확인</h2>
-      <p class="lead">지점에서 받은 초대 코드로 가입합니다.</p>
-      <div class="lg-types" role="radiogroup" aria-label="WM 세부 유형">
-        <button type="button" class="lg-type on" data-type="hnw" role="radio" aria-checked="true"><span class="rd"></span><div><b>지점 초대 코드로 가입</b><span>담당 PB에게 받은 코드를 입력합니다</span></div></button>
-      </div>
-      <label class="lx-field lg-code"><span>초대 코드</span><input class="lx-input" placeholder="예: EUG-GN-2611" value="EUG-GN-2611" /></label>
-      <label class="lx-field"><span>담당 지점</span>
-        <select class="lx-select"><option>강남금융센터</option><option>여의도금융센터</option><option>부산금융센터</option></select></label>
-      <div class="lg-note"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg>
-        <div>WM 고객의 상품 관련 문의는 적합성 확인을 위해 담당 PB에게 연결됩니다. AI는 매매를 권유하지 않습니다.</div></div>
-      <div class="lg-actions"><button class="btn btn--secondary" data-back="1">이전</button><button class="btn btn--primary" id="to3w">다음</button></div>
-    </div>
-
-    <!-- STEP 3 -->
-    <div class="lg-pane" data-p="3">
-      <h2>로그인</h2>
-      <p class="lead">회사 · 개인 Google 계정이나 이메일로 계속합니다.</p>
-      <div class="lg-sel"><div><b id="selName">법인 · 자산운용사</b><br/><span id="selSub">소속 확인 대기</span></div><button type="button" data-back="2">변경</button></div>
-      <button type="button" class="lg-google" id="google">
-        <svg viewBox="0 0 48 48" aria-hidden="true"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.3-.4-3.5z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-8l-6.5 5C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C37 39.2 44 34 44 24c0-1.3-.1-2.3-.4-3.5z"/></svg>
-        Google 계정으로 계속하기
-      </button>
-      <div class="lg-or">또는 이메일</div>
-      <form id="emailForm" onsubmit="return false">
-        <label class="lx-field"><span>이메일</span><input class="lx-input" type="email" placeholder="you@company.com" autocomplete="email" /></label>
-        <label class="lx-field"><span>비밀번호</span><input class="lx-input" type="password" placeholder="6자 이상" autocomplete="current-password" /></label>
-        <div class="ad-chk" style="margin:4px 0 16px">
-          <label><input type="checkbox" checked /> [필수] 정보 제공 · 투자 위험 고지 동의</label>
-          <label><input type="checkbox" /> [선택] 새 리포트 · 행사 알림 수신</label>
-        </div>
-        <button class="btn btn--primary btn--block" type="submit" id="emailGo">로그인</button>
-      </form>
-    </div>
-
-    <div class="lg-staff">
-      <span>리서치센터 직원이신가요?</span>
-      <a href="admin.html">애널리스트 관리자 로그인 →</a>
-    </div>
-  </section>
-</main>
-
-<p class="lg-foot">본 화면은 시연용 프로토타입입니다. 로그인 정보는 저장하지 않으며, 선택한 고객 유형만 이 브라우저에 기억합니다.<br/>
-© 2026 Yujin Investment &amp; Securities Co., Ltd. · 리서치센터</p>
-<div class="toast" id="toast"></div>
-
-<script src="assets/lounge-proto.js"></script>
+<!-- 로그인은 진입 페이지(index.html)의 쇼릴 → 고객 유형 선택으로 통합됨. 예전 링크 · OAuth 복귀 주소(?oauth=1 · #access_token)는 그대로 넘긴다 -->
+<link rel="canonical" href="index.html" />
 <script>
 (function(){
-  const $=(s,e=document)=>e.querySelector(s), $$=(s,e=document)=>[...e.querySelectorAll(s)];
-  const st={seg:null,type:null};
-  const LABEL={am:'법인 · 자산운용사',ia:'법인 · 투자자문 · 일임사',dma:'법인 · DMA 전문투자자',etc:'법인 · 기타 기관',hnw:'WM · 고액자산가'};
-  const PMAP={am:'am',ia:'ia',dma:'dma',etc:'am',hnw:'hnw'};
-  function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('show');clearTimeout(toast.t);toast.t=setTimeout(()=>t.classList.remove('show'),2200);}
-  function go(p){
-    $$('.lg-pane').forEach(x=>x.classList.toggle('on',x.dataset.p===p));
-    const n=p[0];
-    $$('.lg-steps .s').forEach(s=>{const k=s.dataset.s;s.classList.toggle('on',k===n);s.classList.toggle('done',k<n);});
-    const f=$(`.lg-pane[data-p="${p}"] button, .lg-pane[data-p="${p}"] input`); if(f) f.focus({preventScroll:true});
-  }
-  // STEP 1
-  $$('.lg-seg').forEach(b=>b.addEventListener('click',()=>{
-    st.seg=b.dataset.seg; $$('.lg-seg').forEach(x=>{const on=x===b;x.classList.toggle('on',on);x.setAttribute('aria-checked',on);});
-    $('#to2').disabled=false; }));
-  $('#to2').addEventListener('click',()=>{ if(st.seg==='wm'){st.type='hnw';} go(st.seg==='wm'?'2wm':'2corp'); });
-  // STEP 2 법인
-  $$('.lg-pane[data-p="2corp"] .lg-type').forEach(b=>b.addEventListener('click',()=>{
-    st.type=b.dataset.type; $$('.lg-pane[data-p="2corp"] .lg-type').forEach(x=>{const on=x===b;x.classList.toggle('on',on);x.setAttribute('aria-checked',on);});
-    $('#to3c').disabled=false; }));
-  function toStep3(){
-    $('#selName').textContent=LABEL[st.type]||'';
-    $('#selSub').textContent= st.seg==='wm' ? '초대 코드 확인됨 · 강남금융센터' : '소속 확인 대기 · 미리보기 이용 가능';
-    go('3'); }
-  $('#to3c').addEventListener('click',toStep3);
-  $('#to3w').addEventListener('click',toStep3);
-  $$('[data-back]').forEach(b=>b.addEventListener('click',()=>{ const k=b.dataset.back; go(k==='2'?(st.seg==='wm'?'2wm':'2corp'):'1'); }));
-  // STEP 3 — 프로토타입: 실제 인증 없이 선택한 고객 유형으로 라운지 진입
-  function enter(via){
-    IL.setSession({persona:PMAP[st.type]||'am', via, at:Date.now()});
-    toast(via==='google'?'Google 계정으로 로그인했습니다.':'로그인했습니다.');
-    setTimeout(()=>location.href='lounge.html',700);
-  }
-  $('#google').addEventListener('click',()=>enter('google'));
-  $('#emailForm').addEventListener('submit',()=>enter('email'));
-  // 이미 로그인한 경우 안내
-  const s=IL.getSession(); if(s&&s.persona){ toast(`${IL.PERSONAS[s.persona].name}님으로 로그인되어 있어요. 다른 유형으로 다시 들어갈 수 있습니다.`); }
+  var q=new URLSearchParams(location.search);
+  if(!q.has('start')) q.set('start','1');
+  location.replace('index.html?'+q.toString()+location.hash);
 })();
 </script>
+<noscript><meta http-equiv="refresh" content="0; url=index.html?start=1" /></noscript>
+</head>
+<body>
+<p style="font-family:sans-serif;padding:24px">로그인 화면으로 이동합니다. <a href="index.html?start=1">바로 가기</a></p>
 </body>
 </html>

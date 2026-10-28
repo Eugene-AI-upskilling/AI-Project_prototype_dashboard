@@ -1,0 +1,21 @@
+<!-- @dsCard group="Spacing" viewport="700x150" name="Radius & elevation" subtitle="3 / 6 / 8 / 10 / full — low, soft shadows" -->
+<!DOCTYPE html>
+<html lang="ko"><head><meta charset="utf-8" />
+<link rel="stylesheet" href="../styles.css" />
+<style>
+  body { margin: 0; padding: 24px; background: var(--color-canvas); color: var(--color-foreground); display:flex; gap:28px; align-items:center; flex-wrap:wrap; }
+  .box { width: 64px; height: 64px; background: var(--white); border: 1px solid var(--color-hairline); display:flex; align-items:flex-end; justify-content:center; }
+  .lbl { font-size: 11px; color: var(--color-muted); font-family: var(--font-mono); margin-top: 6px; text-align:center; }
+  .item { text-align:center; }
+  .soft { box-shadow: var(--shadow-soft); border-color: transparent; }
+  .pop { box-shadow: var(--shadow-pop); border-color: transparent; }
+</style></head>
+<body>
+  <div class="item"><div class="box" style="border-radius:var(--radius-sm)"></div><div class="lbl">sm·3</div></div>
+  <div class="item"><div class="box" style="border-radius:var(--radius-chip)"></div><div class="lbl">chip·6</div></div>
+  <div class="item"><div class="box" style="border-radius:var(--radius-md)"></div><div class="lbl">md·8</div></div>
+  <div class="item"><div class="box" style="border-radius:var(--radius-lg)"></div><div class="lbl">lg·10</div></div>
+  <div class="item"><div class="box" style="border-radius:var(--radius-full)"></div><div class="lbl">full</div></div>
+  <div class="item"><div class="box soft" style="border-radius:var(--radius-md)"></div><div class="lbl">shadow-soft</div></div>
+  <div class="item"><div class="box pop" style="border-radius:var(--radius-md)"></div><div class="lbl">shadow-pop</div></div>
+</body></html>

@@ -1,0 +1,350 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI Harnessing Conference</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;700&family=Space+Grotesk:wght@300;400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pretendard@1.3.9/dist/web/static/pretendard.min.css">
+<style>
+  :root{
+    --navy:#0E1B89; --deep:#0A1060; --blue:#1E5BFF; --sky:#008AFC; --cyan:#35C6F4;
+    --ink:#2A2C3A; --muted:#62677F; --line:#D3DDEE; --paper:#F7FAFF;
+    --gold:#C9A24A;
+  }
+  @property --a {syntax:'<percentage>';inherits:false;initial-value:10%}
+  @property --b {syntax:'<percentage>';inherits:false;initial-value:80%}
+  @property --c {syntax:'<percentage>';inherits:false;initial-value:40%}
+
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:#E7EDF7}
+  body{font-family:'Pretendard',-apple-system,'Malgun Gothic',sans-serif;color:var(--ink);
+       display:flex;justify-content:center;padding:32px 16px;-webkit-font-smoothing:antialiased}
+
+  /* ---------- A4 sheet ---------- */
+  .sheet{width:210mm;height:297mm;position:relative;overflow:hidden;
+    background:
+      radial-gradient(120% 60% at 100% 0%, #CFE4FB 0%, rgba(207,228,251,0) 60%),
+      linear-gradient(180deg,#F3F8FF 0%, #FFFFFF 46%, #F6F9FE 100%);
+    box-shadow:0 30px 80px -30px rgba(14,27,137,.35),0 0 0 1px rgba(14,27,137,.06);
+    padding:10mm 13mm 10mm; display:flex; flex-direction:column; gap:4.4mm;
+    transform-origin:top center}
+  .blob{position:absolute;border-radius:50%;filter:blur(40px);opacity:.55;pointer-events:none;z-index:0}
+  .blob.b1{width:320px;height:320px;background:#BFDBFF;top:-80px;right:-60px;animation:drift 18s ease-in-out infinite}
+  .blob.b2{width:260px;height:260px;background:#D7E9FF;top:260px;left:-120px;animation:drift 22s ease-in-out infinite reverse}
+  @keyframes drift{0%,100%{transform:translate(0,0)}50%{transform:translate(30px,40px)}}
+  .sheet > *:not(.blob):not(#net){position:relative;z-index:1;flex-shrink:0}
+
+  /* ---------- top bar ---------- */
+  .top{display:flex;justify-content:space-between;align-items:center}
+  .brand{display:flex;align-items:center;gap:8px}
+  .mark{width:24px;height:24px;border-radius:7px;background:linear-gradient(135deg,var(--navy),var(--sky));
+        display:grid;place-items:center;color:#fff;font:700 11px 'Space Grotesk'}
+  .brand b{font-size:11.5px;font-weight:800;color:var(--deep);letter-spacing:-.01em;display:block;line-height:1.1}
+  .brand small{font:500 8.5px 'Space Grotesk';color:var(--muted);letter-spacing:.08em;text-transform:uppercase}
+  .chip{font:500 10.5px 'Space Grotesk';color:var(--navy);border:1px solid rgba(14,27,137,.25);
+        padding:5px 12px;border-radius:999px;background:rgba(255,255,255,.7);display:flex;gap:7px;align-items:center}
+  .chip i{width:6px;height:6px;border-radius:50%;background:var(--sky);box-shadow:0 0 0 0 rgba(0,138,252,.6);animation:ping 2s infinite}
+  @keyframes ping{0%{box-shadow:0 0 0 0 rgba(0,138,252,.55)}80%,100%{box-shadow:0 0 0 7px rgba(0,138,252,0)}}
+
+  /* ---------- hero ---------- */
+  .hero{text-align:center;padding-top:1mm}
+  .kicker{font:500 10.5px 'Space Grotesk';letter-spacing:.32em;color:var(--sky);text-transform:uppercase;margin-bottom:2.4mm}
+  .title{font-family:'Oswald',sans-serif;font-weight:700;text-transform:uppercase;
+    font-size:70px;line-height:.98;letter-spacing:.005em;
+    background-image:
+      radial-gradient(38% 60% at var(--a) 30%, #4FA8FF 0%, rgba(79,168,255,0) 70%),
+      radial-gradient(30% 70% at var(--b) 70%, #7FD3FF 0%, rgba(127,211,255,0) 70%),
+      radial-gradient(45% 80% at var(--c) 90%, #1E5BFF 0%, rgba(30,91,255,0) 70%),
+      linear-gradient(100deg,#050A3E 0%, #0E1B89 45%, #0A1060 100%);
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+    animation:flow 9s ease-in-out infinite alternate;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .title .l2{display:block;font-size:44px;letter-spacing:.03em;margin:.5mm 0}
+  .title .l3{display:block;font-size:62px}
+  @keyframes flow{
+    0%  {--a:5%;  --b:85%; --c:30%}
+    50% {--a:55%; --b:35%; --c:80%}
+    100%{--a:95%; --b:10%; --c:45%}}
+  .ko{margin-top:3.4mm;font-size:25px;font-weight:800;color:var(--navy);letter-spacing:-.035em}
+  .ko em{font-style:normal;background:linear-gradient(transparent 62%,rgba(0,138,252,.18) 62%)}
+  .lead{margin:2.6mm auto 0;max-width:150mm;font-size:11.5px;line-height:1.7;color:var(--muted);font-weight:400}
+  .lead b{color:var(--ink);font-weight:600}
+  .tags{display:flex;justify-content:center;gap:6px;margin-top:2.8mm;flex-wrap:wrap}
+  .tags span{font:500 10px 'Space Grotesk';color:var(--navy);background:#fff;border:1px solid var(--line);
+             padding:4px 10px;border-radius:999px}
+
+  #net{position:absolute;left:0;top:0;width:100%;height:120mm;z-index:0;pointer-events:none;opacity:.9}
+
+  /* ---------- info strip ---------- */
+  .info{display:grid;grid-template-columns:repeat(4,1fr);background:#fff;border:1px solid var(--line);border-radius:12px;
+        box-shadow:0 10px 30px -18px rgba(14,27,137,.35)}
+  .info div{padding:3.2mm 4mm;border-left:1px solid var(--line)}
+  .info div:first-child{border-left:0}
+  .info h4{font:500 9px 'Space Grotesk';letter-spacing:.18em;color:var(--sky);text-transform:uppercase;margin-bottom:1.4mm}
+  .info p{font-size:11.5px;font-weight:600;color:var(--deep);line-height:1.45;letter-spacing:-.01em}
+  .info p small{display:block;font-weight:400;color:var(--muted);font-size:10px}
+
+  /* ---------- section heads (kaiqa style) ---------- */
+  .sec-h{display:flex;align-items:baseline;justify-content:space-between;border-bottom:1.5px solid var(--deep);padding-bottom:1.6mm;margin-bottom:2.6mm}
+  .sec-h h3{font:400 19px 'Space Grotesk';color:var(--deep);letter-spacing:-.01em}
+  .sec-h span{font-size:10px;color:var(--muted)}
+
+  /* ---------- framework ---------- */
+  .steps{display:grid;grid-template-columns:repeat(6,1fr);gap:2mm;position:relative}
+  .steps::before{content:"";position:absolute;left:8%;right:8%;top:11px;height:2px;
+    background:linear-gradient(90deg,var(--navy),var(--sky),var(--cyan));transform-origin:left;
+    animation:draw 1.6s .6s cubic-bezier(.65,0,.35,1) both}
+  @keyframes draw{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+  .step{text-align:center}
+  .step .n{width:24px;height:24px;margin:0 auto 2mm;border-radius:50%;background:#fff;border:2px solid var(--navy);
+           display:grid;place-items:center;font:700 11px 'Space Grotesk';color:var(--navy);position:relative}
+  .step:nth-child(n+4) .n{border-color:var(--sky);color:var(--sky)}
+  .step b{display:block;font:600 11.5px 'Space Grotesk';color:var(--deep);letter-spacing:-.01em;line-height:1.2}
+  .step p{font-size:9.6px;color:var(--muted);line-height:1.45;margin-top:1mm;letter-spacing:-.02em}
+
+  /* ---------- program ---------- */
+  .group{display:flex;align-items:center;gap:8px;font:400 14px 'Space Grotesk';color:var(--deep);margin:1.2mm 0 .6mm}
+  .group::before{content:"";width:10px;height:10px;border-radius:2px;background:var(--navy)}
+  .group small{font-size:10px;color:var(--muted);margin-left:2px}
+  .row{display:grid;grid-template-columns:26mm 1fr 34mm;align-items:center;gap:3mm;
+       padding:2.7mm 2mm;border-bottom:1px solid var(--line);transition:background .25s}
+  .row:hover{background:rgba(0,138,252,.05)}
+  .row time{font:500 12.5px 'Space Grotesk';color:var(--ink);letter-spacing:-.01em}
+  .row .t b{display:block;font-size:12.6px;font-weight:700;color:var(--deep);letter-spacing:-.025em;line-height:1.35}
+  .row .t b i{font-style:normal;font:500 10px 'Space Grotesk';color:var(--sky);margin-right:6px;letter-spacing:.06em}
+  .row .t p{font-size:10px;color:var(--muted);margin-top:.6mm;letter-spacing:-.02em}
+  .row .who{font-size:10px;color:var(--muted);text-align:right;line-height:1.35}
+  .row.break{padding:1.6mm 2mm}
+  .row.break .t{font:400 11px 'Space Grotesk';color:var(--muted)}
+  .row .who b{display:block;font-size:13px;color:var(--deep);font-weight:800;letter-spacing:-.02em}
+
+  /* ---------- footer ---------- */
+  .foot{margin-top:auto;display:grid;grid-template-columns:1.2fr 1fr 1fr 1fr;gap:0;
+        background:var(--deep);color:#fff;border-radius:12px;overflow:hidden;position:relative}
+  .foot::after{content:"";position:absolute;inset:0;background:linear-gradient(110deg,transparent 30%,rgba(255,255,255,.10) 50%,transparent 70%);
+        transform:translateX(-100%);animation:sheen 6s 2s ease-in-out infinite}
+  @keyframes sheen{0%{transform:translateX(-100%)}40%,100%{transform:translateX(100%)}}
+  .foot div{padding:3.4mm 4.5mm;border-left:1px solid rgba(255,255,255,.12)}
+  .foot div:first-child{border-left:0}
+  .foot h4{font:500 8.5px 'Space Grotesk';letter-spacing:.2em;color:var(--cyan);text-transform:uppercase;margin-bottom:1mm}
+  .foot p{font-size:11.5px;font-weight:600;letter-spacing:-.01em}
+
+  /* ---------- load reveal ---------- */
+  .rv{opacity:0;transform:translateY(14px);animation:up .9s cubic-bezier(.2,.7,.2,1) forwards}
+  @keyframes up{to{opacity:1;transform:none}}
+
+  @media (prefers-reduced-motion:reduce){
+    *,*::before,*::after{animation:none!important;transition:none!important}
+    .rv{opacity:1;transform:none}
+  }
+  .sheet{flex:none}
+
+  /* ---------- mobile: fluid single column instead of a shrunken A4 ---------- */
+  @media (max-width:860px){
+    body{padding:0;display:block}
+    html,body{overflow-x:hidden}
+    .sheet{width:100%;height:auto;overflow:hidden;padding:20px 18px 24px;gap:26px;box-shadow:none}
+    #net,.blob.b2{display:none}
+    .brand small{display:none}
+    .brand b{font-size:12.5px}
+    .chip{white-space:nowrap;font-size:11px;padding:5px 10px}
+    .hero{padding-top:6px}
+    .kicker{font-size:9.5px;letter-spacing:.2em;line-height:1.6}
+    .title{font-size:15vw;line-height:.96}
+    .title .l2{font-size:9.6vw;line-height:1.02;margin:4px 0}
+    .title .l3{font-size:14.6vw}
+    .ko{font-size:21px;line-height:1.35;margin-top:14px;word-break:keep-all}
+    .lead{font-size:14px;line-height:1.7;max-width:none;word-break:keep-all;margin-top:10px}
+    .tags span{font-size:11.5px;padding:5px 11px}
+
+    .info{grid-template-columns:1fr 1fr}
+    .info div{padding:14px 16px}
+    .info div:nth-child(odd){border-left:0}
+    .info div:nth-child(n+3){border-top:1px solid var(--line)}
+    .info h4{font-size:10px}
+    .info p{font-size:14px}
+    .info p small{font-size:12px}
+
+    .sec-h{flex-direction:column;align-items:flex-start;gap:4px;padding-bottom:8px;margin-bottom:14px}
+    .sec-h h3{font-size:22px}
+    .sec-h span{font-size:12px}
+
+    .steps{grid-template-columns:repeat(3,1fr);row-gap:18px;column-gap:8px}
+    .steps::before{display:none}
+    .step .n{width:30px;height:30px;font-size:13px;margin-bottom:8px}
+    .step b{font-size:13px}
+    .step p{font-size:11.5px;word-break:keep-all}
+
+    .group{font-size:16px;margin:12px 0 4px}
+    .group small{font-size:12px}
+    .row{grid-template-columns:1fr auto;grid-template-areas:"time who" "t t";gap:6px 10px;padding:14px 4px}
+    .row time{grid-area:time;font-size:13.5px;color:var(--sky)}
+    .row .who{grid-area:who}
+    .row .who b{font-size:15px}
+    .row .t{grid-area:t}
+    .row .t b{font-size:16px;line-height:1.4;word-break:keep-all}
+    .row .t p{font-size:12.5px;line-height:1.55;margin-top:4px;word-break:keep-all}
+    .row.break{padding:10px 4px}
+    .row.break .t{font-size:13px}
+
+    .foot{grid-template-columns:1fr 1fr;margin-top:6px}
+    .foot div{padding:14px 16px}
+    .foot div:nth-child(odd){border-left:0}
+    .foot div:nth-child(n+3){border-top:1px solid rgba(255,255,255,.12)}
+    .foot h4{font-size:10px}
+    .foot p{font-size:14px}
+  }
+
+  @page{size:A4;margin:0}
+  @media print{
+    html,body{background:#fff;padding:0;display:block}
+    .sheet{box-shadow:none;transform:none!important;margin:0}
+    *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+    *,*::before,*::after{animation:none!important}
+    .rv{opacity:1;transform:none}
+    .title{--a:30%;--b:70%;--c:50%}
+  }
+</style>
+</head>
+<body>
+<main class="sheet" id="sheet">
+  <div class="blob b1"></div><div class="blob b2"></div>
+  <canvas id="net" aria-hidden="true"></canvas>
+
+  <header class="top rv" style="animation-delay:.05s">
+    <div class="brand">
+      <div class="mark">AX</div>
+      <div><b>유진투자증권 AX 컨퍼런스 시리즈</b><small>From AI to AX · Institutional Investment</small></div>
+    </div>
+    <div class="chip"><i></i>4회차 · 2026.10</div>
+  </header>
+
+  <section class="hero">
+    <p class="kicker rv" style="animation-delay:.15s">Institutional Investment Operating Model 2026</p>
+    <h1 class="title rv" style="animation-delay:.25s">
+      AI Harnessing
+      <span class="l2">Methodology Conference</span>
+      <span class="l3">2026/10/23</span>
+    </h1>
+    <h2 class="ko rv" style="animation-delay:.45s">모델을 <em>쓰는 법</em>에서, 모델을 <em>엮는 법</em>으로</h2>
+    <p class="lead rv" style="animation-delay:.55s">
+      <b>Hermes · OpenRouter · MCP</b> 등 AI Harnessing 스택으로 리서치·운용 업무에 여러 모델과 도구를 안전하게 연결하는 방법을 다룹니다.
+      연금 및 기관 투자자를 위한 <b>AX × AI Quant</b> 운용체계 전환 컨퍼런스 시리즈의 네 번째 세션입니다.
+    </p>
+    <div class="tags rv" style="animation-delay:.65s">
+      <span>Hermes</span><span>OpenRouter</span><span>MCP · Tool Use</span><span>Agent Eval</span><span>On-chain Data</span>
+    </div>
+  </section>
+
+  <section class="info rv" style="animation-delay:.75s">
+    <div><h4>Time</h4><p>09:00 – 16:30<small>4개 세션</small></p></div>
+    <div><h4>Format</h4><p>오전 1개 · 오후 3개<small>집중 커리큘럼</small></p></div>
+    <div><h4>Audience</h4><p>자산운용 및<br>연기금 투자자</p></div>
+    <div><h4>Focus</h4><p>AI Harness · Routing<small>Agent Ops · 온체인 데이터</small></p></div>
+  </section>
+
+  <section class="rv" style="animation-delay:.85s">
+    <div class="sec-h"><h3>AI Harness Framework</h3><span>모델 하나가 아니라, 모델을 감싸는 운용 구조</span></div>
+    <div class="steps">
+      <div class="step"><div class="n">1</div><b>Model Layer</b><p>Hermes · Claude · GPT<br>오픈/클로즈드 모델 선택</p></div>
+      <div class="step"><div class="n">2</div><b>Routing</b><p>OpenRouter 기반<br>비용·품질·지연 라우팅</p></div>
+      <div class="step"><div class="n">3</div><b>Tools &amp; MCP</b><p>DB·리서치·시세를<br>도구로 연결</p></div>
+      <div class="step"><div class="n">4</div><b>Context</b><p>프롬프트·메모리<br>지식 컨텍스트 설계</p></div>
+      <div class="step"><div class="n">5</div><b>Eval &amp; Guard</b><p>평가셋·가드레일<br>Human-in-the-loop</p></div>
+      <div class="step"><div class="n">6</div><b>Governance</b><p>로그·감사추적<br>승인체계</p></div>
+    </div>
+  </section>
+
+  <section class="rv" style="animation-delay:.95s">
+    <div class="sec-h"><h3>Program</h3><span>2026년 10월 23일 금요일, 오전 9시 ~ 오후 4시 30분</span></div>
+
+    <div class="group">Morning <small>오전 세션</small></div>
+    <div class="row">
+      <time>09:00 ~ 11:00</time>
+      <div class="t"><b><i>S1</i>AI Harness 5대 레이어와 기관 운용 적용 구조</b><p>Model · Routing · Tools · Context · Eval — 리서치·운용 업무에 붙이는 설계도</p></div>
+      <div class="who"><b>안지선</b></div>
+    </div>
+    <div class="row break"><time>11:00 ~ 13:30</time><div class="t">Lunch &amp; Networking</div><div></div></div>
+
+    <div class="group">Afternoon <small>오후 세션</small></div>
+    <div class="row">
+      <time>13:30 ~ 14:30</time>
+      <div class="t"><b><i>S2</i>디지털자산 리서치의 새로운 방법론: AI 기반 온체인 데이터 분석 실무</b><p>온체인 데이터 수집 · AI 분석 파이프라인 · 디지털자산 리서치 적용</p></div>
+      <div class="who"><b>김세희</b></div>
+    </div>
+    <div class="row">
+      <time>14:30 ~ 15:30</time>
+      <div class="t"><b><i>S3</i>Hermes · OpenRouter 멀티모델 라우팅과 Tool-Use Agent</b><p>단일 API 모델 비교 · 폴백 · Function Calling / MCP로 투자 DB 연결</p></div>
+      <div class="who"><b>안지선</b></div>
+    </div>
+    <div class="row">
+      <time>15:30 ~ 16:30</time>
+      <div class="t"><b><i>S4</i>AI Harnessing 실무: Agent 평가·모니터링과 Human-in-the-loop</b><p>평가셋 · 가드레일 · 로그 감사추적과 최종 투자판단 검증</p></div>
+      <div class="who"><b>안지선</b></div>
+    </div>
+  </section>
+
+  <footer class="foot rv" style="animation-delay:1.05s">
+    <div><h4>Date</h4><p>2026년 10월 23일 (금)</p></div>
+    <div><h4>Venue</h4><p>유진투자증권 8층</p></div>
+    <div><h4>Host</h4><p>유진투자증권</p></div>
+    <div><h4>Contact</h4><p>담당자 문의</p></div>
+  </footer>
+</main>
+
+<script>
+/* harness network: model nodes -> router -> tools, with travelling packets */
+(function(){
+  const cv=document.getElementById('net'), ctx=cv.getContext('2d');
+  const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let W,H,dpr,nodes=[],edges=[],packets=[];
+  const L=['Hermes','Claude','GPT','Gemini','Llama'], R=['MCP','Market DB','Research DB','Memory','Eval'];
+  function layout(){
+    dpr=Math.min(2,devicePixelRatio||1);
+    W=cv.clientWidth; H=cv.clientHeight;
+    cv.width=W*dpr; cv.height=H*dpr; ctx.setTransform(dpr,0,0,dpr,0,0);
+    const hub={x:W*.5,y:H*.62,label:'Router',hub:true};
+    nodes=[hub]; edges=[];
+    L.forEach((t,i)=>{const n={x:W*(.045+ (i%2)*.03),y:H*(.27+i*.12),label:t,side:-1};nodes.push(n);edges.push([n,hub])});
+    R.forEach((t,i)=>{const n={x:W*(.955-(i%2)*.03),y:H*(.27+i*.12),label:t,side:1};nodes.push(n);edges.push([hub,n])});
+  }
+  function pt(e,t){ // quadratic curve through a control point
+    const [a,b]=e, cx=(a.x+b.x)/2, cy=Math.max(a.y,b.y)+H*.08;
+    const u=1-t; return {x:u*u*a.x+2*u*t*cx+t*t*b.x, y:u*u*a.y+2*u*t*cy+t*t*b.y};
+  }
+  function spawn(){ const e=edges[(Math.random()*edges.length)|0]; packets.push({e,t:0,v:.004+Math.random()*.004}); }
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    edges.forEach(e=>{
+      const [a,b]=e, cx=(a.x+b.x)/2, cy=Math.max(a.y,b.y)+H*.08;
+      ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.quadraticCurveTo(cx,cy,b.x,b.y);
+      ctx.strokeStyle='rgba(30,91,255,.10)'; ctx.lineWidth=1; ctx.stroke();
+    });
+    packets.forEach(p=>{
+      p.t+=p.v; const q=pt(p.e,p.t), q0=pt(p.e,Math.max(0,p.t-.05));
+      const g=ctx.createLinearGradient(q0.x,q0.y,q.x,q.y);
+      g.addColorStop(0,'rgba(0,138,252,0)'); g.addColorStop(1,'rgba(0,138,252,.75)');
+      ctx.beginPath(); ctx.moveTo(q0.x,q0.y); ctx.lineTo(q.x,q.y); ctx.strokeStyle=g; ctx.lineWidth=2; ctx.stroke();
+      ctx.beginPath(); ctx.arc(q.x,q.y,1.8,0,7); ctx.fillStyle='#008AFC'; ctx.fill();
+    });
+    packets=packets.filter(p=>p.t<1);
+    ctx.font='500 9px "Space Grotesk", sans-serif'; ctx.textBaseline='middle';
+    nodes.forEach(n=>{
+      if(n.hub) return;
+      ctx.beginPath(); ctx.arc(n.x,n.y,3,0,7); ctx.fillStyle='#fff'; ctx.fill();
+      ctx.lineWidth=1.4; ctx.strokeStyle='rgba(14,27,137,.45)'; ctx.stroke();
+      ctx.fillStyle='rgba(14,27,137,.45)'; ctx.textAlign=n.side<0?'left':'right';
+      ctx.fillText(n.label.toUpperCase(), n.x+(n.side<0?8:-8), n.y);
+    });
+  }
+  function loop(){ if(Math.random()<.08) spawn(); draw(); requestAnimationFrame(loop); }
+  layout(); addEventListener('resize',layout);
+  document.fonts && document.fonts.ready.then(draw);
+  if(reduce){ draw(); } else { for(let i=0;i<8;i++){spawn();packets[i].t=Math.random();} loop(); }
+})();
+</script>
+</body>
+</html>

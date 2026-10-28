@@ -1,0 +1,102 @@
+{
+  "pages": [
+    {
+      "id": "03",
+      "name": "desktop",
+      "width": 1440,
+      "scrollWidth": 1440,
+      "static": false,
+      "introBottom": 422.40625,
+      "bottomTop": 841,
+      "effect": "running",
+      "cleanWidth": true,
+      "cleanHero": true
+    },
+    {
+      "id": "03",
+      "name": "mobile",
+      "width": 390,
+      "scrollWidth": 390,
+      "static": false,
+      "introBottom": 410.234375,
+      "bottomTop": 791,
+      "effect": "running",
+      "cleanWidth": true,
+      "cleanHero": true
+    },
+    {
+      "id": "03",
+      "name": "short",
+      "width": 1265,
+      "scrollWidth": 1265,
+      "static": false,
+      "introBottom": 305,
+      "bottomTop": 486,
+      "effect": "running",
+      "cleanWidth": true,
+      "cleanHero": true
+    },
+    {
+      "id": "03",
+      "name": "small",
+      "width": 375,
+      "scrollWidth": 375,
+      "static": true,
+      "introBottom": 414,
+      "bottomTop": 0,
+      "effect": "running",
+      "cleanWidth": true,
+      "cleanHero": true
+    },
+    {
+      "id": "04",
+      "name": "desktop",
+      "width": 1440,
+      "scrollWidth": 1440,
+      "static": false,
+      "introBottom": 623.296875,
+      "bottomTop": 842,
+      "effect": "running",
+      "cleanWidth": true,
+      "cleanHero": true
+    },
+    {
+      "id": "04",
+      "name": "mobile",
+      "width": 390,
+      "scrollWidth": 390,
+      "static": false,
+      "introBottom": 357.265625,
+      "bottomTop": 792,
+      "effect": "running",
+      "cleanWidth": true,
+      "cleanHero": true
+    },
+    {
+      "id": "04",
+      "name": "short",
+      "width": 1265,
+      "scrollWidth": 1265,
+      "static": false,
+      "introBottom": 400.625,
+      "bottomTop": 487,
+      "effect": "running",
+      "cleanWidth": true,
+      "cleanHero": true
+    },
+    {
+      "id": "04",
+      "name": "small",
+      "width": 375,
+      "scrollWidth": 375,
+      "static": true,
+      "introBottom": 404,
+      "bottomTop": 0,
+      "effect": "running",
+      "cleanWidth": true,
+      "cleanHero": true
+    }
+  ],
+  "errors": [],
+  "passed": true
+}

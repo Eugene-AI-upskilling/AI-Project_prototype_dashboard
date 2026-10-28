@@ -1,0 +1,16 @@
+{
+  "basis": "Claude original reel.html",
+  "originalVideo": "EugeneInsightLab_Showreel_15s.mp4",
+  "originalSha256": "060f7042fb8e898333f7553a76ac6fea40650d15c43109696bc0d625e1ffaea9",
+  "source": "reel-upgraded.html",
+  "durationSeconds": 15,
+  "changes": [
+    "Eugene red palette",
+    "tracked red halo",
+    "floating product surfaces",
+    "moving rim light",
+    "orbital depth",
+    "cleaner grain"
+  ],
+  "deployed": false
+}

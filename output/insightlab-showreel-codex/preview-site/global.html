@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>해외 AI 리서치 · 유진 Insight Lab</title>
+<meta name="description" content="자는 동안 움직인 미국·글로벌 시장을 아침 브리핑으로. 95개 종목의 실적·컨콜까지 AI가 요약합니다." />
+
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
+<link rel="preload" href="assets/fonts/PretendardVariable.woff2" as="font" type="font/woff2" crossorigin />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" />
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<link rel="stylesheet" href="assets/app.css" />
+
+<style>
+/* ── 해외 AI 리서치 페이지 전용 (기존 토큰만 사용) ── */
+/* 글로벌 지수·선물 스트립 (market.html .ix-strip 패턴 재사용) */
+.ix-strip{width:100%;background:rgba(18,26,52,.96);border-radius:16px;box-shadow:var(--shadow-soft);
+  display:flex;overflow-x:auto;margin-top:8px}
+.ix-strip .ix{flex:1 0 0;min-width:150px;padding:16px 22px;border-right:1px solid rgba(255,255,255,.07);
+  display:flex;flex-direction:column;gap:7px;white-space:nowrap}
+.ix-strip .ix:last-child{border-right:none}
+.ix-strip .ix .n{font-size:12px;color:#9aabc6;font-weight:600;letter-spacing:.04em;display:flex;align-items:center;gap:6px}
+.ix-strip .ix .n .ft{font-size:10px;font-weight:700;color:#6e8fd6;background:rgba(110,143,214,.16);
+  padding:1px 6px;border-radius:6px;letter-spacing:0}
+.ix-strip .ix .vr{display:flex;align-items:baseline;gap:9px}
+.ix-strip .ix .v{font-size:21px;font-weight:800;color:#fff;font-variant-numeric:tabular-nums;line-height:1}
+.ix-strip .ix .c{font-size:13px;font-weight:700;font-variant-numeric:tabular-nums}
+.ix-strip .ix .c.up{color:#fa5a6e}.ix-strip .ix .c.down{color:#6e8fd6}
+
+/* 모닝 브리핑 인덱스 미니칩 */
+.brief-idx{display:flex;gap:10px;flex-wrap:wrap;margin-top:2px}
+.brief-idx .bi{display:flex;flex-direction:column;gap:2px;padding:8px 14px;border-radius:var(--radius-md);
+  background:var(--surface-tint);min-width:104px}
+.brief-idx .bi .bn{font-size:var(--text-micro);color:var(--color-muted);font-weight:600}
+.brief-idx .bi .bc{font-size:var(--text-body);font-weight:800;font-variant-numeric:tabular-nums}
+
+/* 실적 캘린더 */
+.cal{display:flex;flex-direction:column;gap:2px}
+.cal__day{display:flex;align-items:flex-start;gap:16px;padding:14px 6px;border-bottom:1px solid var(--color-hairline)}
+.cal__day:last-child{border-bottom:none}
+.cal__date{flex:0 0 96px;display:flex;flex-direction:column;gap:3px}
+.cal__date .d{font-size:var(--text-body);font-weight:800;font-variant-numeric:tabular-nums;color:var(--blue-navy)}
+.cal__list{flex:1;display:flex;flex-wrap:wrap;gap:8px}
+.cal__pill{display:inline-flex;align-items:center;gap:8px;padding:6px 12px;border-radius:999px;
+  border:1px solid var(--color-hairline);background:#fff;cursor:pointer;font-size:var(--text-micro);
+  transition:background var(--dur-micro) var(--ease-out),border-color var(--dur-micro) var(--ease-out)}
+.cal__pill:hover{background:var(--surface-tint);border-color:transparent}
+.cal__pill .tk{font-weight:800;color:var(--blue-navy);font-variant-numeric:tabular-nums}
+.cal__pill .sp{font-weight:700;font-variant-numeric:tabular-nums}
+
+/* 종목 상세 모달 내부 */
+.gq-sec{margin-top:16px}
+.gq-sec h4{font-size:var(--text-body);font-weight:800;color:var(--blue-navy);margin:0 0 8px;display:flex;align-items:center;gap:7px}
+.gq-sec h4 .dot{width:6px;height:6px;border-radius:50%;background:var(--color-primary);display:inline-block}
+.gq-news{display:flex;flex-direction:column;gap:0}
+.gq-news a{display:flex;justify-content:space-between;gap:10px;padding:9px 2px;border-bottom:1px solid var(--color-hairline);
+  text-decoration:none;color:var(--color-body);font-size:var(--text-micro);line-height:1.45}
+.gq-news a:last-child{border-bottom:none}
+.gq-news a:hover{color:var(--blue-cta)}
+.gq-news a time{flex:0 0 auto;color:var(--color-muted);font-variant-numeric:tabular-nums}
+.gq-points{margin:0;padding-left:18px;font-size:var(--text-body);color:var(--color-body);line-height:1.7}
+.gq-points li{margin-bottom:4px}
+@media(max-width:520px){.cal__date{flex:0 0 74px}}
+</style>
+</head>
+<body
+  data-page-eyebrow="GLOBAL · AI RESEARCH"
+  data-page-title="해외 AI 리서치"
+  data-page-desc="자는 동안 움직인 미국·글로벌 시장을 아침 브리핑으로. 98개 종목의 실적·컨콜까지 AI가 요약합니다.">
+
+<main id="main">
+
+  <!-- 글로벌 지수·선물 스트립 -->
+  <section class="section" style="padding:28px 0 0">
+    <div class="wrap">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+        <span class="sec-eyebrow" style="margin:0"><span class="dot"></span>글로벌 지수 · 선물</span>
+        <span id="ixAsof" class="badge badge--point">밤사이 기준</span>
+      </div>
+      <div class="ix-strip" id="ixStrip"></div>
+    </div>
+  </section>
+
+  <!-- 오늘의 AI 모닝 브리핑 -->
+  <section class="section" style="padding-top:32px">
+    <div class="wrap">
+      <div class="sec-head">
+        <div class="sec-eyebrow"><span class="dot"></span>MORNING BRIEFING</div>
+        <h2 class="sec-title" style="font-size:var(--text-title)">오늘의 AI 모닝 브리핑</h2>
+        <p class="sec-sub">미국 시장이 문 닫는 사이 무슨 일이 있었는지, 한국어로 30초 만에.</p>
+      </div>
+      <div class="grid-2" style="align-items:stretch">
+        <div class="ai-summary" style="margin-top:0;flex-direction:column;gap:14px">
+          <div style="display:flex;gap:14px;align-items:flex-start">
+            <div class="ai-summary__ic">
+              <svg viewBox="0 0 24 24"><path d="M12 2l2.4 5.6L20 8l-4 4 1 6-5-2.8L7 18l1-6-4-4 5.6-.4z"/></svg>
+            </div>
+            <div>
+              <div class="ai-summary__tag" id="briefTitle">AI 밤사이 요약</div>
+              <p id="briefNote">밤사이 시황을 준비 중입니다.</p>
+            </div>
+          </div>
+          <div class="brief-idx" id="briefIdx"></div>
+        </div>
+        <div class="card"><div class="card__body" style="display:flex;flex-direction:column">
+          <div class="rep__top"><span class="badge badge--brand">전략 코멘트</span><span class="badge badge--muted">글로벌·전략</span></div>
+          <p id="briefStrategy" style="color:var(--color-body);line-height:1.7;margin-top:6px;flex:1">
+            변동성이 큰 밤사이 흐름에서는 실적 가시성이 높은 대형 기술주와, 다음 실적 발표가 임박한 종목의 컨센서스 방향성을 함께 점검하는 것이 유효합니다. 아래 실적 레이더에서 서프라이즈 종목을 확인해 보세요.</p>
+          <div style="margin-top:14px;display:flex;gap:8px;flex-wrap:wrap">
+            <a class="btn btn--secondary" href="market.html">국내 시황·테마 →</a>
+            <a class="btn btn--text" href="insights.html">전략 인사이트 더 보기 →</a>
+          </div>
+        </div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 글로벌 커버리지 · 실적 레이더 (95종목) -->
+  <section class="section section--tint">
+    <div class="wrap">
+      <div class="sec-head">
+        <div class="sec-eyebrow"><span class="dot"></span>EARNINGS RADAR</div>
+        <h2 class="sec-title" style="font-size:var(--text-title)">글로벌 커버리지 <span class="cn-figure" id="gqCount">95</span>종목</h2>
+        <p class="sec-sub">섹터로 필터하고, 종목을 눌러 AI 실적 요약·컨콜 요약·목표가·뉴스를 확인하세요. 다음 실적 발표가 가까운 순으로 정렬됩니다.</p>
+      </div>
+      <div class="chip-row" id="gqFilters" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px"></div>
+      <div class="card"><div class="card__body" style="padding:8px 8px 4px">
+        <div class="tbl-scroll"><table class="tbl"><thead>
+          <tr><th>종목</th><th>섹터</th><th class="num">다음 실적</th><th class="num">직전 서프라이즈</th><th class="num">EPS(실적/컨센)</th></tr>
+        </thead><tbody id="gqBody"></tbody></table></div>
+      </div></div>
+      <p class="sub" style="color:var(--color-muted);margin-top:10px;font-size:var(--text-micro)" id="gqMore"></p>
+    </div>
+  </section>
+
+  <!-- 실적 캘린더 -->
+  <section class="section">
+    <div class="wrap">
+      <div class="sec-head">
+        <div class="sec-eyebrow"><span class="dot"></span>EARNINGS CALENDAR</div>
+        <h2 class="sec-title" style="font-size:var(--text-title)">다가오는 실적 발표</h2>
+        <p class="sec-sub">발표일이 임박한 종목을 날짜별로. 종목을 누르면 상세 요약이 열립니다.</p>
+      </div>
+      <div class="card"><div class="card__body">
+        <div class="cal" id="cal"></div>
+      </div></div>
+    </div>
+  </section>
+
+  <!-- 크로스링크 -->
+  <section class="section section--tint">
+    <div class="wrap">
+      <div class="grid-3">
+        <a class="card card--hover" href="market.html" style="text-decoration:none"><div class="card__body">
+          <span class="badge badge--brand">국내</span>
+          <h3 style="font-size:var(--text-lg);font-weight:700;margin:10px 0 6px;color:var(--blue-navy)">국내 시황·테마</h3>
+          <p class="sub" style="color:var(--color-muted);line-height:1.6">코스피·코스닥 흐름과 테마 로테이션을 아침마다.</p>
+        </div></a>
+        <a class="card card--hover" href="reports.html" style="text-decoration:none"><div class="card__body">
+          <span class="badge badge--brand">리서치</span>
+          <h3 style="font-size:var(--text-lg);font-weight:700;margin:10px 0 6px;color:var(--blue-navy)">관련 리서치 리포트</h3>
+          <p class="sub" style="color:var(--color-muted);line-height:1.6">해외 밸류체인과 연결되는 국내 커버리지 리포트.</p>
+        </div></a>
+        <a class="card card--hover" href="quant.html" style="text-decoration:none"><div class="card__body">
+          <span class="badge badge--brand">퀀트</span>
+          <h3 style="font-size:var(--text-lg);font-weight:700;margin:10px 0 6px;color:var(--blue-navy)">이 테마로 전략 만들기</h3>
+          <p class="sub" style="color:var(--color-muted);line-height:1.6">관심 섹터를 골라 나만의 전략으로 백테스트.</p>
+        </div></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA (관심 종목 브리핑 — 로그인 게이트) -->
+  <section class="cta-band">
+    <h2 id="ctaTitle">관심 종목만 골라 아침 브리핑 받기</h2>
+    <p id="ctaDesc">로그인하면 관심 종목의 실적·컨콜·서프라이즈를 매일 아침 이메일로 정리해 드려요.</p>
+    <div class="joinbox" id="ctaBox">
+      <input id="joinEmail" type="email" placeholder="you@example.com" />
+      <button class="btn btn--primary btn--lg" onclick="openAuth('signup', document.getElementById('joinEmail').value.trim())">무료로 시작하기</button>
+    </div>
+  </section>
+
+</main>
+
+<!-- 종목 상세 모달 (index openGqDetail 패턴) -->
+<div class="auth-overlay" id="gqOverlay" onclick="if(event.target===this)closeGq()">
+  <div class="auth-modal" style="max-width:480px"><div id="gqDetail"></div></div>
+</div>
+
+<script src="assets/partials.js"></script>
+<script>
+/* ═════════ 해외 AI 리서치 · 데이터 & 렌더 ═════════ */
+
+/* ── 글로벌 지수·선물 스트립 (global_indices → 심볼 매핑, 없으면 폴백/TODO) ── */
+/* 각 항목을 global_indices.symbol에 매핑. db_loader에서 심볼 추가 시 자동 노출됨. */
+const IX_CONF=[
+  {sym:'IXIC', n:'NASDAQ'},
+  {sym:'GSPC', n:'S&P 500'},
+  {sym:'DJI',  n:'다우',      todo:{v:'44,210.8', c:'-0.35%'}},   // TODO: db_loader에 ^DJI 추가 시 자동 연결
+  {sym:'NQ=F', n:'나스닥',    ft:'선물', todo:{v:'25,930.0', c:'+0.21%'}}, // TODO: 선물 심볼 db_loader 확장
+  {sym:'VIX',  n:'VIX',       todo:{v:'18.42',    c:'+2.10%'}},   // TODO: ^VIX 추가 시 자동 연결
+];
+let IX_DATA={};   // sym → {v,c}
+function ixCls(c){ return String(c).trim().startsWith('-')?'down':'up'; }
+function renderIxStrip(){
+  $('#ixStrip').innerHTML=IX_CONF.map(it=>{
+    const live=IX_DATA[it.sym], d=live||it.todo||{v:'—',c:''};
+    return `<div class="ix"><span class="n">${it.n}${it.ft?`<span class="ft">${it.ft}</span>`:''}</span>
+      <span class="vr"><span class="v">${noDec(d.v)}</span><span class="c ${ixCls(d.c)}">${d.c}</span></span></div>`;
+  }).join('');
+}
+
+/* ── 오늘의 AI 모닝 브리핑 (global_research kind='overnight') ── */
+let BRIEF={
+  title:'미 증시, AI·반도체 주도 상승',
+  note:'엔비디아 신제품 기대에 반도체 동반 강세. 국내 HBM 밸류체인에 우호적.',
+  rows:[{name:'S&P 500',chg:'+0.72%'},{name:'나스닥',chg:'+1.18%'},{name:'엔비디아',chg:'+2.41%'}]
+};
+function renderBrief(){
+  $('#briefTitle').textContent=BRIEF.title||'AI 밤사이 요약';
+  $('#briefNote').textContent=BRIEF.note||'밤사이 시황을 준비 중입니다.';
+  $('#briefIdx').innerHTML=(BRIEF.rows||[]).map(r=>`<div class="bi">
+    <span class="bn">${r.name}</span><span class="bc ${dirCls(r.chg)} cn-figure">${r.chg}</span></div>`).join('');
+}
+
+/* ── 글로벌 커버리지 · 실적 레이더 (index gq* 로직 재사용) ── */
+let gQuotes=[
+  {ticker:'F',name:'Ford Motor Company',sector:'자동차 관련주',next_earnings_date:'2026-02-10',last_earnings_date:'2025-10-23',eps:0.45,eps_estimate:0.19,eps_surprise:25.41},
+  {ticker:'SPOT',name:'Spotify Technology S.A.',sector:'소셜미디어',next_earnings_date:'2026-02-10',last_earnings_date:'2025-11-04',eps:3.28,eps_estimate:2.77,eps_surprise:62.77},
+  {ticker:'COIN',name:'Coinbase Global, Inc.',sector:'코인',next_earnings_date:'2026-02-12',last_earnings_date:'2025-10-30',eps:1.5,eps_estimate:1.01,eps_surprise:32.96},
+  {ticker:'NVDA',name:'NVIDIA Corporation',sector:'빅테크 7',next_earnings_date:'2026-02-25',last_earnings_date:'2025-11-19',eps:1.2,eps_estimate:1.16,eps_surprise:3.46},
+  {ticker:'ANET',name:'Arista Networks, Inc.',sector:'AI 관련주',next_earnings_date:'2026-02-12',last_earnings_date:'2025-11-04',eps:0.75,eps_estimate:0.76,eps_surprise:4.98},
+];
+/* 컨콜 요약 (global_research kind='callsummary') — 종목별 매칭, 없으면 대표 요약 노출 */
+let CALLSUMMARIES=[{title:'넷마블 4Q 컨퍼런스콜',points:['신작 2종 글로벌 동시 출시로 매출 가이던스 상향','마케팅비 효율화로 영업이익률 개선 지속','자체 IP 비중 확대 → 수익성 레버리지 기대']}];
+
+let gqFilter='전체';
+function gqDday(s){ if(!s)return ''; const diff=Math.round((new Date(s+'T00:00:00')-new Date())/86400000); return diff>=0?`D-${diff}`:''; }
+function renderGqFilters(){
+  const cats=['전체',...[...new Set(gQuotes.map(q=>q.sector).filter(Boolean))]];
+  const el=$('#gqFilters'); if(!el)return;
+  el.innerHTML=cats.map(c=>`<button class="chip ${c===gqFilter?'is-active':''}" data-c="${c}">${c}</button>`).join('');
+  $$('#gqFilters .chip').forEach(b=>b.onclick=()=>{gqFilter=b.dataset.c;renderGqFilters();renderGlobalQuotes();});
+}
+function gqSorted(){
+  return gQuotes.filter(q=>gqFilter==='전체'||q.sector===gqFilter)
+    .slice().sort((a,b)=>String(a.next_earnings_date||'9999').localeCompare(String(b.next_earnings_date||'9999')));
+}
+function renderGlobalQuotes(){
+  const body=$('#gqBody'); if(!body)return;
+  const all=gqSorted(), list=all.slice(0,30);
+  body.innerHTML=list.map(q=>{
+    const sp=q.eps_surprise, spCls=sp==null?'':(sp>=0?'up':'down'), dd=gqDday(q.next_earnings_date);
+    return `<tr style="cursor:pointer" onclick="openGqDetail('${q.ticker}')">
+      <td><div class="co">${q.ticker}</div><div class="sub">${(q.name||'').slice(0,22)}</div></td>
+      <td><span class="badge badge--brand">${q.sector||'—'}</span></td>
+      <td class="num sub">${q.next_earnings_date||'—'}${dd?` <span class="badge badge--point">${dd}</span>`:''}</td>
+      <td class="num ${spCls} cn-figure" style="font-weight:700">${sp==null?'—':(sp>=0?'+':'')+sp+'%'}</td>
+      <td class="num sub cn-figure">${q.eps==null?'—':q.eps} / ${q.eps_estimate==null?'—':q.eps_estimate}</td>
+    </tr>`;
+  }).join('');
+  $('#gqCount').textContent=gQuotes.length;
+  $('#gqMore').textContent = all.length>30 ? `${gqFilter==='전체'?'전체':gqFilter} ${all.length}종목 중 발표 임박 30종목 표시` : '';
+}
+
+/* ── 종목 상세 모달: AI 실적 요약 + 컨콜 요약 + 목표가 + 최근 뉴스 ── */
+function aiEarnSummary(q){
+  const sp=q.eps_surprise;
+  if(sp==null) return `${q.ticker}의 다음 실적 발표가 예정되어 있습니다. 컨센서스 대비 방향성을 추적 중이며, 발표 직후 AI 요약이 업데이트됩니다.`;
+  const dir = sp>=0 ? `컨센서스를 ${sp}% 상회` : `컨센서스를 ${Math.abs(sp)}% 하회`;
+  const tone = sp>=0 ? '실적 모멘텀이 유효한 구간입니다.' : '눈높이 하향 여부와 가이던스를 함께 점검할 필요가 있습니다.';
+  return `직전 분기 EPS는 ${q.eps==null?'—':q.eps}(컨센서스 ${q.eps_estimate==null?'—':q.eps_estimate})로 ${dir}했습니다. ${tone}`;
+}
+function callSummaryFor(q){
+  const hit=CALLSUMMARIES.find(c=>c.ticker===q.ticker) || CALLSUMMARIES.find(c=>(c.title||'').includes(q.ticker));
+  return hit || CALLSUMMARIES[0] || null;
+}
+function openGqDetail(tk){
+  const q=gQuotes.find(x=>x.ticker===tk); if(!q)return;
+  const sp=q.eps_surprise, spCls=sp==null?'':(sp>=0?'up':'down'), dd=gqDday(q.next_earnings_date);
+  const row=(l,v,cls)=>`<tr><td class="sub">${l}</td><td class="num co cn-figure ${cls||''}">${v}</td></tr>`;
+  const call=callSummaryFor(q);
+  // TODO: 목표가·뉴스 실데이터 연결 (예: global_targets / global_news 테이블). 현재는 안내 목업.
+  const tpMock = sp!=null && sp>=0 ? '컨센서스 목표가 상향 추세' : '컨센서스 목표가 점검 필요';
+  $('#gqDetail').innerHTML=`
+    <div class="auth-modal__head">
+      <div><div style="font-weight:800;font-size:21px;color:var(--blue-navy)">${q.ticker}</div>
+      <div style="font-size:var(--text-micro);color:var(--color-muted)">${q.name||''}</div></div>
+      <button class="auth-x" onclick="closeGq()" aria-label="닫기">×</button>
+    </div>
+    <div class="rep__top" style="margin-bottom:6px">
+      <span class="badge badge--brand">${q.sector||''}</span>
+      ${sp!=null?`<span class="badge ${sp>=0?'badge--up':'badge--down'}">직전 ${sp>=0?'컨센서스 상회':'컨센서스 하회'}</span>`:''}
+      ${dd?`<span class="badge badge--point">${dd}</span>`:''}
+    </div>
+
+    <div class="gq-sec">
+      <h4><span class="dot"></span>AI 실적 요약</h4>
+      <p style="font-size:var(--text-body);color:var(--color-body);line-height:1.65;margin:0">${aiEarnSummary(q)}</p>
+    </div>
+
+    <table class="tbl" style="margin-top:14px"><tbody>
+      ${row('다음 실적 발표',(q.next_earnings_date||'—')+(dd?` <span class="badge badge--point">${dd}</span>`:''))}
+      ${row('직전 실적 발표',q.last_earnings_date||'—')}
+      ${row('EPS (실제)',q.eps==null?'—':q.eps)}
+      ${row('EPS (컨센서스)',q.eps_estimate==null?'—':q.eps_estimate)}
+      ${row('EPS 서프라이즈',sp==null?'—':(sp>=0?'+':'')+sp+'%',spCls)}
+    </tbody></table>
+
+    ${call?`<div class="gq-sec">
+      <h4><span class="dot"></span>컨퍼런스콜 요약 <span class="badge badge--point" style="margin-left:4px">AI</span></h4>
+      <ul class="gq-points">${call.points.map(p=>`<li>${p}</li>`).join('')}</ul>
+    </div>`:''}
+
+    <div class="gq-sec">
+      <h4><span class="dot"></span>목표가</h4>
+      <p style="font-size:var(--text-body);color:var(--color-muted);line-height:1.6;margin:0">${tpMock} <span class="badge badge--muted">준비 중</span></p>
+    </div>
+
+    <div class="gq-sec">
+      <h4><span class="dot"></span>최근 뉴스</h4>
+      <div class="gq-news">
+        <a href="javascript:void(0)" onclick="soon('종목 뉴스')"><span>${q.sector} 관련 밤사이 시장 반응 요약</span><time>준비 중</time></a>
+        <a href="javascript:void(0)" onclick="soon('종목 뉴스')"><span>${q.ticker} 실적·가이던스 관련 코멘트</span><time>준비 중</time></a>
+      </div>
+    </div>
+
+    <p class="auth-foot">정보 제공 목적이며 투자 권유가 아닙니다. AI 요약은 참고용입니다.</p>`;
+  $('#gqOverlay').classList.add('show');
+  document.body.style.overflow='hidden';
+}
+function closeGq(){ $('#gqOverlay').classList.remove('show'); document.body.style.overflow=''; }
+document.addEventListener('keydown',e=>{ if(e.key==='Escape' && $('#gqOverlay').classList.contains('show')) closeGq(); });
+
+/* ── 실적 캘린더 (next_earnings_date 오름차순, 날짜별 그룹) ── */
+function renderCal(){
+  const host=$('#cal'); if(!host)return;
+  const fut=gQuotes.filter(q=>q.next_earnings_date)
+    .slice().sort((a,b)=>String(a.next_earnings_date).localeCompare(String(b.next_earnings_date)));
+  const byDate={};
+  fut.forEach(q=>{ (byDate[q.next_earnings_date]||(byDate[q.next_earnings_date]=[])).push(q); });
+  const dates=Object.keys(byDate).sort().slice(0,8);
+  if(!dates.length){ host.innerHTML='<div class="sub" style="color:var(--color-muted);padding:12px">예정된 실적 일정이 없습니다.</div>'; return; }
+  const wd=['일','월','화','수','목','금','토'];
+  host.innerHTML=dates.map(dt=>{
+    const d=new Date(dt+'T00:00:00'), dd=gqDday(dt);
+    const label=`${dt.slice(5).replace('-','.')} (${wd[d.getDay()]})`;
+    const pills=byDate[dt].slice(0,12).map(q=>{
+      const sp=q.eps_surprise, spCls=sp==null?'':(sp>=0?'up':'down');
+      return `<button class="cal__pill" onclick="openGqDetail('${q.ticker}')">
+        <span class="tk">${q.ticker}</span>
+        <span class="sp ${spCls} cn-figure">${sp==null?'':(sp>=0?'+':'')+sp+'%'}</span></button>`;
+    }).join('');
+    return `<div class="cal__day">
+      <div class="cal__date"><span class="d">${label}</span>${dd?`<span class="badge badge--point" style="align-self:flex-start">${dd}</span>`:''}</div>
+      <div class="cal__list">${pills}</div>
+    </div>`;
+  }).join('');
+}
+
+/* ── 초기 렌더 (폴백) ── */
+renderIxStrip(); renderBrief(); renderGqFilters(); renderGlobalQuotes(); renderCal();
+
+/* ── CTA 로그인 게이트 ── */
+function syncCta(user){
+  const box=$('#ctaBox');
+  if(user){
+    $('#ctaTitle').textContent='관심 종목 브리핑이 준비되었어요';
+    $('#ctaDesc').textContent=`${user.email} · 관심 종목을 담아 두면 매일 아침 실적·컨콜 요약을 받아볼 수 있어요.`;
+    box.innerHTML=`<button class="btn btn--primary btn--lg btn--block" onclick="soon('관심 종목 브리핑 구독')">관심 종목 담기 →</button>`;
+  }else{
+    $('#ctaTitle').textContent='관심 종목만 골라 아침 브리핑 받기';
+    $('#ctaDesc').textContent='로그인하면 관심 종목의 실적·컨콜·서프라이즈를 매일 아침 이메일로 정리해 드려요.';
+    box.innerHTML=`<input id="joinEmail" type="email" placeholder="you@example.com" />
+      <button class="btn btn--primary btn--lg" onclick="openAuth('signup', document.getElementById('joinEmail').value.trim())">무료로 시작하기</button>`;
+  }
+}
+if(window.onAuth) onAuth(syncCta);
+
+/* ── Supabase 로드 (있으면 덮어씀) ── */
+(async function loadContent(){
+  if(!window.sb) return;
+  try{
+    const [gi,gr,gq]=await Promise.all([
+      sb.from('global_indices').select('*'),
+      sb.from('global_research').select('*').order('id'),
+      sb.from('global_quotes').select('*'),
+    ]);
+    if(gi.data&&gi.data.length){
+      gi.data.forEach(r=>{ IX_DATA[r.symbol]={
+        v:Number(r.price).toLocaleString('ko-KR'),
+        c:(Number(r.change_pct)>=0?'+':'')+Number(r.change_pct).toFixed(2)+'%'
+      };});
+      renderIxStrip();
+    }
+    if(gr.data&&gr.data.length){
+      const ov=gr.data.find(r=>r.kind==='overnight');
+      if(ov){ const b=ov.body||{}; BRIEF={title:ov.title||BRIEF.title,note:b.note||BRIEF.note,rows:b.rows||BRIEF.rows}; renderBrief(); }
+      const cs=gr.data.filter(r=>r.kind==='callsummary').map(r=>({ticker:r.ticker||null,title:r.title,points:(r.body&&r.body.points)||[]}));
+      if(cs.length) CALLSUMMARIES=cs;
+    }
+    if(gq.data&&gq.data.length){ gQuotes=gq.data; renderGqFilters(); renderGlobalQuotes(); renderCal(); }
+    console.log('global content loaded from Supabase');
+  }catch(e){ console.warn('global load failed (keeping defaults)', e); }
+})();
+</script>
+</body>
+</html>

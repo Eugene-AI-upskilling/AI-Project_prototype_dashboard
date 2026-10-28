@@ -1,0 +1,278 @@
+[
+  {
+    "path": "assets/anchor-briefing.mp4",
+    "size": 11612262
+  },
+  {
+    "path": "assets/anchor.js",
+    "size": 5923
+  },
+  {
+    "path": "assets/app.css",
+    "size": 54447
+  },
+  {
+    "path": "assets/briefing.mp3",
+    "size": 313076
+  },
+  {
+    "path": "assets/eugene-logo.png",
+    "size": 582301
+  },
+  {
+    "path": "assets/fonts/PretendardVariable.woff2",
+    "size": 2057688
+  },
+  {
+    "path": "assets/hero-claude-effects.css",
+    "size": 3958
+  },
+  {
+    "path": "assets/hero-claude-effects.js",
+    "size": 6124
+  },
+  {
+    "path": "assets/hero-immersive.css",
+    "size": 6698
+  },
+  {
+    "path": "assets/hero-immersive.js",
+    "size": 5052
+  },
+  {
+    "path": "assets/hero-showreel.css",
+    "size": 10004
+  },
+  {
+    "path": "assets/hero-showreel.js",
+    "size": 3996
+  },
+  {
+    "path": "assets/hero-skyline.jpg",
+    "size": 264669
+  },
+  {
+    "path": "assets/partials.js",
+    "size": 18115
+  },
+  {
+    "path": "assets/reports/ai.jpg",
+    "size": 39711
+  },
+  {
+    "path": "assets/reports/auto.jpg",
+    "size": 54786
+  },
+  {
+    "path": "assets/reports/battery.jpg",
+    "size": 31474
+  },
+  {
+    "path": "assets/reports/bio.jpg",
+    "size": 45855
+  },
+  {
+    "path": "assets/reports/building.jpg",
+    "size": 66926
+  },
+  {
+    "path": "assets/reports/consumer.jpg",
+    "size": 67761
+  },
+  {
+    "path": "assets/reports/crypto.jpg",
+    "size": 23430
+  },
+  {
+    "path": "assets/reports/energy.jpg",
+    "size": 111926
+  },
+  {
+    "path": "assets/reports/finance.jpg",
+    "size": 33825
+  },
+  {
+    "path": "assets/reports/robot.jpg",
+    "size": 32914
+  },
+  {
+    "path": "assets/reports/semiconductor.jpg",
+    "size": 58058
+  },
+  {
+    "path": "assets/showreel/insightlab-hero-loop.mp4",
+    "size": 1990400
+  },
+  {
+    "path": "assets/showreel/insightlab-poster.jpg",
+    "size": 141428
+  },
+  {
+    "path": "assets/showreel/insightlab-showreel-15s.mp4",
+    "size": 8610367
+  },
+  {
+    "path": "assets/showreel-claude/EugeneInsightLab_Hero_Upgraded.mp4",
+    "size": 1977863
+  },
+  {
+    "path": "assets/showreel-claude/EugeneInsightLab_Showreel_15s_Upgraded.mp4",
+    "size": 9031006
+  },
+  {
+    "path": "assets/showreel-claude/poster-upgraded.jpg",
+    "size": 83190
+  },
+  {
+    "path": "assets/trading.css",
+    "size": 40365
+  },
+  {
+    "path": "assets/trading.js",
+    "size": 18178
+  },
+  {
+    "path": "claude-showreel/EugeneInsightLab_Hero_Upgraded.mp4",
+    "size": 1977863
+  },
+  {
+    "path": "claude-showreel/EugeneInsightLab_Showreel_15s.mp4",
+    "size": 12920146
+  },
+  {
+    "path": "claude-showreel/EugeneInsightLab_Showreel_15s_Upgraded.mp4",
+    "size": 9031006
+  },
+  {
+    "path": "claude-showreel/hero-upgraded-review.jpg",
+    "size": 123991
+  },
+  {
+    "path": "claude-showreel/index.html",
+    "size": 14836
+  },
+  {
+    "path": "claude-showreel/poster-upgraded.jpg",
+    "size": 83190
+  },
+  {
+    "path": "claude-showreel/PretendardVariable.woff2",
+    "size": 2057688
+  },
+  {
+    "path": "claude-showreel/qa/gallery-desktop-upgraded.png",
+    "size": 506670
+  },
+  {
+    "path": "claude-showreel/qa/gallery-mobile-upgraded.png",
+    "size": 140290
+  },
+  {
+    "path": "claude-showreel/qa/gallery-upgraded-check.json",
+    "size": 999
+  },
+  {
+    "path": "claude-showreel/qa/hero-upgraded-qa.json",
+    "size": 2084
+  },
+  {
+    "path": "claude-showreel/README.md",
+    "size": 4601
+  },
+  {
+    "path": "claude-showreel/reel-upgraded.html",
+    "size": 38070
+  },
+  {
+    "path": "events.html",
+    "size": 25064
+  },
+  {
+    "path": "global.html",
+    "size": 24731
+  },
+  {
+    "path": "hero-options/showreel-claude-upgraded.html",
+    "size": 98166
+  },
+  {
+    "path": "hero-options/showreel-immersive.html",
+    "size": 101065
+  },
+  {
+    "path": "index.html",
+    "size": 98891
+  },
+  {
+    "path": "league.html",
+    "size": 29142
+  },
+  {
+    "path": "market.html",
+    "size": 26200
+  },
+  {
+    "path": "quant.html",
+    "size": 54630
+  },
+  {
+    "path": "reports.html",
+    "size": 30775
+  },
+  {
+    "path": "showreel/index.html",
+    "size": 5775
+  },
+  {
+    "path": "showreel/insightlab-hero-loop.mp4",
+    "size": 1990400
+  },
+  {
+    "path": "showreel/insightlab-poster.jpg",
+    "size": 141428
+  },
+  {
+    "path": "showreel/insightlab-showreel-15s.mp4",
+    "size": 8610367
+  },
+  {
+    "path": "showreel/PretendardVariable.woff2",
+    "size": 2057688
+  },
+  {
+    "path": "showreel/stills/t0.85.png",
+    "size": 1287528
+  },
+  {
+    "path": "showreel/stills/t10.30.png",
+    "size": 864454
+  },
+  {
+    "path": "showreel/stills/t12.15.png",
+    "size": 232794
+  },
+  {
+    "path": "showreel/stills/t14.20.png",
+    "size": 1227700
+  },
+  {
+    "path": "showreel/stills/t2.80.png",
+    "size": 263491
+  },
+  {
+    "path": "showreel/stills/t4.70.png",
+    "size": 1492889
+  },
+  {
+    "path": "showreel/stills/t6.65.png",
+    "size": 1351536
+  },
+  {
+    "path": "showreel/stills/t8.45.png",
+    "size": 337648
+  },
+  {
+    "path": "trading/index.html",
+    "size": 37509
+  }
+]

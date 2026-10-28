@@ -1,0 +1,57 @@
+[
+  {
+    "name": "desktop",
+    "effectReady": "true",
+    "effectSource": "Originkit Vector Wordmark",
+    "renderer": "webgl",
+    "effectStatus": "running",
+    "overflow": false,
+    "canvasWidth": 1313,
+    "pointerUpdates": true,
+    "researchReached": true,
+    "api": {
+      "paused": "paused",
+      "resumed": "running",
+      "destroyed": "destroyed",
+      "canvases": 0
+    },
+    "errors": []
+  },
+  {
+    "name": "mobile",
+    "effectReady": "true",
+    "effectSource": "Originkit Vector Wordmark",
+    "renderer": "webgl",
+    "effectStatus": "running",
+    "overflow": false,
+    "canvasWidth": 350,
+    "errors": []
+  },
+  {
+    "name": "small-mobile",
+    "effectReady": "true",
+    "effectSource": "Originkit Vector Wordmark",
+    "renderer": "webgl",
+    "effectStatus": "running",
+    "overflow": false,
+    "canvasWidth": 335,
+    "errors": []
+  },
+  {
+    "name": "reduced",
+    "effectReady": "true",
+    "effectSource": "Originkit Vector Wordmark",
+    "renderer": "static",
+    "effectStatus": "reduced-motion",
+    "overflow": false,
+    "canvasWidth": 300,
+    "errors": []
+  },
+  {
+    "name": "webgl-unavailable",
+    "effectReady": "true",
+    "effectSource": "Originkit Vector Wordmark",
+    "renderer": "fallback",
+    "effectStatus": "webgl-unavailable"
+  }
+]

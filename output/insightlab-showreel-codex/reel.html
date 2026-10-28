@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Insight in Motion · Eugene Insight Lab</title>
+<style>
+@font-face{font-family:Reel;src:url(PretendardVariable.woff2) format('woff2');font-weight:45 920;font-display:block}
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;background:#130c0e;overflow:hidden;font-family:Reel,sans-serif}
+body{display:grid;place-items:center}canvas{display:block;width:min(100vw,177.7778vh);height:auto;aspect-ratio:16/9}
+.tools{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);display:flex;gap:8px;opacity:0;transition:opacity .2s}body:hover .tools,.tools:focus-within{opacity:1}
+.tools button,.tools a{font:600 12px Reel,sans-serif;padding:10px 16px;border:1px solid #ffffff40;background:#130c0ec9;color:#fff;border-radius:50px;cursor:pointer;text-decoration:none;backdrop-filter:blur(12px)}
+body.render .tools{display:none}
+</style>
+</head>
+<body>
+<canvas id="reel" width="1920" height="1080" role="img" aria-label="유진 Insight Lab — 데이터에서 인사이트까지, 15초 모션그래픽"></canvas>
+<div class="tools"><button id="toggle">일시정지</button><button id="sound">사운드 켜기</button><a href="index.html">쇼릴 보기 ↗</a></div>
+<audio id="music" src="showreel.wav" loop preload="none"></audio>
+<script src="motion.js"></script>
+</body>
+</html>

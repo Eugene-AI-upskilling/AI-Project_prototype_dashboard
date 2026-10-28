@@ -1,0 +1,2177 @@
+[
+ {
+  "text": "반도체주가 최근 급락했는데 AI 수요 둔화 때문인가요?",
+  "persona": "am",
+  "topic": "반도체",
+  "status": "pending",
+  "draft": {
+   "route": "answer",
+   "route_reason": "반도체주 급락 원인을 묻는 시장 질문으로, 당사 전략·시황·매크로 리포트에 근거가 있다.",
+   "topic": "반도체",
+   "verdict": "당사 리포트는 이번 급락을 AI 수요 자체의 둔화보다 AI 기업 신용위험과 설비투자 지속성 우려로 설명하며, 국내에서 낙폭이 유독 큰 것은 지수의 반도체 편중 때문으로 추정합니다. 외국인 매도와 자사주 매입 종료에 따른 수급 공백은 단기 요인으로 보이고, AI 투자 지속 여부는 빅테크 실적과 신용지표로 확인할 필요가 있습니다.",
+   "hypotheses": [
+    {
+     "title": "AI 기업 신용위험·설비투자 지속성 우려 (수요 둔화 '우려'이지 확인된 둔화는 아님)",
+     "strength": "부분 유효",
+     "facts": [
+      {
+       "text": "10월 급락의 계기로 코어위브 회사채 금리 급등과 앤트로픽 3분기 연환산 매출 증가율 둔화가 꼽힌다.",
+       "cite": {
+        "source_id": "R229-p1",
+        "quote": "회사채 금리 급등과 앤트로픽 3Q 연환산 매출 증가율 둔화"
+       },
+       "verify": {
+        "status": "ok",
+        "report_id": 229,
+        "page": 1,
+        "title": "Equity Strategy: 신용 균열과 진퇴양난",
+        "date": "2026-10-19",
+        "url": "https://www.eugenefn.com/common/files/amail/20261019_B_jaehwan.huh_1306.pdf#page=1"
+       }
+      },
+      {
+       "text": "앤트로픽의 3분기 연환산 매출은 전분기 대비 +45% 늘었으나, 2분기 147% 증가율보다 둔화됐다.",
+       "cite": {
+        "source_id": "R228-p1",
+        "quote": "한편 앤트로픽 3Q연환산 매출이 전분기 +45%"
+       },
+       "verify": {
+        "status": "ok",
+        "report_id": 228,
+        "page": 1,
+        "title": "주간 증시 브리핑",
+        "date": "2026-10-19",
+        "url": "https://www.eugenefn.com/common/files/amail/20261019_B_jaehwan.huh_1305.pdf#page=1"
+       }
+      },
+      {
+       "text": "중국 CXMT의 차세대 서버용 DRAM 개발 계획도 같은 주의 악재로 함께 언급됐다.",
+       "cite": {
+        "source_id": "R228-p1",
+        "quote": "CXMT의 차세대 서버용 DRAM 개발 계획,"
+       },
+       "verify": {
+        "status": "ok",
+        "report_id": 228,
+        "page": 1,
+        "title": "주간 증시 브리핑",
+        "date": "2026-10-19",
+        "url": "https://www.eugenefn.com/common/files/amail/20261019_B_jaehwan.huh_1305.pdf#page=1"
+       }
+      }
+     ],
+     "view": {
+      "text": "당사는 AI의 병목이 자본 조달로 번지면서, 설비투자가 갑자기 멈출 수 있는 위험이 커졌다고 본다.",
+      "cite": {
+       "source_id": "R229-p1",
+       "quote": "병목이 자본으로 확대됨. 설비투자가 갑자기 멈출 수 있는 위험이 커"
+      },
+      "verify": {
+       "status": "ok",
+       "report_id": 229,
+       "page": 1,
+       "title": "Equity Strategy: 신용 균열과 진퇴양난",
+       "date": "2026-10-19",
+       "url": "https://www.eugenefn.com/common/files/amail/20261019_B_jaehwan.huh_1306.pdf#page=1"
+      }
+     },
+     "counter": {
+      "text": "ISM 신규주문-재고 스프레드는 9월 10년 평균을 웃돌았다. 당사는 업황이 정점은 지났으나 모멘텀 하강으로 보기는 이르다고 판단한다.",
+      "cite": {
+       "source_id": "R214-p2",
+       "quote": "제조업 경기 확장이 이어지는 한 스프레드 하방은 제한적임."
+      },
+      "verify": {
+       "status": "ok",
+       "report_id": 214,
+       "page": 2,
+       "title": "2개월 만에 발동한 매도 사이드카, 이제는 6천 사수전",
+       "date": "2026-10-14",
+       "url": "https://www.eugenefn.com/common/files/amail/20261014_B_lee.jy_51.pdf#page=2"
+      }
+     },
+     "checks": [
+      "월말 빅테크·반도체 실적에서 AI 투자 지속 여부",
+      "코어위브·오라클 등 AI 관련 기업 CDS 프리미엄 추이",
+      "미국 BAA 회사채 신용 스프레드 확대 여부",
+      "ISM 신규주문-재고 스프레드 방향"
+     ]
+    },
+    {
+     "title": "코스피의 반도체 편중에 따른 높은 AI 베타 (국내 낙폭 확대 요인)",
+     "strength": "유효",
+     "facts": [
+      {
+       "text": "코스피 내 반도체 시가총액 비중은 25년 2분기 25%에서 지난 6월 60%대로 높아졌다.",
+       "cite": {
+        "source_id": "R229-p1",
+        "quote": "코스피에서 반도체 시가총액 비중은 25년 2Q 25%에서 지난 6월"
+       },
+       "verify": {
+        "status": "ok",
+        "report_id": 229,
+        "page": 1,
+        "title": "Equity Strategy: 신용 균열과 진퇴양난",
+        "date": "2026-10-19",
+        "url": "https://www.eugenefn.com/common/files/amail/20261019_B_jaehwan.huh_1306.pdf#page=1"
+       }
+      },
+      {
+       "text": "고점 대비 낙폭은 필라델피아 반도체지수보다 코스피가 더 크다.",
+       "cite": {
+        "source_id": "R254-p2",
+        "quote": "고점 대비 낙폭은 필라델피아 반도체지수 -22.9%, KOSPI -39.1%"
+       },
+       "verify": {
+        "status": "ok",
+        "report_id": 254,
+        "page": 2,
+        "title": "2거래일 반등이 무색한 -3% 급락",
+        "date": "2026-10-21",
+        "url": "https://www.eugenefn.com/common/files/amail/20261021_B_lee.jy_55.pdf#page=2"
+       }
+      },
+      {
+       "text": "10/1~16일 코스피 하락률은 일본·대만 등 주요국 가운데 가장 컸다.",
+       "cite": {
+        "source_id": "R254-p2",
+        "quote": "KOSPI는 -17.1%로 주요국 가운데 가장 크게 하락했으나"
+       },
+       "verify": {
+        "status": "ok",
+        "report_id": 254,
+        "page": 2,
+        "title": "2거래일 반등이 무색한 -3% 급락",
+        "date": "2026-10-21",
+        "url": "https://www.eugenefn.com/common/files/amail/20261021_B_lee.jy_55.pdf#page=2"
+       }
+      }
+     ],
+     "view": {
+      "text": "당사는 AI 민감도가 가장 높은 시장이라는 점이 이제는 한국 증시의 약점이 됐다고 본다.",
+      "cite": {
+       "source_id": "R254-p2",
+       "quote": "AI 민감도가 가장 높은 시장이라는 점이 이제는 약점이 됨."
+      },
+      "verify": {
+       "status": "ok",
+       "report_id": 254,
+       "page": 2,
+       "title": "2거래일 반등이 무색한 -3% 급락",
+       "date": "2026-10-21",
+       "url": "https://www.eugenefn.com/common/files/amail/20261021_B_lee.jy_55.pdf#page=2"
+      }
+     },
+     "counter": {
+      "text": "",
+      "cite": {
+       "source_id": "",
+       "quote": ""
+      }
+     },
+     "checks": [
+      "삼성전자·SK하이닉스의 지수 내 시가총액 비중 변화",
+      "해외 반도체지수 대비 코스피의 상대 낙폭"
+     ]
+    },
+    {
+     "title": "외국인 매도와 자사주 매입 종료에 따른 수급 공백",
+     "strength": "단기 요인",
+     "facts": [
+      {
+       "text": "국내 대형 반도체는 외국인 매도와 자사주 매입 종료로 수급이 비어 있다고 진단됐다.",
+       "cite": {
+        "source_id": "R214-p2",
+        "quote": "국내 대형 반도체는 외국인 매도와 자사주 매입 종료로 수급이 비어 있고"
+       },
+       "verify": {
+        "status": "ok",
+        "report_id": 214,
+        "page": 2,
+        "title": "2개월 만에 발동한 매도 사이드카, 이제는 6천 사수전",
+        "date": "2026-10-14",
+        "url": "https://www.eugenefn.com/common/files/amail/20261014_B_lee.jy_51.pdf#page=2"
+       }
+      },
+      {
+       "text": "9월 이후 외국인 매도 압력이 다시 강해졌으며, 그 배경으로 금리 상승 속도 부담이 꼽혔다.",
+       "cite": {
+        "source_id": "R193-p1",
+        "quote": "문제는 외국인 투자가들임. 9월 이후 외국인 투자가들의 매도 압력"
+       },
+       "verify": {
+        "status": "ok",
+        "report_id": 193,
+        "page": 1,
+        "title": "Equity Strategy: 수급 공백 우려는 기우인가, 현실인가",
+        "date": "2026-10-06",
+        "url": "https://www.eugenefn.com/common/files/amail/20261006_B_jaehwan.huh_1302.pdf#page=1"
+       }
+      },
+      {
+       "text": "반도체 안에서도 외국인 수급이 엇갈리고 있다.",
+       "cite": {
+        "source_id": "R254-p2",
+        "quote": "삼성전자는 외국인 순매수가 3거래일 연속 유입된 반면, SK하이닉스는 10/20"
+       },
+       "verify": {
+        "status": "ok",
+        "report_id": 254,
+        "page": 2,
+        "title": "2거래일 반등이 무색한 -3% 급락",
+        "date": "2026-10-21",
+        "url": "https://www.eugenefn.com/common/files/amail/20261021_B_lee.jy_55.pdf#page=2"
+       }
+      }
+     ],
+     "view": {
+      "text": "당사는 비정상적인 주가 급락으로 수급과 심리 공백의 여파가 좀 더 이어질 수 있다고 본다.",
+      "cite": {
+       "source_id": "R228-p1",
+       "quote": "주가 급락으로 수급과 심리 공백 여파는"
+      },
+      "verify": {
+       "status": "ok",
+       "report_id": 228,
+       "page": 1,
+       "title": "주간 증시 브리핑",
+       "date": "2026-10-19",
+       "url": "https://www.eugenefn.com/common/files/amail/20261019_B_jaehwan.huh_1305.pdf#page=1"
+      }
+     },
+     "counter": {
+      "text": "자사주 매입이 종료되더라도 3분기 실적 시즌을 계기로 주주환원이 재개될 수 있다. 당사는 수급 공백 우려가 크지 않다고 봤다.",
+      "cite": {
+       "source_id": "R193-p1",
+       "quote": "시즌을 계기로 주주환원 정책은 또 재개될 수 있음."
+      },
+      "verify": {
+       "status": "ok",
+       "report_id": 193,
+       "page": 1,
+       "title": "Equity Strategy: 수급 공백 우려는 기우인가, 현실인가",
+       "date": "2026-10-06",
+       "url": "https://www.eugenefn.com/common/files/amail/20261006_B_jaehwan.huh_1302.pdf#page=1"
+      }
+     },
+     "checks": [
+      "삼성전자·SK하이닉스의 추가 주주환원책 발표 여부",
+      "반도체 대형주에 대한 외국인 순매수 방향",
+      "국내외 장기금리 안정 여부"
+     ]
+    }
+   ],
+   "meta": {
+    "model": "claude-opus-5-5",
+    "secs": 45.2,
+    "cite_ok": 14,
+    "cite_total": 14,
+    "sources": [
+     {
+      "id": "R193-p1",
+      "report_id": 193,
+      "page": 1,
+      "title": "Equity Strategy: 수급 공백 우려는 기우인가, 현실인가",
+      "date": "2026-10-06",
+      "url": "https://www.eugenefn.com/common/files/amail/20261006_B_jaehwan.huh_1302.pdf"
+     },
+     {
+      "id": "R214-p2",
+      "report_id": 214,
+      "page": 2,
+      "title": "2개월 만에 발동한 매도 사이드카, 이제는 6천 사수전",
+      "date": "2026-10-14",
+      "url": "https://www.eugenefn.com/common/files/amail/20261014_B_lee.jy_51.pdf"
+     },
+     {
+      "id": "R229-p1",
+      "report_id": 229,
+      "page": 1,
+      "title": "Equity Strategy: 신용 균열과 진퇴양난",
+      "date": "2026-10-19",
+      "url": "https://www.eugenefn.com/common/files/amail/20261019_B_jaehwan.huh_1306.pdf"
+     },
+     {
+      "id": "R213-p15",
+      "report_id": 213,
+      "page": 15,
+      "title": "이에스티: 디스플레이 및 반도체 공정용 정전척 전문 기업",
+      "date": "2026-10-14",
+      "url": "https://www.eugenefn.com/common/files/amail/20261014_B_jongsun.park_2700.pdf"
+     },
+     {
+      "id": "R231-p1",
+      "report_id": 231,
+      "page": 1,
+      "title": "FI Weekly: 10월 금통위 Preview: 쉼표",
+      "date": "2026-10-19",
+      "url": "https://www.eugenefn.com/common/files/amail/20261019_B_jnkim0526_1317.pdf"
+     },
+     {
+      "id": "R240-p1",
+      "report_id": 240,
+      "page": 1,
+      "title": "유통 산업: 3Q26 Preview: 낮아진 눈높이와 주가",
+      "date": "2026-10-20",
+      "url": "https://www.eugenefn.com/common/files/amail/20261020_B2530_hnlee_295.pdf"
+     },
+     {
+      "id": "R228-p1",
+      "report_id": 228,
+      "page": 1,
+      "title": "주간 증시 브리핑",
+      "date": "2026-10-19",
+      "url": "https://www.eugenefn.com/common/files/amail/20261019_B_jaehwan.huh_1305.pdf"
+     },
+     {
+      "id": "R254-p2",
+      "report_id": 254,
+      "page": 2,
+      "title": "2거래일 반등이 무색한 -3% 급락",
+      "date": "2026-10-21",
+      "url": "https://www.eugenefn.com/common/files/amail/20261021_B_lee.jy_55.pdf"
+     },
+     {
+      "id": "R92-p5",
+      "report_id": 92,
+      "page": 5,
+      "title": "China Focus: 중국 반도체 재평가 기대",
+      "date": "2026-07-10",
+      "url": "https://www.eugenefn.com/common/files/amail/20260710_B_ebbaek_231.pdf"
+     },
+     {
+      "id": "R92-p1",
+      "report_id": 92,
+      "page": 1,
+      "title": "China Focus: 중국 반도체 재평가 기대",
+      "date": "2026-07-10",
+      "url": "https://www.eugenefn.com/common/files/amail/20260710_B_ebbaek_231.pdf"
+     },
+     {
+      "id": "R254-p1",
+      "report_id": 254,
+      "page": 1,
+      "title": "2거래일 반등이 무색한 -3% 급락",
+      "date": "2026-10-21",
+      "url": "https://www.eugenefn.com/common/files/amail/20261021_B_lee.jy_55.pdf"
+     },
+     {
+      "id": "R13-p2",
+      "report_id": 13,
+      "page": 2,
+      "title": "ETF Strategy: 반도체 소부장 ETF, 월배당(커버드콜) ETF 투자",
+      "date": "2026-06-23",
+      "url": "https://www.eugenefn.com/common/files/amail/20260623_B_buykkang_228.pdf"
+     },
+     {
+      "id": "R97-p1",
+      "report_id": 97,
+      "page": 1,
+      "title": "Korea Economy: 8월 수출: 고공행진, 9월 증가율 둔화 예상",
+      "date": "2026-09-01",
+      "url": "https://www.eugenefn.com/common/files/amail/20260901_B_isbang_250.pdf"
+     },
+     {
+      "id": "R13-p11",
+      "report_id": 13,
+      "page": 11,
+      "title": "ETF Strategy: 반도체 소부장 ETF, 월배당(커버드콜) ETF 투자",
+      "date": "2026-06-23",
+      "url": "https://www.eugenefn.com/common/files/amail/20260623_B_buykkang_228.pdf"
+     }
+    ],
+    "usage": {
+     "in": 25035,
+     "out": 5243
+    }
+   }
+  },
+  "answer": null,
+  "route": "answer",
+  "reviewer": null,
+  "draft_secs": 45.2
+ },
+ {
+  "text": "금리가 오르면 은행·보험주에는 어떤 영향이 있나요?",
+  "persona": "ia",
+  "topic": "은행",
+  "status": "pending",
+  "draft": {
+   "route": "answer",
+   "route_reason": "금리와 은행·보험주의 관계를 묻는 산업 질문입니다. 당사 ETF 전략, 채권, 주식전략 리포트에 직접 근거가 있습니다.",
+   "topic": "은행",
+   "verdict": "당사 리서치는 '금리 상승이 은행 이자마진 개선을 거쳐 은행·보험주 강세로 이어진다'는 관점을 가장 강한 근거로 봅니다. 다음은 '양호한 경기를 반영한 조합이라 부담이 덜하다'는 관점입니다. 다만 10월 들어 금리 하락과 순환매로 금융주가 약세를 보였고, 금리 상승 중 금융주가 약세로 돌아서면 경계 신호라는 단서도 함께 봐야 합니다.",
+   "hypotheses": [
+    {
+     "title": "금리 상승이 은행 이자마진 개선을 거쳐 은행·보험주 강세로 이어진다",
+     "strength": "유효",
+     "facts": [
+      {
+       "text": "KODEX 은행·KODEX 보험은 최근 3개월 KOSPI가 하락하는 동안 나란히 +15% 상승했습니다(9월 초 기준).",
+       "cite": {
+        "source_id": "R103-p2",
+        "quote": "은행(KODEX 은행), 보험주(KODEX 보험)는 최근 3개월 시장(KOSPI)이"
+       },
+       "verify": {
+        "status": "ok",
+        "report_id": 103,
+        "page": 2,
+        "title": "ETF Strategy: 금리 상승기의 배당주, 퀄리티 주식",
+        "date": "2026-09-02",
+        "url": "https://www.eugenefn.com/common/files/amail/20260902_B_buykkang_245.pdf#page=2"
+       }
+      },
+      {
+       "text": "과거 금리 상승 국면에서 국내 은행 주가는 상승했습니다. 금리 상승은 통상 은행 이자마진 개선에 우호적입니다.",
+       "cite": {
+        "source_id": "R103-p8",
+        "quote": "금리 상승은 통상 은행 이자 마진 개선에 우호적"
+       },
+       "verify": {
+        "status": "ok",
+        "report_id": 103,
+        "page": 8,
+        "title": "ETF Strategy: 금리 상승기의 배당주, 퀄리티 주식",
+        "date": "2026-09-02",
+        "url": "https://www.eugenefn.com/common/files/amail/20260902_B_buykkang_245.pdf#page=8"
+       }
+      },
+      {
+       "text": "일본은 10년 국채금리가 1996년 이후 처음 3%를 넘었고, 이와 함께 일본 은행주가 강세를 보였습니다.",
+       "cite": {
+        "source_id": "R103-p9",
+        "quote": "일본은 1996년 이후 처음으로 10년 국채 금리가 3% 상회. 일본 은행주 강세"
+       },
+       "verify": {
+        "status": "ok",
+        "report_id": 103,
+        "page": 9,
+        "title": "ETF Strategy: 금리 상승기의 배당주, 퀄리티 주식",
+        "date": "2026-09-02",
+        "url": "https://www.eugenefn.com/common/files/amail/20260902_B_buykkang_245.pdf#page=9"
+       }
+      },
+      {
+       "text": "미국도 6월 이후 금융주 ETF(XLF)가 S&P500 수익률을 웃돌고 있습니다.",
+       "cite": {
+        "source_id": "R103-p9",
+        "quote": "미국도 6월 이후 금융주(XLF) 주가가 S&P500 수익을 상회하고 있음"
+       },
+       "verify": {
+        "status": "ok",
+        "report_id": 103,
+        "page": 9,
+        "title": "ETF Strategy: 금리 상승기의 배당주, 퀄리티 주식",
+        "date": "2026-09-02",
+        "url": "https://www.eugenefn.com/common/files/amail/20260902_B_buykkang_245.pdf#page=9"
+       }
+      }
+     ],
+     "view": {
+      "text": "당사는 은행·보험주 상승에 다른 요인도 있지만, 가장 중요한 배경은 금리 상승이라고 판단합니다.",
+      "cite": {
+       "source_id": "R103-p2",
+       "quote": "다른 요인도 영향이 있겠지만, 가장 중요한 배경은 ‘금리 상승’으로 판단된다."
+      },
+      "verify": {
+       "status": "ok",
+       "report_id": 103,
+       "page": 2,
+       "title": "ETF Strategy: 금리 상승기의 배당주, 퀄리티 주식",
+       "date": "2026-09-02",
+       "url": "https://www.eugenefn.com/common/files/amail/20260902_B_buykkang_245.pdf#page=2"
+      }
+     },
+     "counter": {
+      "text": "10월 초에는 보험·은행 등 내수 금융주가 전주에 이어 약세를 보였습니다.",
+      "cite": {
+       "source_id": "R202-p2",
+       "quote": "내수 금융(소매유통·보험·은행) 약세"
+      },
+      "verify": {
+       "status": "ok",
+       "report_id": 202,
+       "page": 2,
+       "title": "메모리 숨 고르는 사이 넓어지는 AI 순환매",
+       "date": "2026-10-07",
+       "url": "https://www.eugenefn.com/common/files/amail/20261007_B_lee.jy_48.pdf#page=2"
+      }
+     },
+     "checks": [
+      "국고채 3년 금리 방향과 은행·보험 ETF 주가의 동행 여부",
+      "은행 이자마진(NIM) 추이",
+      "일본·미국 금융주의 상대 강도 지속 여부"
+     ]
+    },
+    {
+     "title": "'금리 상승과 금융주 상승'의 조합은 양호한 경기를 반영해 부담이 덜하다",
+     "strength": "부분 유효",
+     "facts": [
+      {
+       "text": "주가 하락 이후 회복 과정에서 시가총액 상위 종목 가운데 은행·금융이 견고한 업종으로 꼽혔습니다.",
+       "cite": {
+        "source_id": "R135-p1",
+        "quote": "시가총액 상위 종목들 가운데서는 은행/금융,"
+       },
+       "verify": {
+        "status": "ok",
+        "report_id": 135,
+        "page": 1,
+        "title": "Equity Strategy: 베센트 장관의 위험한 게임 vs. 해결사 연준",
+        "date": "2026-09-14",
+        "url": "https://www.eugenefn.com/common/files/amail/20260914_B_jaehwan.huh_1296.pdf#page=1"
+       }
+      },
+      {
+       "text": "9월 FOMC 인상에 대해 당사는 주식시장에 악재로 보기 어렵다고 평가했습니다. 국내 소비가 견고하다는 문구가 성명서에 추가됐습니다.",
+       "cite": {
+        "source_id": "R141-p1",
+        "quote": "주식시장 입장에서 악재로 보기는 어려움."
+       },
+       "verify": {
+        "status": "ok",
+        "report_id": 141,
+        "page": 1,
+        "title": "Equity Strategy: 9월 FOMC 회의: 드디어 행동하기 시작",
+        "date": "2026-09-17",
+        "url": "https://www.eugenefn.com/common/files/amail/20260917_B_jaehwan.huh_1297.pdf#page=1"
+       }
+      }
+     ],
+     "view": {
+      "text": "당사는 '금리 상승과 금융주 상승'이 함께 나타나는 것은 양호한 경제 상황을 반영한 것이어서, 금리 상승 부담이 덜할 수 있다고 봅니다.",
+      "cite": {
+       "source_id": "R103-p9",
+       "quote": "‘금리 상승 → 금융주 상승’ 조합은 양호한 경제 상황 반영, 금리 상승에 대한 부담이 덜할 수 있음"
+      },
+      "verify": {
+       "status": "ok",
+       "report_id": 103,
+       "page": 9,
+       "title": "ETF Strategy: 금리 상승기의 배당주, 퀄리티 주식",
+       "date": "2026-09-02",
+       "url": "https://www.eugenefn.com/common/files/amail/20260902_B_buykkang_245.pdf#page=9"
+      }
+     },
+     "counter": {
+      "text": "반대로 금리가 오르는데 금융주가 약세로 돌아서면 부정적 신호로 보고 경계해야 한다고 당사는 지적합니다.",
+      "cite": {
+       "source_id": "R103-p9",
+       "quote": "반면 금리가 오르는 상황에서 금융주 주가가 약세 반전할 경우 부정적 신호, 경계할 필요"
+      },
+      "verify": {
+       "status": "ok",
+       "report_id": 103,
+       "page": 9,
+       "title": "ETF Strategy: 금리 상승기의 배당주, 퀄리티 주식",
+       "date": "2026-09-02",
+       "url": "https://www.eugenefn.com/common/files/amail/20260902_B_buykkang_245.pdf#page=9"
+      }
+     },
+     "checks": [
+      "금리 상승 국면에서 금융주가 약세로 반전하는지 여부",
+      "미국·국내 경기지표(소비, PMI)의 견조함 지속 여부"
+     ]
+    },
+    {
+     "title": "최근 금융주 약세는 금리 하락과 순환매에 따른 단기 현상일 수 있다",
+     "strength": "단기 요인",
+     "facts": [
+      {
+       "text": "10월 중순 국내 금리 하락은 국고채 발행 축소에서 시작됐습니다. 이후 AI 투자 의구심에 따른 기술주 급락의 반사효과로 하락폭이 커졌습니다.",
+       "cite": {
+        "source_id": "R231-p1",
+        "quote": "금리 하락의 시작은 국고채 발행 축소였고 하락폭을 확대시킨 것은 AI"
+       },
+       "verify": {
+        "status": "ok",
+        "report_id": 231,
+        "page": 1,
+        "title": "FI Weekly: 10월 금통위 Preview: 쉼표",
+        "date": "2026-10-19",
+        "url": "https://www.eugenefn.com/common/files/amail/20261019_B_jnkim0526_1317.pdf#page=1"
+       }
+      },
+      {
+       "text": "당사는 한은의 다음 인상 시점이 11월이 될 가능성이 높다고 봅니다.",
+       "cite": {
+        "source_id": "R231-p1",
+        "quote": "다음 인상 시점은 11월이 될 가능성 높은 상황."
+       },
+       "verify": {
+        "status": "ok",
+        "report_id": 231,
+        "page": 1,
+        "title": "FI Weekly: 10월 금통위 Preview: 쉼표",
+        "date": "2026-10-19",
+        "url": "https://www.eugenefn.com/common/files/amail/20261019_B_jnkim0526_1317.pdf#page=1"
+       }
+      }
+     ],
+     "view": {
+      "text": "당사는 최근 금리 급락을 추세적인 채권 강세 전환으로 보기는 어렵다고 판단합니다. 금리를 끌어올렸던 요인이 여전히 남아 있다는 시각입니다.",
+      "cite": {
+       "source_id": "R231-p1",
+       "quote": "최근 금리 급락 중이나 추세적 강세 전환이라고 보기는 어렵다는"
+      },
+      "verify": {
+       "status": "ok",
+       "report_id": 231,
+       "page": 1,
+       "title": "FI Weekly: 10월 금통위 Preview: 쉼표",
+       "date": "2026-10-19",
+       "url": "https://www.eugenefn.com/common/files/amail/20261019_B_jnkim0526_1317.pdf#page=1"
+      }
+     },
+     "counter": {
+      "text": "자본조달 비용이 늘어나는 국면에서 당사가 관심 업종으로 제시한 곳은 반도체·에너지·조선·IT하드웨어입니다. 은행·보험은 이 목록에 포함되지 않았습니다.",
+      "cite": {
+       "source_id": "R141-p1",
+       "quote": "반도체, 에너지, 조선, IT하드웨어 등에 대한 관심이 유효함"
+      },
+      "verify": {
+       "status": "ok",
+       "report_id": 141,
+       "page": 1,
+       "title": "Equity Strategy: 9월 FOMC 회의: 드디어 행동하기 시작",
+       "date": "2026-09-17",
+       "url": "https://www.eugenefn.com/common/files/amail/20260917_B_jaehwan.huh_1297.pdf#page=1"
+      }
+     },
+     "checks": [
+      "11월 금통위의 인상 여부와 매파적 톤",
+      "국고채 금리의 재반등 여부",
+      "반도체 대형주 수급 부담 해소 이후 금융주로 순환매가 이어지는지 여부"
+     ]
+    }
+   ],
+   "meta": {
+    "model": "claude-opus-5-5",
+    "secs": 46.4,
+    "cite_ok": 14,
+    "cite_total": 14,
+    "sources": [
+     {
+      "id": "R103-p2",
+      "report_id": 103,
+      "page": 2,
+      "title": "ETF Strategy: 금리 상승기의 배당주, 퀄리티 주식",
+      "date": "2026-09-02",
+      "url": "https://www.eugenefn.com/common/files/amail/20260902_B_buykkang_245.pdf"
+     },
+     {
+      "id": "R103-p8",
+      "report_id": 103,
+      "page": 8,
+      "title": "ETF Strategy: 금리 상승기의 배당주, 퀄리티 주식",
+      "date": "2026-09-02",
+      "url": "https://www.eugenefn.com/common/files/amail/20260902_B_buykkang_245.pdf"
+     },
+     {
+      "id": "R103-p9",
+      "report_id": 103,
+      "page": 9,
+      "title": "ETF Strategy: 금리 상승기의 배당주, 퀄리티 주식",
+      "date": "2026-09-02",
+      "url": "https://www.eugenefn.com/common/files/amail/20260902_B_buykkang_245.pdf"
+     },
+     {
+      "id": "R231-p1",
+      "report_id": 231,
+      "page": 1,
+      "title": "FI Weekly: 10월 금통위 Preview: 쉼표",
+      "date": "2026-10-19",
+      "url": "https://www.eugenefn.com/common/files/amail/20261019_B_jnkim0526_1317.pdf"
+     },
+     {
+      "id": "R163-p1",
+      "report_id": 163,
+      "page": 1,
+      "title": "FI Weekly: 금리, 불안이 응집되는 중",
+      "date": "2026-09-28",
+      "url": "https://www.eugenefn.com/common/files/amail/20260928_B_jnkim0526_1302.pdf"
+     },
+     {
+      "id": "R242-p1",
+      "report_id": 242,
+      "page": 1,
+      "title": "글로벌 테크:  코어위브가 4월 발행한 회사채 금리가 15%(표면금리 9.75%)를 상회하고,",
+      "date": "2026-10-20",
+      "url": "https://www.eugenefn.com/common/files/amail/20261020_B45_jaehwan124_46.pdf"
+     },
+     {
+      "id": "R63-p1",
+      "report_id": 63,
+      "page": 1,
+      "title": "FI Weekly: 자나깨나 환율 걱정",
+      "date": "2026-07-06",
+      "url": "https://www.eugenefn.com/common/files/amail/20260706_B_jnkim0526_1231.pdf"
+     },
+     {
+      "id": "R252-p1",
+      "report_id": 252,
+      "page": 1,
+      "title": "Eugene’s FICC Update",
+      "date": "2026-10-21",
+      "url": "https://www.eugenefn.com/common/files/amail/20261021_B_jnkim0526_1319.pdf"
+     },
+     {
+      "id": "R135-p1",
+      "report_id": 135,
+      "page": 1,
+      "title": "Equity Strategy: 베센트 장관의 위험한 게임 vs. 해결사 연준",
+      "date": "2026-09-14",
+      "url": "https://www.eugenefn.com/common/files/amail/20260914_B_jaehwan.huh_1296.pdf"
+     },
+     {
+      "id": "R202-p2",
+      "report_id": 202,
+      "page": 2,
+      "title": "메모리 숨 고르는 사이 넓어지는 AI 순환매",
+      "date": "2026-10-07",
+      "url": "https://www.eugenefn.com/common/files/amail/20261007_B_lee.jy_48.pdf"
+     },
+     {
+      "id": "R29-p1",
+      "report_id": 29,
+      "page": 1,
+      "title": "Eugene’s FICC Update",
+      "date": "2026-06-26",
+      "url": "https://www.eugenefn.com/common/files/amail/20260626_B_jnkim0526_1223.pdf"
+     },
+     {
+      "id": "R141-p1",
+      "report_id": 141,
+      "page": 1,
+      "title": "Equity Strategy: 9월 FOMC 회의: 드디어 행동하기 시작",
+      "date": "2026-09-17",
+      "url": "https://www.eugenefn.com/common/files/amail/20260917_B_jaehwan.huh_1297.pdf"
+     },
+     {
+      "id": "R155-p11",
+      "report_id": 155,
+      "page": 11,
+      "title": "China: 정부가키운 중국의 다음 숙제",
+      "date": "2026-09-23",
+      "url": "https://www.eugenefn.com/common/files/amail/20260923_B_ebbaek_239.pdf"
+     },
+     {
+      "id": "R263-p43",
+      "report_id": 263,
+      "page": 43,
+      "title": "THEME SIGNAL",
+      "date": "2026-10-22",
+      "url": "https://www.eugenefn.com/common/files/amail/20261022_B_js.an_47.pdf"
+     }
+    ],
+    "usage": {
+     "in": 21094,
+     "out": 4954
+    }
+   }
+  },
+  "answer": null,
+  "route": "answer",
+  "reviewer": null,
+  "draft_secs": 46.4
+ },
+ {
+  "text": "HBM 공급 과잉 우려, 내년까지 이어질까?",
+  "persona": "am",
+  "topic": "HBM",
+  "status": "pending",
+  "draft": {
+   "route": "answer",
+   "route_reason": "HBM과 메모리 수급 전망을 묻는 산업 질문입니다. SK하이닉스·삼성전자 리포트와 AI 추론 수요 리포트에 2027년 HBM 가격 협상, 공급 부족률, 수요 전망 근거가 있어 리서치 근거로 답할 수 있습니다.",
+   "topic": "HBM",
+   "verdict": "당사 리포트는 2027년에도 공급 부족이 이어지고 HBM 가격 협상이 공급업체에 유리하다는 견해가 가장 강하며, AI CapEx와 추론 수요 확대가 이를 부분적으로 뒷받침합니다. 공급 과잉 우려는 주로 2028년 이후 공급 증가와 AI 수요 둔화 시나리오에 관한 것으로, 내년 수급에 대한 원문 근거는 약한 편입니다.",
+   "hypotheses": [
+    {
+     "title": "2027년에도 공급 부족 지속, HBM 협상은 공급업체 우위",
+     "strength": "유효",
+     "facts": [
+      {
+       "text": "범용 DRAM 영업이익률이 높아 HBM 생산에 투입되는 웨이퍼의 기회비용이 HBM 가격에 반영되는 구조입니다.",
+       "cite": {
+        "source_id": "R203-p1",
+        "quote": "범용 DRAM의 영업이익률이 80%를 상회하는"
+       },
+       "verify": {
+        "status": "ok",
+        "report_id": 203,
+        "page": 1,
+        "title": "SK 하이닉스: 증명의 시간",
+        "date": "2026-10-08",
+        "url": "https://www.eugenefn.com/common/files/amail/20261008_000660_sij_21.pdf#page=1"
+       }
+      },
+      {
+       "text": "HBM4 양산 비중 확대와 함께 3Q26 HBM 출하와 가격이 모두 늘어날 것으로 추정됩니다.",
+       "cite": {
+        "source_id": "R203-p1",
+        "quote": "HBM은 HBM4 양산 비중 확대와 함"
+       },
+       "verify": {
+        "status": "ok",
+        "report_id": 203,
+        "page": 1,
+        "title": "SK 하이닉스: 증명의 시간",
+        "date": "2026-10-08",
+        "url": "https://www.eugenefn.com/common/files/amail/20261008_000660_sij_21.pdf#page=1"
+       }
+      }
+     ],
+     "view": {
+      "text": "당사는 2027년 HBM 가격 협상이 공급업체에 유리한 환경에서 견조하게 진행 중이라고 봅니다. 공정 전환에 따른 bit 증가 둔화와 신규 팹 가동 시점을 고려하면 2027년에도 공급 부족률 개선은 어렵다는 판단입니다.",
+      "cite": {
+       "source_id": "R203-p1",
+       "quote": "2027년 HBM 가격 협상은 공급업체에 유리한 환경에서 견조하게 진행되"
+      },
+      "verify": {
+       "status": "ok",
+       "report_id": 203,
+       "page": 1,
+       "title": "SK 하이닉스: 증명의 시간",
+       "date": "2026-10-08",
+       "url": "https://www.eugenefn.com/common/files/amail/20261008_000660_sij_21.pdf#page=1"
+      }
+     },
+     "counter": {
+      "text": "시장 일각에서는 가격 상승률 둔화를 사이클 정점 신호로 해석합니다. 2028년 공급 증가 우려도 반복되고 있습니다.",
+      "cite": {
+       "source_id": "R203-p1",
+       "quote": "둔화를 사이클 정점의 신호로 해석하는 시각, 2028년 공급 증가와 AI 수요"
+      },
+      "verify": {
+       "status": "ok",
+       "report_id": 203,
+       "page": 1,
+       "title": "SK 하이닉스: 증명의 시간",
+       "date": "2026-10-08",
+       "url": "https://www.eugenefn.com/common/files/amail/20261008_000660_sij_21.pdf#page=1"
+      }
+     },
+     "checks": [
+      "2027년 HBM 연간 가격 협상 최종 결과(당사 추정 SK하이닉스 HBM Blended ASP $3.31/Gb)",
+      "신규 팹 가동 시점과 1cnm·V9 공정 전환 속도",
+      "분기 실적에서 확인되는 HBM 출하량과 ASP 변화"
+     ]
+    },
+    {
+     "title": "AI CapEx와 추론 수요가 메모리 수요를 지지",
+     "strength": "부분 유효",
+     "facts": [
+      {
+       "text": "조 단위 파라미터 모델의 긴 컨텍스트 윈도우는 HBM뿐 아니라 DRAM, NAND 등 추가 메모리 계층까지 요구합니다.",
+       "cite": {
+        "source_id": "R116-p10",
+        "quote": "동등한 100 만 토큰의 컨텍스트 윈도우는 HBM 을 넘어 DRAM, NAND 등 추가"
+       },
+       "verify": {
+        "status": "ok",
+        "report_id": 116,
+        "page": 10,
+        "title": "오픈웨이트와",
+        "date": "2026-09-07",
+        "url": "https://www.eugenefn.com/common/files/amail/20260907_B45_jaehwan124_35.pdf#page=10"
+       }
+      },
+      {
+       "text": "학습 비용이 줄어도 추론에 필요한 인프라 규모는 파라미터 수에 좌우됩니다.",
+       "cite": {
+        "source_id": "R116-p10",
+        "quote": "증류를 통해 학습 비용을 절감했다 하더라도, 추론 단계에서는 사정이 다"
+       },
+       "verify": {
+        "status": "ok",
+        "report_id": 116,
+        "page": 10,
+        "title": "오픈웨이트와",
+        "date": "2026-09-07",
+        "url": "https://www.eugenefn.com/common/files/amail/20260907_B45_jaehwan124_35.pdf#page=10"
+       }
+      }
+     ],
+     "view": {
+      "text": "당사는 주요 빅테크가 2Q26 어닝콜에서 강한 AI CapEx 투입 의지를 재확인할 것으로 봤습니다. 2027년 HBM 가격 협상도 시장 기대치를 뛰어넘을 것으로 전망했습니다.",
+      "cite": {
+       "source_id": "R72-p1",
+       "quote": "HBM의 가격 협상은 시장 기대치를 뛰어 넘는 수준을 기록할 것으로 보여"
+      },
+      "verify": {
+       "status": "ok",
+       "report_id": 72,
+       "page": 1,
+       "title": "삼성전자: 걱정의 벽을 타고",
+       "date": "2026-07-08",
+       "url": "https://www.eugenefn.com/common/files/amail/20260708_005930_sij_11.pdf#page=1"
+      }
+     },
+     "counter": {
+      "text": "저렴한 오픈웨이트 모델이 등장하면서 AI 인프라 과잉 투자 우려가 다시 부각된 바 있습니다.",
+      "cite": {
+       "source_id": "R116-p10",
+       "quote": "인프라 과잉 투자에 대한 우려가 재차 부각됐다."
+      },
+      "verify": {
+       "status": "ok",
+       "report_id": 116,
+       "page": 10,
+       "title": "오픈웨이트와",
+       "date": "2026-09-07",
+       "url": "https://www.eugenefn.com/common/files/amail/20260907_B45_jaehwan124_35.pdf#page=10"
+      }
+     },
+     "checks": [
+      "빅테크 실적 발표의 AI CapEx 가이던스 톤",
+      "오픈웨이트 모델 확산이 추론 인프라 수요에 미치는 영향"
+     ]
+    },
+    {
+     "title": "공급 과잉 우려는 2028년 이후 공급 증가·중국 업체 이슈에 가까움",
+     "strength": "약함",
+     "facts": [
+      {
+       "text": "7월 리포트 기준 시장 우려는 메모리 가격 상승률 둔화, 컨센서스 상향 여력 축소, 중국 메모리 업체 영향력 확대 등에 맞춰졌습니다.",
+       "cite": {
+        "source_id": "R72-p1",
+        "quote": "메모리 가격의 상승률 둔화, 줄어드는 컨센서스의 추가 상향 여력, 상장과"
+       },
+       "verify": {
+        "status": "ok",
+        "report_id": 72,
+        "page": 1,
+        "title": "삼성전자: 걱정의 벽을 타고",
+        "date": "2026-07-08",
+        "url": "https://www.eugenefn.com/common/files/amail/20260708_005930_sij_11.pdf#page=1"
+       }
+      }
+     ],
+     "view": {
+      "text": "당사는 중국 DRAM의 본격적인 점유율 확대가 2029년 이후로 예상된다고 봅니다. 따라서 메모리 업황에 대한 영향은 장기간 없을 것이라는 견해입니다.",
+      "cite": {
+       "source_id": "R72-p1",
+       "quote": "본격적인 시장 점유율 확대는 2029년 이후로 예측되는 바,"
+      },
+      "verify": {
+       "status": "ok",
+       "report_id": 72,
+       "page": 1,
+       "title": "삼성전자: 걱정의 벽을 타고",
+       "date": "2026-07-08",
+       "url": "https://www.eugenefn.com/common/files/amail/20260708_005930_sij_11.pdf#page=1"
+      }
+     },
+     "counter": {
+      "text": "2028년 공급 증가와 AI 수요 파괴에 대한 우려가 반복되고 있어, 실적 대비 주가 상승은 완만할 것으로 당사는 봅니다.",
+      "cite": {
+       "source_id": "R203-p1",
+       "quote": "둔화를 사이클 정점의 신호로 해석하는 시각, 2028년 공급 증가와 AI 수요"
+      },
+      "verify": {
+       "status": "ok",
+       "report_id": 203,
+       "page": 1,
+       "title": "SK 하이닉스: 증명의 시간",
+       "date": "2026-10-08",
+       "url": "https://www.eugenefn.com/common/files/amail/20261008_000660_sij_21.pdf#page=1"
+      }
+     },
+     "checks": [
+      "2028년 이후 업계 증설 계획과 CapEx Intensity 변화",
+      "중국 메모리 업체의 장비 수출 제재 영향과 증설 동향",
+      "메모리 가격 상승률 둔화 폭(당사 추정 1Q27 범용 DRAM +10%qoq)"
+     ]
+    }
+   ],
+   "meta": {
+    "model": "claude-opus-5-5",
+    "secs": 41.1,
+    "cite_ok": 11,
+    "cite_total": 11,
+    "sources": [
+     {
+      "id": "R200-p2",
+      "report_id": 200,
+      "page": 2,
+      "title": "Eugene’s FICC Update",
+      "date": "2026-10-07",
+      "url": "https://www.eugenefn.com/common/files/amail/20261007_B_jnkim0526_1308.pdf"
+     },
+     {
+      "id": "R10-p1",
+      "report_id": 10,
+      "page": 1,
+      "title": "에너지: 주간 주요 제품 가격변화",
+      "date": "2026-06-23",
+      "url": "https://www.eugenefn.com/common/files/amail/20260623_B1010_tjdgus2009_976.pdf"
+     },
+     {
+      "id": "R148-p1",
+      "report_id": 148,
+      "page": 1,
+      "title": "에너지: 주간 주요 제품 가격변화",
+      "date": "2026-09-22",
+      "url": "https://www.eugenefn.com/common/files/amail/20260922_B1010_tjdgus2009_1023.pdf"
+     },
+     {
+      "id": "R72-p1",
+      "report_id": 72,
+      "page": 1,
+      "title": "삼성전자: 걱정의 벽을 타고",
+      "date": "2026-07-08",
+      "url": "https://www.eugenefn.com/common/files/amail/20260708_005930_sij_11.pdf"
+     },
+     {
+      "id": "R66-p1",
+      "report_id": 66,
+      "page": 1,
+      "title": "에너지: 주간 주요 제품 가격변화",
+      "date": "2026-07-07",
+      "url": "https://www.eugenefn.com/common/files/amail/20260707_B1010_tjdgus2009_980.pdf"
+     },
+     {
+      "id": "R183-p32",
+      "report_id": 183,
+      "page": 32,
+      "title": "에너지/인프라/배터리",
+      "date": "2026-10-06",
+      "url": "https://www.eugenefn.com/common/files/amail/20261006_B1010_tjdgus2009_1026.pdf"
+     },
+     {
+      "id": "R155-p4",
+      "report_id": 155,
+      "page": 4,
+      "title": "China: 정부가키운 중국의 다음 숙제",
+      "date": "2026-09-23",
+      "url": "https://www.eugenefn.com/common/files/amail/20260923_B_ebbaek_239.pdf"
+     },
+     {
+      "id": "R203-p1",
+      "report_id": 203,
+      "page": 1,
+      "title": "SK 하이닉스: 증명의 시간",
+      "date": "2026-10-08",
+      "url": "https://www.eugenefn.com/common/files/amail/20261008_000660_sij_21.pdf"
+     },
+     {
+      "id": "R116-p10",
+      "report_id": 116,
+      "page": 10,
+      "title": "오픈웨이트와",
+      "date": "2026-09-07",
+      "url": "https://www.eugenefn.com/common/files/amail/20260907_B45_jaehwan124_35.pdf"
+     },
+     {
+      "id": "R237-p1",
+      "report_id": 237,
+      "page": 1,
+      "title": "철강금속: 한빛 원자력 발전소 건식저장시설 사업비 4,253 억원",
+      "date": "2026-10-20",
+      "url": "https://www.eugenefn.com/common/files/amail/20261020_B1520_smalljung_8.pdf"
+     },
+     {
+      "id": "R219-p2",
+      "report_id": 219,
+      "page": 2,
+      "title": "Eugene’s FICC Update",
+      "date": "2026-10-15",
+      "url": "https://www.eugenefn.com/common/files/amail/20261015_B_jnkim0526_1314.pdf"
+     },
+     {
+      "id": "R241-p1",
+      "report_id": 241,
+      "page": 1,
+      "title": " [3Q26: 3,049억 달러의 시장, 공급은 정체] 현재(26년 9월 말 기준), 시장에 유",
+      "date": "2026-10-20",
+      "url": "https://www.eugenefn.com/common/files/amail/20261020_B4530_say_10.pdf"
+     },
+     {
+      "id": "R196-p1",
+      "report_id": 196,
+      "page": 1,
+      "title": "에너지: 주간 주요 제품 가격변화",
+      "date": "2026-10-07",
+      "url": "https://www.eugenefn.com/common/files/amail/20261007_B1010_tjdgus2009_1028.pdf"
+     },
+     {
+      "id": "R233-p1",
+      "report_id": 233,
+      "page": 1,
+      "title": "액트로: NDR 後記: 자율주행차, 로봇 등 사업 다변화 성공",
+      "date": "2026-10-20",
+      "url": "https://www.eugenefn.com/common/files/amail/20261020_290740_jongsun.park_2704.pdf"
+     }
+    ],
+    "usage": {
+     "in": 26499,
+     "out": 4439
+    }
+   }
+  },
+  "answer": null,
+  "route": "answer",
+  "reviewer": null,
+  "draft_secs": 41.1
+ },
+ {
+  "text": "원/달러 환율이 오르면 수출주에 유리한가요?",
+  "persona": "ia",
+  "topic": "환율",
+  "status": "pending",
+  "draft": {
+   "route": "answer",
+   "route_reason": "환율 변동이 수출기업 실적에 미치는 영향을 묻는 산업·기업 질문입니다. 유진 리서치 원문에 환율이 실적에 영향을 준 사례와 거시 분석이 있어 근거로 답할 수 있습니다.",
+   "topic": "환율",
+   "verdict": "원문은 반대 방향인 원화 강세가 수출기업 수익성에 부담이 된 사례를 확인해 줍니다. 따라서 환율 상승이 원화 환산 이익에 우호적이라는 관점은 부분적으로 유효합니다. 다만 업황, 운임 같은 비환율 요인과 고환율에 따른 금리·외국인 수급 부담도 함께 작용합니다. 그래서 '환율 상승은 곧 수출주 유리'로 단정하기는 어렵습니다.",
+   "hypotheses": [
+    {
+     "title": "원화 약세는 수출기업의 원화 환산 수익성에 우호적이다(원화 강세가 부담이 된 사례로 역확인)",
+     "strength": "부분 유효",
+     "facts": [
+      {
+       "text": "유니드는 3분기 환율 하락(2분기 1,503원 → 3분기 1,417원)으로 영업이익에 -60억원의 영향을 받았습니다.",
+       "cite": {
+        "source_id": "R256-p1",
+        "quote": "환율 하락(2Q 1,503원/달러→3Q 1,417원/달러) 효과 -60억원"
+       },
+       "verify": {
+        "status": "ok",
+        "report_id": 256,
+        "page": 1,
+        "title": "유니드: 환율, 해상운임 영향으로 부진",
+        "date": "2026-10-22",
+        "url": "https://www.eugenefn.com/common/files/amail/20261022_014830_tjdgus2009_1034.pdf#page=1"
+       }
+      },
+      {
+       "text": "미용의료 업종의 3분기 실적에는 수출 시 원화 강세에 따른 부담이 일부 반영될 것으로 제시됐습니다.",
+       "cite": {
+        "source_id": "R189-p1",
+        "quote": "실적에는 내수의 계절적 비수기와 수출 시 원화 강세에 따른 부담이"
+       },
+       "verify": {
+        "status": "ok",
+        "report_id": 189,
+        "page": 1,
+        "title": "미용기기: 9월 잠정 수출: 3분기는 환율 및 계절성 영향",
+        "date": "2026-10-06",
+        "url": "https://www.eugenefn.com/common/files/amail/20261006_B3520_db23_7.pdf#page=1"
+       }
+      }
+     ],
+     "view": {
+      "text": "당사는 파마리서치의 3분기 실적에서 화장품 비중 상승과 원화 강세로 수익성이 일부 훼손될 것으로 봅니다. 수출 비중이 큰 기업일수록 환율 방향이 마진에 직접 연결된다는 판단입니다.",
+      "cite": {
+       "source_id": "R189-p1",
+       "quote": "화장품 매출 비중 상승과 원화 강세에"
+      },
+      "verify": {
+       "status": "ok",
+       "report_id": 189,
+       "page": 1,
+       "title": "미용기기: 9월 잠정 수출: 3분기는 환율 및 계절성 영향",
+       "date": "2026-10-06",
+       "url": "https://www.eugenefn.com/common/files/amail/20261006_B3520_db23_7.pdf#page=1"
+      }
+     },
+     "counter": {
+      "text": "같은 분기 유니드는 해상운임 강세로도 -48억원의 영향을 받았습니다. 실적 부진이 환율만의 결과는 아닙니다.",
+      "cite": {
+       "source_id": "R256-p1",
+       "quote": "운임 강세 -48억원(1Q 218억원, 2Q 261억원, 3Q 309억원으로 증가), 염산"
+      },
+      "verify": {
+       "status": "ok",
+       "report_id": 256,
+       "page": 1,
+       "title": "유니드: 환율, 해상운임 영향으로 부진",
+       "date": "2026-10-22",
+       "url": "https://www.eugenefn.com/common/files/amail/20261022_014830_tjdgus2009_1034.pdf#page=1"
+      }
+     },
+     "checks": [
+      "기업별 달러 매출 비중과 환헤지 여부",
+      "분기 평균 환율 변화와 판가 계약 시점의 차이",
+      "당사 전망: 원/달러 하단 1,300원대 아래 형성 가능성, 내년 범위 1,250~1,420원(FX Comment 10/21)"
+     ]
+    },
+    {
+     "title": "수출주 실적은 환율보다 업황·수요·운임 등 비환율 요인에 더 크게 좌우될 수 있다",
+     "strength": "부분 유효",
+     "facts": [
+      {
+       "text": "최근 원화 강세는 수출기업의 달러 매도가 이끌었습니다. 즉 수출 호조가 원화 강세와 동시에 나타나고 있습니다.",
+       "cite": {
+        "source_id": "R255-p1",
+        "quote": "원화 강세를 견인한 요인은 단연 수출기업의 달러 매도"
+       },
+       "verify": {
+        "status": "ok",
+        "report_id": 255,
+        "page": 1,
+        "title": "FX Comment: 달러-원 환율: 연저점 경신, 향후 방향성은?",
+        "date": "2026-10-21",
+        "url": "https://www.eugenefn.com/common/files/amail/20261021_B_yhcha_8.pdf#page=1"
+       }
+      },
+      {
+       "text": "유니드는 판가 인상 반영 규모에 따라 실적 변동성이 커질 것으로 제시됐습니다. 환율 외에 가격 전가력이 중요하다는 뜻입니다.",
+       "cite": {
+        "source_id": "R256-p1",
+        "quote": "실제 인상의 반영 규모에 따라 실적 변동성이"
+       },
+       "verify": {
+        "status": "ok",
+        "report_id": 256,
+        "page": 1,
+        "title": "유니드: 환율, 해상운임 영향으로 부진",
+        "date": "2026-10-22",
+        "url": "https://www.eugenefn.com/common/files/amail/20261022_014830_tjdgus2009_1034.pdf#page=1"
+       }
+      }
+     ],
+     "view": {
+      "text": "당사는 파마리서치에 대해 원화 강세 부담에도 4분기 판매 채널 확대와 성수기 수요를 근거로 긍정적 시각을 유지합니다.",
+      "cite": {
+       "source_id": "R189-p1",
+       "quote": "활동 이후 의료진들의 수요증가 가능성을 고려해 긍정적 시각을 유지한다"
+      },
+      "verify": {
+       "status": "ok",
+       "report_id": 189,
+       "page": 1,
+       "title": "미용기기: 9월 잠정 수출: 3분기는 환율 및 계절성 영향",
+       "date": "2026-10-06",
+       "url": "https://www.eugenefn.com/common/files/amail/20261006_B3520_db23_7.pdf#page=1"
+      }
+     },
+     "counter": {
+      "text": "다만 유니드 3분기 사례에서는 환율 효과(-60억원)가 개별 요인 중 가장 컸습니다. 환율 영향이 작지 않다는 근거입니다.",
+      "cite": {
+       "source_id": "R256-p1",
+       "quote": "환율 하락(2Q 1,503원/달러→3Q 1,417원/달러) 효과 -60억원"
+      },
+      "verify": {
+       "status": "ok",
+       "report_id": 256,
+       "page": 1,
+       "title": "유니드: 환율, 해상운임 영향으로 부진",
+       "date": "2026-10-22",
+       "url": "https://www.eugenefn.com/common/files/amail/20261022_014830_tjdgus2009_1034.pdf#page=1"
+      }
+     },
+     "checks": [
+      "반도체 등 주력 품목의 수출 증가율 추이",
+      "해상운임과 판가 인상 반영 여부",
+      "업종별 수요 성수기·비수기 계절성"
+     ]
+    },
+    {
+     "title": "환율 상승은 금리 인상·외국인 자금 이탈을 동반해 수출주에도 부담이 될 수 있다",
+     "strength": "약함",
+     "facts": [
+      {
+       "text": "올해 고환율 국면에서 환율 상승과 금리 인상이 연결되며 시중금리가 함께 올랐습니다.",
+       "cite": {
+        "source_id": "R63-p1",
+        "quote": "고환율 논란이 시작된 이후부터 환율 상승 = 금리 인상이"
+       },
+       "verify": {
+        "status": "ok",
+        "report_id": 63,
+        "page": 1,
+        "title": "FI Weekly: 자나깨나 환율 걱정",
+        "date": "2026-07-06",
+        "url": "https://www.eugenefn.com/common/files/amail/20260706_B_jnkim0526_1231.pdf#page=1"
+       }
+      },
+      {
+       "text": "달러 강세는 국내 수요 측 물가와 직접 연결되는 금융안정 과제로 지목됐습니다.",
+       "cite": {
+        "source_id": "R15-p1",
+        "quote": "FOMC의 매파적 태도로 인한 달러 강세는 직접적"
+       },
+       "verify": {
+        "status": "ok",
+        "report_id": 15,
+        "page": 1,
+        "title": "FI Weekly: 종전해도 인상이 가능한가?",
+        "date": "2026-06-23",
+        "url": "https://www.eugenefn.com/common/files/amail/20260623_B_jnkim0526_1220.pdf#page=1"
+       }
+      }
+     ],
+     "view": {
+      "text": "당사는 7월 당시 환율 상승의 주요 배경으로 외국인의 한국 주식 리밸런싱에 따른 자금 이탈을 꼽았습니다. 고환율이 주식시장 수급 약화와 함께 나타날 수 있다는 판단입니다.",
+      "cite": {
+       "source_id": "R63-p1",
+       "quote": "현재 환율 상승은 여러 요인이 있으나, 최근 외국인의 한국 주식"
+      },
+      "verify": {
+       "status": "ok",
+       "report_id": 63,
+       "page": 1,
+       "title": "FI Weekly: 자나깨나 환율 걱정",
+       "date": "2026-07-06",
+       "url": "https://www.eugenefn.com/common/files/amail/20260706_B_jnkim0526_1231.pdf#page=1"
+      }
+     },
+     "counter": {
+      "text": "같은 시기 외국인의 국내 채권 순투자는 견조했습니다. 고환율이 모든 자금 이탈로 이어진 것은 아닙니다. 수출주 주가와의 직접 연결은 원문에서 확인되지 않습니다.",
+      "cite": {
+       "source_id": "R63-p1",
+       "quote": "외국인은 1분기 총 5.7조원, 2분기 총 16.3조원의 채권을 순투자하면"
+      },
+      "verify": {
+       "status": "ok",
+       "report_id": 63,
+       "page": 1,
+       "title": "FI Weekly: 자나깨나 환율 걱정",
+       "date": "2026-07-06",
+       "url": "https://www.eugenefn.com/common/files/amail/20260706_B_jnkim0526_1231.pdf#page=1"
+      }
+     },
+     "checks": [
+      "한은 금통위의 추가 인상 신호와 총재 발언",
+      "외국인 코스피 순매수·순매도 흐름",
+      "연준 금리 경로와 글로벌 달러 방향"
+     ]
+    }
+   ],
+   "meta": {
+    "model": "claude-opus-5-5",
+    "secs": 50.6,
+    "cite_ok": 12,
+    "cite_total": 12,
+    "sources": [
+     {
+      "id": "R255-p1",
+      "report_id": 255,
+      "page": 1,
+      "title": "FX Comment: 달러-원 환율: 연저점 경신, 향후 방향성은?",
+      "date": "2026-10-21",
+      "url": "https://www.eugenefn.com/common/files/amail/20261021_B_yhcha_8.pdf"
+     },
+     {
+      "id": "R189-p1",
+      "report_id": 189,
+      "page": 1,
+      "title": "미용기기: 9월 잠정 수출: 3분기는 환율 및 계절성 영향",
+      "date": "2026-10-06",
+      "url": "https://www.eugenefn.com/common/files/amail/20261006_B3520_db23_7.pdf"
+     },
+     {
+      "id": "R252-p2",
+      "report_id": 252,
+      "page": 2,
+      "title": "Eugene’s FICC Update",
+      "date": "2026-10-21",
+      "url": "https://www.eugenefn.com/common/files/amail/20261021_B_jnkim0526_1319.pdf"
+     },
+     {
+      "id": "R219-p2",
+      "report_id": 219,
+      "page": 2,
+      "title": "Eugene’s FICC Update",
+      "date": "2026-10-15",
+      "url": "https://www.eugenefn.com/common/files/amail/20261015_B_jnkim0526_1314.pdf"
+     },
+     {
+      "id": "R256-p1",
+      "report_id": 256,
+      "page": 1,
+      "title": "유니드: 환율, 해상운임 영향으로 부진",
+      "date": "2026-10-22",
+      "url": "https://www.eugenefn.com/common/files/amail/20261022_014830_tjdgus2009_1034.pdf"
+     },
+     {
+      "id": "R230-p2",
+      "report_id": 230,
+      "page": 2,
+      "title": "Eugene’s FICC Update",
+      "date": "2026-10-19",
+      "url": "https://www.eugenefn.com/common/files/amail/20261019_B_jnkim0526_1316.pdf"
+     },
+     {
+      "id": "R63-p1",
+      "report_id": 63,
+      "page": 1,
+      "title": "FI Weekly: 자나깨나 환율 걱정",
+      "date": "2026-07-06",
+      "url": "https://www.eugenefn.com/common/files/amail/20260706_B_jnkim0526_1231.pdf"
+     },
+     {
+      "id": "R15-p1",
+      "report_id": 15,
+      "page": 1,
+      "title": "FI Weekly: 종전해도 인상이 가능한가?",
+      "date": "2026-06-23",
+      "url": "https://www.eugenefn.com/common/files/amail/20260623_B_jnkim0526_1220.pdf"
+     },
+     {
+      "id": "R189-p3",
+      "report_id": 189,
+      "page": 3,
+      "title": "미용기기: 9월 잠정 수출: 3분기는 환율 및 계절성 영향",
+      "date": "2026-10-06",
+      "url": "https://www.eugenefn.com/common/files/amail/20261006_B3520_db23_7.pdf"
+     },
+     {
+      "id": "R189-p2",
+      "report_id": 189,
+      "page": 2,
+      "title": "미용기기: 9월 잠정 수출: 3분기는 환율 및 계절성 영향",
+      "date": "2026-10-06",
+      "url": "https://www.eugenefn.com/common/files/amail/20261006_B3520_db23_7.pdf"
+     },
+     {
+      "id": "R261-p2",
+      "report_id": 261,
+      "page": 2,
+      "title": "Eugene’s FICC Update",
+      "date": "2026-10-22",
+      "url": "https://www.eugenefn.com/common/files/amail/20261022_B_jnkim0526_1320.pdf"
+     },
+     {
+      "id": "R29-p2",
+      "report_id": 29,
+      "page": 2,
+      "title": "Eugene’s FICC Update",
+      "date": "2026-06-26",
+      "url": "https://www.eugenefn.com/common/files/amail/20260626_B_jnkim0526_1223.pdf"
+     },
+     {
+      "id": "R200-p2",
+      "report_id": 200,
+      "page": 2,
+      "title": "Eugene’s FICC Update",
+      "date": "2026-10-07",
+      "url": "https://www.eugenefn.com/common/files/amail/20261007_B_jnkim0526_1308.pdf"
+     },
+     {
+      "id": "R98-p2",
+      "report_id": 98,
+      "page": 2,
+      "title": "Eugene’s FICC Update",
+      "date": "2026-09-01",
+      "url": "https://www.eugenefn.com/common/files/amail/20260901_B_jnkim0526_1281.pdf"
+     }
+    ],
+    "usage": {
+     "in": 23003,
+     "out": 5285
+    }
+   }
+  },
+  "answer": null,
+  "route": "answer",
+  "reviewer": null,
+  "draft_secs": 50.6
+ },
+ {
+  "text": "AI 데이터센터 투자 확대가 전력기기 업종에 어떤 영향을 주나요?",
+  "persona": "am",
+  "topic": "전력기기",
+  "status": "reviewed",
+  "draft": {
+   "route": "answer",
+   "route_reason": "AI 데이터센터 투자와 전력기기 업종 영향에 대한 산업 질문이며, 전력기기·연료전지·건설 리포트에 근거가 있어 답변 가능.",
+   "topic": "전력기기",
+   "verdict": "원문 근거로는 고부하 수용가(데이터센터)의 전력망 CAPEX 비중 상승과 800V DC 전환에 따른 랙 인접 장비 수요 확대가 가장 강하고, 전력 공급 병목에 따른 전력기기 리드타임 장기화가 그다음입니다. 다만 9월 말 오라클발 AIDC 지연 우려로 업종이 약세를 보인 사례가 있어, 투자 집행 속도는 계속 점검이 필요합니다.",
+   "hypotheses": [
+    {
+     "title": "고부하 수용가 중심의 전력망 CAPEX 확대와 솔루션 수요",
+     "strength": "유효",
+     "facts": [
+      {
+       "text": "FERC Order 206은 RTO/ISO와 송전사업자에게 대형 부하 맞춤 Tariff 개정안 제출 등을 요구했습니다.",
+       "cite": {
+        "source_id": "R12-p1",
+        "quote": "60일 요구는 현행 Tariff(망 접속 관련 규제 가이드) 정당화 및 대형 부하 \n맞춤 Tariff 개정안 제출"
+       },
+       "verify": {
+        "status": "ok",
+        "report_id": 12,
+        "page": 1,
+        "title": "전력기기: FERC 의 신규 Order 와 Power Quality 의 중요성",
+        "date": "2026-06-23",
+        "url": "https://www.eugenefn.com/common/files/amail/20260623_B20_js_heo_78.pdf#page=1"
+       }
+      },
+      {
+       "text": "데이터센터는 칩 단위 전력소모 증가로 주파수·부하변동 제어 문제를 겪고 있습니다.",
+       "cite": {
+        "source_id": "R12-p1",
+        "quote": "극도로 불안정해지는 주파수 및 부하변\n동 제어 솔루션 확보"
+       },
+       "verify": {
+        "status": "ok",
+        "report_id": 12,
+        "page": 1,
+        "title": "전력기기: FERC 의 신규 Order 와 Power Quality 의 중요성",
+        "date": "2026-06-23",
+        "url": "https://www.eugenefn.com/common/files/amail/20260623_B20_js_heo_78.pdf#page=1"
+       }
+      }
+     ],
+     "view": {
+      "text": "당사는 전력망 CAPEX에서 고부하 수용가 비중이 계속 오를 것으로 보고, 이들이 원하는 솔루션 보유 여부가 국내 기업 밸류에이션의 관건이라고 봅니다.",
+      "cite": {
+       "source_id": "R12-p1",
+       "quote": "국내 전력기기 기업들도 밸류에이션 프리미엄을 정당화할 수 있는 솔루션 \n보유 여부에 주목 필요"
+      },
+      "verify": {
+       "status": "ok",
+       "report_id": 12,
+       "page": 1,
+       "title": "전력기기: FERC 의 신규 Order 와 Power Quality 의 중요성",
+       "date": "2026-06-23",
+       "url": "https://www.eugenefn.com/common/files/amail/20260623_B20_js_heo_78.pdf#page=1"
+      }
+     },
+     "counter": {
+      "text": "유틸리티의 전력망 투자 비중이 여전히 압도적으로 큽니다.",
+      "cite": {
+       "source_id": "R12-p1",
+       "quote": "유틸리티 업체들이 전력망\n에 투자하는 비중이 압도적으로 크지만"
+      },
+      "verify": {
+       "status": "ok",
+       "report_id": 12,
+       "page": 1,
+       "title": "전력기기: FERC 의 신규 Order 와 Power Quality 의 중요성",
+       "date": "2026-06-23",
+       "url": "https://www.eugenefn.com/common/files/amail/20260623_B20_js_heo_78.pdf#page=1"
+      }
+     },
+     "checks": [
+      "FERC Order 206에 따른 RTO/ISO Tariff 개정안 제출 내용",
+      "국내 기업의 SST·배전 솔루션·ESS 레퍼런스 확보"
+     ]
+    },
+    {
+     "title": "800V DC 전환으로 전력 밸류체인 재편",
+     "strength": "부분 유효",
+     "facts": [
+      {
+       "text": "랙당 전력은 2020년 약 10kW에서 현재 200kW 수준까지 높아졌습니다.",
+       "cite": {
+        "source_id": "R184-p1",
+        "quote": "2020 년 약 10kW 였던 랙당 전력은 현재 \n200kW 수준까지 높아졌고"
+       },
+       "verify": {
+        "status": "ok",
+        "report_id": 184,
+        "page": 1,
+        "title": "Power & Battery: 주간 주요 기업 주가 변동",
+        "date": "2026-10-06",
+        "url": "https://www.eugenefn.com/common/files/amail/20261006_B10_tjdgus2009_1027.pdf#page=1"
+       }
+      },
+      {
+       "text": "AC 전력망에서 800V DC 랙을 쓰려면 변전소, Switchgear, SST 등 추가 설비가 필요합니다.",
+       "cite": {
+        "source_id": "R184-p1",
+        "quote": "800V DC 랙을 사용하려면 변전소, Switchgear, SST \n등 추가 설비가 필요하다"
+       },
+       "verify": {
+        "status": "ok",
+        "report_id": 184,
+        "page": 1,
+        "title": "Power & Battery: 주간 주요 기업 주가 변동",
+        "date": "2026-10-06",
+        "url": "https://www.eugenefn.com/common/files/amail/20261006_B10_tjdgus2009_1027.pdf#page=1"
+       }
+      }
+     ],
+     "view": {
+      "text": "당사는 DC 배전·보호기기, Busbar, 전력반도체 등 랙 인접 장비의 중요도가 높아질 것으로 봅니다.",
+      "cite": {
+       "source_id": "R184-p1",
+       "quote": "랙 인접 전력장비의 중요도가 높아질 전망이며"
+      },
+      "verify": {
+       "status": "ok",
+       "report_id": 184,
+       "page": 1,
+       "title": "Power & Battery: 주간 주요 기업 주가 변동",
+       "date": "2026-10-06",
+       "url": "https://www.eugenefn.com/common/files/amail/20261006_B10_tjdgus2009_1027.pdf#page=1"
+      }
+     },
+     "counter": {
+      "text": "해당 수치는 자사 연료전지 사업을 부각하려는 Bloom Energy 자료라는 한계가 있습니다.",
+      "cite": {
+       "source_id": "R184-p1",
+       "quote": "Bloom Energy 의 연료전지 사업을 부각하기 위한 자료라는 \n점은 감안해야 하지만"
+      },
+      "verify": {
+       "status": "ok",
+       "report_id": 184,
+       "page": 1,
+       "title": "Power & Battery: 주간 주요 기업 주가 변동",
+       "date": "2026-10-06",
+       "url": "https://www.eugenefn.com/common/files/amail/20261006_B10_tjdgus2009_1027.pdf#page=1"
+      }
+     },
+     "checks": [
+      "NVIDIA Rubin Ultra 이후 800V DC 도입 일정",
+      "SST·DC 배전 장비의 실제 채택 사례"
+     ]
+    },
+    {
+     "title": "전력 공급 병목과 핵심 기기 공급 부족",
+     "strength": "부분 유효",
+     "facts": [
+      {
+       "text": "발전소·송전망·변전소는 수년이 걸리고, 변압기·가스터빈 공급기간도 길어지고 있습니다.",
+       "cite": {
+        "source_id": "R112-p1",
+        "quote": "변압기와 가스터빈 등 핵심 전력기기의 공급기간까지 길어지고 \n있어"
+       },
+       "verify": {
+        "status": "ok",
+        "report_id": 112,
+        "page": 1,
+        "title": "Power & Battery: 주간 주요 기업 주가 변동",
+        "date": "2026-09-07",
+        "url": "https://www.eugenefn.com/common/files/amail/20260907_B10_tjdgus2009_1018.pdf#page=1"
+       }
+      },
+      {
+       "text": "미국 연간 데이터센터 신규 설치량은 올해 10GW를 넘을 것으로 예상됩니다.",
+       "cite": {
+        "source_id": "R115-p1",
+        "quote": "미국의 연간 데이터센터 신규 설치량이 올 해부터 10GW를 돌파하는 것으\n로 예상"
+       },
+       "verify": {
+        "status": "ok",
+        "report_id": 115,
+        "page": 1,
+        "title": "재생에너지/연료전지: 국내 해상풍력, 정부 주도 전환으로 가시성 높아져 미국 데이터센터발 연료전지 수요 급증세 강화",
+        "date": "2026-09-07",
+        "url": "https://www.eugenefn.com/common/files/amail/20260907_B20_bhh1026_1343.pdf#page=1"
+       }
+      }
+     ],
+     "view": {
+      "text": "당사는 AI 시대에 전력 공급 시점이 데이터센터 수익성의 중요한 변수가 되고, 전력 인프라가 핵심 자산이 될 것으로 봅니다.",
+      "cite": {
+       "source_id": "R112-p1",
+       "quote": "다음 AI 인\n프라의 핵심 자산이 될 전력 인프라에 지속적인 관심이 필요하다"
+      },
+      "verify": {
+       "status": "ok",
+       "report_id": 112,
+       "page": 1,
+       "title": "Power & Battery: 주간 주요 기업 주가 변동",
+       "date": "2026-09-07",
+       "url": "https://www.eugenefn.com/common/files/amail/20260907_B10_tjdgus2009_1018.pdf#page=1"
+      }
+     },
+     "counter": {
+      "text": "9월 말 오라클발 AIDC 지연 우려에 전력기기·전선주가 동반 약세를 보였습니다.",
+      "cite": {
+       "source_id": "R169-p2",
+       "quote": "AI 데이터센터 전력 수요 기대 후퇴에 동반 약세"
+      },
+      "verify": {
+       "status": "ok",
+       "report_id": 169,
+       "page": 2,
+       "title": "휴장 동안 비껴가 있던 악재 소화",
+       "date": "2026-09-29",
+       "url": "https://www.eugenefn.com/common/files/amail/20260929_B_lee.jy_44.pdf#page=2"
+      }
+     },
+     "checks": [
+      "빅테크·오라클 AIDC 프로젝트 집행 및 지연 여부",
+      "미국 데이터센터 님비 및 중간선거 이후 정책 변화"
+     ]
+    }
+   ],
+   "meta": {
+    "num_check": {
+     "ok": 2,
+     "total": 2,
+     "missing": []
+    },
+    "model": "claude-opus-5-5",
+    "effort": "low",
+    "secs": 23.5,
+    "cite_ok": 12,
+    "cite_total": 12,
+    "sources": [
+     {
+      "id": "R12-p1",
+      "report_id": 12,
+      "page": 1,
+      "title": "전력기기: FERC 의 신규 Order 와 Power Quality 의 중요성",
+      "date": "2026-06-23",
+      "url": "https://www.eugenefn.com/common/files/amail/20260623_B20_js_heo_78.pdf"
+     },
+     {
+      "id": "R133-p1",
+      "report_id": 133,
+      "page": 1,
+      "title": "재생에너지/연료전지: 텍사스, 데이터센터와 재생에너지 급증",
+      "date": "2026-09-14",
+      "url": "https://www.eugenefn.com/common/files/amail/20260914_B20_bhh1026_1344.pdf"
+     },
+     {
+      "id": "R184-p1",
+      "report_id": 184,
+      "page": 1,
+      "title": "Power & Battery: 주간 주요 기업 주가 변동",
+      "date": "2026-10-06",
+      "url": "https://www.eugenefn.com/common/files/amail/20261006_B10_tjdgus2009_1027.pdf"
+     },
+     {
+      "id": "R115-p1",
+      "report_id": 115,
+      "page": 1,
+      "title": "재생에너지/연료전지: 국내 해상풍력, 정부 주도 전환으로 가시성 높아져 미국 데이터센터발 연료전지 수요 급증세 강화",
+      "date": "2026-09-07",
+      "url": "https://www.eugenefn.com/common/files/amail/20260907_B20_bhh1026_1343.pdf"
+     },
+     {
+      "id": "R227-p1",
+      "report_id": 227,
+      "page": 1,
+      "title": "테슬라 신형 로드스터, 스페이스X 추력기로 날다",
+      "date": "2026-10-19",
+      "url": "https://www.eugenefn.com/common/files/amail/20261019_B20_uihoon0607_478.pdf"
+     },
+     {
+      "id": "R169-p2",
+      "report_id": 169,
+      "page": 2,
+      "title": "휴장 동안 비껴가 있던 악재 소화",
+      "date": "2026-09-29",
+      "url": "https://www.eugenefn.com/common/files/amail/20260929_B_lee.jy_44.pdf"
+     },
+     {
+      "id": "R263-p45",
+      "report_id": 263,
+      "page": 45,
+      "title": "THEME SIGNAL",
+      "date": "2026-10-22",
+      "url": "https://www.eugenefn.com/common/files/amail/20261022_B_js.an_47.pdf"
+     },
+     {
+      "id": "R112-p1",
+      "report_id": 112,
+      "page": 1,
+      "title": "Power & Battery: 주간 주요 기업 주가 변동",
+      "date": "2026-09-07",
+      "url": "https://www.eugenefn.com/common/files/amail/20260907_B10_tjdgus2009_1018.pdf"
+     },
+     {
+      "id": "R12-p2",
+      "report_id": 12,
+      "page": 2,
+      "title": "전력기기: FERC 의 신규 Order 와 Power Quality 의 중요성",
+      "date": "2026-06-23",
+      "url": "https://www.eugenefn.com/common/files/amail/20260623_B20_js_heo_78.pdf"
+     },
+     {
+      "id": "R171-p9",
+      "report_id": 171,
+      "page": 9,
+      "title": "건설/부동산: (같은 회복, 다른 속도)",
+      "date": "2026-09-30",
+      "url": "https://www.eugenefn.com/common/files/amail/20260930_B2010_taehwan.ryu_91.pdf"
+     },
+     {
+      "id": "R146-p1",
+      "report_id": 146,
+      "page": 1,
+      "title": "건설/부동산: 주간 아파트가격 동향",
+      "date": "2026-09-21",
+      "url": "https://www.eugenefn.com/common/files/amail/20260921_B2010_taehwan.ryu_88.pdf"
+     },
+     {
+      "id": "R156-p8",
+      "report_id": 156,
+      "page": 8,
+      "title": "엘리스그룹: AI PMDC 기반의 GPU 클라우드 서비스 선도기업",
+      "date": "2026-09-23",
+      "url": "https://www.eugenefn.com/common/files/amail/20260923_B_jongsun.park_2694.pdf"
+     },
+     {
+      "id": "R57-p1",
+      "report_id": 57,
+      "page": 1,
+      "title": "건설/부동산: 주간 아파트가격 동향",
+      "date": "2026-07-06",
+      "url": "https://www.eugenefn.com/common/files/amail/20260706_B2010_taehwan.ryu_61.pdf"
+     },
+     {
+      "id": "R263-p4",
+      "report_id": 263,
+      "page": 4,
+      "title": "THEME SIGNAL",
+      "date": "2026-10-22",
+      "url": "https://www.eugenefn.com/common/files/amail/20261022_B_js.an_47.pdf"
+     }
+    ],
+    "usage": {
+     "in": 22267,
+     "out": 2146
+    }
+   }
+  },
+  "answer": {
+   "route": "answer",
+   "route_reason": "AI 데이터센터 투자와 전력기기 업종 영향에 대한 산업 질문이며, 전력기기·연료전지·건설 리포트에 근거가 있어 답변 가능.",
+   "topic": "전력기기",
+   "verdict": "원문 근거로는 고부하 수용가(데이터센터)의 전력망 CAPEX 비중 상승과 800V DC 전환에 따른 랙 인접 장비 수요 확대가 가장 강하고, 전력 공급 병목에 따른 전력기기 리드타임 장기화가 그다음입니다. 다만 9월 말 오라클발 AIDC 지연 우려로 업종이 약세를 보인 사례가 있어, 투자 집행 속도는 계속 점검이 필요합니다.",
+   "hypotheses": [
+    {
+     "title": "고부하 수용가 중심의 전력망 CAPEX 확대와 솔루션 수요",
+     "strength": "유효",
+     "facts": [
+      {
+       "text": "FERC Order 206은 RTO/ISO와 송전사업자에게 대형 부하 맞춤 Tariff 개정안 제출 등을 요구했습니다.",
+       "cite": {
+        "source_id": "R12-p1",
+        "quote": "60일 요구는 현행 Tariff(망 접속 관련 규제 가이드) 정당화 및 대형 부하 \n맞춤 Tariff 개정안 제출"
+       },
+       "verify": {
+        "status": "ok",
+        "report_id": 12,
+        "page": 1,
+        "title": "전력기기: FERC 의 신규 Order 와 Power Quality 의 중요성",
+        "date": "2026-06-23",
+        "url": "https://www.eugenefn.com/common/files/amail/20260623_B20_js_heo_78.pdf#page=1"
+       }
+      },
+      {
+       "text": "데이터센터는 칩 단위 전력소모 증가로 주파수·부하변동 제어 문제를 겪고 있습니다.",
+       "cite": {
+        "source_id": "R12-p1",
+        "quote": "극도로 불안정해지는 주파수 및 부하변\n동 제어 솔루션 확보"
+       },
+       "verify": {
+        "status": "ok",
+        "report_id": 12,
+        "page": 1,
+        "title": "전력기기: FERC 의 신규 Order 와 Power Quality 의 중요성",
+        "date": "2026-06-23",
+        "url": "https://www.eugenefn.com/common/files/amail/20260623_B20_js_heo_78.pdf#page=1"
+       }
+      }
+     ],
+     "view": {
+      "text": "당사는 전력망 CAPEX에서 고부하 수용가 비중이 계속 오를 것으로 보고, 이들이 원하는 솔루션 보유 여부가 국내 기업 밸류에이션의 관건이라고 봅니다.",
+      "cite": {
+       "source_id": "R12-p1",
+       "quote": "국내 전력기기 기업들도 밸류에이션 프리미엄을 정당화할 수 있는 솔루션 \n보유 여부에 주목 필요"
+      },
+      "verify": {
+       "status": "ok",
+       "report_id": 12,
+       "page": 1,
+       "title": "전력기기: FERC 의 신규 Order 와 Power Quality 의 중요성",
+       "date": "2026-06-23",
+       "url": "https://www.eugenefn.com/common/files/amail/20260623_B20_js_heo_78.pdf#page=1"
+      }
+     },
+     "counter": {
+      "text": "유틸리티의 전력망 투자 비중이 여전히 압도적으로 큽니다.",
+      "cite": {
+       "source_id": "R12-p1",
+       "quote": "유틸리티 업체들이 전력망\n에 투자하는 비중이 압도적으로 크지만"
+      },
+      "verify": {
+       "status": "ok",
+       "report_id": 12,
+       "page": 1,
+       "title": "전력기기: FERC 의 신규 Order 와 Power Quality 의 중요성",
+       "date": "2026-06-23",
+       "url": "https://www.eugenefn.com/common/files/amail/20260623_B20_js_heo_78.pdf#page=1"
+      }
+     },
+     "checks": [
+      "FERC Order 206에 따른 RTO/ISO Tariff 개정안 제출 내용",
+      "국내 기업의 SST·배전 솔루션·ESS 레퍼런스 확보"
+     ]
+    },
+    {
+     "title": "800V DC 전환으로 전력 밸류체인 재편",
+     "strength": "부분 유효",
+     "facts": [
+      {
+       "text": "랙당 전력은 2020년 약 10kW에서 현재 200kW 수준까지 높아졌습니다.",
+       "cite": {
+        "source_id": "R184-p1",
+        "quote": "2020 년 약 10kW 였던 랙당 전력은 현재 \n200kW 수준까지 높아졌고"
+       },
+       "verify": {
+        "status": "ok",
+        "report_id": 184,
+        "page": 1,
+        "title": "Power & Battery: 주간 주요 기업 주가 변동",
+        "date": "2026-10-06",
+        "url": "https://www.eugenefn.com/common/files/amail/20261006_B10_tjdgus2009_1027.pdf#page=1"
+       }
+      },
+      {
+       "text": "AC 전력망에서 800V DC 랙을 쓰려면 변전소, Switchgear, SST 등 추가 설비가 필요합니다.",
+       "cite": {
+        "source_id": "R184-p1",
+        "quote": "800V DC 랙을 사용하려면 변전소, Switchgear, SST \n등 추가 설비가 필요하다"
+       },
+       "verify": {
+        "status": "ok",
+        "report_id": 184,
+        "page": 1,
+        "title": "Power & Battery: 주간 주요 기업 주가 변동",
+        "date": "2026-10-06",
+        "url": "https://www.eugenefn.com/common/files/amail/20261006_B10_tjdgus2009_1027.pdf#page=1"
+       }
+      }
+     ],
+     "view": {
+      "text": "당사는 DC 배전·보호기기, Busbar, 전력반도체 등 랙 인접 장비의 중요도가 높아질 것으로 봅니다.",
+      "cite": {
+       "source_id": "R184-p1",
+       "quote": "랙 인접 전력장비의 중요도가 높아질 전망이며"
+      },
+      "verify": {
+       "status": "ok",
+       "report_id": 184,
+       "page": 1,
+       "title": "Power & Battery: 주간 주요 기업 주가 변동",
+       "date": "2026-10-06",
+       "url": "https://www.eugenefn.com/common/files/amail/20261006_B10_tjdgus2009_1027.pdf#page=1"
+      }
+     },
+     "counter": {
+      "text": "해당 수치는 자사 연료전지 사업을 부각하려는 Bloom Energy 자료라는 한계가 있습니다.",
+      "cite": {
+       "source_id": "R184-p1",
+       "quote": "Bloom Energy 의 연료전지 사업을 부각하기 위한 자료라는 \n점은 감안해야 하지만"
+      },
+      "verify": {
+       "status": "ok",
+       "report_id": 184,
+       "page": 1,
+       "title": "Power & Battery: 주간 주요 기업 주가 변동",
+       "date": "2026-10-06",
+       "url": "https://www.eugenefn.com/common/files/amail/20261006_B10_tjdgus2009_1027.pdf#page=1"
+      }
+     },
+     "checks": [
+      "NVIDIA Rubin Ultra 이후 800V DC 도입 일정",
+      "SST·DC 배전 장비의 실제 채택 사례"
+     ]
+    },
+    {
+     "title": "전력 공급 병목과 핵심 기기 공급 부족",
+     "strength": "부분 유효",
+     "facts": [
+      {
+       "text": "발전소·송전망·변전소는 수년이 걸리고, 변압기·가스터빈 공급기간도 길어지고 있습니다.",
+       "cite": {
+        "source_id": "R112-p1",
+        "quote": "변압기와 가스터빈 등 핵심 전력기기의 공급기간까지 길어지고 \n있어"
+       },
+       "verify": {
+        "status": "ok",
+        "report_id": 112,
+        "page": 1,
+        "title": "Power & Battery: 주간 주요 기업 주가 변동",
+        "date": "2026-09-07",
+        "url": "https://www.eugenefn.com/common/files/amail/20260907_B10_tjdgus2009_1018.pdf#page=1"
+       }
+      },
+      {
+       "text": "미국 연간 데이터센터 신규 설치량은 올해 10GW를 넘을 것으로 예상됩니다.",
+       "cite": {
+        "source_id": "R115-p1",
+        "quote": "미국의 연간 데이터센터 신규 설치량이 올 해부터 10GW를 돌파하는 것으\n로 예상"
+       },
+       "verify": {
+        "status": "ok",
+        "report_id": 115,
+        "page": 1,
+        "title": "재생에너지/연료전지: 국내 해상풍력, 정부 주도 전환으로 가시성 높아져 미국 데이터센터발 연료전지 수요 급증세 강화",
+        "date": "2026-09-07",
+        "url": "https://www.eugenefn.com/common/files/amail/20260907_B20_bhh1026_1343.pdf#page=1"
+       }
+      }
+     ],
+     "view": {
+      "text": "당사는 AI 시대에 전력 공급 시점이 데이터센터 수익성의 중요한 변수가 되고, 전력 인프라가 핵심 자산이 될 것으로 봅니다.",
+      "cite": {
+       "source_id": "R112-p1",
+       "quote": "다음 AI 인\n프라의 핵심 자산이 될 전력 인프라에 지속적인 관심이 필요하다"
+      },
+      "verify": {
+       "status": "ok",
+       "report_id": 112,
+       "page": 1,
+       "title": "Power & Battery: 주간 주요 기업 주가 변동",
+       "date": "2026-09-07",
+       "url": "https://www.eugenefn.com/common/files/amail/20260907_B10_tjdgus2009_1018.pdf#page=1"
+      }
+     },
+     "counter": {
+      "text": "9월 말 오라클발 AIDC 지연 우려에 전력기기·전선주가 동반 약세를 보였습니다.",
+      "cite": {
+       "source_id": "R169-p2",
+       "quote": "AI 데이터센터 전력 수요 기대 후퇴에 동반 약세"
+      },
+      "verify": {
+       "status": "ok",
+       "report_id": 169,
+       "page": 2,
+       "title": "휴장 동안 비껴가 있던 악재 소화",
+       "date": "2026-09-29",
+       "url": "https://www.eugenefn.com/common/files/amail/20260929_B_lee.jy_44.pdf#page=2"
+      }
+     },
+     "checks": [
+      "빅테크·오라클 AIDC 프로젝트 집행 및 지연 여부",
+      "미국 데이터센터 님비 및 중간선거 이후 정책 변화"
+     ]
+    }
+   ],
+   "meta": {
+    "num_check": {
+     "ok": 2,
+     "total": 2,
+     "missing": []
+    },
+    "model": "claude-opus-5-5",
+    "effort": "low",
+    "secs": 23.5,
+    "cite_ok": 12,
+    "cite_total": 12,
+    "sources": [
+     {
+      "id": "R12-p1",
+      "report_id": 12,
+      "page": 1,
+      "title": "전력기기: FERC 의 신규 Order 와 Power Quality 의 중요성",
+      "date": "2026-06-23",
+      "url": "https://www.eugenefn.com/common/files/amail/20260623_B20_js_heo_78.pdf"
+     },
+     {
+      "id": "R133-p1",
+      "report_id": 133,
+      "page": 1,
+      "title": "재생에너지/연료전지: 텍사스, 데이터센터와 재생에너지 급증",
+      "date": "2026-09-14",
+      "url": "https://www.eugenefn.com/common/files/amail/20260914_B20_bhh1026_1344.pdf"
+     },
+     {
+      "id": "R184-p1",
+      "report_id": 184,
+      "page": 1,
+      "title": "Power & Battery: 주간 주요 기업 주가 변동",
+      "date": "2026-10-06",
+      "url": "https://www.eugenefn.com/common/files/amail/20261006_B10_tjdgus2009_1027.pdf"
+     },
+     {
+      "id": "R115-p1",
+      "report_id": 115,
+      "page": 1,
+      "title": "재생에너지/연료전지: 국내 해상풍력, 정부 주도 전환으로 가시성 높아져 미국 데이터센터발 연료전지 수요 급증세 강화",
+      "date": "2026-09-07",
+      "url": "https://www.eugenefn.com/common/files/amail/20260907_B20_bhh1026_1343.pdf"
+     },
+     {
+      "id": "R227-p1",
+      "report_id": 227,
+      "page": 1,
+      "title": "테슬라 신형 로드스터, 스페이스X 추력기로 날다",
+      "date": "2026-10-19",
+      "url": "https://www.eugenefn.com/common/files/amail/20261019_B20_uihoon0607_478.pdf"
+     },
+     {
+      "id": "R169-p2",
+      "report_id": 169,
+      "page": 2,
+      "title": "휴장 동안 비껴가 있던 악재 소화",
+      "date": "2026-09-29",
+      "url": "https://www.eugenefn.com/common/files/amail/20260929_B_lee.jy_44.pdf"
+     },
+     {
+      "id": "R263-p45",
+      "report_id": 263,
+      "page": 45,
+      "title": "THEME SIGNAL",
+      "date": "2026-10-22",
+      "url": "https://www.eugenefn.com/common/files/amail/20261022_B_js.an_47.pdf"
+     },
+     {
+      "id": "R112-p1",
+      "report_id": 112,
+      "page": 1,
+      "title": "Power & Battery: 주간 주요 기업 주가 변동",
+      "date": "2026-09-07",
+      "url": "https://www.eugenefn.com/common/files/amail/20260907_B10_tjdgus2009_1018.pdf"
+     },
+     {
+      "id": "R12-p2",
+      "report_id": 12,
+      "page": 2,
+      "title": "전력기기: FERC 의 신규 Order 와 Power Quality 의 중요성",
+      "date": "2026-06-23",
+      "url": "https://www.eugenefn.com/common/files/amail/20260623_B20_js_heo_78.pdf"
+     },
+     {
+      "id": "R171-p9",
+      "report_id": 171,
+      "page": 9,
+      "title": "건설/부동산: (같은 회복, 다른 속도)",
+      "date": "2026-09-30",
+      "url": "https://www.eugenefn.com/common/files/amail/20260930_B2010_taehwan.ryu_91.pdf"
+     },
+     {
+      "id": "R146-p1",
+      "report_id": 146,
+      "page": 1,
+      "title": "건설/부동산: 주간 아파트가격 동향",
+      "date": "2026-09-21",
+      "url": "https://www.eugenefn.com/common/files/amail/20260921_B2010_taehwan.ryu_88.pdf"
+     },
+     {
+      "id": "R156-p8",
+      "report_id": 156,
+      "page": 8,
+      "title": "엘리스그룹: AI PMDC 기반의 GPU 클라우드 서비스 선도기업",
+      "date": "2026-09-23",
+      "url": "https://www.eugenefn.com/common/files/amail/20260923_B_jongsun.park_2694.pdf"
+     },
+     {
+      "id": "R57-p1",
+      "report_id": 57,
+      "page": 1,
+      "title": "건설/부동산: 주간 아파트가격 동향",
+      "date": "2026-07-06",
+      "url": "https://www.eugenefn.com/common/files/amail/20260706_B2010_taehwan.ryu_61.pdf"
+     },
+     {
+      "id": "R263-p4",
+      "report_id": 263,
+      "page": 4,
+      "title": "THEME SIGNAL",
+      "date": "2026-10-22",
+      "url": "https://www.eugenefn.com/common/files/amail/20261022_B_js.an_47.pdf"
+     }
+    ],
+    "usage": {
+     "in": 22267,
+     "out": 2146
+    }
+   }
+  },
+  "route": "answer",
+  "reviewer": "반도체 담당 애널리스트",
+  "draft_secs": 23.5
+ }
+]

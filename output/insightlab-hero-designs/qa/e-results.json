@@ -1,0 +1,648 @@
+{
+  "base": "http://127.0.0.1:4192/e-signal-reel.html",
+  "checks": [
+    {
+      "name": "desktopInitial",
+      "state": {
+        "width": 1440,
+        "scrollWidth": 1440,
+        "static": false,
+        "phase": "signal",
+        "fold": "0.000",
+        "progress": "0.000",
+        "world": {
+          "width": 1440,
+          "height": 812,
+          "ratio": 1.7733990147783252
+        },
+        "introOpacity": "1",
+        "filmOpacity": "0",
+        "panelOpacity": "0",
+        "filmInert": true,
+        "panelInert": true,
+        "wave": {
+          "ready": "true",
+          "renderer": "webgl",
+          "status": "running"
+        },
+        "preview": {
+          "paused": true,
+          "muted": true,
+          "duration": null,
+          "time": 0,
+          "ready": 0,
+          "error": null,
+          "width": 0,
+          "height": 0
+        },
+        "modal": {
+          "open": false,
+          "paused": true,
+          "muted": false,
+          "duration": null,
+          "time": 0,
+          "error": null
+        },
+        "focus": "signal-design"
+      }
+    },
+    {
+      "name": "desktopFold",
+      "state": {
+        "width": 1440,
+        "scrollWidth": 1440,
+        "static": false,
+        "phase": "fold",
+        "fold": "0.490",
+        "progress": "0.380",
+        "world": {
+          "width": 1101.453125,
+          "height": 620.578125,
+          "ratio": 1.7748822922174383
+        },
+        "introOpacity": "0.058",
+        "filmOpacity": "0",
+        "panelOpacity": "0",
+        "filmInert": true,
+        "panelInert": true,
+        "wave": {
+          "ready": "true",
+          "renderer": "webgl",
+          "status": "running"
+        },
+        "preview": {
+          "paused": true,
+          "muted": true,
+          "duration": null,
+          "time": 0,
+          "ready": 0,
+          "error": null,
+          "width": 0,
+          "height": 0
+        },
+        "modal": {
+          "open": false,
+          "paused": true,
+          "muted": false,
+          "duration": null,
+          "time": 0,
+          "error": null
+        },
+        "focus": "signal-design"
+      }
+    },
+    {
+      "name": "desktopSettled",
+      "state": {
+        "width": 1440,
+        "scrollWidth": 1440,
+        "static": false,
+        "phase": "showreel",
+        "fold": "1.000",
+        "progress": "0.880",
+        "world": {
+          "width": 748.796875,
+          "height": 421.1875,
+          "ratio": 1.777823119157145
+        },
+        "introOpacity": "0",
+        "filmOpacity": "1",
+        "panelOpacity": "1",
+        "filmInert": false,
+        "panelInert": false,
+        "wave": {
+          "ready": "true",
+          "renderer": "webgl",
+          "status": "paused"
+        },
+        "preview": {
+          "paused": false,
+          "muted": true,
+          "duration": 15,
+          "time": 1.081546,
+          "ready": 4,
+          "error": null,
+          "width": 1280,
+          "height": 720
+        },
+        "modal": {
+          "open": false,
+          "paused": true,
+          "muted": false,
+          "duration": null,
+          "time": 0,
+          "error": null
+        },
+        "focus": "signal-design"
+      }
+    },
+    {
+      "name": "previewPause",
+      "state": {
+        "width": 1440,
+        "scrollWidth": 1440,
+        "static": false,
+        "phase": "showreel",
+        "fold": "1.000",
+        "progress": "0.880",
+        "world": {
+          "width": 748.796875,
+          "height": 421.1875,
+          "ratio": 1.777823119157145
+        },
+        "introOpacity": "0",
+        "filmOpacity": "1",
+        "panelOpacity": "1",
+        "filmInert": false,
+        "panelInert": false,
+        "wave": {
+          "ready": "true",
+          "renderer": "webgl",
+          "status": "paused"
+        },
+        "preview": {
+          "paused": true,
+          "muted": true,
+          "duration": 15,
+          "time": 1.184423,
+          "ready": 4,
+          "error": null,
+          "width": 1280,
+          "height": 720
+        },
+        "modal": {
+          "open": false,
+          "paused": true,
+          "muted": false,
+          "duration": null,
+          "time": 0,
+          "error": null
+        },
+        "focus": "film-toggle"
+      }
+    },
+    {
+      "name": "previewResume",
+      "state": {
+        "width": 1440,
+        "scrollWidth": 1440,
+        "static": false,
+        "phase": "showreel",
+        "fold": "1.000",
+        "progress": "0.880",
+        "world": {
+          "width": 748.796875,
+          "height": 421.1875,
+          "ratio": 1.777823119157145
+        },
+        "introOpacity": "0",
+        "filmOpacity": "1",
+        "panelOpacity": "1",
+        "filmInert": false,
+        "panelInert": false,
+        "wave": {
+          "ready": "true",
+          "renderer": "webgl",
+          "status": "paused"
+        },
+        "preview": {
+          "paused": false,
+          "muted": true,
+          "duration": 15,
+          "time": 1.196448,
+          "ready": 4,
+          "error": null,
+          "width": 1280,
+          "height": 720
+        },
+        "modal": {
+          "open": false,
+          "paused": true,
+          "muted": false,
+          "duration": null,
+          "time": 0,
+          "error": null
+        },
+        "focus": "film-toggle"
+      }
+    },
+    {
+      "name": "modalSoundPlayback",
+      "state": {
+        "width": 1440,
+        "scrollWidth": 1440,
+        "static": false,
+        "phase": "showreel",
+        "fold": "1.000",
+        "progress": "0.880",
+        "world": {
+          "width": 748.796875,
+          "height": 421.1875,
+          "ratio": 1.777823119157145
+        },
+        "introOpacity": "0",
+        "filmOpacity": "1",
+        "panelOpacity": "1",
+        "filmInert": false,
+        "panelInert": false,
+        "wave": {
+          "ready": "true",
+          "renderer": "webgl",
+          "status": "paused"
+        },
+        "preview": {
+          "paused": true,
+          "muted": true,
+          "duration": 15,
+          "time": 1.298763,
+          "ready": 4,
+          "error": null,
+          "width": 1280,
+          "height": 720
+        },
+        "modal": {
+          "open": true,
+          "paused": false,
+          "muted": false,
+          "duration": 15,
+          "time": 7.6,
+          "error": null
+        },
+        "focus": "dialog-close"
+      }
+    },
+    {
+      "name": "modalEscapeAndFocusReturn",
+      "state": {
+        "width": 1440,
+        "scrollWidth": 1440,
+        "static": false,
+        "phase": "showreel",
+        "fold": "1.000",
+        "progress": "0.880",
+        "world": {
+          "width": 748.796875,
+          "height": 421.1875,
+          "ratio": 1.777823119157145
+        },
+        "introOpacity": "0",
+        "filmOpacity": "1",
+        "panelOpacity": "1",
+        "filmInert": false,
+        "panelInert": false,
+        "wave": {
+          "ready": "true",
+          "renderer": "webgl",
+          "status": "paused"
+        },
+        "preview": {
+          "paused": false,
+          "muted": true,
+          "duration": 15,
+          "time": 1.309254,
+          "ready": 4,
+          "error": null,
+          "width": 1280,
+          "height": 720
+        },
+        "modal": {
+          "open": false,
+          "paused": true,
+          "muted": false,
+          "duration": 15,
+          "time": 7.6,
+          "error": null
+        },
+        "focus": "btn btn--red"
+      }
+    },
+    {
+      "name": "scrollBack",
+      "state": {
+        "width": 1440,
+        "scrollWidth": 1440,
+        "static": false,
+        "phase": "signal",
+        "fold": "0.000",
+        "progress": "0.000",
+        "world": {
+          "width": 1440,
+          "height": 812,
+          "ratio": 1.7733990147783252
+        },
+        "introOpacity": "1",
+        "filmOpacity": "0",
+        "panelOpacity": "0",
+        "filmInert": true,
+        "panelInert": true,
+        "wave": {
+          "ready": "true",
+          "renderer": "webgl",
+          "status": "running"
+        },
+        "preview": {
+          "paused": true,
+          "muted": true,
+          "duration": 15,
+          "time": 1.344694,
+          "ready": 4,
+          "error": null,
+          "width": 1280,
+          "height": 720
+        },
+        "modal": {
+          "open": false,
+          "paused": true,
+          "muted": false,
+          "duration": 15,
+          "time": 7.6,
+          "error": null
+        },
+        "focus": "signal-design"
+      }
+    },
+    {
+      "name": "offscreen",
+      "state": {
+        "width": 1440,
+        "scrollWidth": 1440,
+        "static": false,
+        "phase": "showreel",
+        "fold": "1.000",
+        "progress": "1.000",
+        "world": {
+          "width": 748.796875,
+          "height": 421.1875,
+          "ratio": 1.777823119157145
+        },
+        "introOpacity": "0",
+        "filmOpacity": "1",
+        "panelOpacity": "1",
+        "filmInert": false,
+        "panelInert": false,
+        "wave": {
+          "ready": "true",
+          "renderer": "webgl",
+          "status": "paused"
+        },
+        "preview": {
+          "paused": true,
+          "muted": true,
+          "duration": 15,
+          "time": 1.846105,
+          "ready": 4,
+          "error": null,
+          "width": 1280,
+          "height": 720
+        },
+        "modal": {
+          "open": false,
+          "paused": true,
+          "muted": false,
+          "duration": 15,
+          "time": 7.6,
+          "error": null
+        },
+        "focus": "signal-design"
+      }
+    },
+    {
+      "name": "mobileInitial",
+      "state": {
+        "width": 390,
+        "scrollWidth": 390,
+        "static": false,
+        "phase": "signal",
+        "fold": "0.000",
+        "progress": "0.000",
+        "world": {
+          "width": 390,
+          "height": 770,
+          "ratio": 0.5064935064935064
+        },
+        "introOpacity": "1",
+        "filmOpacity": "0",
+        "panelOpacity": "0",
+        "filmInert": true,
+        "panelInert": true,
+        "wave": {
+          "ready": "true",
+          "renderer": "webgl",
+          "status": "running"
+        },
+        "preview": {
+          "paused": true,
+          "muted": true,
+          "duration": null,
+          "time": 0,
+          "ready": 0,
+          "error": null,
+          "width": 0,
+          "height": 0
+        },
+        "modal": {
+          "open": false,
+          "paused": true,
+          "muted": false,
+          "duration": null,
+          "time": 0,
+          "error": null
+        },
+        "focus": "signal-design"
+      }
+    },
+    {
+      "name": "mobileSettled",
+      "state": {
+        "width": 390,
+        "scrollWidth": 390,
+        "static": false,
+        "phase": "showreel",
+        "fold": "1.000",
+        "progress": "0.880",
+        "world": {
+          "width": 350,
+          "height": 196.875,
+          "ratio": 1.7777777777777777
+        },
+        "introOpacity": "0",
+        "filmOpacity": "1",
+        "panelOpacity": "1",
+        "filmInert": false,
+        "panelInert": false,
+        "wave": {
+          "ready": "true",
+          "renderer": "webgl",
+          "status": "paused"
+        },
+        "preview": {
+          "paused": false,
+          "muted": true,
+          "duration": 15,
+          "time": 0.850685,
+          "ready": 4,
+          "error": null,
+          "width": 1280,
+          "height": 720
+        },
+        "modal": {
+          "open": false,
+          "paused": true,
+          "muted": false,
+          "duration": null,
+          "time": 0,
+          "error": null
+        },
+        "focus": "signal-design"
+      }
+    },
+    {
+      "name": "smallMobileStatic",
+      "state": {
+        "width": 375,
+        "scrollWidth": 375,
+        "static": true,
+        "worldHeight": 580.375,
+        "film": {
+          "width": 330,
+          "height": 185.625,
+          "ratio": 1.7777777777777777
+        },
+        "preview": {
+          "paused": true,
+          "muted": true,
+          "duration": null,
+          "time": 0,
+          "controls": false,
+          "error": null
+        },
+        "wave": {
+          "status": "running"
+        },
+        "filmInert": false,
+        "panelInert": false
+      }
+    },
+    {
+      "name": "smallMobileFilm",
+      "state": {
+        "width": 375,
+        "scrollWidth": 375,
+        "static": true,
+        "worldHeight": 580.375,
+        "film": {
+          "width": 330,
+          "height": 185.625,
+          "ratio": 1.7777777777777777
+        },
+        "preview": {
+          "paused": true,
+          "muted": true,
+          "duration": null,
+          "time": 0,
+          "controls": false,
+          "error": null
+        },
+        "wave": {
+          "status": "running"
+        },
+        "filmInert": false,
+        "panelInert": false
+      }
+    },
+    {
+      "name": "reducedNoAutoplay",
+      "state": {
+        "width": 1440,
+        "scrollWidth": 1440,
+        "static": true,
+        "worldHeight": 1229.15625,
+        "film": {
+          "width": 1267.1875,
+          "height": 712.78125,
+          "ratio": 1.777807006006401
+        },
+        "preview": {
+          "paused": true,
+          "muted": true,
+          "duration": null,
+          "time": 0,
+          "controls": false,
+          "error": null
+        },
+        "wave": {
+          "status": "static"
+        },
+        "filmInert": false,
+        "panelInert": false
+      }
+    },
+    {
+      "name": "reducedManualPlay",
+      "state": {
+        "width": 1440,
+        "scrollWidth": 1440,
+        "static": true,
+        "worldHeight": 1229.15625,
+        "film": {
+          "width": 1267.1875,
+          "height": 712.78125,
+          "ratio": 1.777807006006401
+        },
+        "preview": {
+          "paused": false,
+          "muted": true,
+          "duration": 15,
+          "time": 0.117508,
+          "controls": false,
+          "error": null
+        },
+        "wave": {
+          "status": "static"
+        },
+        "filmInert": false,
+        "panelInert": false
+      }
+    },
+    {
+      "name": "noJavaScriptReadableVideo",
+      "state": {
+        "width": 390,
+        "scrollWidth": 390,
+        "static": true,
+        "worldHeight": 591.53125,
+        "film": {
+          "width": 343.1875,
+          "height": 193.03125,
+          "ratio": 1.7778857050348065
+        },
+        "preview": {
+          "paused": true,
+          "muted": true,
+          "duration": null,
+          "time": 0,
+          "controls": true,
+          "error": null
+        },
+        "wave": {},
+        "filmInert": false,
+        "panelInert": false
+      }
+    },
+    {
+      "name": "modalDecodedPlayback",
+      "state": {
+        "paused": false,
+        "muted": false,
+        "time": 7.895215,
+        "duration": 15,
+        "ready": 4,
+        "width": 1920,
+        "height": 1080,
+        "volume": 1
+      }
+    }
+  ],
+  "errors": [],
+  "passed": true
+}

@@ -9,7 +9,7 @@
 import json
 import os
 
-from . import db
+from . import db, measure
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 OUT = os.path.join(ROOT, "assets", "lounge-snapshot.json")
@@ -45,12 +45,39 @@ def main():
         r["topic_counts"] = {t: full.count(t) for t in topics}
         reports.append(r)
 
+    # 맞춤 전환 결과물(검수 완료 답변) — 없으면 만들고 assets/lounge-exports/ 로 복사
+    import shutil
+    from . import export
+    pub = os.path.join(ROOT, "assets", "lounge-exports")
+    shutil.rmtree(pub, ignore_errors=True)
+    exports = []
+    for q in questions:
+        if q["status"] != "reviewed" or not (q["answer"] or {}).get("hypotheses"):
+            continue
+        rows = db.q("select kind, files from exports where question_id=?", (q["id"],))
+        if len(rows) < len(export.KINDS):
+            export.build(q["id"])
+            rows = db.q("select kind, files from exports where question_id=?", (q["id"],))
+        for r in rows:
+            files = []
+            for src in db.loads(r["files"]) or []:
+                dst = os.path.join(pub, f"q{q['id']}", os.path.basename(src))
+                os.makedirs(os.path.dirname(dst), exist_ok=True)
+                shutil.copy2(os.path.join(ROOT, src), dst)
+                files.append(os.path.relpath(dst, ROOT).replace(os.sep, "/"))
+            if r["kind"] == "cardnews":
+                shutil.copy2(os.path.join(ROOT, "lounge_api", "exports", f"q{q['id']}", "cardnews.json"),
+                             os.path.join(pub, f"q{q['id']}", "cardnews.json"))
+            exports.append({"question_id": q["id"], "persona": q["persona"], "text": q["text"], "kind": r["kind"], "files": files})
+
     m = db.q("select count(*) n from reports", one=True)["n"], db.q("select count(*) n from pages", one=True)["n"]
     snap = {"generated_at": db.now(), "reports_total": m[0], "pages_total": m[1],
-            "questions": questions, "pages": pages, "reports": reports}
+            "questions": questions, "pages": pages, "reports": reports, "exports": exports,
+            "measure": {"tasks": measure.tasks(),
+                        "reports": db.q("select id,title,published_at from reports order by published_at desc, id desc")}}
     with open(OUT, "w", encoding="utf-8") as f:
         json.dump(snap, f, ensure_ascii=False, separators=(",", ":"))
-    print(f"스냅샷: 질문 {len(questions)} · 인용 쪽 {len(pages)} · 리포트 목록 {len(reports)} → {OUT} ({os.path.getsize(OUT)//1024}KB)")
+    print(f"스냅샷: 질문 {len(questions)} · 인용 쪽 {len(pages)} · 결과물 {len(exports)} · 리포트 목록 {len(reports)} → {OUT} ({os.path.getsize(OUT)//1024}KB)")
 
 
 if __name__ == "__main__":

@@ -1,0 +1,33 @@
+/* Coinone spacing, radius & elevation
+   8px spacing base; controls cluster at 8/12/18px gaps.
+   Low elevation overall — borders & spacing do most of the work. */
+
+:root {
+  /* Spacing scale */
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 12px;
+  --space-base: 8px;
+  --space-lg: 18px;
+  --space-xl: 32px;
+  --space-xxl: 48px;
+  --space-section: 64px;
+
+  /* Radius scale */
+  --radius-sm: 3px;     /* inline tags / accent outline */
+  --radius-chip: 6px;   /* filter chips */
+  --radius-md: 8px;     /* buttons / cards */
+  --radius-lg: 10px;    /* store / large buttons */
+  --radius-full: 9999px;/* icon buttons, pills */
+
+  /* Elevation — reserved for floating menus / modals, kept soft & short */
+  --shadow-soft: rgba(0, 0, 0, 0.05) 0px 1px 2px 0px;
+  --shadow-pop: rgba(0, 0, 0, 0.12) 0px 6px 24px -4px, rgba(0, 0, 0, 0.06) 0px 2px 6px 0px;
+
+  /* Motion */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1); /* @kind other */
+  --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1); /* @kind other */
+  --dur-micro: 120ms; /* @kind other */
+  --dur-toggle: 200ms; /* @kind other */
+  --dur-page: 300ms; /* @kind other */
+}

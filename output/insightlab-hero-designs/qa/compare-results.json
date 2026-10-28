@@ -1,0 +1,96 @@
+[
+  {
+    "mode": "desktop",
+    "overflow": false,
+    "tabs": [
+      {
+        "id": "a",
+        "url": "http://127.0.0.1:4190/a-signal.html",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "title": "A — Signal Field · Eugene Insight Lab"
+      },
+      {
+        "id": "b",
+        "url": "http://127.0.0.1:4190/b-vector.html",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "title": "B · Vector Editorial — Eugene Insight Lab"
+      },
+      {
+        "id": "c",
+        "url": "http://127.0.0.1:4190/c-orbit.html",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "title": "C · Research Orbit — Eugene Insight Lab"
+      },
+      {
+        "id": "d",
+        "url": "http://127.0.0.1:4190/d-redshift.html",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "title": "D · RED SHIFT — Eugene Insight Lab"
+      }
+    ],
+    "childDScroll": {
+      "scroll": 650,
+      "progress": "0.539",
+      "fold": "0.734"
+    },
+    "mobileFrameViewport": {
+      "width": 390,
+      "height": 844
+    },
+    "split": {
+      "visible": true,
+      "rightChoices": [
+        {
+          "id": "b",
+          "url": "http://127.0.0.1:4190/b-vector.html",
+          "viewport": {
+            "width": 1440,
+            "height": 900
+          }
+        },
+        {
+          "id": "c",
+          "url": "http://127.0.0.1:4190/c-orbit.html",
+          "viewport": {
+            "width": 1440,
+            "height": 900
+          }
+        },
+        {
+          "id": "d",
+          "url": "http://127.0.0.1:4190/d-redshift.html",
+          "viewport": {
+            "width": 1440,
+            "height": 900
+          }
+        }
+      ]
+    },
+    "resetReloaded": true,
+    "splitHidden": true,
+    "rightSourceRemoved": true,
+    "errors": []
+  },
+  {
+    "mode": "mobile",
+    "overflow": false,
+    "childViewport": {
+      "width": 390,
+      "height": 844
+    },
+    "url": "http://127.0.0.1:4190/b-vector.html",
+    "errors": []
+  }
+]

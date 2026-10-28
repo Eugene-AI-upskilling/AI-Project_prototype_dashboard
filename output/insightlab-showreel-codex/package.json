@@ -1,0 +1,1 @@
+{"name":"insightlab-in-motion","private":true,"version":"1.0.0","scripts":{"stills":"node render.js stills","render":"node render.js video","audio":"node audio.js"},"devDependencies":{"playwright":"^1.63.0"}}

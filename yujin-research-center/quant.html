@@ -3,17 +3,26 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>퀀트 투자 · 유진 Insight Lab</title>
+<script src="assets/gate.js?v=20261028a"></script>
+<title>Quant Studio · 유진 Insight Lab</title>
 <meta name="description" content="테마를 골라 나만의 전략을 설계하고, 같은 자리에서 10년 데이터로 검증까지. 코드 한 줄 없이 퀀트가 쓰던 도구를 클릭만으로." />
 
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
 <link rel="preload" href="assets/fonts/PretendardVariable.woff2" as="font" type="font/woff2" crossorigin />
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" />
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<link rel="stylesheet" href="assets/app.css" />
+<link rel="stylesheet" href="assets/app.css?v=20261028e" />
 
 <style>
 /* ── 퀀트 페이지 전용 (기존 토큰만 사용) ── */
+/* 테마 로테이션 (theme-rotation.js · Research와 같은 컴포넌트) */
+.tr-host .bubble{border:0;padding:0;font:inherit;color:#27324a}
+.tr-host .theme-panel .card__body{display:flex;flex-direction:column;height:100%}
+.tr-host .tr-list{flex:1;overflow-y:auto;overflow-x:hidden;max-height:300px;margin-top:8px}
+.tr-row{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:8px 2px;border-bottom:1px solid var(--color-hairline)}
+.tr-nm{font-weight:700;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tr-rep{display:block;padding:10px 2px;border-bottom:1px solid var(--color-hairline);text-decoration:none;color:inherit}
+.tr-rep:hover{color:var(--blue-cta)}
 /* 연도별 성과 미니 바 */
 .yr-perf{margin-top:8px}
 .yr-perf .yr-row{display:grid;grid-template-columns:60px 1fr 68px;align-items:center;gap:12px;padding:7px 2px}
@@ -78,8 +87,8 @@
 </head>
 <body
   data-page-eyebrow="QUANT STUDIO"
-  data-page-title="퀀트 투자"
-  data-page-desc="테마를 골라 나만의 전략을 설계하고, 같은 자리에서 10년 데이터로 검증까지. 코드 한 줄 없이.">
+  data-page-title="Quant Studio"
+  data-page-desc="지금 돈이 몰리는 테마를 확인하고, 그 테마로 나만의 전략을 설계해 10년 데이터로 검증까지. 코드 한 줄 없이.">
 
 <main id="main">
 
@@ -228,6 +237,18 @@
     </div>
   </section>
 
+  <!-- 테마 로테이션 (기관 고객: Research에서 이동) — 버블에서 테마를 골라 바로 전략 만들기로 -->
+  <section class="section section--tint" id="secTheme" data-for="inst" aria-labelledby="qThH">
+    <div class="wrap">
+      <div class="sec-head">
+        <div class="sec-eyebrow"><span class="dot"></span>THEME ROTATION</div>
+        <h2 class="sec-title" style="font-size:var(--text-title)" id="qThH">지금 돈이 몰리는 테마</h2>
+        <p class="sec-sub">주간 테마 로테이션 분석입니다. 버블을 눌러 구성 종목 · 리포트 · 뉴스를 보고, ‘이 테마로 전략 만들기’로 위 다이렉트 인덱싱에 바로 불러오세요.</p>
+      </div>
+      <div id="qThemeRotation"></div>
+    </div>
+  </section>
+
   <!-- 추천 전략 템플릿 갤러리 -->
   <section class="section section--tint">
     <div class="wrap">
@@ -248,7 +269,7 @@
           <div class="rep__top"><span class="badge badge--brand">시황·테마</span></div>
           <h3 style="font-size:var(--text-lg);font-weight:700;margin:6px 0 8px">지금 돈이 몰리는 테마로 전략 짜기</h3>
           <p class="sub" style="color:var(--color-muted);line-height:1.6">테마 로테이션에서 아이디어를 얻어 곧바로 인덱싱으로 옮겨보세요.</p>
-          <div style="margin-top:12px"><a class="btn btn--secondary btn--block" href="market.html">테마 로테이션 보기 →</a></div>
+          <div style="margin-top:12px"><a class="btn btn--secondary btn--block" href="#secTheme">테마 로테이션 보기 →</a></div>
         </div></div>
         <div class="card"><div class="card__body">
           <div class="rep__top"><span class="badge badge--brand">리서치 리포트</span></div>
@@ -260,7 +281,7 @@
           <div class="rep__top"><span class="badge badge--brand">종목 이벤트</span></div>
           <h3 style="font-size:var(--text-lg);font-weight:700;margin:6px 0 8px">실적·공시 이벤트로 타이밍 잡기</h3>
           <p class="sub" style="color:var(--color-muted);line-height:1.6">보유 종목의 어닝 서프라이즈와 주요 공시를 놓치지 마세요.</p>
-          <div style="margin-top:12px"><a class="btn btn--secondary btn--block" href="events.html">오늘의 이벤트 →</a></div>
+          <div style="margin-top:12px"><a class="btn btn--secondary btn--block" href="market.html#stock-events">오늘의 이벤트 →</a></div>
         </div></div>
       </div>
     </div>
@@ -291,7 +312,8 @@
   </div>
 </div>
 
-<script src="assets/partials.js"></script>
+<script src="assets/partials.js?v=20261029a"></script>
+<script src="assets/theme-rotation.js?v=20261028a"></script>
 <script>
 /* ═════════ 퀀트 스튜디오 — 전략 설계 · 백테스트 · 보관함 ═════════ */
 
@@ -737,6 +759,25 @@ $$('#qtTabs button').forEach(b=>b.onclick=()=>{
   $('#secLib').style.display=q==='lib'?'':'none';
   if(q==='lib') loadLibrary();
 });
+
+/* ───────── 4-1. 테마 로테이션 (기관 고객 · Research에서 이동) → 다이렉트 인덱싱으로 연결 ───────── */
+(function(){
+  let S=null; try{ S=JSON.parse(localStorage.getItem('il.session')||'null'); }catch(e){}
+  const sec=document.getElementById('secTheme');
+  if(S&&S.persona==='hnw'){ if(sec) sec.remove(); return; }      // WM 고객은 Research에서 테마를 본다
+  ThemeRotation.mount(document.getElementById('qThemeRotation'),{
+    strategyLabel:'이 테마로 전략 만들기',
+    onStrategy(name){
+      const key=diThemes[name]?name:Object.keys(diThemes).find(k=>k.replace(/\s/g,'')===name.replace(/\s/g,''));
+      if(!key){ toast(`‘${name}’은(는) 아직 전략 만들기 테마 목록에 없어요. 구성 종목 실측 데이터가 있는 테마만 불러올 수 있습니다.`); return; }
+      diTheme=key; diW=diThemes[key].map(s=>s.w);
+      const idx=document.querySelector('#qtTabs [data-q="index"]'); if(idx) idx.click();
+      diInit(); if(typeof diCalc==='function') diCalc();
+      document.getElementById('secIndex').scrollIntoView({behavior:'smooth',block:'start'});
+      toast(`‘${key}’ 테마를 전략 만들기에 불러왔어요.`);
+    }
+  });
+})();
 
 /* ───────── 5. 전략 저장 & 보관함 (Supabase saved_strategies) ───────── */
 async function saveStrategy(){

@@ -1,0 +1,291 @@
+{
+  "checks": [
+    {
+      "gallery": {
+        "width": 1440,
+        "scrollWidth": 1440,
+        "images": [
+          {
+            "src": "qa/01-desktop.png",
+            "loaded": true
+          },
+          {
+            "src": "qa/02-desktop.png",
+            "loaded": true
+          },
+          {
+            "src": "qa/03-desktop.png",
+            "loaded": true
+          },
+          {
+            "src": "qa/04-desktop.png",
+            "loaded": true
+          },
+          {
+            "src": "qa/05-desktop.png",
+            "loaded": true
+          },
+          {
+            "src": "qa/06-desktop.png",
+            "loaded": true
+          }
+        ]
+      }
+    },
+    {
+      "tab": "01",
+      "url": "/directions/01-blue-current.html",
+      "width": 1440,
+      "height": 900,
+      "ready": "true",
+      "waveReady": "true",
+      "renderer": "webgl",
+      "phase": "signal",
+      "scrollY": 0,
+      "sections": [
+        "insights",
+        "perspective",
+        "platform",
+        "explore"
+      ],
+      "selected": "true"
+    },
+    {
+      "tab": "02",
+      "url": "/directions/02-white-current.html",
+      "width": 1440,
+      "height": 900,
+      "ready": "true",
+      "waveReady": "true",
+      "renderer": "webgl",
+      "phase": "signal",
+      "scrollY": 0,
+      "sections": [
+        "insights",
+        "perspective",
+        "platform",
+        "explore"
+      ],
+      "selected": "true"
+    },
+    {
+      "tab": "03",
+      "url": "/directions/03-red-editorial.html",
+      "width": 1440,
+      "height": 900,
+      "ready": "true",
+      "waveReady": "true",
+      "renderer": "webgl",
+      "phase": "signal",
+      "scrollY": 0,
+      "sections": [
+        "insights",
+        "perspective",
+        "platform",
+        "explore"
+      ],
+      "selected": "true"
+    },
+    {
+      "tab": "04",
+      "url": "/directions/04-split-atlas.html",
+      "width": 1440,
+      "height": 900,
+      "ready": "true",
+      "waveReady": "true",
+      "renderer": "webgl",
+      "phase": "signal",
+      "scrollY": 0,
+      "sections": [
+        "insights",
+        "perspective",
+        "platform",
+        "explore"
+      ],
+      "selected": "true"
+    },
+    {
+      "tab": "05",
+      "url": "/directions/05-research-studio.html",
+      "width": 1440,
+      "height": 900,
+      "ready": "true",
+      "waveReady": "true",
+      "renderer": "webgl",
+      "phase": "signal",
+      "scrollY": 0,
+      "sections": [
+        "perspective",
+        "insights",
+        "platform",
+        "explore"
+      ],
+      "selected": "true"
+    },
+    {
+      "tab": "06",
+      "url": "/directions/06-soft-mono.html",
+      "width": 1440,
+      "height": 900,
+      "ready": "true",
+      "waveReady": "true",
+      "renderer": "webgl",
+      "phase": "signal",
+      "scrollY": 0,
+      "sections": [
+        "perspective",
+        "insights",
+        "platform",
+        "explore"
+      ],
+      "selected": "true"
+    },
+    {
+      "showreel": {
+        "url": "/directions/03-red-editorial.html",
+        "width": 1440,
+        "height": 900,
+        "ready": "true",
+        "waveReady": "true",
+        "renderer": "webgl",
+        "phase": "showreel",
+        "scrollY": 909,
+        "sections": [
+          "insights",
+          "perspective",
+          "platform",
+          "explore"
+        ]
+      }
+    },
+    {
+      "below": {
+        "scrollY": 3381,
+        "platformTop": 203.21875,
+        "platformVisible": true
+      }
+    },
+    {
+      "mobileIframe": {
+        "url": "/directions/03-red-editorial.html",
+        "width": 390,
+        "height": 844,
+        "ready": "true",
+        "waveReady": "true",
+        "renderer": "webgl",
+        "phase": "showreel",
+        "scrollY": 3381,
+        "sections": [
+          "insights",
+          "perspective",
+          "platform",
+          "explore"
+        ]
+      }
+    },
+    {
+      "split": {
+        "left": {
+          "url": "/directions/03-red-editorial.html",
+          "width": 1440,
+          "height": 900,
+          "ready": "true",
+          "waveReady": "true",
+          "renderer": "webgl",
+          "phase": "showreel",
+          "scrollY": 3381,
+          "sections": [
+            "insights",
+            "perspective",
+            "platform",
+            "explore"
+          ]
+        },
+        "right": {
+          "url": "/directions/04-split-atlas.html",
+          "width": 1440,
+          "height": 900,
+          "ready": "true",
+          "waveReady": "true",
+          "renderer": "webgl",
+          "phase": "signal",
+          "scrollY": 0,
+          "sections": [
+            "insights",
+            "perspective",
+            "platform",
+            "explore"
+          ]
+        },
+        "rightVisible": true,
+        "pressed": "true"
+      }
+    },
+    {
+      "reset": {
+        "left": {
+          "url": "/directions/03-red-editorial.html",
+          "width": 1440,
+          "height": 900,
+          "ready": "true",
+          "waveReady": "true",
+          "renderer": "webgl",
+          "phase": "signal",
+          "scrollY": 0,
+          "sections": [
+            "insights",
+            "perspective",
+            "platform",
+            "explore"
+          ]
+        },
+        "right": {
+          "url": "/directions/04-split-atlas.html",
+          "width": 1440,
+          "height": 900,
+          "ready": "true",
+          "waveReady": "true",
+          "renderer": "webgl",
+          "phase": "signal",
+          "scrollY": 0,
+          "sections": [
+            "insights",
+            "perspective",
+            "platform",
+            "explore"
+          ]
+        }
+      }
+    },
+    {
+      "singleAgain": true
+    },
+    {
+      "mobileGallery": {
+        "width": 390,
+        "scrollWidth": 390,
+        "loaded": true
+      }
+    },
+    {
+      "mobileOuterLive": {
+        "url": "/directions/02-white-current.html",
+        "width": 390,
+        "height": 844,
+        "ready": "true",
+        "waveReady": "true",
+        "renderer": "webgl",
+        "phase": "signal",
+        "scrollY": 0,
+        "sections": [
+          "insights",
+          "perspective",
+          "platform",
+          "explore"
+        ]
+      }
+    }
+  ],
+  "errors": [],
+  "passed": true
+}

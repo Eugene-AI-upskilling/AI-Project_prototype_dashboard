@@ -1,7 +1,7 @@
 /* 홈 카드뉴스 아카이브(.cn-desk-grid) ↔ card_news 연결 — index-v2 빌드(build_v2.py)의 renderReps 위에 덧씌우는 독립 스크립트.
    · 카드뉴스가 있는 리포트 카드: 클릭 → reports.html?cn=(카드뉴스 뷰어), 제목은 카드뉴스 제목, 하단 '원문 보기' → reports.html?id=
    · 카드뉴스가 없으면 기존 동작(원문 PDF) 그대로.
-   · '리서치 리포트 더 보기' 태그 → reports.html#cardnews */
+   · '카드뉴스는 Private Desk에서' 태그 → desk.html#cardnews (카드뉴스는 Private Desk로 이동) */
 (function(){
   var byUrl={}, loaded=false;
   var esc=function(x){return String(x==null?'':x).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});};
@@ -30,15 +30,15 @@
     grid.addEventListener('click',function(e){
       if(e.target.closest('a')){ e.stopPropagation(); return; }
       var c=e.target.closest('.rcn[data-cn]'); if(!c) return;
-      e.stopPropagation(); e.preventDefault(); location.href='reports.html?cn='+c.dataset.cn+'#cardnews';
+      e.stopPropagation(); e.preventDefault(); location.href='desk.html?cn='+c.dataset.cn+'#cardnews';
     },true);
     grid.addEventListener('keydown',function(e){
       if(e.key!=='Enter'&&e.key!==' ') return;
       var c=e.target.closest('.rcn[data-cn]'); if(!c||e.target.closest('a')) return;
-      e.stopPropagation(); e.preventDefault(); location.href='reports.html?cn='+c.dataset.cn+'#cardnews';
+      e.stopPropagation(); e.preventDefault(); location.href='desk.html?cn='+c.dataset.cn+'#cardnews';
     },true);
   }
-  var tag=document.querySelector('a.cn-tag'); if(tag) tag.setAttribute('href','reports.html#cardnews');
+  var tag=document.querySelector('a.cn-tag'); if(tag) tag.setAttribute('href','desk.html#cardnews');
 
   var client=(typeof sb!=='undefined'&&sb)||window.sb;
   if(!client) return;

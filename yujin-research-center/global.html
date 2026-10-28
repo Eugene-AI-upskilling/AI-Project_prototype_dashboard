@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
+<script src="assets/gate.js?v=20261028a"></script>
 <title>해외 증시 · 유진 Insight Lab</title>
 <meta name="description" content="미국·아시아 지수, 섹터 등락, 20일 신고가·ATH 종목까지. 밤사이 해외 시장의 추세를 한 화면에서 추적합니다." />
 
@@ -10,7 +11,7 @@
 <link rel="preload" href="assets/fonts/PretendardVariable.woff2" as="font" type="font/woff2" crossorigin />
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" />
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<link rel="stylesheet" href="assets/app.css" />
+<link rel="stylesheet" href="assets/app.css?v=20261028e" />
 
 <style>
 /* ── 해외 증시 페이지 전용 (기존 토큰만 사용) ── */
@@ -212,7 +213,7 @@
       <div class="earn-band">
         <span class="earn-band__ttl">이번 주 해외 실적 발표</span>
         <div class="earn-band__list" id="earnBand"></div>
-        <a class="btn btn--text" href="events.html?region=global&amp;view=schedule">실적 일정·결과 전체 보기 →</a>
+        <a class="btn btn--text" href="market.html?region=global#stock-events">실적 일정·결과 전체 보기 →</a>
       </div>
     </div>
   </section>
@@ -226,7 +227,7 @@
           <h3 style="font-size:var(--text-lg);font-weight:700;margin:10px 0 6px;color:var(--blue-navy)">국내 시황·테마</h3>
           <p class="sub" style="color:var(--color-muted);line-height:1.6">코스피·코스닥 흐름과 테마 로테이션을 아침마다.</p>
         </div></a>
-        <a class="card card--hover" href="events.html?region=global" style="text-decoration:none"><div class="card__body">
+        <a class="card card--hover" href="market.html?region=global#stock-events" style="text-decoration:none"><div class="card__body">
           <span class="badge badge--brand">이벤트</span>
           <h3 style="font-size:var(--text-lg);font-weight:700;margin:10px 0 6px;color:var(--blue-navy)">해외 실적 일정·결과</h3>
           <p class="sub" style="color:var(--color-muted);line-height:1.6">발표 일정과 컨센서스 대비 서프라이즈를 종목 이벤트에서.</p>
@@ -257,7 +258,7 @@
   <div class="auth-modal dr-modal" role="dialog" aria-modal="true"><div id="drDetail"></div></div>
 </div>
 
-<script src="assets/partials.js"></script>
+<script src="assets/partials.js?v=20261029a"></script>
 <script>
 /* ═════════ 해외 증시 · 데이터 & 렌더 ═════════ */
 const fmtPct=(v,d=2)=>v==null||isNaN(v)?'—':(v>=0?'+':'')+Number(v).toFixed(d)+'%';
@@ -513,7 +514,7 @@ function openDr(tk){
     <div class="dr-chart__cap"><span>60거래일 전</span><span>오늘</span></div>
     ${body}
     <div style="display:flex;gap:10px;margin-top:22px">
-      ${h.next_earnings?`<a class="btn btn--secondary" style="flex:1" href="events.html?region=global&view=schedule">다음 실적 ${h.next_earnings.slice(5).replace('-','.')} →</a>`:''}
+      ${h.next_earnings?`<a class="btn btn--secondary" style="flex:1" href="market.html?region=global#stock-events">다음 실적 ${h.next_earnings.slice(5).replace('-','.')} →</a>`:''}
       <button class="btn btn--primary" style="flex:1" onclick="soon('관심 종목 담기')">관심 종목 담기</button>
     </div>
     <p class="auth-foot">정보 제공 목적이며 투자 권유가 아닙니다.${d&&d.live?` ${d.asof} 종가 기준.`:(d?' 현재 화면은 예시 데이터입니다.':'')}</p>`;

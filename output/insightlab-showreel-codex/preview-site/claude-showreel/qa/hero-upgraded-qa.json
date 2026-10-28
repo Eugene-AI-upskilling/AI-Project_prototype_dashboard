@@ -1,0 +1,91 @@
+{
+  "checks": [
+    {
+      "desktop": {
+        "open": {
+          "heroTop": 0,
+          "travel": 892,
+          "x": 0,
+          "y": 64,
+          "width": 1440,
+          "height": 836,
+          "viewport": 1440,
+          "scrollWidth": 1440,
+          "progress": "0.000",
+          "copyInert": true
+        },
+        "settled": {
+          "heroTop": 0,
+          "travel": 892,
+          "x": 656.6900024414062,
+          "y": 227.88999938964844,
+          "width": 735.2968139648438,
+          "height": 413.609375,
+          "viewport": 1440,
+          "scrollWidth": 1440,
+          "progress": "0.840",
+          "copyInert": false
+        },
+        "innerTilt": "matrix3d(0.999809, 0.000177395, -0.0195456, 0, 0, 0.999959, 0.00907559, 0, 0.0195464, -0.00907385, 0.999768, 0, 1.4, -0.7, 0, 1)",
+        "outerTransformPreserved": true,
+        "heroIndexValuesStable": true
+      }
+    },
+    {
+      "modalEscapeAndFocus": true,
+      "reverseScrollTiltReset": true
+    },
+    {
+      "skipFocus": true
+    },
+    {
+      "researchCards": 6,
+      "marketValuesStable": true,
+      "researchContrastOverlayPreserved": true
+    },
+    {
+      "mobile": {
+        "open": {
+          "heroTop": 0,
+          "travel": 887,
+          "x": 0,
+          "y": 111.390625,
+          "width": 390,
+          "height": 732.609375,
+          "viewport": 390,
+          "scrollWidth": 390,
+          "progress": "0.000",
+          "copyInert": true
+        },
+        "settled": {
+          "heroTop": 0,
+          "travel": 887,
+          "x": 20,
+          "y": 199.0206298828125,
+          "width": 350,
+          "height": 196.875,
+          "viewport": 390,
+          "scrollWidth": 390,
+          "progress": "0.840",
+          "copyInert": false
+        }
+      }
+    },
+    {
+      "reducedMotionPoster": true,
+      "noJsReadable": true
+    },
+    {
+      "heroMedia": {
+        "duration": 15,
+        "width": 1280,
+        "height": 720,
+        "muted": true,
+        "paused": false,
+        "error": null
+      }
+    }
+  ],
+  "errors": [],
+  "passed": true
+}

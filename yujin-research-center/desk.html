@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<script src="assets/gate.js?v=20261028a"></script>
+<title>Private Desk · 유진 Insight Lab</title>
+<meta name="description" content="리서치 카드뉴스, 저장한 리서치, 신청한 행사를 한 화면에서 확인하는 개인 대시보드." />
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
+<link rel="preload" href="assets/fonts/PretendardVariable.woff2" as="font" type="font/woff2" crossorigin />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" />
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<link rel="stylesheet" href="assets/app.css?v=20261028e" />
+<link rel="stylesheet" href="assets/lounge.css?v=20261027b" />
+<link rel="stylesheet" href="assets/cardnews/cardnews.css?v=2" />
+<style>
+/* Private Desk: 카드뉴스 · 나의 리서치 · 나의 이벤트 (app.css · lounge.css 구성 요소 재사용) */
+.lx-hello h1,.dk-head h2{word-break:keep-all}
+.pd-guide{margin-top:8px;font-size:var(--text-body);color:var(--color-muted)}
+.pd-sum{display:flex;gap:8px;flex-wrap:wrap}
+.pd-sum a{display:flex;flex-direction:column;min-width:104px;padding:8px 14px;border:1px solid #eef1f5;border-radius:var(--radius-md);background:#fff;box-shadow:var(--shadow-soft);text-decoration:none;color:inherit;transition:border-color .2s}
+.pd-sum a:hover{border-color:#b9cff3}
+.pd-sum span{font-size:var(--text-micro);color:var(--color-muted);font-weight:600}
+.pd-sum b{font-size:19px;font-weight:800;color:var(--ink-900);font-variant-numeric:tabular-nums;line-height:1.3}
+.pd-sum b small{font-size:12.5px;font-weight:700;color:var(--color-muted);margin-left:2px}
+
+.dk-sec{scroll-margin-top:86px;padding-top:30px}
+.dk-head{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:16px}
+.dk-head h2{font-size:22px;font-weight:800;color:var(--blue-navy);letter-spacing:-.02em;line-height:1.3;margin-top:4px}
+.dk-head p{font-size:var(--text-body);color:var(--color-muted);margin-top:4px}
+.dk-head .tabs{margin-bottom:0}
+
+/* 카드뉴스 썸네일 (reports.html 카드뉴스 목록과 같은 .cnv-mini) */
+.cnv-mini{display:block;border-radius:16px;overflow:hidden;text-decoration:none;color:inherit;background:#fff;
+  box-shadow:0 0 0 1px var(--color-hairline);transition:transform .2s,box-shadow .2s}
+.cnv-mini:hover{transform:translateY(-3px);box-shadow:0 14px 30px -18px rgba(14,26,43,.4),0 0 0 1px var(--color-hairline)}
+.cnv-mini .th{position:relative;aspect-ratio:1080/1350;overflow:hidden;background:#0e1a2b}
+.cnv-mini .th .cx{position:absolute;left:0;top:0;transform-origin:0 0;pointer-events:none}
+.cnv-mini .tx{padding:12px 14px 14px;font-size:var(--text-micro);color:var(--color-muted);font-weight:600}
+.cnv-mini .tx b{display:block;margin-top:4px;color:var(--ink-900);font-size:var(--text-body);line-height:1.35}
+.cnv-empty{padding:80px 0;text-align:center;color:var(--color-muted)}
+/* 카드뉴스 상세 뷰어 (cardnews.html 뷰어와 같은 .cnv 구성) — lounge.css 모달 안에서 연다 */
+.pd-viewer .lx-modal{max-width:1040px;max-height:92vh;padding:28px 36px}
+.cnv{display:grid;grid-template-columns:minmax(0,440px) minmax(0,1fr);gap:44px;align-items:start}
+.cnv-stage{position:relative}
+.cnv-frame{position:relative;width:100%;aspect-ratio:1080/1350;border-radius:22px;overflow:hidden;background:#0e1a2b;
+  box-shadow:0 30px 60px -30px rgba(14,26,43,.45),0 0 0 1px rgba(14,26,43,.06);touch-action:pan-y;user-select:none}
+.cnv-track{display:flex;height:100%;transition:transform .42s cubic-bezier(.2,.8,.2,1);will-change:transform}
+.cnv-track.drag{transition:none}
+.cnv-cell{flex:0 0 100%;height:100%;position:relative;overflow:hidden}
+.cnv-cell .cx{position:absolute;left:0;top:0;transform-origin:0 0}
+.cnv-nav{position:absolute;top:50%;transform:translateY(-50%);width:48px;height:48px;border-radius:50%;border:0;cursor:pointer;
+  background:rgba(255,255,255,.92);color:#0e1a2b;font-size:22px;font-weight:700;display:flex;align-items:center;justify-content:center;
+  box-shadow:0 6px 18px rgba(14,26,43,.18);transition:opacity .2s,transform .2s}
+.cnv-nav:hover{transform:translateY(-50%) scale(1.06)}
+.cnv-nav:disabled{opacity:0;pointer-events:none}
+.cnv-nav.prev{left:-20px} .cnv-nav.next{right:-20px}
+.cnv-bar{display:flex;align-items:center;justify-content:space-between;margin-top:18px;gap:16px}
+.cnv-dots{display:flex;gap:6px;flex-wrap:wrap}
+.cnv-dots button{width:8px;height:8px;border-radius:4px;border:0;padding:0;background:var(--color-hairline,#d8dde6);cursor:pointer;transition:width .3s,background .3s}
+.cnv-dots button.on{width:26px;background:var(--color-primary,#245ce7)}
+.cnv-count{font-size:var(--text-micro);font-weight:700;color:var(--color-muted);font-variant-numeric:tabular-nums}
+.cnv-pill{display:inline-flex;align-items:center;height:26px;padding:0 12px;font-size:var(--text-micro);font-weight:700;border-radius:999px;
+  background:rgba(49,130,246,.1);color:var(--color-primary)}
+.cnv-title{margin-top:14px;font-size:clamp(24px,2.6vw,32px);line-height:1.25;font-weight:800;letter-spacing:-.03em;color:var(--ink-900);word-break:keep-all}
+.cnv-meta{margin-top:12px;color:var(--color-muted);font-size:var(--text-body);font-weight:600}
+.cnv-toc{margin-top:24px;border-top:1px solid var(--color-hairline);list-style:none;padding:0}
+.cnv-toc li button{width:100%;display:flex;gap:14px;align-items:baseline;text-align:left;padding:11px 4px;border:0;border-bottom:1px solid var(--color-hairline);
+  background:none;cursor:pointer;font:inherit;color:var(--ink-800);font-size:var(--text-body)}
+.cnv-toc li button b{flex:0 0 26px;font-size:var(--text-micro);color:var(--color-muted);font-variant-numeric:tabular-nums}
+.cnv-toc li button.on{color:var(--color-primary);font-weight:700}
+.cnv-toc li button.on b{color:var(--color-primary)}
+.cnv-actions{margin-top:22px;display:flex;flex-direction:column;gap:10px}
+.cnv-note{margin-top:16px;font-size:var(--text-micro);color:var(--color-muted);line-height:1.6}
+.pd-cn-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.pd-cn{position:relative;min-width:0}
+.pd-cn .pd-kick{display:block;color:var(--color-primary);font-weight:800;letter-spacing:.04em;margin-bottom:2px}
+.pd-cn .pd-save{position:absolute;top:12px;right:12px;width:40px;height:40px;background:rgba(255,255,255,.92);box-shadow:0 6px 18px rgba(14,26,43,.18)}
+.pd-cn-foot{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:16px;flex-wrap:wrap}
+.pd-cn-foot span{font-size:var(--text-micro);color:var(--color-muted)}
+
+/* 저장 버튼 (북마크) */
+.pd-save{flex:0 0 auto;display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:50%;border:0;background:transparent;color:var(--gray-400,#8b95a1);cursor:pointer;transition:transform .2s,color .2s}
+.pd-save:hover{color:var(--color-primary);transform:scale(1.06)}
+.pd-save svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linejoin:round}
+.pd-save.on{color:var(--color-primary)}
+.pd-save.on svg{fill:currentColor}
+
+/* 하단 2열: 나의 리서치 · 나의 이벤트 */
+.pd-lower{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:20px;align-items:start;padding:30px 0 72px}
+.pd-lower .lx-card{scroll-margin-top:86px}
+.pd-lower .lx-card__h{align-items:flex-start}
+.pd-lower .lx-card__h p{font-size:var(--text-micro);color:var(--color-muted);margin-top:2px}
+.pd-lower .tabs{margin:2px 0 12px}
+.pd-lower .tabs button{height:34px;padding:0 14px;font-size:var(--text-micro)}
+.pd-chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px}
+.pd-chips .chip{height:30px;padding:0 12px;font-size:var(--text-micro)}
+.pd-chips .chip .c{color:inherit;opacity:.6}
+.pd-row{display:flex;align-items:center;gap:12px;padding:12px 4px;border-bottom:1px solid var(--color-hairline)}
+.pd-row:last-child{border-bottom:none}
+.pd-row__m{flex:1;min-width:0;text-decoration:none;color:inherit}
+.pd-row__m .ty{display:block;font-size:11.5px;font-weight:800;color:var(--color-primary)}
+.pd-row__m b{display:block;font-size:14.5px;color:var(--ink-900);line-height:1.4;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pd-row__m small{display:block;font-size:12px;color:var(--color-muted);margin-top:1px}
+a.pd-row__m:hover b{color:var(--color-primary)}
+a.lx-ev__row{text-decoration:none;color:inherit}
+a.lx-ev__row:hover .lx-ev__b b{color:var(--color-primary)}
+.pd-empty{padding:22px 4px;font-size:14px;color:var(--color-muted);line-height:1.6}
+.pd-empty .btn{margin-top:12px}
+.pd-more{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:10px;font-size:var(--text-micro);color:var(--color-muted)}
+.pd-more .btn--text{font-size:var(--text-micro);font-weight:700}
+
+/* 이벤트 신청 내역: 행 = 버튼(상세 열기) */
+button.lx-ev__row{width:100%;border:0;background:none;font:inherit;text-align:left;cursor:pointer;color:inherit}
+button.lx-ev__row:hover .lx-ev__b b{color:var(--color-primary)}
+.pd-evd{display:grid;grid-template-columns:96px 1fr;gap:10px 14px;margin:14px 0 6px;font-size:14px}
+.pd-evd dt{color:var(--color-muted);font-weight:600}
+.pd-evd dd{margin:0;color:var(--ink-900);font-weight:600;line-height:1.5}
+.pd-evd__acts{display:flex;gap:8px;margin-top:18px;flex-wrap:wrap}
+.pd-evd__acts .btn{flex:1}
+@media(max-width:900px){.pd-lower{grid-template-columns:minmax(0,1fr)}.cnv{grid-template-columns:1fr;gap:24px}.cnv-nav{display:none}.pd-viewer .lx-modal{padding:20px}}
+@media(max-width:768px){
+  .dk-head h2{font-size:19px}
+  .pd-sum{width:100%}.pd-sum a{flex:1;min-width:0}
+  .pd-cn-grid{display:grid;grid-auto-flow:column;grid-template-columns:none;grid-auto-columns:72%;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:6px;-webkit-overflow-scrolling:touch}
+  .pd-cn{scroll-snap-align:start}
+  .dk-head .tabs{max-width:100%;overflow-x:auto}
+}
+</style>
+</head>
+<body>
+<main id="main">
+  <!-- 상단 개인화 헤더 -->
+  <section class="lx-hello" aria-labelledby="pdTitle">
+    <div class="wrap">
+      <div class="lx-hello__in">
+        <div class="who">
+          <div class="lx-av" id="pdAv" aria-hidden="true"></div>
+          <div>
+            <div class="lx-eyebrow">PRIVATE DESK</div>
+            <h1 id="pdTitle">Private Desk</h1>
+            <div class="meta" id="pdMeta"></div>
+          </div>
+        </div>
+        <nav class="pd-sum" id="pdSum" aria-label="내 요약"></nav>
+      </div>
+      <p class="pd-guide">오늘의 카드뉴스를 먼저 보고, 저장한 리서치와 신청한 행사를 이 화면에서 관리하세요.</p>
+    </div>
+  </section>
+
+  <div class="wrap">
+    <!-- 01 · 리서치 카드뉴스 -->
+    <section class="dk-sec" id="cardnews" aria-labelledby="cnH">
+      <div class="dk-head">
+        <div>
+          <div class="lx-eyebrow">RESEARCH CARD NEWS</div>
+          <h2 id="cnH">오늘의 리서치, 카드 한 장으로</h2>
+          <p>리포트 본문을 요약한 카드뉴스입니다. 카드를 누르면 전체 슬라이드를 넘겨 볼 수 있습니다.</p>
+        </div>
+        <div class="tabs" id="cnTabs" aria-label="카드뉴스 분류">
+          <button type="button" class="is-active" data-g="all">추천</button>
+          <button type="button" data-g="market">시황 · 전략</button>
+          <button type="button" data-g="theme">산업 · 테마</button>
+          <button type="button" data-g="report">기업 리포트</button>
+        </div>
+      </div>
+      <div class="pd-cn-grid" id="cnGrid"><div class="cnv-empty" style="grid-column:1/-1">카드뉴스를 불러오는 중…</div></div>
+      <div class="pd-cn-foot"><span id="cnNote"></span><button class="btn btn--text" type="button" id="cnAll" style="font-size:var(--text-body);font-weight:700" aria-expanded="false">카드뉴스 전체 보기 →</button></div>
+    </section>
+
+    <div class="pd-lower">
+      <!-- 02 · 나의 리서치 -->
+      <section class="lx-card" id="research" aria-labelledby="rsH">
+        <div class="lx-card__h">
+          <div><div class="lx-eyebrow">MY RESEARCH</div><h2 id="rsH">나의 리서치</h2><p>저장한 리포트 · 카드뉴스와 받은 자료</p></div>
+          <a class="more" href="reports.html">리포트 전체 →</a>
+        </div>
+        <div class="lx-card__b">
+          <div class="tabs" id="rsTabs" aria-label="나의 리서치 분류">
+            <button type="button" class="is-active" data-t="saved">저장한 리서치</button>
+            <button type="button" data-t="files">받은 자료</button>
+          </div>
+          <div id="rsBody"></div>
+        </div>
+      </section>
+
+      <!-- 03 · 나의 이벤트 -->
+      <section class="lx-card" id="events" aria-labelledby="evH">
+        <div class="lx-card__h">
+          <div><div class="lx-eyebrow">MY EVENTS</div><h2 id="evH">내 이벤트 신청 내역</h2><p>신청한 컨퍼런스 · 세미나와 문의 · 누르면 상세 보기</p></div>
+          <a class="more" href="conferences.html">행사 둘러보기 →</a>
+        </div>
+        <div class="lx-card__b">
+          <div class="tabs" id="evTabs" aria-label="나의 이벤트 분류">
+            <button type="button" class="is-active" data-p="up">다가오는 행사</button>
+            <button type="button" data-p="past">지난 행사</button>
+          </div>
+          <div class="lx-ev" id="evBody"></div>
+        </div>
+      </section>
+    </div>
+  </div>
+</main>
+
+<!-- 이벤트 신청 상세 -->
+<div class="lx-ov" id="evdOv" role="dialog" aria-modal="true" aria-labelledby="evdH">
+  <div class="lx-modal">
+    <div class="lx-modal__h"><div><div class="lx-eyebrow">내 이벤트 신청 내역</div><h3 id="evdH"></h3></div><button class="auth-x" type="button" data-x aria-label="닫기">×</button></div>
+    <div id="evdB"></div>
+  </div>
+</div>
+
+<!-- 카드뉴스 상세 (슬라이드 넘겨 보기) -->
+<div class="lx-ov pd-viewer" id="cnOv" role="dialog" aria-modal="true" aria-label="카드뉴스 상세">
+  <div class="lx-modal">
+    <div class="lx-modal__h"><div class="lx-eyebrow">RESEARCH CARD NEWS</div><button class="auth-x" type="button" data-x aria-label="닫기">×</button></div>
+    <div id="cnvRoot"></div>
+  </div>
+</div>
+
+<script src="assets/config.js?v=20261028b"></script>
+<script src="assets/partials.js?v=20261029a"></script>
+<script src="assets/lounge-proto.js?v=20261027b"></script>
+<script src="assets/lounge-api.js?v=20261028d"></script>
+<script src="assets/events-data.js?v=20261029a"></script>
+<script src="assets/cardnews/cardnews.js?v=2"></script>
+<script src="assets/saved-research.js?v=20261028a"></script>
+<script>
+(function(){
+  'use strict';
+  const q=s=>document.querySelector(s);
+  const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const dot=d=>String(d||'').replace(/-/g,'.');
+  const md=iso=>String(iso||'').slice(5).replace('-','.');
+  const WD=['일','월','화','수','목','금','토'];
+  const wd=iso=>{ const d=new Date(iso+'T00:00:00+09:00'); return isNaN(d)?'':WD[d.getDay()]; };
+  const BM='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h12v18l-6-4.5L6 21z"/></svg>';
+  const S=IL.getSession()||{}, persona=S.persona||'am', WM=persona==='hnw', P=IL.PERSONAS[persona]||IL.PERSONAS.am;
+  const LBL={am:'자산운용사',ia:'투자자문 · 일임사',dma:'DMA 전문투자자',etc:'기타 기관',hnw:'고액자산가'};
+  const state={cn:[], g:'all', cnAll:false, rTab:'saved', rCat:'all', rAll:false, ePhase:'up', files:null};
+
+  /* ── 상단 헤더 ── */
+  const name=S.name||P.name;
+  q('#pdAv').textContent=name.slice(0,1);
+  q('#pdTitle').textContent=`${name}님의 Private Desk`;
+  q('#pdMeta').innerHTML=`<span class="badge badge--brand">${WM?'WM 고객':'기관 고객'}</span><span>${esc(LBL[S.cust_type]||LBL[persona]||'')}${S.org?' · '+esc(S.org):S.branch?' · '+esc(S.branch):''}</span>`
+    +(S.status==='approved'?'<span class="lx-st lx-st--ok">승인 완료</span>':S.status?'<span class="lx-st lx-st--wait">승인 대기</span>':'')
+    +(S.via==='demo'?'<span class="lx-proto">시연 모드</span>':'');
+  function renderSum(){
+    const recent=state.cn.filter(c=>c.published_at&&c.published_at>=weekAgo).length;
+    const up=myEvents().filter(x=>!x.past).length;
+    q('#pdSum').innerHTML=`<a href="#cardnews"><span>새 카드뉴스 · 7일</span><b>${state.cn.length?recent:'—'}<small>건</small></b></a>`
+      +`<a href="#research"><span>저장한 리서치</span><b>${ILSaved.list().length}<small>건</small></b></a>`
+      +`<a href="#events"><span>신청한 행사</span><b>${up}<small>건</small></b></a>`;
+  }
+  const weekAgo=new Date(new Date(TODAY+'T00:00:00Z').getTime()-7*864e5).toISOString().slice(0,10);
+
+  /* ── 01 · 카드뉴스 (Supabase card_news · CardNews 렌더러) ──
+     분류: 투자전략 = 시황 · 전략, 기업분석 = 기업 리포트, 그 외 산업 리포트 = 산업 · 테마 */
+  const GROUP=c=>c==='투자전략'?'market':c==='기업분석'?'report':'theme';
+  const KICK={market:'MARKET · 오늘 시장 요약',theme:'THEME · 한 장 요약',report:'REPORT · 3분 요약'};
+  const deckOf=r=>{ const d=r.deck||{}; return {brand:d.brand,source:d.source,team:d.team||r.team,analyst:d.analyst||r.analyst,title:d.title||r.title,slides:d.slides||[]}; };
+  const scaleIn=box=>{ const s=box.clientWidth/1080; box.querySelectorAll(':scope > .cx').forEach(el=>{ el.style.transform='scale('+s+')'; }); };
+  function cnPick(){
+    if(state.cnAll) return state.g==='all'?state.cn:state.cn.filter(r=>GROUP(r.category)===state.g);
+    if(state.g!=='all') return state.cn.filter(r=>GROUP(r.category)===state.g).slice(0,3);
+    const out=[]; ['market','theme','report'].forEach(g=>{ const r=state.cn.find(x=>GROUP(x.category)===g); if(r) out.push(r); });
+    state.cn.forEach(r=>{ if(out.length<3&&!out.includes(r)) out.push(r); });
+    return out;
+  }
+  function renderCN(){
+    const grid=q('#cnGrid'), list=cnPick();
+    if(!list.length){ grid.innerHTML=`<div class="cnv-empty" style="grid-column:1/-1">${state.cn.length?'이 분류의 카드뉴스가 아직 없습니다.':'카드뉴스를 불러오지 못했습니다.'}</div>`; return; }
+    grid.innerHTML=list.map(r=>{ const on=ILSaved.has('cardnews',r.id);
+      return `<article class="pd-cn"><a class="cnv-mini" href="desk.html?cn=${r.id}#cardnews" data-open-cn="${r.id}"><div class="th"></div>
+        <div class="tx"><span class="pd-kick">${KICK[GROUP(r.category)]}</span>${esc(r.category||'리포트')} · ${dot(r.published_at)}<b>${esc(r.title)}</b></div></a>
+        <button type="button" class="pd-save${on?' on':''}" data-save-cn="${r.id}" aria-pressed="${on}" aria-label="${on?'저장 취소':'나의 리서치에 저장'}">${BM}</button></article>`; }).join('');
+    grid.querySelectorAll('.pd-cn').forEach((el,i)=>{ const d=deckOf(list[i]), th=el.querySelector('.th');
+      CardNews.render({brand:d.brand,source:d.source,team:d.team,analyst:d.analyst,slides:[d.slides[0]||{type:'cover',title:d.title}]},th); scaleIn(th); });
+    q('#cnNote').textContent=`${state.cnAll?`전체 ${list.length}건`:state.g==='all'?'분류별 최신 카드뉴스':'최신순 3건'} · 최근 발간 ${dot(state.cn[0].published_at)}`;
+    const all=q('#cnAll'); all.textContent=state.cnAll?'접기':'카드뉴스 전체 보기 →'; all.setAttribute('aria-expanded',String(state.cnAll));
+  }
+  window.addEventListener('resize',()=>document.querySelectorAll('#cnGrid .th').forEach(scaleIn));
+  q('#cnTabs').addEventListener('click',e=>{ const b=e.target.closest('[data-g]'); if(!b) return;
+    q('#cnTabs').querySelectorAll('button').forEach(x=>x.classList.toggle('is-active',x===b)); state.g=b.dataset.g; renderCN(); });
+  q('#cnAll').addEventListener('click',()=>{ state.cnAll=!state.cnAll; renderCN(); if(!state.cnAll) q('#cardnews').scrollIntoView({block:'start'}); });
+  q('#cnGrid').addEventListener('click',e=>{
+    const o=e.target.closest('[data-open-cn]'); if(o&&!e.metaKey&&!e.ctrlKey){ e.preventDefault(); openCN(+o.dataset.openCn); return; }
+    const b=e.target.closest('[data-save-cn]'); if(!b) return;
+    const r=state.cn.find(x=>String(x.id)===b.dataset.saveCn); if(!r) return;
+    const on=ILSaved.toggle({kind:'cardnews',id:r.id,title:r.title,category:r.category,date:r.published_at});
+    toast(on?'나의 리서치에 저장했습니다.':'저장을 취소했습니다.'); });
+  /* 카드뉴스 상세: cardnews.html 뷰어와 같은 구성 · 조작(← → 키, 스와이프, 목차) */
+  const ov=q('#cnOv'), root=q('#cnvRoot'); let cells=[], lastFocus=null, keyGo=null;
+  function openCN(id){
+    const row=state.cn.find(r=>r.id===id); if(!row) return;
+    const d=row.deck||{}, deck=Object.assign({},d,{title:d.title||row.title,category:d.category||row.category,analyst:d.analyst||row.analyst,team:d.team||row.team,published_at:d.published_at||row.published_at});
+    const slides=deck.slides||[], n=slides.length; let cur=0;
+    root.innerHTML=`<div class="cnv"><div class="cnv-stage"><div class="cnv-frame" id="cnvFrame" tabindex="0" aria-roledescription="carousel" aria-label="${esc(deck.title)}"><div class="cnv-track" id="cnvTrack"></div></div>
+      <button class="cnv-nav prev" id="cnvPrev" type="button" aria-label="이전 카드">←</button><button class="cnv-nav next" id="cnvNext" type="button" aria-label="다음 카드">→</button>
+      <div class="cnv-bar"><div class="cnv-dots" id="cnvDots"></div><span class="cnv-count" id="cnvCount"></span></div></div>
+      <aside class="cnv-info"><span class="cnv-pill">${esc(deck.category||'리포트')}</span><h2 class="cnv-title">${esc(deck.title)}</h2>
+      <div class="cnv-meta">${esc([deck.team,deck.analyst].filter(Boolean).join(' '))}${deck.published_at?' · '+dot(deck.published_at)+' 발간':''}</div>
+      <ol class="cnv-toc" id="cnvToc">${slides.map((s,i)=>`<li><button type="button" data-i="${i}"><b>${String(i+1).padStart(2,'0')}</b><span>${esc((s.kicker?s.kicker+' · ':'')+String(s.title||'').replace(/\n/g,' '))}</span></button></li>`).join('')}</ol>
+      <div class="cnv-actions"><button class="btn btn--secondary btn--block" type="button" id="cnvSave"></button>${row.report_id?`<a class="btn btn--primary btn--block" href="reports.html?id=${row.report_id}">원문 리포트 보기 →</a>`:''}</div>
+      <p class="cnv-note">카드뉴스는 리포트 본문을 요약한 참고 자료예요. 정확한 수치와 전체 논리는 원문 리포트에서 확인해 주세요.</p></aside></div>`;
+    const track=q('#cnvTrack'), frame=q('#cnvFrame');
+    cells=slides.map(()=>{ const c=document.createElement('div'); c.className='cnv-cell'; track.appendChild(c); return c; });
+    lastFocus=document.activeElement; ov.classList.add('show'); document.body.style.overflow='hidden';
+    const tmp=document.createElement('div'); tmp.style.cssText='position:absolute;left:-99999px;top:0'; document.body.appendChild(tmp);
+    CardNews.render(deck,tmp).forEach((el,i)=>cells[i].appendChild(el)); tmp.remove();
+    cells.forEach(scaleIn);
+    const dots=q('#cnvDots'); dots.innerHTML=slides.map((_,i)=>`<button type="button" aria-label="${i+1}번 카드"></button>`).join('');
+    const go=i=>{ cur=Math.max(0,Math.min(n-1,i)); track.style.transform=`translateX(${-cur*100}%)`;
+      dots.querySelectorAll('button').forEach((b,k)=>b.classList.toggle('on',k===cur));
+      root.querySelectorAll('#cnvToc button').forEach((b,k)=>b.classList.toggle('on',k===cur));
+      q('#cnvCount').textContent=`${cur+1} / ${n}`; q('#cnvPrev').disabled=cur===0; q('#cnvNext').disabled=cur===n-1;
+      cells.forEach((c,k)=>c.setAttribute('aria-hidden',k===cur?'false':'true')); };
+    keyGo=d=>go(cur+d);
+    q('#cnvPrev').onclick=()=>go(cur-1); q('#cnvNext').onclick=()=>go(cur+1);
+    dots.querySelectorAll('button').forEach((b,k)=>b.onclick=()=>go(k));
+    root.querySelectorAll('#cnvToc button').forEach(b=>b.onclick=()=>go(+b.dataset.i));
+    let x0=null,dx=0,w=1;
+    frame.addEventListener('pointerdown',e=>{ if(e.button!==0)return; x0=e.clientX; dx=0; w=frame.clientWidth; track.classList.add('drag'); frame.setPointerCapture(e.pointerId); });
+    frame.addEventListener('pointermove',e=>{ if(x0==null)return; dx=e.clientX-x0; track.style.transform=`translateX(calc(${-cur*100}% + ${dx}px))`; });
+    const end=()=>{ if(x0==null)return; track.classList.remove('drag'); const t=w*.18; x0=null; if(dx<-t)go(cur+1); else if(dx>t)go(cur-1); else go(cur); };
+    frame.addEventListener('pointerup',end); frame.addEventListener('pointercancel',end);
+    const sv=q('#cnvSave'), svSync=()=>{ const on=ILSaved.has('cardnews',row.id); sv.textContent=on?'✓ 나의 리서치에 저장됨 · 취소':'나의 리서치에 저장'; sv.setAttribute('aria-pressed',String(on)); };
+    svSync(); sv.onclick=()=>{ const on=ILSaved.toggle({kind:'cardnews',id:row.id,title:row.title,category:row.category,date:row.published_at}); svSync(); toast(on?'나의 리서치에 저장했습니다.':'저장을 취소했습니다.'); };
+    go(0); frame.focus({preventScroll:true});
+    if(document.fonts&&document.fonts.ready) document.fonts.ready.then(()=>{ cells.forEach(c=>{ const el=c.querySelector('.cx'); if(el){ el.style.transform=''; CardNews.fit(el); } }); cells.forEach(scaleIn); });
+    history.replaceState(null,'',`desk.html?cn=${row.id}#cardnews`);
+  }
+  function closeCN(){ if(!ov.classList.contains('show')) return; ov.classList.remove('show'); document.body.style.overflow=''; root.innerHTML=''; cells=[]; keyGo=null;
+    history.replaceState(null,'','desk.html#cardnews'); if(lastFocus&&lastFocus.focus) lastFocus.focus({preventScroll:true}); }
+  ov.addEventListener('click',e=>{ if(e.target===ov||e.target.closest('[data-x]')) closeCN(); });
+  document.addEventListener('keydown',e=>{ if(!ov.classList.contains('show')) return;
+    if(e.key==='Escape') closeCN(); else if(e.key==='ArrowRight'&&keyGo){ keyGo(1); e.preventDefault(); } else if(e.key==='ArrowLeft'&&keyGo){ keyGo(-1); e.preventDefault(); }
+    else if(e.key==='Tab'){ const f=[...ov.querySelectorAll('a[href],button:not([disabled]),[tabindex="0"]')]; if(!f.length) return; const a=f[0], z=f[f.length-1];
+      if(e.shiftKey&&document.activeElement===a){ e.preventDefault(); z.focus(); } else if(!e.shiftKey&&document.activeElement===z){ e.preventDefault(); a.focus(); } } });
+  window.addEventListener('resize',()=>{ if(ov.classList.contains('show')) cells.forEach(scaleIn); });
+
+  (async function loadCN(){
+    const client=window.sb; if(!client){ renderCN(); renderSum(); return; }
+    try{ const res=await client.from('card_news').select('id,report_id,title,category,analyst,team,published_at,deck').order('published_at',{ascending:false}).order('id',{ascending:false}).limit(40);
+      if(res.error) throw res.error; state.cn=res.data||[]; }catch(e){ console.warn('card_news load failed',e); state.cn=[]; }
+    renderCN(); renderSum();
+    const want=+new URLSearchParams(location.search).get('cn'); if(want) openCN(want);
+    if(document.fonts&&document.fonts.ready) document.fonts.ready.then(()=>{ document.querySelectorAll('#cnGrid .cx').forEach(el=>{ el.style.transform=''; CardNews.fit(el); }); document.querySelectorAll('#cnGrid .th').forEach(scaleIn); });
+  })();
+
+  /* ── 02 · 나의 리서치 ── */
+  const CATL={all:'전체',market:'시황 · 전략',theme:'산업 · 테마',report:'기업'};
+  const LIMIT=5;
+  const moreBar=(n,shown,note)=>`<div class="pd-more"><span>${note}</span>${n>shown||state.rAll&&n>LIMIT?`<button type="button" class="btn btn--text" data-rall>${state.rAll?'접기':`전체 ${n}건 보기`}</button>`:''}</div>`;
+  const empty=(msg,href,label)=>`<div class="pd-empty">${msg}${href?`<br/><a class="btn btn--secondary btn--sm" href="${href}">${label}</a>`:''}</div>`;
+  function savedHTML(){
+    const all=ILSaved.list();
+    if(!all.length) return empty('아직 저장한 리서치가 없습니다. 카드뉴스나 리포트 상세에서 북마크를 누르면 여기에 모입니다.','reports.html','리서치 리포트 보기');
+    const n=k=>k==='all'?all.length:all.filter(x=>GROUP(x.category)===k).length;
+    const chips=`<div class="pd-chips" role="group" aria-label="카테고리">${Object.keys(CATL).filter(k=>k==='all'||n(k)).map(k=>`<button type="button" class="chip${state.rCat===k?' is-active':''}" data-rcat="${k}" aria-pressed="${state.rCat===k}">${CATL[k]} <span class="c">${n(k)}</span></button>`).join('')}</div>`;
+    const list=all.filter(x=>state.rCat==='all'||GROUP(x.category)===state.rCat), shown=state.rAll?list:list.slice(0,LIMIT);
+    const href=x=>x.kind==='cardnews'?`desk.html?cn=${encodeURIComponent(x.id)}#cardnews`:`reports.html?id=${encodeURIComponent(x.id)}`;
+    return chips+(shown.length?shown.map(x=>`<div class="pd-row"><a class="pd-row__m" href="${href(x)}"><span class="ty">${x.kind==='cardnews'?'카드뉴스':'리포트'} · ${esc(x.category||'리서치')}</span>
+        <b>${esc(x.title)}</b><small>${x.date?dot(x.date)+' 발간 · ':''}${md(String(x.at).slice(0,10))} 저장</small></a>
+        <button type="button" class="pd-save on" data-unsave="${esc(x.kind)}|${esc(x.id)}" aria-label="저장 취소" title="저장 취소">${BM}</button></div>`).join('')
+      :'<div class="pd-empty">이 카테고리에 저장한 리서치가 없습니다.</div>')
+      +moreBar(list.length,shown.length,'이 브라우저에 저장된 목록');
+  }
+  const KIND={brief:'회의용 브리핑 PDF',explainer:'고객 설명자료 PDF',cardnews:'카드뉴스'};
+  function filesHTML(){
+    if(state.files===null) return '<div class="pd-empty">불러오는 중…</div>';
+    if(!state.files.length) return empty('받은 자료가 없습니다. 담당자가 보낸 브리핑 · 설명자료가 여기에 모입니다.');
+    const shown=state.rAll?state.files:state.files.slice(0,LIMIT);
+    return shown.map(x=>`<div class="pd-row"><a class="pd-row__m" href="${esc(x.href)}" target="_blank" rel="noopener"><span class="ty">${KIND[x.kind]||x.kind}</span><b>${esc(x.text)}</b><small>검수 완료 자료</small></a></div>`).join('')
+      +moreBar(state.files.length,shown.length,'받은 자료');
+  }
+  function renderRS(){ q('#rsBody').innerHTML=state.rTab==='saved'?savedHTML():filesHTML(); }
+  q('#rsTabs').addEventListener('click',e=>{ const b=e.target.closest('[data-t]'); if(!b) return;
+    q('#rsTabs').querySelectorAll('button').forEach(x=>x.classList.toggle('is-active',x===b)); state.rTab=b.dataset.t; state.rAll=false; renderRS(); });
+  q('#rsBody').addEventListener('click',e=>{
+    const c=e.target.closest('[data-rcat]'); if(c){ state.rCat=c.dataset.rcat; state.rAll=false; renderRS(); return; }
+    if(e.target.closest('[data-rall]')){ state.rAll=!state.rAll; renderRS(); return; }
+    const u=e.target.closest('[data-unsave]'); if(u){ const [k,id]=u.dataset.unsave.split('|'); ILSaved.remove(k,id); toast('저장을 취소했습니다.'); }
+  });
+  ILSaved.onChange(()=>{ renderRS(); renderCN(); renderSum(); });
+  (async function loadMine(){
+    const live=await ILAPI.ready().catch(()=>false);
+    const ex=live?await ILAPI.exports(persona).catch(()=>[]):[];
+    const base=((window.IL_CONFIG||{}).apiBase||'').replace(/\/$/,'');
+    const fileUrl=f=>base&&/^lounge_api\//.test(f)?base+'/'+f:f;
+    state.files=ex.filter(x=>(x.files||[]).length).map(x=>{ const f=fileUrl(x.files[0]);
+      return {kind:x.kind,text:x.text||'답변',href:x.kind==='cardnews'?`cardnews.html?file=${encodeURIComponent(f.replace(/cardnews_\d+\.png$/,'cardnews.json'))}`:f}; });
+    renderRS();
+  })();
+  renderRS();
+
+  /* ── 03 · 나의 이벤트 (Events 화면의 신청 · 문의 기록, 이 브라우저 저장분) ── */
+  function myEvents(){
+    let recs=[]; try{ recs=JSON.parse(localStorage.getItem('il-conf-records-v1')||'[]'); }catch(e){}
+    return (Array.isArray(recs)?recs:[]).map(r=>{ const e=r.eventId?EVENTS.find(x=>x.id===r.eventId):null;
+      const day=e?(e.start||''):String(r.at||'').slice(0,10);
+      return {r,e,day,past:!!e&&!e.tba&&(e.end||e.start)<TODAY}; });
+  }
+  function renderEV(){
+    const all=myEvents(), list=all.filter(x=>state.ePhase==='past'?x.past:!x.past)
+      .sort((a,b)=>state.ePhase==='past'?b.day.localeCompare(a.day):a.day.localeCompare(b.day));
+    if(!list.length){ q('#evBody').innerHTML=state.ePhase==='past'
+        ? '<div class="pd-empty">지난 신청 행사가 없습니다.</div>'
+        : empty('신청한 행사가 없습니다. Events에서 콥데이 · 컨퍼런스 · 세미나를 신청하면 여기에서 일정과 상태를 확인할 수 있습니다.','conferences.html','행사 둘러보기'); return; }
+    q('#evBody').innerHTML=list.map(x=>{ const e=x.e, c=e?CATS.find(k=>k.id===e.cat):null;
+      const href=e?`conferences.html?event=${encodeURIComponent(e.id)}${x.past?'&phase=past':''}`:'conferences.html';
+      const st=x.past?'<span class="badge badge--muted">종료</span>':x.r.kind==='apply'?'<span class="lx-st lx-st--ok">신청 완료</span>':'<span class="lx-st lx-st--wait">문의 접수</span>';
+      const date=e&&e.tba?esc(e.tba.split(' · ')[0]):md(x.day);
+      return `<button type="button" class="lx-ev__row" data-evd="${esc(x.r.id)}"><div class="lx-ev__d"><b>${date}</b><span>${e&&e.tba?'예정':e?wd(x.day):'접수일'}</span></div>
+        <div class="lx-ev__b"><b>${esc(e?e.title:x.r.title||'행사 문의')}</b><span>${esc(c?c.label:x.r.type||'문의')}${e&&e.place?' · '+esc(e.place):''}${e&&e.analysts&&e.analysts.length?' · '+esc(e.analysts.join(', ')):''}</span></div>${st}</button>`; }).join('')
+      +'<div class="pd-more"><span>Events에서 신청 · 문의한 기록 (이 브라우저 저장)</span></div>';
+  }
+  /* 신청 상세 · 취소 — Events 화면의 신청 기록(il-conf-records-v1)과 같은 저장소. Events의 '삭제'와 같은 동작 */
+  function evStatus(x){ return x.past?'종료':x.r.kind==='apply'?'신청 완료':'문의 접수 · 담당자 검토 대기'; }
+  function openEvd(id){
+    const x=myEvents().find(v=>String(v.r.id)===String(id)); if(!x) return;
+    const e=x.e, c=e?CATS.find(k=>k.id===e.cat):null;
+    const when=e?(e.tba?esc(e.tba):dot(e.start)+(e.end&&e.end!==e.start?' ~ '+dot(e.end):'')+(e.time?' · '+esc(e.time):'')):'—';
+    const href=e?`conferences.html?event=${encodeURIComponent(e.id)}${x.past?'&phase=past':''}`:'conferences.html';
+    q('#evdH').textContent=e?e.title:(x.r.title||'행사 문의');
+    q('#evdB').innerHTML=`<dl class="pd-evd">
+        <dt>행사 일시</dt><dd>${when}</dd>
+        <dt>행사 장소</dt><dd>${e&&(e.place||e.format)?esc(e.place||e.format):'추후 안내'}</dd>
+        <dt>신청 상태</dt><dd>${esc(evStatus(x))}</dd>
+        <dt>신청 구분</dt><dd>${esc(x.r.type||(x.r.kind==='apply'?'참가 신청':'문의'))}</dd>
+        <dt>신청일</dt><dd>${dot(String(x.r.at||'').slice(0,10))}</dd>
+        ${c?`<dt>분류</dt><dd>${esc(c.label)}</dd>`:''}
+        ${e&&e.analysts&&e.analysts.length?`<dt>담당</dt><dd>${esc(e.analysts.join(', '))}</dd>`:''}
+      </dl>${e&&e.intro?`<p class="lx-muted" style="font-size:13.5px;line-height:1.6;margin:8px 0 0">${esc(e.intro)}</p>`:''}
+      <div class="pd-evd__acts"><a class="btn btn--secondary" href="${href}">행사 페이지에서 보기</a>${x.past?'':`<button type="button" class="btn btn--primary" data-evcancel="${esc(x.r.id)}">${x.r.kind==='apply'?'신청 취소':'문의 취소'}</button>`}</div>
+      <p class="lx-muted" style="font-size:12px;margin-top:12px">신청 내용 수정은 아직 지원하지 않습니다. 바꾸려면 취소한 뒤 Events에서 다시 신청해 주세요.</p>`;
+    q('#evdOv').classList.add('show'); setTimeout(()=>{ const b=q('#evdOv .auth-x'); if(b) b.focus(); },40);
+  }
+  q('#evBody').addEventListener('click',e=>{ const b=e.target.closest('[data-evd]'); if(b) openEvd(b.dataset.evd); });
+  q('#evdOv').addEventListener('click',e=>{
+    const c=e.target.closest('[data-evcancel]');
+    if(c){ let recs=[]; try{ recs=JSON.parse(localStorage.getItem('il-conf-records-v1')||'[]'); }catch(err){}
+      recs=(Array.isArray(recs)?recs:[]).filter(r=>String(r.id)!==c.dataset.evcancel);
+      try{ localStorage.setItem('il-conf-records-v1',JSON.stringify(recs)); }catch(err){}
+      q('#evdOv').classList.remove('show'); renderEV(); renderSum(); toast('신청을 취소했습니다.'); return; }
+    if(e.target===q('#evdOv')||e.target.closest('[data-x]')) q('#evdOv').classList.remove('show'); });
+  document.addEventListener('keydown',e=>{ if(e.key==='Escape') q('#evdOv').classList.remove('show'); });
+  q('#evTabs').addEventListener('click',e=>{ const b=e.target.closest('[data-p]'); if(!b) return;
+    q('#evTabs').querySelectorAll('button').forEach(x=>x.classList.toggle('is-active',x===b)); state.ePhase=b.dataset.p; renderEV(); });
+  window.addEventListener('storage',e=>{ if(e.key==='il-conf-records-v1'){ renderEV(); renderSum(); } });
+  renderEV(); renderSum();
+
+  /* 예전 마이페이지 주소(#events · #research)로 들어오면 해당 영역으로 */
+  if(['#research','#events','#cardnews'].includes(location.hash)) requestAnimationFrame(()=>{ const t=q(location.hash); if(t) t.scrollIntoView({block:'start'}); });
+})();
+</script>
+</body>
+</html>

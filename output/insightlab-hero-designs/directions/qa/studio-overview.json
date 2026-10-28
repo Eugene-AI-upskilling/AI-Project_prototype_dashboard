@@ -1,0 +1,25 @@
+{
+  "note": "Visual overview compresses only the sticky scroll travel space. Page sources are unchanged.",
+  "checks": [
+    {
+      "direction": "05",
+      "mobile": false,
+      "detailsOpens": true
+    },
+    {
+      "direction": "05",
+      "mobile": true,
+      "detailsOpens": true
+    },
+    {
+      "direction": "06",
+      "mobile": false,
+      "detailsOpens": true
+    },
+    {
+      "direction": "06",
+      "mobile": true,
+      "detailsOpens": true
+    }
+  ]
+}

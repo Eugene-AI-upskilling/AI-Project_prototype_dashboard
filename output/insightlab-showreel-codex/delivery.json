@@ -1,0 +1,76 @@
+{
+  "title": "Insight in Motion — Eugene Insight Lab",
+  "date": "2026-10-02",
+  "previewUrl": null,
+  "showreelPageUrl": null,
+  "deployId": null,
+  "productionDeployed": false,
+  "productionUrl": "https://eugene-insightlab.netlify.app/",
+  "master": {
+    "file": "insightlab-showreel-15s.mp4",
+    "duration": 15,
+    "width": 1920,
+    "height": 1080,
+    "fps": 60,
+    "frames": 900,
+    "bytes": 8610367,
+    "video": "H.264",
+    "audio": "AAC 48 kHz stereo"
+  },
+  "heroLoop": {
+    "file": "insightlab-hero-loop.mp4",
+    "duration": 15,
+    "width": 1280,
+    "height": 720,
+    "fps": 30,
+    "frames": 450,
+    "bytes": 1990400,
+    "video": "H.264",
+    "audio": false,
+    "loopCrossfadeSeconds": 0.25
+  },
+  "soundtrack": {
+    "bpm": 128,
+    "beats": 32,
+    "originalSynthesis": true,
+    "integratedLUFS": -14.12,
+    "truePeakDbTP": -1.42
+  },
+  "integration": {
+    "html": "../../yujin-research-center/index.html",
+    "css": "../../yujin-research-center/assets/hero-showreel.css",
+    "javascript": "../../yujin-research-center/assets/hero-showreel.js",
+    "assets": "../../yujin-research-center/assets/showreel/"
+  },
+  "validation": {
+    "fullDecode": "passed",
+    "visualFramesAndTransitions": "passed",
+    "desktopAndMobile": "passed",
+    "keyboardAndModal": "passed",
+    "reducedMotion": "passed",
+    "localReviewReport": "local-review-qa.json",
+    "immersiveDesktopMobileAndReducedMotion": "passed"
+  },
+  "baselinePreserved": "../insightlab-showreel/",
+  "previousBluePreview": {
+    "previewUrl": "https://6abf1102138d43e8f65b194d--eugene-insightlab.netlify.app",
+    "showreelPageUrl": "https://6abf1102138d43e8f65b194d--eugene-insightlab.netlify.app/showreel/",
+    "deployId": "6abf1102138d43e8f65b194d"
+  },
+  "theme": {
+    "name": "Eugene Red",
+    "primary": "#d21f23",
+    "revision": "local red review"
+  },
+  "localReviewUrl": "http://127.0.0.1:4183/",
+  "localShowreelUrl": "http://127.0.0.1:4183/showreel/",
+  "immersiveHero": {
+    "file": "../../yujin-research-center/hero-options/showreel-immersive.html",
+    "url": "http://127.0.0.1:4183/hero-options/showreel-immersive.html",
+    "trigger": "scroll",
+    "deployed": false,
+    "css": "../../yujin-research-center/assets/hero-immersive.css",
+    "javascript": "../../yujin-research-center/assets/hero-immersive.js"
+  },
+  "research": "effect-review.md"
+}

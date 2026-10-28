@@ -1,0 +1,46 @@
+/* Local Claude showreel study: motion stays with the presentation, data stays still. */
+.hero--claude .hero__reel-frame{perspective:1100px}
+.hero-claude__media{position:absolute;inset:0;pointer-events:none;transform-origin:50% 50%;
+  transform:translate3d(var(--claude-parallax-x,0px),var(--claude-parallax-y,0px),0) rotateX(var(--claude-tilt-x,0deg)) rotateY(var(--claude-tilt-y,0deg));
+  transition:transform .5s cubic-bezier(.2,.75,.2,1);will-change:transform}
+.hero-claude__spotlight{position:absolute;inset:0;z-index:1;pointer-events:none;opacity:0;
+  background:radial-gradient(ellipse 360px 260px at var(--claude-light-x,70%) var(--claude-light-y,50%),rgba(210,31,35,.16),rgba(210,31,35,.035) 50%,transparent 72%);
+  transition:opacity .45s ease}
+.hero--claude[data-pointer-active="true"] .hero-claude__spotlight{opacity:var(--immersive-reveal,1)}
+.hero--claude .hero__inner{position:relative;z-index:2}
+.hero--claude .hero-immersive__stage{background:#fff}
+.hero--claude .hero__reel-frame{background:#130c0e}
+.hero--claude.immersive-active .hero__reel-frame{background:#130c0e;box-shadow:0 30px 70px -36px rgba(90,12,18,.23)}
+.hero--claude .hero__reel-frame::after{background:none}
+.hero--claude .hero__reel-watch{padding:5px 15px 5px 5px;border:1px solid rgba(255,255,255,.26);border-radius:100px;
+  gap:10px;background:rgba(30,11,15,.8);backdrop-filter:blur(10px)}
+.hero--claude .hero__reel-watch-text strong{font-size:13px;letter-spacing:0}
+.hero--claude .hero__reel-watch-text small{display:none}
+.hero--claude .hero__reel-play{width:32px;height:32px;background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.4)}
+.hero--claude .hero__reel-toggle{background:rgba(30,11,15,.8)}
+.hero--claude.immersive-active .hero-immersive__intro{color:#4b2427}
+.hero--claude.immersive-active .hero-immersive__intro span{padding:7px 10px;background:rgba(255,255,255,.88);border:1px solid rgba(255,255,255,.45);border-radius:100px;backdrop-filter:blur(6px)}
+.hero--claude.immersive-active .hero-immersive__cue{color:#fff}
+.hero--claude.immersive-active .hero-immersive__cue{padding:9px 14px;border:1px solid rgba(255,255,255,.2);border-radius:100px;background:rgba(30,11,15,.78);backdrop-filter:blur(10px)}
+.hero--claude .hero-immersive__skip{border-left-color:rgba(255,255,255,.3);color:#f5dfe1}
+.hero--claude .hero-immersive__skip:hover{color:#fff}
+/* Reveal classes are added only after an observer exists, so no-JS stays visible. */
+.claude-reveal-pending{opacity:0;transform:translate3d(0,18px,0)}
+.claude-reveal{transition:opacity .62s cubic-bezier(.2,.75,.2,1),transform .62s cubic-bezier(.2,.75,.2,1);transition-delay:var(--claude-reveal-delay,0ms)}
+.claude-reveal-ready{opacity:1;transform:none}
+.claude-card-light{position:relative;isolation:isolate}
+.claude-card-light::before{content:"";position:absolute;inset:0;z-index:0;border-radius:inherit;pointer-events:none;
+  opacity:0;background:radial-gradient(ellipse 220px 180px at var(--card-light-x,50%) var(--card-light-y,50%),rgba(210,31,35,.075),transparent 74%);transition:opacity .3s ease}
+.claude-card-light:not(.rep-card)::before{z-index:-1}
+.rep-card.claude-card-light::before{z-index:1;background:radial-gradient(ellipse 220px 180px at var(--card-light-x,50%) var(--card-light-y,50%),rgba(210,31,35,.23),transparent 74%)}
+.claude-card-light[data-pointer-active="true"]::before{opacity:1}
+@media(prefers-reduced-motion:reduce){
+  .hero-claude__media{transform:none!important;transition:none;will-change:auto}
+  .hero-claude__spotlight,.claude-card-light::before{display:none}
+  .claude-reveal,.claude-reveal-pending,.claude-reveal-ready{opacity:1!important;transform:none!important;transition:none!important}
+}
+@media(pointer:coarse){.hero-claude__spotlight,.claude-card-light::before{display:none}.hero-claude__media{transform:none!important;will-change:auto}}
+@media(max-width:480px){
+  .hero--claude .hero__reel-watch{padding:4px}
+  .hero--claude .hero__reel-watch-text{display:none}
+}

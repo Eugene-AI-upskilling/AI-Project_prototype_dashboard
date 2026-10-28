@@ -1,0 +1,54 @@
+<!-- @dsCard group="Components" viewport="700x320" name="Card · Tabs · Dialog" subtitle="Flat bordered surface, underline tabs, modal" -->
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<link rel="stylesheet" href="../../styles.css" />
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="../../_ds_bundle.js"></script>
+<style>
+  body { margin: 0; padding: 24px; background: var(--color-canvas); }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+  const { Card, Tabs, Dialog, Button } = window.CoinoneDesignSystem_c36949;
+  function Demo() {
+    const [tab, setTab] = React.useState("krw");
+    const [open, setOpen] = React.useState(false);
+    return (
+      <div style={{ display: "grid", gridTemplateColumns: "1.2fr 1fr", gap: 20, alignItems: "start" }}>
+        <Card title="보유 자산" action={<Button variant="text">전체보기</Button>}>
+          <Tabs
+            items={[{id:"krw",label:"원화"},{id:"btc",label:"BTC"},{id:"fav",label:"관심"}]}
+            value={tab} onChange={setTab}
+          />
+          <div style={{ paddingTop: 16, color: "var(--color-muted)", fontSize: "var(--text-body)" }}>
+            <div style={{ display:"flex", justifyContent:"space-between", padding:"8px 0", color:"var(--color-foreground)" }}>
+              <span>비트코인</span><span className="cn-figure" style={{fontWeight:600}}>₩142,300,000</span>
+            </div>
+            <div style={{ display:"flex", justifyContent:"space-between", padding:"8px 0", color:"var(--color-foreground)" }}>
+              <span>이더리움</span><span className="cn-figure" style={{fontWeight:600}}>₩4,820,500</span>
+            </div>
+          </div>
+        </Card>
+        <div>
+          <Button variant="primary" onClick={() => setOpen(true)}>출금하기</Button>
+          <Dialog open={open} onClose={() => setOpen(false)} title="출금 확인"
+            footer={<>
+              <Button variant="secondary" onClick={() => setOpen(false)}>취소</Button>
+              <Button variant="primary" onClick={() => setOpen(false)}>출금하기</Button>
+            </>}>
+            0.0214 BTC를 등록된 주소로 출금합니다. 출금 수수료를 확인하세요.
+          </Dialog>
+        </div>
+      </div>
+    );
+  }
+  ReactDOM.createRoot(document.getElementById("root")).render(<Demo />);
+</script>
+</body>
+</html>

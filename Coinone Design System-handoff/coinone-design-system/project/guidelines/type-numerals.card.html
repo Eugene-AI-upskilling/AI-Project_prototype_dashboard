@@ -1,0 +1,23 @@
+<!-- @dsCard group="Type" viewport="700x150" name="Trading numerals" subtitle="Tabular, right-aligned, weighted — KR up=red / down=blue" -->
+<!DOCTYPE html>
+<html lang="ko"><head><meta charset="utf-8" />
+<link rel="stylesheet" href="../styles.css" />
+<style>
+  body { margin: 0; padding: 22px 24px; background: var(--color-canvas); color: var(--color-foreground); }
+  table { width: 100%; border-collapse: collapse; }
+  td, th { padding: 8px 0; }
+  th { font-size: var(--text-micro); color: var(--color-muted); font-weight: 500; text-align: right; }
+  th:first-child { text-align: left; }
+  td { font-size: var(--text-figure); font-weight: 600; text-align: right; border-top: 1px solid var(--color-hairline); }
+  td:first-child { text-align: left; font-weight: 400; }
+</style></head>
+<body>
+<table class="cn-figure">
+  <thead><tr><th>이름</th><th>현재가</th><th>변동률</th><th>거래대금</th></tr></thead>
+  <tbody>
+    <tr><td>BTC</td><td>142,300,000</td><td style="color:var(--price-up)">+2.41%</td><td>1,204억</td></tr>
+    <tr><td>ETH</td><td>4,820,500</td><td style="color:var(--price-down)">−1.08%</td><td>892억</td></tr>
+    <tr><td>XRP</td><td>3,212</td><td style="color:var(--price-up)">+5.62%</td><td>2,031억</td></tr>
+  </tbody>
+</table>
+</body></html>

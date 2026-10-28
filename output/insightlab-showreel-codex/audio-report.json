@@ -1,0 +1,32 @@
+﻿{
+    "title":  "INSIGHT / CHROME",
+    "durationSeconds":  15,
+    "bpm":  128,
+    "sampleRate":  48000,
+    "channels":  2,
+    "peakDbFS":  -1.6,
+    "rmsDbFS":  -14.08,
+    "generatedFrom":  "original synthesis; no samples",
+    "sceneCuts":  [
+                      1.875,
+                      3.75,
+                      5.625,
+                      7.5,
+                      9.375,
+                      11.25,
+                      13.125
+                  ],
+    "logoResolve":  13.5,
+    "fade":  [
+                 14.75,
+                 15
+             ],
+    "ffmpegAnalysis":  {
+                           "truePeakDbTP":  -1.42,
+                           "loudnessRangeLU":  2.6,
+                           "integratedLUFS":  -14.12,
+                           "method":  "FFmpeg loudnorm analysis (no processing applied)",
+                           "durationSeconds":  15,
+                           "clippedSamples":  0
+                       }
+}

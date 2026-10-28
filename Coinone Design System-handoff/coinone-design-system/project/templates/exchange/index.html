@@ -1,0 +1,73 @@
+<!-- @template name="Coinone Exchange" description="Dense crypto trading surface — market list, chart, and order form." -->
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Coinone · 거래소</title>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="./ds-base.js"></script>
+<style>
+  html, body { height: 100%; }
+  body { margin: 0; background: var(--surface-tint, #ebf0f5); }
+  #root { height: 100vh; }
+  .cn-toast {
+    position: fixed; left: 50%; bottom: 28px; transform: translateX(-50%);
+    background: var(--ink-900, #040505); color: #fff; padding: 12px 18px;
+    border-radius: var(--radius-md, 8px); font-size: 14px; font-weight: 600;
+    box-shadow: var(--shadow-pop); z-index: 2000;
+  }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel" src="../../ui_kits/exchange/data.jsx"></script>
+<script type="text/babel" src="../../ui_kits/exchange/ExchangeHeader.jsx"></script>
+<script type="text/babel" src="../../ui_kits/exchange/MarketList.jsx"></script>
+<script type="text/babel" src="../../ui_kits/exchange/ChartPane.jsx"></script>
+<script type="text/babel" src="../../ui_kits/exchange/OrderForm.jsx"></script>
+<script type="text/babel" data-presets="react">
+  function boot() {
+    const ns = window.CoinoneDesignSystem_c36949;
+    if (!ns || !window.ExchangeHeader || !window.MarketList || !window.ChartPane || !window.OrderForm) {
+      return setTimeout(boot, 60);
+    }
+    const { Dialog, Button } = ns;
+    function App() {
+      const [sel, setSel] = React.useState("btc");
+      const [pending, setPending] = React.useState(null);
+      const [toast, setToast] = React.useState(null);
+      const market = CN_MARKETS.find((m) => m.id === sel);
+      const confirm = () => {
+        const { side, m } = pending;
+        setToast(`${m.name} ${side === "buy" ? "매수" : "매도"} 주문이 접수되었어요`);
+        setPending(null);
+        setTimeout(() => setToast(null), 2400);
+      };
+      return (
+        <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
+          <ExchangeHeader />
+          <div style={{ display: "flex", flex: 1, minHeight: 0 }}>
+            <MarketList selected={sel} onSelect={setSel} />
+            <ChartPane market={market} />
+            <OrderForm market={market} onSubmit={(side, m, total) => setPending({ side, m, total })} />
+          </div>
+          <Dialog open={!!pending} onClose={() => setPending(null)} title="주문 확인"
+            footer={<>
+              <Button variant="secondary" onClick={() => setPending(null)}>취소</Button>
+              <Button variant="primary" onClick={confirm}>주문하기</Button>
+            </>}>
+            {pending && <span>{pending.m.name} {pending.side === "buy" ? "매수" : "매도"} 주문 총액 <b>{won(pending.total)}</b>을(를) 접수합니다.</span>}
+          </Dialog>
+          {toast && <div className="cn-toast">{toast}</div>}
+        </div>
+      );
+    }
+    ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+  }
+  boot();
+</script>
+</body>
+</html>

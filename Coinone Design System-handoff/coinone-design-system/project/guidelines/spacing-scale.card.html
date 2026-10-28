@@ -1,0 +1,22 @@
+<!-- @dsCard group="Spacing" viewport="700x150" name="Spacing scale" subtitle="8px base — 4 / 8 / 12 / 18 / 32 / 48 / 64" -->
+<!DOCTYPE html>
+<html lang="ko"><head><meta charset="utf-8" />
+<link rel="stylesheet" href="../styles.css" />
+<style>
+  body { margin: 0; padding: 24px; background: var(--color-canvas); color: var(--color-foreground); }
+  .row { display: flex; align-items: flex-end; gap: 18px; }
+  .item { text-align: center; }
+  .bar { background: var(--color-primary); border-radius: var(--radius-sm); width: 100%; }
+  .lbl { font-size: 11px; color: var(--color-muted); font-family: var(--font-mono); margin-top: 6px; }
+</style></head>
+<body>
+<div class="row">
+  <div class="item" style="width:28px"><div class="bar" style="height:4px"></div><div class="lbl">xs·4</div></div>
+  <div class="item" style="width:28px"><div class="bar" style="height:8px"></div><div class="lbl">sm·8</div></div>
+  <div class="item" style="width:32px"><div class="bar" style="height:12px"></div><div class="lbl">md·12</div></div>
+  <div class="item" style="width:36px"><div class="bar" style="height:18px"></div><div class="lbl">lg·18</div></div>
+  <div class="item" style="width:48px"><div class="bar" style="height:32px"></div><div class="lbl">xl·32</div></div>
+  <div class="item" style="width:56px"><div class="bar" style="height:48px"></div><div class="lbl">xxl·48</div></div>
+  <div class="item" style="width:72px"><div class="bar" style="height:64px"></div><div class="lbl">section·64</div></div>
+</div>
+</body></html>

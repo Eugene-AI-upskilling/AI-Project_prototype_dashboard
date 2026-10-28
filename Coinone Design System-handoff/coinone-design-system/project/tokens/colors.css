@@ -1,0 +1,62 @@
+/* Coinone color system
+   ───────────────────────────────────────────────────────────
+   Identity: "Coinone Blue" (BI v4.0). The live product applies a
+   slightly deeper CTA blue than the BI swatch — both belong to the
+   same identity-blue family (recorded as applied shades, not a conflict).
+   Korean market convention: price-up = RED, price-down = BLUE. */
+
+:root {
+  /* ── Brand / identity blues (BI v4.0) ── */
+  --blue-main: #006bd6;     /* "Coinone Blue" — brand identity color */
+  --blue-point: #0090ff;    /* Point Blue — emphasis / highlight accent */
+  --blue-sub-1: #194386;    /* Sub Blue 1 — deep supporting blue / primary hover */
+  --blue-navy: #062554;     /* Sub Blue 2 — darkest navy, headings on light */
+
+  /* ── Applied product blues (live coinone.co.kr) ── */
+  --blue-cta: #0b59d5;      /* Primary filled-CTA blue */
+  --blue-outline: #1772f8;  /* Accent outline — signup / inline emphasis */
+
+  /* ── Ink / text neutrals ── */
+  --ink-900: #040505;       /* Near-black — body & headings (text primary) */
+  --ink-800: #17181b;       /* Strong neutral (text secondary) */
+  --ink-500: #6b7684;       /* Muted — captions, helper text */
+
+  /* ── Gray scale (BI) ── */
+  --gray-100: #eeeff0;      /* Skeleton / placeholder blocks */
+  --gray-200: #cfd0d3;      /* Disabled fill */
+  --gray-400: #8d9299;      /* Mid gray */
+  --gray-500: #616670;      /* Dark gray */
+
+  /* ── Surfaces & lines ── */
+  --white: #ffffff;
+  --border-neutral: #dde4eb; /* Input & outline-button borders, hairlines */
+  --surface-tint: #ebf0f5;   /* Light fill — store buttons, soft chips */
+
+  /* ── Trading direction (KR convention) ── */
+  --price-up: #e0344b;       /* price up = red */
+  --price-down: #0b59d5;     /* price down = blue */
+
+  /* ── Status ── */
+  --danger: #e0344b;
+  --success: #0b59d5;
+  --warning: #e0344b;
+
+  /* ─────────── Semantic aliases ─────────── */
+  --color-canvas: var(--white);
+  --color-surface: var(--white);
+  --color-surface-tint: var(--surface-tint);
+  --color-foreground: var(--ink-900);
+  --color-body: var(--ink-800);
+  --color-muted: var(--ink-500);
+  --color-hairline: var(--border-neutral);
+
+  --color-brand: var(--blue-main);
+  --color-primary: var(--blue-cta);
+  --color-primary-hover: var(--blue-sub-1);
+  --color-on-primary: var(--white);
+  --color-point: var(--blue-point);
+  --color-accent-outline: var(--blue-outline);
+
+  --color-skeleton: var(--gray-100);
+  --color-disabled: var(--gray-200);
+}

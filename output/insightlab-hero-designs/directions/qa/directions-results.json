@@ -1,0 +1,1472 @@
+{
+  "base": "http://127.0.0.1:4192/directions/",
+  "pages": [
+    {
+      "file": "01-blue-current.html",
+      "desktop": {
+        "width": 1440,
+        "scrollWidth": 1440,
+        "static": false,
+        "phase": "signal",
+        "progress": "0.000",
+        "world": {
+          "width": 1440,
+          "height": 824,
+          "ratio": 1.7475728155339805
+        },
+        "wave": "webgl",
+        "waveStatus": "running",
+        "video": {
+          "paused": true,
+          "muted": true,
+          "duration": null,
+          "time": 0,
+          "error": null
+        },
+        "sections": [
+          {
+            "id": "insights",
+            "exists": true
+          },
+          {
+            "id": "perspective",
+            "exists": true
+          },
+          {
+            "id": "platform",
+            "exists": true
+          },
+          {
+            "id": "explore",
+            "exists": true
+          }
+        ],
+        "brokenAnchors": []
+      },
+      "settled": {
+        "width": 1440,
+        "scrollWidth": 1440,
+        "static": false,
+        "phase": "showreel",
+        "progress": "0.880",
+        "world": {
+          "width": 792,
+          "height": 445.5,
+          "ratio": 1.7777777777777777
+        },
+        "wave": "webgl",
+        "waveStatus": "paused",
+        "video": {
+          "paused": false,
+          "muted": true,
+          "duration": 15,
+          "time": 0,
+          "error": null
+        },
+        "sections": [
+          {
+            "id": "insights",
+            "exists": true
+          },
+          {
+            "id": "perspective",
+            "exists": true
+          },
+          {
+            "id": "platform",
+            "exists": true
+          },
+          {
+            "id": "explore",
+            "exists": true
+          }
+        ],
+        "brokenAnchors": []
+      },
+      "mobile": {
+        "width": 390,
+        "scrollWidth": 390,
+        "static": false,
+        "phase": "signal",
+        "progress": "0.000",
+        "world": {
+          "width": 390,
+          "height": 780,
+          "ratio": 0.5
+        },
+        "wave": "webgl",
+        "waveStatus": "running",
+        "video": {
+          "paused": true,
+          "muted": true,
+          "duration": 15,
+          "time": 0.052293,
+          "error": null
+        },
+        "sections": [
+          {
+            "id": "insights",
+            "exists": true
+          },
+          {
+            "id": "perspective",
+            "exists": true
+          },
+          {
+            "id": "platform",
+            "exists": true
+          },
+          {
+            "id": "explore",
+            "exists": true
+          }
+        ],
+        "brokenAnchors": []
+      },
+      "mobileSettled": {
+        "width": 390,
+        "scrollWidth": 390,
+        "static": false,
+        "phase": "showreel",
+        "progress": "0.880",
+        "world": {
+          "width": 342,
+          "height": 192.375,
+          "ratio": 1.7777777777777777
+        },
+        "wave": "webgl",
+        "waveStatus": "paused",
+        "video": {
+          "paused": false,
+          "muted": true,
+          "duration": 15,
+          "time": 0.073809,
+          "error": null
+        },
+        "sections": [
+          {
+            "id": "insights",
+            "exists": true
+          },
+          {
+            "id": "perspective",
+            "exists": true
+          },
+          {
+            "id": "platform",
+            "exists": true
+          },
+          {
+            "id": "explore",
+            "exists": true
+          }
+        ],
+        "brokenAnchors": []
+      },
+      "reduced": {
+        "width": 390,
+        "scrollWidth": 390,
+        "static": true,
+        "phase": "static",
+        "progress": "0.880",
+        "world": {
+          "width": 390,
+          "height": 612.75,
+          "ratio": 0.6364749082007344
+        },
+        "wave": "webgl",
+        "waveStatus": "static",
+        "video": {
+          "paused": true,
+          "muted": true,
+          "duration": 15,
+          "time": 0.134638,
+          "error": null
+        },
+        "sections": [
+          {
+            "id": "insights",
+            "exists": true
+          },
+          {
+            "id": "perspective",
+            "exists": true
+          },
+          {
+            "id": "platform",
+            "exists": true
+          },
+          {
+            "id": "explore",
+            "exists": true
+          }
+        ],
+        "brokenAnchors": []
+      },
+      "small": {
+        "width": 375,
+        "scrollWidth": 375,
+        "static": true,
+        "phase": "static",
+        "progress": "0.880",
+        "world": {
+          "width": 375,
+          "height": 601.6875,
+          "ratio": 0.6232471174820816
+        },
+        "wave": "webgl",
+        "waveStatus": "running",
+        "video": {
+          "paused": true,
+          "muted": true,
+          "duration": 15,
+          "time": 0.134638,
+          "error": null
+        },
+        "sections": [
+          {
+            "id": "insights",
+            "exists": true
+          },
+          {
+            "id": "perspective",
+            "exists": true
+          },
+          {
+            "id": "platform",
+            "exists": true
+          },
+          {
+            "id": "explore",
+            "exists": true
+          }
+        ],
+        "brokenAnchors": []
+      }
+    },
+    {
+      "file": "02-white-current.html",
+      "desktop": {
+        "width": 1440,
+        "scrollWidth": 1440,
+        "static": false,
+        "phase": "signal",
+        "progress": "0.000",
+        "world": {
+          "width": 1440,
+          "height": 824,
+          "ratio": 1.7475728155339805
+        },
+        "wave": "webgl",
+        "waveStatus": "running",
+        "video": {
+          "paused": true,
+          "muted": true,
+          "duration": null,
+          "time": 0,
+          "error": null
+        },
+        "sections": [
+          {
+            "id": "insights",
+            "exists": true
+          },
+          {
+            "id": "perspective",
+            "exists": true
+          },
+          {
+            "id": "platform",
+            "exists": true
+          },
+          {
+            "id": "explore",
+            "exists": true
+          }
+        ],
+        "brokenAnchors": []
+      },
+      "settled": {
+        "width": 1440,
+        "scrollWidth": 1440,
+        "static": false,
+        "phase": "showreel",
+        "progress": "0.880",
+        "world": {
+          "width": 835.1875,
+          "height": 469.78125,
+          "ratio": 1.7778221246590833
+        },
+        "wave": "webgl",
+        "waveStatus": "paused",
+        "video": {
+          "paused": false,
+          "muted": true,
+          "duration": 15,
+          "time": 0,
+          "error": null
+        },
+        "sections": [
+          {
+            "id": "insights",
+            "exists": true
+          },
+          {
+            "id": "perspective",
+            "exists": true
+          },
+          {
+            "id": "platform",
+            "exists": true
+          },
+          {
+            "id": "explore",
+            "exists": true
+          }
+        ],
+        "brokenAnchors": []
+      },
+      "modal": {
+        "open": true,
+        "muted": false,
+        "width": 1920,
+        "height": 1080,
+        "duration": 15
+      },
+      "mobile": {
+        "width": 390,
+        "scrollWidth": 390,
+        "static": false,
+        "phase": "signal",
+        "progress": "0.000",
+        "world": {
+          "width": 390,
+          "height": 780,
+          "ratio": 0.5
+        },
+        "wave": "webgl",
+        "waveStatus": "running",
+        "video": {
+          "paused": true,
+          "muted": true,
+          "duration": 15,
+          "time": 0.099359,
+          "error": null
+        },
+        "sections": [
+          {
+            "id": "insights",
+            "exists": true
+          },
+          {
+            "id": "perspective",
+            "exists": true
+          },
+          {
+            "id": "platform",
+            "exists": true
+          },
+          {
+            "id": "explore",
+            "exists": true
+          }
+        ],
+        "brokenAnchors": []
+      },
+      "mobileSettled": {
+        "width": 390,
+        "scrollWidth": 390,
+        "static": false,
+        "phase": "showreel",
+        "progress": "0.880",
+        "world": {
+          "width": 342,
+          "height": 192.375,
+          "ratio": 1.7777777777777777
+        },
+        "wave": "webgl",
+        "waveStatus": "paused",
+        "video": {
+          "paused": false,
+          "muted": true,
+          "duration": 15,
+          "time": 0.119692,
+          "error": null
+        },
+        "sections": [
+          {
+            "id": "insights",
+            "exists": true
+          },
+          {
+            "id": "perspective",
+            "exists": true
+          },
+          {
+            "id": "platform",
+            "exists": true
+          },
+          {
+            "id": "explore",
+            "exists": true
+          }
+        ],
+        "brokenAnchors": []
+      },
+      "reduced": {
+        "width": 390,
+        "scrollWidth": 390,
+        "static": true,
+        "phase": "static",
+        "progress": "0.880",
+        "world": {
+          "width": 390,
+          "height": 634.140625,
+          "ratio": 0.6150055439201676
+        },
+        "wave": "webgl",
+        "waveStatus": "static",
+        "video": {
+          "paused": true,
+          "muted": true,
+          "duration": 15,
+          "time": 0.13937,
+          "error": null
+        },
+        "sections": [
+          {
+            "id": "insights",
+            "exists": true
+          },
+          {
+            "id": "perspective",
+            "exists": true
+          },
+          {
+            "id": "platform",
+            "exists": true
+          },
+          {
+            "id": "explore",
+            "exists": true
+          }
+        ],
+        "brokenAnchors": []
+      },
+      "small": {
+        "width": 375,
+        "scrollWidth": 375,
+        "static": true,
+        "phase": "static",
+        "progress": "0.880",
+        "world": {
+          "width": 375,
+          "height": 622.828125,
+          "ratio": 0.6020922706404757
+        },
+        "wave": "webgl",
+        "waveStatus": "running",
+        "video": {
+          "paused": true,
+          "muted": true,
+          "duration": 15,
+          "time": 0.13937,
+          "error": null
+        },
+        "sections": [
+          {
+            "id": "insights",
+            "exists": true
+          },
+          {
+            "id": "perspective",
+            "exists": true
+          },
+          {
+            "id": "platform",
+            "exists": true
+          },
+          {
+            "id": "explore",
+            "exists": true
+          }
+        ],
+        "brokenAnchors": []
+      }
+    },
+    {
+      "file": "03-red-editorial.html",
+      "desktop": {
+        "width": 1440,
+        "scrollWidth": 1440,
+        "static": false,
+        "phase": "signal",
+        "progress": "0.000",
+        "world": {
+          "width": 1440,
+          "height": 824,
+          "ratio": 1.7475728155339805
+        },
+        "wave": "webgl",
+        "waveStatus": "running",
+        "video": {
+          "paused": true,
+          "muted": true,
+          "duration": null,
+          "time": 0,
+          "error": null
+        },
+        "sections": [
+          {
+            "id": "insights",
+            "exists": true
+          },
+          {
+            "id": "perspective",
+            "exists": true
+          },
+          {
+            "id": "platform",
+            "exists": true
+          },
+          {
+            "id": "explore",
+            "exists": true
+          }
+        ],
+        "brokenAnchors": []
+      },
+      "settled": {
+        "width": 1440,
+        "scrollWidth": 1440,
+        "static": false,
+        "phase": "showreel",
+        "progress": "0.880",
+        "world": {
+          "width": 748.796875,
+          "height": 421.1875,
+          "ratio": 1.777823119157145
+        },
+        "wave": "webgl",
+        "waveStatus": "paused",
+        "video": {
+          "paused": false,
+          "muted": true,
+          "duration": 15,
+          "time": 0,
+          "error": null
+        },
+        "sections": [
+          {
+            "id": "insights",
+            "exists": true
+          },
+          {
+            "id": "perspective",
+            "exists": true
+          },
+          {
+            "id": "platform",
+            "exists": true
+          },
+          {
+            "id": "explore",
+            "exists": true
+          }
+        ],
+        "brokenAnchors": []
+      },
+      "mobile": {
+        "width": 390,
+        "scrollWidth": 390,
+        "static": false,
+        "phase": "signal",
+        "progress": "0.000",
+        "world": {
+          "width": 390,
+          "height": 780,
+          "ratio": 0.5
+        },
+        "wave": "webgl",
+        "waveStatus": "running",
+        "video": {
+          "paused": true,
+          "muted": true,
+          "duration": 15,
+          "time": 0.025908,
+          "error": null
+        },
+        "sections": [
+          {
+            "id": "insights",
+            "exists": true
+          },
+          {
+            "id": "perspective",
+            "exists": true
+          },
+          {
+            "id": "platform",
+            "exists": true
+          },
+          {
+            "id": "explore",
+            "exists": true
+          }
+        ],
+        "brokenAnchors": []
+      },
+      "mobileSettled": {
+        "width": 390,
+        "scrollWidth": 390,
+        "static": false,
+        "phase": "showreel",
+        "progress": "0.880",
+        "world": {
+          "width": 350,
+          "height": 196.875,
+          "ratio": 1.7777777777777777
+        },
+        "wave": "webgl",
+        "waveStatus": "paused",
+        "video": {
+          "paused": false,
+          "muted": true,
+          "duration": 15,
+          "time": 0.048967,
+          "error": null
+        },
+        "sections": [
+          {
+            "id": "insights",
+            "exists": true
+          },
+          {
+            "id": "perspective",
+            "exists": true
+          },
+          {
+            "id": "platform",
+            "exists": true
+          },
+          {
+            "id": "explore",
+            "exists": true
+          }
+        ],
+        "brokenAnchors": []
+      },
+      "reduced": {
+        "width": 390,
+        "scrollWidth": 390,
+        "static": true,
+        "phase": "static",
+        "progress": "0.880",
+        "world": {
+          "width": 390,
+          "height": 567.375,
+          "ratio": 0.6873760740251157
+        },
+        "wave": "webgl",
+        "waveStatus": "static",
+        "video": {
+          "paused": true,
+          "muted": true,
+          "duration": 15,
+          "time": 0.067348,
+          "error": null
+        },
+        "sections": [
+          {
+            "id": "insights",
+            "exists": true
+          },
+          {
+            "id": "perspective",
+            "exists": true
+          },
+          {
+            "id": "platform",
+            "exists": true
+          },
+          {
+            "id": "explore",
+            "exists": true
+          }
+        ],
+        "brokenAnchors": []
+      },
+      "small": {
+        "width": 375,
+        "scrollWidth": 375,
+        "static": true,
+        "phase": "static",
+        "progress": "0.880",
+        "world": {
+          "width": 375,
+          "height": 558.9375,
+          "ratio": 0.6709158000670916
+        },
+        "wave": "webgl",
+        "waveStatus": "running",
+        "video": {
+          "paused": true,
+          "muted": true,
+          "duration": 15,
+          "time": 0.067348,
+          "error": null
+        },
+        "sections": [
+          {
+            "id": "insights",
+            "exists": true
+          },
+          {
+            "id": "perspective",
+            "exists": true
+          },
+          {
+            "id": "platform",
+            "exists": true
+          },
+          {
+            "id": "explore",
+            "exists": true
+          }
+        ],
+        "brokenAnchors": []
+      }
+    },
+    {
+      "file": "04-split-atlas.html",
+      "desktop": {
+        "width": 1440,
+        "scrollWidth": 1440,
+        "static": false,
+        "phase": "signal",
+        "progress": "0.000",
+        "world": {
+          "width": 1440,
+          "height": 824,
+          "ratio": 1.7475728155339805
+        },
+        "wave": "webgl",
+        "waveStatus": "running",
+        "video": {
+          "paused": true,
+          "muted": true,
+          "duration": null,
+          "time": 0,
+          "error": null
+        },
+        "sections": [
+          {
+            "id": "insights",
+            "exists": true
+          },
+          {
+            "id": "perspective",
+            "exists": true
+          },
+          {
+            "id": "platform",
+            "exists": true
+          },
+          {
+            "id": "explore",
+            "exists": true
+          }
+        ],
+        "brokenAnchors": []
+      },
+      "settled": {
+        "width": 1440,
+        "scrollWidth": 1440,
+        "static": false,
+        "phase": "showreel",
+        "progress": "0.880",
+        "world": {
+          "width": 748.796875,
+          "height": 421.1875,
+          "ratio": 1.777823119157145
+        },
+        "wave": "webgl",
+        "waveStatus": "paused",
+        "video": {
+          "paused": false,
+          "muted": true,
+          "duration": 15,
+          "time": 0,
+          "error": null
+        },
+        "sections": [
+          {
+            "id": "insights",
+            "exists": true
+          },
+          {
+            "id": "perspective",
+            "exists": true
+          },
+          {
+            "id": "platform",
+            "exists": true
+          },
+          {
+            "id": "explore",
+            "exists": true
+          }
+        ],
+        "brokenAnchors": []
+      },
+      "mobile": {
+        "width": 390,
+        "scrollWidth": 390,
+        "static": false,
+        "phase": "signal",
+        "progress": "0.000",
+        "world": {
+          "width": 390,
+          "height": 780,
+          "ratio": 0.5
+        },
+        "wave": "webgl",
+        "waveStatus": "running",
+        "video": {
+          "paused": true,
+          "muted": true,
+          "duration": 15,
+          "time": 0.066774,
+          "error": null
+        },
+        "sections": [
+          {
+            "id": "insights",
+            "exists": true
+          },
+          {
+            "id": "perspective",
+            "exists": true
+          },
+          {
+            "id": "platform",
+            "exists": true
+          },
+          {
+            "id": "explore",
+            "exists": true
+          }
+        ],
+        "brokenAnchors": []
+      },
+      "mobileSettled": {
+        "width": 390,
+        "scrollWidth": 390,
+        "static": false,
+        "phase": "showreel",
+        "progress": "0.880",
+        "world": {
+          "width": 350,
+          "height": 196.875,
+          "ratio": 1.7777777777777777
+        },
+        "wave": "webgl",
+        "waveStatus": "paused",
+        "video": {
+          "paused": false,
+          "muted": true,
+          "duration": 15,
+          "time": 0.091441,
+          "error": null
+        },
+        "sections": [
+          {
+            "id": "insights",
+            "exists": true
+          },
+          {
+            "id": "perspective",
+            "exists": true
+          },
+          {
+            "id": "platform",
+            "exists": true
+          },
+          {
+            "id": "explore",
+            "exists": true
+          }
+        ],
+        "brokenAnchors": []
+      },
+      "reduced": {
+        "width": 390,
+        "scrollWidth": 390,
+        "static": true,
+        "phase": "static",
+        "progress": "0.880",
+        "world": {
+          "width": 390,
+          "height": 552.375,
+          "ratio": 0.7060420909708078
+        },
+        "wave": "webgl",
+        "waveStatus": "static",
+        "video": {
+          "paused": true,
+          "muted": true,
+          "duration": 15,
+          "time": 0.118112,
+          "error": null
+        },
+        "sections": [
+          {
+            "id": "insights",
+            "exists": true
+          },
+          {
+            "id": "perspective",
+            "exists": true
+          },
+          {
+            "id": "platform",
+            "exists": true
+          },
+          {
+            "id": "explore",
+            "exists": true
+          }
+        ],
+        "brokenAnchors": []
+      },
+      "small": {
+        "width": 375,
+        "scrollWidth": 375,
+        "static": true,
+        "phase": "static",
+        "progress": "0.880",
+        "world": {
+          "width": 375,
+          "height": 543.9375,
+          "ratio": 0.6894174422612892
+        },
+        "wave": "webgl",
+        "waveStatus": "running",
+        "video": {
+          "paused": true,
+          "muted": true,
+          "duration": 15,
+          "time": 0.118112,
+          "error": null
+        },
+        "sections": [
+          {
+            "id": "insights",
+            "exists": true
+          },
+          {
+            "id": "perspective",
+            "exists": true
+          },
+          {
+            "id": "platform",
+            "exists": true
+          },
+          {
+            "id": "explore",
+            "exists": true
+          }
+        ],
+        "brokenAnchors": []
+      }
+    },
+    {
+      "file": "05-research-studio.html",
+      "desktop": {
+        "width": 1440,
+        "scrollWidth": 1440,
+        "static": false,
+        "phase": "signal",
+        "progress": "0.000",
+        "world": {
+          "width": 1440,
+          "height": 824,
+          "ratio": 1.7475728155339805
+        },
+        "wave": "webgl",
+        "waveStatus": "running",
+        "video": {
+          "paused": true,
+          "muted": true,
+          "duration": null,
+          "time": 0,
+          "error": null
+        },
+        "sections": [
+          {
+            "id": "insights",
+            "exists": true
+          },
+          {
+            "id": "perspective",
+            "exists": true
+          },
+          {
+            "id": "platform",
+            "exists": true
+          },
+          {
+            "id": "explore",
+            "exists": true
+          }
+        ],
+        "brokenAnchors": []
+      },
+      "settled": {
+        "width": 1440,
+        "scrollWidth": 1440,
+        "static": false,
+        "phase": "showreel",
+        "progress": "0.880",
+        "world": {
+          "width": 777.59375,
+          "height": 437.390625,
+          "ratio": 1.7778015932554567
+        },
+        "wave": "webgl",
+        "waveStatus": "paused",
+        "video": {
+          "paused": false,
+          "muted": true,
+          "duration": 15,
+          "time": 0,
+          "error": null
+        },
+        "sections": [
+          {
+            "id": "insights",
+            "exists": true
+          },
+          {
+            "id": "perspective",
+            "exists": true
+          },
+          {
+            "id": "platform",
+            "exists": true
+          },
+          {
+            "id": "explore",
+            "exists": true
+          }
+        ],
+        "brokenAnchors": []
+      },
+      "mobile": {
+        "width": 390,
+        "scrollWidth": 390,
+        "static": false,
+        "phase": "signal",
+        "progress": "0.000",
+        "world": {
+          "width": 390,
+          "height": 780,
+          "ratio": 0.5
+        },
+        "wave": "webgl",
+        "waveStatus": "running",
+        "video": {
+          "paused": true,
+          "muted": true,
+          "duration": 15,
+          "time": 0.062999,
+          "error": null
+        },
+        "sections": [
+          {
+            "id": "insights",
+            "exists": true
+          },
+          {
+            "id": "perspective",
+            "exists": true
+          },
+          {
+            "id": "platform",
+            "exists": true
+          },
+          {
+            "id": "explore",
+            "exists": true
+          }
+        ],
+        "brokenAnchors": []
+      },
+      "mobileSettled": {
+        "width": 390,
+        "scrollWidth": 390,
+        "static": false,
+        "phase": "showreel",
+        "progress": "0.880",
+        "world": {
+          "width": 343.1875,
+          "height": 193.03125,
+          "ratio": 1.7778857050348065
+        },
+        "wave": "webgl",
+        "waveStatus": "paused",
+        "video": {
+          "paused": false,
+          "muted": true,
+          "duration": 15,
+          "time": 0.08461,
+          "error": null
+        },
+        "sections": [
+          {
+            "id": "insights",
+            "exists": true
+          },
+          {
+            "id": "perspective",
+            "exists": true
+          },
+          {
+            "id": "platform",
+            "exists": true
+          },
+          {
+            "id": "explore",
+            "exists": true
+          }
+        ],
+        "brokenAnchors": []
+      },
+      "reduced": {
+        "width": 390,
+        "scrollWidth": 390,
+        "static": true,
+        "phase": "static",
+        "progress": "0.880",
+        "world": {
+          "width": 390,
+          "height": 616.4375,
+          "ratio": 0.6326675453715908
+        },
+        "wave": "webgl",
+        "waveStatus": "static",
+        "video": {
+          "paused": true,
+          "muted": true,
+          "duration": 15,
+          "time": 0.16802,
+          "error": null
+        },
+        "sections": [
+          {
+            "id": "insights",
+            "exists": true
+          },
+          {
+            "id": "perspective",
+            "exists": true
+          },
+          {
+            "id": "platform",
+            "exists": true
+          },
+          {
+            "id": "explore",
+            "exists": true
+          }
+        ],
+        "brokenAnchors": []
+      },
+      "small": {
+        "width": 375,
+        "scrollWidth": 375,
+        "static": true,
+        "phase": "static",
+        "progress": "0.880",
+        "world": {
+          "width": 375,
+          "height": 605.5,
+          "ratio": 0.6193228736581338
+        },
+        "wave": "webgl",
+        "waveStatus": "running",
+        "video": {
+          "paused": true,
+          "muted": true,
+          "duration": 15,
+          "time": 0.16802,
+          "error": null
+        },
+        "sections": [
+          {
+            "id": "insights",
+            "exists": true
+          },
+          {
+            "id": "perspective",
+            "exists": true
+          },
+          {
+            "id": "platform",
+            "exists": true
+          },
+          {
+            "id": "explore",
+            "exists": true
+          }
+        ],
+        "brokenAnchors": []
+      }
+    },
+    {
+      "file": "06-soft-mono.html",
+      "desktop": {
+        "width": 1440,
+        "scrollWidth": 1440,
+        "static": false,
+        "phase": "signal",
+        "progress": "0.000",
+        "world": {
+          "width": 1440,
+          "height": 824,
+          "ratio": 1.7475728155339805
+        },
+        "wave": "webgl",
+        "waveStatus": "running",
+        "video": {
+          "paused": true,
+          "muted": true,
+          "duration": null,
+          "time": 0,
+          "error": null
+        },
+        "sections": [
+          {
+            "id": "insights",
+            "exists": true
+          },
+          {
+            "id": "perspective",
+            "exists": true
+          },
+          {
+            "id": "platform",
+            "exists": true
+          },
+          {
+            "id": "explore",
+            "exists": true
+          }
+        ],
+        "brokenAnchors": []
+      },
+      "settled": {
+        "width": 1440,
+        "scrollWidth": 1440,
+        "static": false,
+        "phase": "showreel",
+        "progress": "0.880",
+        "world": {
+          "width": 763.1875,
+          "height": 429.28125,
+          "ratio": 1.7778263085098638
+        },
+        "wave": "webgl",
+        "waveStatus": "paused",
+        "video": {
+          "paused": false,
+          "muted": true,
+          "duration": 15,
+          "time": 0,
+          "error": null
+        },
+        "sections": [
+          {
+            "id": "insights",
+            "exists": true
+          },
+          {
+            "id": "perspective",
+            "exists": true
+          },
+          {
+            "id": "platform",
+            "exists": true
+          },
+          {
+            "id": "explore",
+            "exists": true
+          }
+        ],
+        "brokenAnchors": []
+      },
+      "mobile": {
+        "width": 390,
+        "scrollWidth": 390,
+        "static": false,
+        "phase": "signal",
+        "progress": "0.000",
+        "world": {
+          "width": 390,
+          "height": 780,
+          "ratio": 0.5
+        },
+        "wave": "webgl",
+        "waveStatus": "running",
+        "video": {
+          "paused": true,
+          "muted": true,
+          "duration": 15,
+          "time": 0.081304,
+          "error": null
+        },
+        "sections": [
+          {
+            "id": "insights",
+            "exists": true
+          },
+          {
+            "id": "perspective",
+            "exists": true
+          },
+          {
+            "id": "platform",
+            "exists": true
+          },
+          {
+            "id": "explore",
+            "exists": true
+          }
+        ],
+        "brokenAnchors": []
+      },
+      "mobileSettled": {
+        "width": 390,
+        "scrollWidth": 390,
+        "static": false,
+        "phase": "showreel",
+        "progress": "0.880",
+        "world": {
+          "width": 343.1875,
+          "height": 193.03125,
+          "ratio": 1.7778857050348065
+        },
+        "wave": "webgl",
+        "waveStatus": "paused",
+        "video": {
+          "paused": false,
+          "muted": true,
+          "duration": 15,
+          "time": 0.102647,
+          "error": null
+        },
+        "sections": [
+          {
+            "id": "insights",
+            "exists": true
+          },
+          {
+            "id": "perspective",
+            "exists": true
+          },
+          {
+            "id": "platform",
+            "exists": true
+          },
+          {
+            "id": "explore",
+            "exists": true
+          }
+        ],
+        "brokenAnchors": []
+      },
+      "reduced": {
+        "width": 390,
+        "scrollWidth": 390,
+        "static": true,
+        "phase": "static",
+        "progress": "0.880",
+        "world": {
+          "width": 390,
+          "height": 617.609375,
+          "ratio": 0.6314670984390417
+        },
+        "wave": "webgl",
+        "waveStatus": "static",
+        "video": {
+          "paused": true,
+          "muted": true,
+          "duration": 15,
+          "time": 0.121771,
+          "error": null
+        },
+        "sections": [
+          {
+            "id": "insights",
+            "exists": true
+          },
+          {
+            "id": "perspective",
+            "exists": true
+          },
+          {
+            "id": "platform",
+            "exists": true
+          },
+          {
+            "id": "explore",
+            "exists": true
+          }
+        ],
+        "brokenAnchors": []
+      },
+      "small": {
+        "width": 375,
+        "scrollWidth": 375,
+        "static": true,
+        "phase": "static",
+        "progress": "0.880",
+        "world": {
+          "width": 375,
+          "height": 606.609375,
+          "ratio": 0.618190248048837
+        },
+        "wave": "webgl",
+        "waveStatus": "running",
+        "video": {
+          "paused": true,
+          "muted": true,
+          "duration": 15,
+          "time": 0.121771,
+          "error": null
+        },
+        "sections": [
+          {
+            "id": "insights",
+            "exists": true
+          },
+          {
+            "id": "perspective",
+            "exists": true
+          },
+          {
+            "id": "platform",
+            "exists": true
+          },
+          {
+            "id": "explore",
+            "exists": true
+          }
+        ],
+        "brokenAnchors": []
+      }
+    }
+  ],
+  "errors": [],
+  "passed": true
+}

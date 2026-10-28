@@ -1,0 +1,9 @@
+{
+  "passed": true,
+  "errors": [],
+  "viewports": [
+    "desktop",
+    "mobile",
+    "short"
+  ]
+}

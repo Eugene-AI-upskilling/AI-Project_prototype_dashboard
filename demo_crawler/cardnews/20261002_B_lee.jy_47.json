@@ -1,0 +1,86 @@
+{
+  "report_url": "http://www.eugenefn.com/common/files/amail/20261002_B_lee.jy_47.pdf",
+  "title": "10월의 기분 좋은 출발, 코스피 +2% 코스닥 +5%",
+  "category": "시황",
+  "analyst": "이준영",
+  "team": "글로벌 매크로팀",
+  "published_at": "2026-10-02",
+  "brand": "EUGENE DAILY SNAPSHOT",
+  "source": "자료: 코스콤, Quantiwise, 유진투자증권",
+  "slides": [
+    {"type": "cover", "title": "10월의\n기분 좋은 출발", "date": "2026.10.02 · 10월 1일 마감 기준",
+     "stats": [{"label": "KOSPI", "value": "+1.95%", "sub": "6,971.35", "tone": "up"},
+               {"label": "KOSDAQ", "value": "+4.48%", "sub": "894.29", "tone": "up"}]},
+    {"type": "content", "kicker": "간밤 미국 증시", "title": "美 10년물 금리,\n24년 만의 최고치 찍고 반락",
+     "sub": "금리가 밀리자 증시는 장 막판 낙폭을 만회하고 강보합으로 마감했어요.",
+     "blocks": [
+       {"t": "change", "label": "미국채 10년물 금리", "from": {"label": "장중 고점", "value": "5.34%", "tone": "up"},
+        "to": {"label": "종가", "value": "5.24%"}, "note": "장 초반 금리 부담에 경기민감·금융·헬스케어 중심으로 매도가 확산됐어요."},
+       {"t": "stats", "compact": true, "items": [
+         {"label": "다우", "value": "+0.04%", "tone": "up"}, {"label": "S&P500", "value": "+0.2%", "tone": "up"},
+         {"label": "나스닥", "value": "+0.04%", "tone": "up"}, {"label": "필라델피아 반도체", "value": "+1.6%", "tone": "up", "hl": true}]}
+     ]},
+    {"type": "content", "kicker": "간밤 미국 증시", "title": "상승은 메모리·장비·\n광통신이 이끌었다",
+     "blocks": [
+       {"t": "bars", "title": "메모리", "items": [{"name": "SK하이닉스 ADR", "value": "+5.1%", "n": 5.1}, {"name": "마이크론", "value": "+3.0%", "n": 3.0}, {"name": "샌디스크", "value": "+2.8%", "n": 2.8}]},
+       {"t": "bars", "title": "장비 · 마이크론 CapEx 상향 수혜", "items": [{"name": "램리서치", "value": "+3.5%", "n": 3.5}, {"name": "AMAT", "value": "+3.5%", "n": 3.5}, {"name": "KLA", "value": "+2.8%", "n": 2.8}]},
+       {"t": "bars", "title": "광통신", "items": [{"name": "코히런트", "value": "+10.9%", "n": 10.9}, {"name": "루멘텀", "value": "+7.7%", "n": 7.7}, {"name": "시에나", "value": "+7.6%", "n": 7.6}]},
+       {"t": "note", "text": "+ 앤스로픽, 이르면 11월 중순 IPO 추진"}
+     ]},
+    {"type": "content", "kicker": "미국 경제지표", "title": "물가 압력은 커졌지만\n10월 인상 확률은 뚝",
+     "blocks": [
+       {"t": "stats", "items": [
+         {"label": "9월 ISM 제조업지수", "value": "54.5", "cap": "전월 54.6, 확장 국면 유지"},
+         {"label": "ISM 가격지불지수", "value": "77.9", "tone": "up", "cap": "전월 71.1 → **+6.8p** · 예상 72"},
+         {"label": "주간 신규 실업수당청구", "value": "19.7", "unit": "만 건", "cap": "예상 20.1만 건, 노동시장 견조"},
+         {"label": "10월 FOMC 금리 인상 확률", "value": "28", "unit": "%", "cap": "1주 전 69%에서 크게 낮아졌어요", "hl": true}]}
+     ]},
+    {"type": "content", "kicker": "전일 국내 증시", "title": "반도체 수출, 단일 품목\n첫 600억 달러 돌파",
+     "blocks": [
+       {"t": "hero", "label": "9월 반도체 수출", "value": "603", "unit": "억 달러", "cap": "전년 대비 +262.8%"},
+       {"t": "stats", "items": [
+         {"label": "9월 총수출 (사상 최대)", "value": "1,209", "unit": "억$", "cap": "**+83.5%** YoY · 일평균 +105%"},
+         {"label": "마이크론 FY27 1Q 매출 가이던스", "value": "615", "unit": "억$", "cap": "컨센서스 570억$ 상회"}]},
+       {"t": "kv", "label": "코스피 장중 저점 -1.1% → 종가", "value": "+1.95%", "tone": "up"}
+     ]},
+    {"type": "content", "kicker": "투자자별 수급", "title": "코스닥에 외국인·기관\n동반 순매수",
+     "sub": "코스피는 개인과 외국인이 팔고 기타법인이 받았어요. 코스닥은 소부장·바이오·2차전지로 매수세가 번졌어요.",
+     "blocks": [
+       {"t": "flows", "title": "KOSPI", "unit": "정규장 기준 · 조원", "items": [
+         {"name": "기타법인", "value": "+1.6", "n": 1.6}, {"name": "기관", "value": "+0.3", "n": 0.3},
+         {"name": "외국인", "value": "-0.5", "n": -0.5}, {"name": "개인", "value": "-1.4", "n": -1.4}]},
+       {"t": "flows", "title": "KOSDAQ", "unit": "조원", "items": [
+         {"name": "기관", "value": "+0.6", "n": 0.6}, {"name": "외국인", "value": "+0.3", "n": 0.3}]}
+     ]},
+    {"type": "content", "kicker": "업종 · 테마", "title": "성장주는 웃고\n정유·은행은 울었다",
+     "blocks": [
+       {"t": "updown",
+        "up": [{"group": "반도체 소부장", "items": [{"name": "대덕전자", "value": "+12.8%"}, {"name": "유진테크", "value": "+10.9%"}]},
+               {"group": "철강", "items": [{"name": "대한제강", "value": "+16.8%"}], "why": "한국 대미투자에 알래스카 LNG·원전 포함"},
+               {"group": "바이오", "items": [{"name": "삼천당제약", "value": "+15.4%"}], "why": "낙폭과대 인식"},
+               {"group": "게임", "items": [{"name": "엔씨소프트", "value": "+10.1%"}], "why": "'아이온2' 스팀 매출 1위"}],
+        "down": [{"group": "정유", "items": [{"name": "S-Oil", "value": "-8.0%"}, {"name": "SK이노베이션", "value": "-6.2%"}, {"name": "GS", "value": "-4.7%"}]},
+                 {"group": "은행", "items": [{"name": "우리금융지주", "value": "-4.7%"}, {"name": "JB금융지주", "value": "-2.6%"}]},
+                 {"group": "보험 · 내수", "items": [{"name": "코리안리", "value": "-1.9%"}, {"name": "BGF리테일", "value": "-1.6%"}]}]}
+     ]},
+    {"type": "content", "kicker": "오늘의 클로즈업", "title": "코스닥의\n수익률 따라잡기",
+     "sub": "대형 반도체가 쉬는 사이, AI 캐파 사이클의 온기가 중소형 소부장으로 번지고 있어요.",
+     "blocks": [
+       {"t": "bars", "thick": true, "title": "8~9월 누적 수익률", "items": [{"name": "코스닥", "value": "+18.9%", "n": 18.9}, {"name": "코스피", "value": "+3.7%", "n": 3.7}]},
+       {"t": "bars", "thick": true, "title": "8~9월 반도체 업종 수익률", "items": [{"name": "코스닥", "value": "+44.5%", "n": 44.5}, {"name": "코스피", "value": "+3.3%", "n": 3.3}]},
+       {"t": "gauge", "title": "신용융자 / 시가총액 (코스닥)", "min": 1.4, "max": 2.2,
+        "marks": [{"v": 1.55, "label": "현재 1.55%", "now": true}, {"v": 1.7, "label": "1.7%", "sub": "-2표준편차"}, {"v": 2.1, "label": "2.1%", "sub": "3년 평균"}],
+        "cap": "신용융자는 2개월간 20% 늘었지만, 아직 과열 구간은 아니에요."}
+     ]},
+    {"type": "content", "kicker": "오늘의 클로즈업", "title": "코스닥 강세가 꺾일 수 있는\n세 가지 신호",
+     "sub": "2017년 11월~2018년 1월과 닮았어요. 당시 코스닥의 초과 상승은 2018년 2월 미국 금리 급등으로 끝났어요.",
+     "disc": true,
+     "blocks": [
+       {"t": "list", "items": [
+         {"title": "美 10년물 5.5% 돌파", "desc": "성장주 전반의 밸류에이션 멀티플을 누를 수 있어요."},
+         {"title": "삼성전자·SK하이닉스 실적 모멘텀 재점화", "desc": "수급이 대형 반도체로 다시 이동할 수 있어요."},
+         {"title": "신용융자/시총 1.7% 상향 돌파", "desc": "과열 경계로 전환하는 신호예요."}]},
+       {"t": "takeaway", "text": "AI 캐파 사이클과 연동된 **소부장 중심**이 여전히 유리해 보여요. 바이오는 8~9월 상승률(+5.6%)이 낮아 가격 부담이 적어, **금리가 안정되면** 관심이 필요해요."}
+     ]}
+  ]
+}

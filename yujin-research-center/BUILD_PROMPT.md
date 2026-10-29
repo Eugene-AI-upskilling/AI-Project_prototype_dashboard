@@ -1,7 +1,7 @@
 # 유진 Insight Lab — 빈 노트북에서 처음부터 구현하는 프롬프트
 
 > **쓰는 법**: 새 노트북에 아래 "0. 준비"만 사람이 직접 하고, 그다음 이 문서 전체를 AI 코딩 에이전트(Claude Code 등)에 붙여 넣은 뒤 "11장 단계대로 1단계부터 진행해줘"라고 하세요. 단계가 끝날 때마다 화면을 확인하고 "다음 단계"라고 하면 됩니다.
-> 기존 코드 · 백업이 하나도 없고, git은 **새 계정**으로만 쓸 수 있는 환경(기존 GitHub 저장소 Eugene-AI-upskilling · codikids에는 접근 불가)을 전제로 썼습니다. 새 계정에 새 비공개 저장소를 만들어 처음부터 관리합니다. 참고용 완성본: https://eugene-insightlab.netlify.app (2026-10-29 배포본)
+> 기존 코드 · 백업이 하나도 없고, git은 **새 계정**으로만 쓸 수 있는 환경(기존 GitHub 저장소 Eugene-AI-upskilling · codikids에는 접근 불가)을 전제로 썼습니다. 새 계정에 새 비공개 저장소를 만들어 처음부터 관리합니다. **배포는 Cloudflare(정적 사이트 = Cloudflare Pages)** 로 합니다. 기존 Supabase · Netlify · Render는 옛 계정 소유라 새 환경에서는 관리할 수 없다고 보고, 데이터는 `db_migration/` 키트로 새 Supabase 프로젝트에 옮깁니다. 참고용 완성본(옛 계정 Netlify, 화면 참고만): https://eugene-insight-lab.netlify.app
 
 ---
 
@@ -9,29 +9,31 @@
 
 1. **프로그램 설치**
    - Git — https://git-scm.com (Git Bash 함께 설치) · GitHub CLI — https://cli.github.com
-   - Node.js 20 LTS 이상 — https://nodejs.org (Netlify CLI · Jarvis 앱용)
+   - Node.js 22 LTS 이상 — https://nodejs.org (Node 20은 2026-04 지원 종료. Wrangler · Jarvis 앱용)
    - Python 3.12 이상 — https://python.org (설치 시 "Add to PATH" 체크 · 로컬 서버 · API 서버용)
    - VS Code + Claude Code 확장(또는 터미널 `npm i -g @anthropic-ai/claude-code`)
-   - Netlify CLI — `npm i -g netlify-cli`
+   - Cloudflare Wrangler — 전역 설치 없이 `npx wrangler@latest ...`로 실행(처음 한 번 `npx wrangler login`)
 2. **계정 · 접근 확인** (없으면 각 항목의 '대안'으로 진행)
    | 필요한 것 | 어디서 | 없을 때 대안 |
    |---|---|---|
    | GitHub **새 계정** | github.com 가입 → `gh auth login` | 저장소 없이 로컬 git만 써도 됨(원격 push만 생략) |
-   | Supabase 프로젝트 URL · anon key | 기존 프로젝트 `https://zvnnpwdfeaakhxklcjfk.supabase.co` → Dashboard › Settings › API. 또는 완성본 사이트의 `assets/partials.js` 안 `SUPABASE_ANON` 값 | 새 Supabase 프로젝트를 만들고 9장 SQL로 테이블 생성 → 데이터는 비어 있어도 화면은 기본값(예시)으로 동작 |
-   | Netlify 계정 (site id `dd1e599a-cbc4-43a1-9fab-3e28d6678c12`) | `netlify login` | 새 사이트로 배포해도 됨 |
+   | Supabase **새 프로젝트** + 시연 데이터 | 새 계정으로 supabase.com › New project(Region: Seoul) → `db_migration/README.md` 순서대로 스키마 · 데이터(22개 테이블 8,602행) · 앵커 영상 · 성과 리포트 이전. Project URL · anon key를 메모 | `db_migration/` 폴더가 없으면 9장 SQL로 빈 테이블만 생성 → 화면은 기본값(예시)으로 동작 |
+   | Cloudflare 계정 | dash.cloudflare.com 가입 → `npx wrangler login` | 배포만 미루고 로컬(`python -m http.server 4210`)로 개발 |
    | Claude API 키 | console.anthropic.com | AI 답변 · 요약 기능만 꺼진 채로 동작 |
-   | AI 앵커 영상 | Supabase Storage `briefings/` (테이블 `ai_briefings`에 URL) | 영상 없이 썸네일 · '브리핑 준비 중' 안내로 동작 |
+   | AI 앵커 영상 | 새 Supabase Storage `briefings/` (`db_migration/storage/briefings/`를 `2_import.py`가 올림, 테이블 `ai_briefings`에 URL) | 영상 없이 썸네일 · '브리핑 준비 중' 안내로 동작 |
+
+   기존 Supabase(`zvnnpwdfeaakhxklcjfk`)는 옛 계정 소유라 새 계정으로는 RLS · 테이블 · Auth 설정을 바꿀 수 없고, 무료 플랜이 일시정지돼도 다시 켤 수 없습니다. 옛 anon key는 새 프로젝트를 만들기 전 **임시 읽기 전용**으로만 쓰고, 로그인 · 쓰기(저장 전략 · 알림 · 회원)는 새 프로젝트에서만 동작한다고 봅니다.
 3. **작업 폴더 · 새 저장소 만들기** (Git Bash)
    ```bash
    git config --global user.name "이름"; git config --global user.email "새계정 이메일"
    mkdir -p Eugene_AI_Project/yujin-research-center Eugene_AI_Project/_secrets && cd Eugene_AI_Project
    git init -b main
-   printf '_secrets/\n.env\n.env.*\n**/node_modules/\n**/.next/\n**/__pycache__/\n*.pyc\ndist/\n.netlify/\n**/gmail_token.json\n**/gmail_credentials.json\n**/.kis_token.json\n**/*.db\n' > .gitignore
+   printf '_secrets/\n.env\n.env.*\n**/node_modules/\n**/.next/\n**/__pycache__/\n*.pyc\ndist/\n.wrangler/\n.open-next/\n**/gmail_token.json\n**/gmail_credentials.json\n**/.kis_token.json\n**/*.db\n' > .gitignore
    git add .gitignore && git commit -m "init"
    gh repo create eugene-insightlab --private --source . --remote origin --push   # 새 계정의 비공개 저장소
    cd yujin-research-center
    ```
-4. **이전 자료가 있다면** 먼저 활용: 이전 노트북의 백업 zip(`Eugene_AI_Project_슬림_*.zip`), git bundle(`Eugene_AI_Project.bundle` → `git clone`으로 이력까지 복원 후 `git remote set-url origin <새 저장소>`), 또는 Netlify 관리 화면 › Deploys › 최신 배포 › Download 파일이 있으면 그걸 기준으로 하고 에이전트에게 "이 폴더를 기준으로 이어서 개발해줘"라고 하세요. 아무것도 없을 때만 이 문서대로 처음부터 만듭니다.
+4. **이전 자료가 있다면** 먼저 활용: 이전 노트북의 백업 zip(`Eugene_AI_Project_슬림_*.zip`), git bundle(`Eugene_AI_Project.bundle` → `git clone`으로 이력까지 복원 후 `git remote set-url origin <새 저장소>`)이 있으면 그걸 기준으로 하고 에이전트에게 "이 폴더를 기준으로 이어서 개발해줘"라고 하세요. 아무것도 없을 때만 이 문서대로 처음부터 만듭니다.
 5. 비밀값(.env · 토큰 json)은 사이트 폴더 **밖** `Eugene_AI_Project/_secrets/`에만 둡니다(.gitignore로 제외). 저장소가 비공개여도 비밀값은 커밋하지 않고, 메신저 · 메일로 보내지 않습니다. 클라이언트 코드에 넣어도 되는 것은 **Supabase URL과 anon key뿐**입니다.
 
 ---
@@ -70,13 +72,16 @@
 ## 3. 기술 스택 · 제약
 
 - **프론트**: 프레임워크 · 빌드 없는 정적 사이트(HTML + CSS + vanilla JS). 페이지마다 `.html` 하나 + 공용 `assets/`.
-- **폰트**: Pretendard Variable — CDN `https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css`
-- **데이터**: Supabase JS v2 CDN `https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2`, anon key + RLS(읽기 공개, 쓰기는 본인 행만)
-- **API 서버(선택)**: `lounge_api/` — Python 표준 라이브러리 `http.server` 기반, `/api/*` (8장). 운영은 Render 무료 플랜.
-- **홈 홀로그램(선택)**: 별도 Next.js 15 앱 `jarvis/`(React 19 · three.js · @react-three/fiber · framer-motion). `?embed=hero`로 iframe 임베드. 없으면 CSS로 만든 대체 오브.
-- **서버 주소**: `assets/config.js` 한 곳 — `window.IL_CONFIG={apiBase, jarvisUrl}` (로컬이면 `''`/`http://localhost:3300`, 운영이면 Render 주소)
-- **AI**: Claude API 키는 서버 환경변수 `ANTHROPIC_API_KEY`에만.
-- **호스팅**: Netlify 정적 배포.
+- **폰트**: Pretendard Variable — CDN `https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css` 하나만 쓴다. 로컬 `assets/fonts/`와 `@font-face`는 만들지 않는다(빈 노트북에는 파일이 없어 404가 난다). 오프라인 시연용으로 꼭 필요할 때만 `https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/packages/pretendard/dist/web/variable/woff2/PretendardVariable.woff2`를 받아 `assets/fonts/`에 둔다.
+- **데이터**: Supabase JS v2 CDN `https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2`. **새 계정의 새 Supabase 프로젝트**(0장 2번, `db_migration/`로 데이터 이전)의 URL · anon key만 클라이언트에 둔다. RLS: 읽기는 anon 공개, `saved_strategies` · `subscriptions` · `lounge_members` 쓰기는 `auth.uid() = user_id`만. 로그인(이메일 · Google)이 되려면 Supabase › Authentication › URL Configuration의 Site URL · Redirect URLs에 Cloudflare Pages 주소(`https://<프로젝트>.pages.dev`)와 `http://localhost:4210`을 넣고, Google 로그인은 새 Google Cloud OAuth 클라이언트를 만들어 연결한다(옛 클라이언트는 쓸 수 없음).
+- **API 서버(선택)**: `lounge_api/` — Python `http.server` 기반 `/api/*` (8장). 표준 라이브러리만으로 끝나지 않는다: AI 기능은 `db_loader/llm.py`(Claude 호출 · `anthropic` 패키지) · `db_loader/extract_reports.py` · `db_loader/make_cardnews.py`를 import하므로 **`db_loader/`를 같은 저장소 · 같은 배포 단위에 둔다**. 패키지는 `requirements.txt`(최소 `anthropic`)로 관리. 데이터는 SQLite 파일(`LOUNGE_DB`, 기본 `lounge_api/lounge.db`)이라 **영구 디스크가 있는 곳**에서만 운영한다. Cloudflare Workers/Pages에서는 이 서버(Python `http.server` + SQLite 파일)를 그대로 돌릴 수 없으므로, 운영은 Railway(볼륨을 `/data`에 붙이고 `LOUNGE_DB=/data/lounge.db`, 시작 `python -m lounge_api.server --host 0.0.0.0`, 헬스체크 `/api/health`)로 한다. Render 무료 플랜은 디스크가 없어 재시작마다 질문 · 신청 데이터가 지워지므로 쓰지 않는다. 서버를 안 띄우면 사이트는 `assets/lounge-snapshot.json` 정적 스냅샷으로 동작한다.
+- **홈 홀로그램(선택)**: 별도 Next.js 15 앱 `jarvis/`(React 19 · three.js · @react-three/fiber · framer-motion, API 라우트 `app/api/chat|brief|tts`). `?embed=hero`로 iframe 임베드. 운영은 Cloudflare Workers에 OpenNext 어댑터(`@opennextjs/cloudflare`, `wrangler.jsonc`에 `compatibility_flags:["nodejs_compat"]`)로 올린다. 빌드 · 실행이 안 되는 Node 전용 코드가 있으면 lounge_api와 같은 Railway 프로젝트로 돌린다. 없으면 CSS로 만든 대체 오브.
+- **서버 주소**: `assets/config.js` 한 곳 — `window.IL_CONFIG={apiBase, jarvisUrl}`. 로컬이면 `''` / `http://localhost:3300`, 운영이면 lounge_api의 Railway 주소 · Jarvis의 `*.workers.dev`(또는 Railway) 주소. 옛 계정의 `*.onrender.com` 주소는 넣지 않는다. 서버 쪽 허용 출처도 맞춘다: lounge_api `LOUNGE_ALLOWED_ORIGINS`(CORS), Jarvis `EMBED_ALLOWED_ORIGINS`(iframe `frame-ancestors`)에 `https://<프로젝트>.pages.dev`와 로컬 주소.
+- **AI**: Claude API 키 환경변수 이름은 **`ANTHROPIC_API_KEY` 하나로 통일**한다(lounge_api · jarvis · db_loader 모두). 서버 환경변수(Railway Variables · Workers Secrets `npx wrangler secret put ANTHROPIC_API_KEY`)와 로컬 `_secrets/*.env`에만 두고, 클라이언트 코드 · git에는 넣지 않는다.
+- **호스팅**: 정적 사이트는 **Cloudflare Pages**(Direct Upload, `npx wrangler pages deploy`, 12장). 빌드 단계 없음. 알아 둘 제약:
+  - 파일 하나당 **25MiB 제한** — 넘는 영상(mp4)은 `dist`에 넣지 말고 Supabase Storage(또는 Cloudflare R2)에 올려 URL로 쓴다.
+  - Pages는 `.html` 확장자를 떼는 주소로 308 리다이렉트한다(`/market.html?region=global` → `/market?region=global`, 쿼리 · 해시 유지). 페이지 간 링크는 `market.html`처럼 그대로 써도 되지만, 현재 페이지를 판별하는 코드는 `location.pathname`의 `.html` 유무와 상관없이 동작하게 만든다(예: `/market(\.html)?$/`).
+  - 무료 플랜 파일 수 20,000개 · 프로젝트당 월 500회 배포 이내.
 
 ## 4. 디자인 시스템
 
@@ -137,9 +142,13 @@ yujin-research-center/
     lounge-proto.js     페르소나 · 시연 데이터 (IL 전역)
     lounge-api.js       서버 API 래퍼 (ILAPI 전역, 서버 없으면 정적 스냅샷)
     home.css home.js home-feed.js entry.css entry.js login.js
-    fonts/ reports/(업종 사진) eugene-logo.png
-  lounge_api/           (선택) Python API 서버
-  db_loader/            (선택) 데이터 적재 파이프라인 · 비밀 파일은 여기 .env
+    reports/(업종 사진) eugene-logo.png    (fonts/는 만들지 않음 — 3장 폰트)
+  lounge_api/           (선택) Python API 서버 — db_loader/를 import
+  db_loader/            (선택) 데이터 적재 파이프라인 · lounge_api AI 기능의 공용 모듈(llm.py 등)
+  requirements.txt      (선택) lounge_api + db_loader 패키지(anthropic 등)
+  railway.json          (선택) lounge_api 운영 설정(시작 명령 · 헬스체크)
+jarvis/                 (선택) Next.js 홀로그램 앱 — wrangler.jsonc · open-next.config.ts (Cloudflare Workers)
+db_migration/           새 Supabase로 옮길 시연 데이터 키트 (README.md 순서대로)
 ```
 
 ## 6. 문구 규칙
@@ -240,7 +249,7 @@ yujin-research-center/
 
 **불러오기 패턴(모든 페이지 공통)**: 코드 기본값으로 먼저 그림 → `Promise.all`로 조회(각각 `.catch(()=>({data:null}))`) → 값이 있으면 덮어써서 다시 그림 → 실패해도 화면 유지 · 콘솔 경고만.
 
-새 Supabase 프로젝트라면 아래로 테이블을 만들고 RLS를 켠 뒤 `select`는 anon 허용, `saved_strategies`·`subscriptions`·`lounge_members`는 `auth.uid() = user_id`만 허용한다.
+테이블 · RLS · Storage 버킷은 `db_migration/1_schema.sql`을 그대로 쓰고 데이터는 `2_import.py`로 넣는다(아래 SQL과 같은 구조, 키트가 기준). 키트가 없을 때만 아래로 테이블을 만들고 RLS를 켠 뒤 `select`는 anon 허용, `saved_strategies`·`subscriptions`·`lounge_members`는 `auth.uid() = user_id`만 허용한다.
 
 ```sql
 create table market_snapshot (snapshot_date date primary key, kospi text, kospi_chg text, kosdaq text, kosdaq_chg text,
@@ -319,7 +328,7 @@ create table lounge_members (user_id uuid primary key references auth.users, nam
 - 해외 지수 · 섹터 · 밤사이 요약, 종목 이벤트 5건, 해외 실적 14종목(ORCL · FDX · MU · NKE · JPM · GE · TSLA · INTC · GOOGL · MSFT · META · AAPL · AMZN · NVDA): 그럴듯한 값으로 만들되 반드시 '예시' 배지
 
 ## 10. 데이터 적재 (선택 · 사이트가 매일 갱신되려면)
-`db_loader/`(Python): 리서치센터 리포트 메일(Gmail API) · KRX/KIS 시세 · yfinance 해외 지수 · DART 공시를 모아 위 테이블에 upsert하고, Claude API로 요약 · 카드뉴스 deck을 만든다. 스케줄은 Windows 작업 스케줄러(평일 아침). 비밀값은 `Eugene_AI_Project\_secrets\db_loader.env`에서 읽는다(SUPABASE_URL · SUPABASE_SERVICE_KEY · KIS_APP_KEY/SECRET · CLAUDE_API_KEY) — **git · 배포 폴더에 절대 넣지 않는다.**
+`db_loader/`(Python): 리서치센터 리포트 메일(Gmail API) · KRX/KIS 시세 · yfinance 해외 지수 · DART 공시를 모아 위 테이블에 upsert하고, Claude API로 요약 · 카드뉴스 deck을 만든다. 스케줄은 Windows 작업 스케줄러(평일 아침). 비밀값은 `Eugene_AI_Project\_secrets\db_loader.env`에서 읽는다(SUPABASE_URL · SUPABASE_SERVICE_KEY — 새 프로젝트 값 · KIS_APP_KEY/SECRET · ANTHROPIC_API_KEY) — **git · 배포 폴더에 절대 넣지 않는다.**
 
 ## 11. 구현 단계 (단계마다 확인 후 멈춤)
 
@@ -331,22 +340,28 @@ create table lounge_members (user_id uuid primary key references auth.users, nam
 6. **Quant Studio** `quant.html`(7-7). 테마 → 전략 만들기 연결.
 7. **Home** `home.html` + `home.js` · `home-feed.js` · `home.css`(7-3). Orbit Books 재사용, 카드뉴스 스크롤 이펙트, 유형별 섹션.
 8. **보조 · 마감**: reports · global · cardnews · admin, 리다이렉트 4개, 390px 점검, 접근성, 콘솔 0건.
-9. (선택) `lounge_api` 서버 · `jarvis` 앱 · `db_loader`. 원래 Jarvis(`codikids/jarvis-research-guide`)와 서버 배포 저장소(`codikids/eugene-insightlab-servers`)는 새 계정으로 접근할 수 없으니, **같은 새 저장소 안에 `jarvis/` · `lounge_api/` 폴더로 만들고** Render는 새 계정으로 이 저장소를 연결해 다시 띄운 뒤 `assets/config.js`의 `apiBase` · `jarvisUrl`을 새 주소로 바꾼다. 서버가 없어도 사이트는 정적 스냅샷 · 내장 대체 오브로 동작한다.
+9. (선택) `lounge_api` 서버 · `jarvis` 앱 · `db_loader`. 원래 Jarvis(`codikids/jarvis-research-guide`)와 서버 배포 저장소(`codikids/eugene-insightlab-servers`)는 새 계정으로 접근할 수 없으니, **같은 새 저장소 안에 `jarvis/` · `lounge_api/` · `db_loader/` 폴더로 만들고**, 3장대로 lounge_api는 Railway(볼륨), Jarvis는 Cloudflare Workers(OpenNext)에 새 계정으로 띄운다. 그다음 `assets/config.js`의 `apiBase` · `jarvisUrl`을 새 주소로 바꾸고, 서버의 허용 출처(`LOUNGE_ALLOWED_ORIGINS` · `EMBED_ALLOWED_ORIGINS`)에 Pages 주소를 넣는다. 서버가 없어도 사이트는 정적 스냅샷 · 내장 대체 오브로 동작한다.
 
 ## 12. 리다이렉트 · 배포
 
 - 리다이렉트 파일(내용은 `location.replace` + meta refresh만): `lounge.html`·`ask.html` → `market.html` / `events.html` → 기관 `market.html#stock-events`, WM `market.html`(`?region=global` 유지) / `mypage.html` → `desk.html`(#events · #research 유지)
-- 배포(요청받았을 때만): **루트 `*.html` + `assets/` + `trading/`만** 담은 `dist`로 배포한다. 사이트 폴더를 통째로 올리지 않는다(PowerShell 기준, Git Bash면 cp/find로 같은 작업):
+- 배포(요청받았을 때만, **Cloudflare Pages**): **루트 `*.html` + `assets/` + `trading/`만** 담은 `dist`로 배포한다. 사이트 폴더를 통째로 올리지 않는다(PowerShell 기준, Git Bash면 cp/find로 같은 작업). 프로젝트 이름은 예시로 `eugene-insightlab` — 이미 쓰이고 있으면 다른 이름으로 정하고 이 문서의 주소를 같이 바꾼다.
   ```powershell
   cd Eugene_AI_Project
+  # 처음 한 번만: Pages 프로젝트 만들기 → https://eugene-insightlab.pages.dev
+  npx wrangler@latest pages project create eugene-insightlab --production-branch main
+
   Remove-Item dist -Recurse -Force -ErrorAction SilentlyContinue; mkdir dist | Out-Null
   Copy-Item yujin-research-center\*.html dist\
   Copy-Item yujin-research-center\assets dist\assets -Recurse
   if (Test-Path yujin-research-center\trading) { Copy-Item yujin-research-center\trading dist\trading -Recurse }
   Get-ChildItem dist -Recurse -Include *.py,.env*,*.json -File | Where-Object { $_.Name -match '\.py$|^\.env|token|credential' } | Remove-Item
-  netlify deploy --prod --dir dist --site dd1e599a-cbc4-43a1-9fab-3e28d6678c12
+  # 25MiB 넘는 파일은 Pages가 거부 → 목록이 나오면 Supabase Storage로 옮기고 dist에서 뺀다
+  Get-ChildItem dist -Recurse -File | Where-Object { $_.Length -gt 25MB } | Select-Object FullName, Length
+  npx wrangler@latest pages deploy dist --project-name eugene-insightlab --branch main
   ```
-  배포 후 라이브에서 기관 · WM 세션으로 다시 확인하고, 배포한 커밋에 `git tag deploy-YYYYMMDD`를 남겨 push한다.
+  `--branch main`이 아닌 이름으로 올리면 미리보기 주소(`<브랜치>.eugene-insightlab.pages.dev`)로만 나간다. 배포 후 라이브에서 기관 · WM 세션으로 다시 확인(로그인 · 리다이렉트 4개 · `?region=global` 유지 · 콘솔 0건)하고, 배포한 커밋에 `git tag deploy-YYYYMMDD`를 남겨 push한다.
+- 첫 배포 뒤 한 번: Supabase Auth Redirect URLs · 서버 허용 출처(3장)에 실제 Pages 주소가 들어갔는지 확인한다. 자체 도메인을 쓰면 Pages › Custom domains에서 연결하고 같은 곳들에 그 도메인도 추가한다.
 - 캐시: 공용 JS/CSS를 고치면 `?v=날짜+알파벳`을 올려 모든 페이지 링크를 갱신.
 
 ## 13. 완료 검수
@@ -361,3 +376,5 @@ create table lounge_members (user_id uuid primary key references auth.users, nam
 - [ ] Events 탭 · 배너 · 필터 문구가 7-6과 같고 배너 책 6권 유지
 - [ ] 안내 문구 해요체, 예시 데이터에 '예시' 표시
 - [ ] 1440 / 390에서 깨짐 · 가로 스크롤 없음, 콘솔 오류 0건, reduced-motion 대응
+- [ ] 클라이언트 코드에 옛 Supabase 주소(`zvnnpwdfeaakhxklcjfk`) · 옛 anon key · `*.onrender.com` · `*.netlify.app`이 남아 있지 않음(`git grep`으로 확인)
+- [ ] Cloudflare Pages 라이브(`https://<프로젝트>.pages.dev`)에서 로그인 · 리다이렉트 4개 · `.html` 없는 주소 진입이 모두 동작, `dist`에 25MiB 넘는 파일 없음
